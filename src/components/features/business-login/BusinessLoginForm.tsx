@@ -8,7 +8,7 @@ import Input from '@/components/ui/Input';
 import { useRouter } from 'next/navigation';
 import { formatBusinessNumber, isValidBusinessNumber, removeBusinessNumberHyphen, validatePassword } from '@/lib/utils/authNumber';
 
-interface LoginFormData {
+interface BusinessLoginFormData {
   businessNumber: string;
   password: string;
   rememberMe: boolean;
@@ -17,7 +17,7 @@ interface LoginFormData {
 
 const SAVED_BUSINESS_NUMBER_KEY = 'savedBusinessNumber';
 
-const getDefaultValues = (): LoginFormData => {
+const getDefaultValues = (): BusinessLoginFormData => {
   if (typeof window === 'undefined') {
     return {
       businessNumber: '',
@@ -44,7 +44,7 @@ const getDefaultValues = (): LoginFormData => {
   }
 };
 
-export default function LoginForm() {
+export default function BusinessLoginForm() {
   const router = useRouter();
   
   const {
@@ -54,7 +54,7 @@ export default function LoginForm() {
     formState: { errors },
     setError,
     clearErrors,
-  } = useForm<LoginFormData>({
+  } = useForm<BusinessLoginFormData>({
     mode: 'onChange',
     defaultValues: getDefaultValues(),
   });
@@ -106,7 +106,7 @@ export default function LoginForm() {
     !errors.businessNumber &&
     !errors.password;
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: BusinessLoginFormData) => {
     if (!isFormValid) {
       if (!businessNumber) {
         setError('businessNumber', {
@@ -136,7 +136,7 @@ export default function LoginForm() {
     if (cleanBusinessNumber === data.password) {
       setError('password', {
         type: 'manual',
-        message: '가입하지 않은 아이디에요. 아래 회원가입을 해 주세요.'
+        message: '가입하지 않은 사업자번호에요. 아래 회원가입을 해 주세요.'
       });
       return;
     }
@@ -164,7 +164,7 @@ export default function LoginForm() {
 
       setError('password', {
         type: 'manual',
-        message: '로그인 중 오류가 발생했습니다.'
+        message: '사업자 로그인 중 오류가 발생했습니다.'
       });
     } finally {
       setFormState(prev => ({ ...prev, isLoading: false }));
@@ -180,7 +180,7 @@ export default function LoginForm() {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-title-2 text-label-900 mb-8">
-            로그인
+            사업자 로그인
           </h1>
         </motion.div>
 
@@ -195,7 +195,7 @@ export default function LoginForm() {
             <FormField
               name="businessNumber"
               control={control}
-              label="사업자등록번호 (ID로 사용하고)"
+              label="사업자등록번호 (사업자 ID)"
               error={errors.businessNumber?.message}
               render={(field, fieldId) => (
                 <Input
@@ -263,7 +263,7 @@ export default function LoginForm() {
                     onBlur={field.onBlur}
                   />
                   <label htmlFor={fieldId} className="ml-2 block text-sm text-gray-900">
-                    아이디 저장
+                    사업자번호 저장
                   </label>
                 </div>
               )}
@@ -276,17 +276,17 @@ export default function LoginForm() {
               disabled={formState.isLoading || !isFormValid}
               className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
                 formState.isLoading || !isFormValid
-                  ? 'bg-gray-400 cursor-not-allowed text-white' 
+                  ? 'bg-gray-300 cursor-not-allowed text-white' 
                   : 'bg-primary-400 text-white hover:bg-primary-500 cursor-pointer'
               }`}
               whileTap={isFormValid && !formState.isLoading ? { scale: 0.98 } : {}}
             >
-              {formState.isLoading ? '로그인 중...' : '로그인'}
+              {formState.isLoading ? '사업자 로그인 중...' : '사업자 로그인'}
             </motion.button>
 
             <motion.button
               type="button"
-              onClick={() => router.push('/signup/step1')}
+              onClick={() => router.push('/business-signup/step1')}
               className="w-full py-3 px-4 border border-primary-500 text-primary-500 rounded-lg font-medium text-sm hover:bg-primary-600 hover:text-white transition-colors cursor-pointer"
               whileTap={{ scale: 0.98 }}
             >

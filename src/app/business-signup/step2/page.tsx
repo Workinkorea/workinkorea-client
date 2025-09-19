@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import BusinessSignupStep2 from '@/components/features/business-signup/BusinessSignupStep2';
 import { SignupStep2Data } from '@/types/signup.type';
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function SignupStep2Page() {
-  // const router = useRouter();
+  const router = useRouter();
   const [formData, setFormData] = useState<SignupStep2Data>({
     userInfo: {
       businessNumber: '',
@@ -24,7 +24,7 @@ export default function SignupStep2Page() {
   const handleNext = async (data: SignupStep2Data) => {
     setFormData(data);
     console.log('Step 2 data:', data);
-    // router.push('/');
+    router.push('/business-login?signup=success');
   };
 
   return (
