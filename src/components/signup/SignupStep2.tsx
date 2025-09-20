@@ -104,6 +104,8 @@ export default function SignupStep2() {
       ...prev,
       isEmailVerified: true
     }));
+
+    toast.success('인증 완료 되었습니다.')
   };
 
   return (
