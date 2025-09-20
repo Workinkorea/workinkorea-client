@@ -1,9 +1,10 @@
+import { ReactNode } from 'react';
 import Layout from '@/components/layout/Layout';
 
 export default function BusinessSignupLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <Layout>

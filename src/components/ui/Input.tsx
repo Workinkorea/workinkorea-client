@@ -1,14 +1,14 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, InputHTMLAttributes, ReactNode } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils/utils';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   variant?: 'default' | 'password';
   error?: boolean;
   success?: boolean;
   showPassword?: boolean;
   onTogglePassword?: () => void;
-  rightElement?: React.ReactNode;
+  rightElement?: ReactNode;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(

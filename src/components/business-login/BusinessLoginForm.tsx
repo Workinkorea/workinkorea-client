@@ -14,7 +14,6 @@ interface BusinessLoginFormData {
   rememberMe: boolean;
 }
 
-
 const SAVED_BUSINESS_NUMBER_KEY = 'savedBusinessNumber';
 
 const getDefaultValues = (): BusinessLoginFormData => {
@@ -276,8 +275,8 @@ export default function BusinessLoginForm() {
               disabled={formState.isLoading || !isFormValid}
               className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
                 formState.isLoading || !isFormValid
-                  ? 'bg-gray-300 cursor-not-allowed text-white' 
-                  : 'bg-primary-400 text-white hover:bg-primary-500 cursor-pointer'
+                  ? 'bg-gray-300 cursor-not-allowed text-white'
+                  : 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
               }`}
               whileTap={isFormValid && !formState.isLoading ? { scale: 0.98 } : {}}
             >
@@ -287,7 +286,7 @@ export default function BusinessLoginForm() {
             <motion.button
               type="button"
               onClick={() => router.push('/business-signup/step1')}
-              className="w-full py-3 px-4 border border-primary-500 text-primary-500 rounded-lg font-medium text-sm hover:bg-primary-600 hover:text-white transition-colors cursor-pointer"
+              className="w-full py-3 px-4 border border-primary-300 text-primary-300 rounded-lg font-medium text-sm hover:bg-primary-300 hover:text-white transition-colors cursor-pointer"
               whileTap={{ scale: 0.98 }}
             >
               회원가입
