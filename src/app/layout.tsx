@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ReactNode } from "react";
 import { pretendard } from "@/lib/fonts";
 import "./globals.css";
 import ReactQueryProvider from "@/lib/providers/QueryProvider";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="ko" className={pretendard.variable}>

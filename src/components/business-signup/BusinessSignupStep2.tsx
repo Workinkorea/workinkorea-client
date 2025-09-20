@@ -308,7 +308,7 @@ export default function BusinessSignupStep2({
                         field.value && isValidBusinessNumber(field.value)
                           ? formState.isBusinessNumberVerified 
                             ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-primary-400 text-white hover:bg-primary-500 cursor-pointer'
+                            : 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
                           : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                       }`}
                       whileTap={field.value && isValidBusinessNumber(field.value) && !formState.isBusinessNumberVerified ? { scale: 0.95 } : {}}
@@ -528,7 +528,7 @@ export default function BusinessSignupStep2({
                 disabled={!isFormValid}
                 className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
                   isFormValid
-                    ? 'bg-primary-400 text-white hover:bg-primary-500 cursor-pointer'
+                    ? 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
                 whileTap={isFormValid ? { scale: 0.98 } : {}}

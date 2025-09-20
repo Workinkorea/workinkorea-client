@@ -1,8 +1,19 @@
+'use client';
+
+import { useState } from 'react';
+import Header from "@/components/layout/Header";
+import Layout from "@/components/layout/Layout";
 
 export default function Home() {
+  const [headerType, setHeaderType] = useState<'homepage' | 'individual'>('homepage');
+
+  const handleToggleType = () => {
+    setHeaderType(prev => prev === 'homepage' ? 'individual' : 'homepage');
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      home
-    </div>
+    <Layout>
+      <Header type={headerType} onToggleType={handleToggleType} />
+    </Layout>
   );
 }

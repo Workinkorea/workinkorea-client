@@ -368,7 +368,7 @@ export default function BusinessSignupStep1({
             disabled={!isRequiredAgreementsChecked}
             className={`flex-1 py-4 rounded-xl font-semibold text-white transition-all duration-300 ${
               isRequiredAgreementsChecked
-                ? 'bg-primary-400 hover:bg-primary-400/90 shadow-lg cursor-pointer' 
+                ? 'bg-primary-300 hover:bg-primary-400 shadow-lg cursor-pointer' 
                 : 'bg-gray-300 cursor-not-allowed'
             }`}
             whileTap={{ scale: isRequiredAgreementsChecked ? 0.98 : 1 }}

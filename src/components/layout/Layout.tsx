@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 
-interface LayoutComponent extends React.FC<LayoutProps> {
+interface LayoutComponent {
+  (props: LayoutProps): React.JSX.Element;
   Main: typeof LayoutMain;
 }
 
