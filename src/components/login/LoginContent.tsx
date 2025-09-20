@@ -154,7 +154,7 @@ export default function LoginContent() {
 
             <motion.button
               type="button"
-              onClick={() => router.push('/signup')}
+              onClick={() => router.push('/signup/step1')}
               className="w-full py-3 px-4 border border-primary-300 text-primary-300 rounded-lg font-medium text-sm hover:bg-primary-300 hover:text-white transition-colors cursor-pointer"
               whileTap={{ scale: 0.98 }}
             >

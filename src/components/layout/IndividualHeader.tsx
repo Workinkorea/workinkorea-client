@@ -22,7 +22,7 @@ const IndividualHeader = () => {
             <div className="flex-shrink-0">
               <Image
                 src="/logo.png"
-                alt="WORLDJOB+"
+                alt="WorkInKorea"
                 width={120}
                 height={40}
                 className="h-8 w-auto"
