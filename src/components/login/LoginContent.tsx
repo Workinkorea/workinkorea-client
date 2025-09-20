@@ -80,7 +80,7 @@ export default function LoginContent() {
                   {...field}
                   id={fieldId}
                   type="text"
-                  maxLength={15}
+                  maxLength={50}
                 />
               )}
             />
