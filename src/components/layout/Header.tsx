@@ -2,8 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 
 interface HeaderProps {
-  type: 'homepage' | 'individual';
-  onToggleType: () => void;
+  type: 'homepage' | 'business';
+  onToggleType?: () => void;
 }
 
 const Header = ({ type, onToggleType }: HeaderProps) => {
@@ -32,7 +32,7 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
   const navigationItems = getNavigationItems();
 
   return (
-    <header className="w-full bg-color-background-default border-b border-color-line-400 shadow-normal">
+    <header className="w-full bg-color-background-default border-b border-line-200 shadow-normal">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -42,19 +42,19 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
                   WorkInKorea
                 </span>
                 <span className="ml-2 text-caption-2 text-label-500 bg-component-alternative px-2 py-1 rounded">
-                  {type === 'homepage' ? '개인' : '기업'}
+                  {type === 'homepage' ? '기업' : '개인'}
                 </span>
               </Link>
             </div>
           </div>
 
           <nav className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-6">
+            <div className="ml-10 flex items-center gap-8">
               {navigationItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-label-900 hover:text-primary-500 px-3 py-2 text-body-3 font-medium transition-colors"
+                  className="text-label-900 hover:text-primary-500 text-body-3 font-medium transition-colors whitespace-nowrap"
                 >
                   {item.name}
                 </Link>
@@ -73,56 +73,35 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
               <button
                 onClick={onToggleType}
                 className={`
-                  flex items-center px-4 py-2 rounded-lg text-body-3 font-medium transition-all duration-200
+                  flex items-center gap-2 h-9 px-3 rounded-lg text-body-3 font-medium transition-all duration-200 cursor-pointer
                   ${type === 'homepage' 
                     ? 'bg-primary-50 text-primary-700 border border-primary-200 hover:bg-primary-100' 
                     : 'bg-secondary-50 text-secondary-700 border border-secondary-200 hover:bg-secondary-100'
                   }
                 `}
               >
-                <span className="mr-2 text-caption-1">
-                  {type === 'homepage' ? '👤' : '🏢'}
+                <span className="whitespace-nowrap">
+                  {type === 'homepage' ? '개인회원으로' : '기업회원으로'}
                 </span>
-                {type === 'homepage' ? '기업회원으로' : '개인회원으로'}
-                <svg 
-                  className="ml-2 h-4 w-4 transition-transform duration-200" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                </svg>
               </button>
             </div>
 
             {type === 'homepage' ? (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-3">
                 <Link 
-                  href="/login"
-                  className="text-label-700 hover:text-primary-500 px-3 py-2 text-body-3 font-medium transition-colors"
-                >
-                  로그인
-                </Link>
-                <Link 
-                  href="/signup"
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-body-3 font-medium transition-colors shadow-normal"
-                >
-                  회원가입
-                </Link>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Link 
-                  href="/company/login"
-                  className="text-label-700 hover:text-secondary-500 px-3 py-2 text-body-3 font-medium transition-colors"
+                  href="/business-login"
+                  className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
                 >
                   기업 로그인
                 </Link>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
                 <Link 
-                  href="/company/signup"
-                  className="bg-secondary-500 hover:bg-secondary-600 text-white px-4 py-2 rounded-lg text-body-3 font-medium transition-colors shadow-normal"
+                  href="/login"
+                  className="text-label-700 hover:text-secondary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
                 >
-                  기업 회원가입
+                  개인 로그인
                 </Link>
               </div>
             )}
@@ -131,12 +110,12 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
       </div>
 
       <div className="md:hidden">
-        <div className="px-2 pt-2 pb-3 space-y-1 bg-background-alternative">
+        <div className="pt-2 pb-3 space-y-1 bg-background-alternative">
           {navigationItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className="text-label-900 hover:text-primary-500 block px-3 py-2 text-body-2 font-medium transition-colors"
+              className="text-label-900 hover:text-primary-500 block mx-4 py-3 text-body-2 font-medium transition-colors border-b border-label-100 last:border-b-0"
             >
               {item.name}
             </Link>

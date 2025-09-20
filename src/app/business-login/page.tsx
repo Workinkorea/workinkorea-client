@@ -1,14 +1,16 @@
 'use client';
 
 import { Suspense } from "react";
-import Layout from "@/components/layout/Layout";
 import BusinessLoginForm from "@/components/business-login/BusinessLoginForm";
+import Header from "@/components/layout/Header";
+import Layout from "@/components/layout/Layout";
 
 function BusinessLoginContent() {
 
   return (
     <>
       <Layout>
+        <Header type="business" />
         <Layout.Main>
           <BusinessLoginForm />
         </Layout.Main>

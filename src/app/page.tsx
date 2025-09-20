@@ -5,10 +5,10 @@ import Header from "@/components/layout/Header";
 import Layout from "@/components/layout/Layout";
 
 export default function Home() {
-  const [headerType, setHeaderType] = useState<'homepage' | 'individual'>('homepage');
+  const [headerType, setHeaderType] = useState<'homepage' | 'business'>('homepage');
 
   const handleToggleType = () => {
-    setHeaderType(prev => prev === 'homepage' ? 'individual' : 'homepage');
+    setHeaderType(prev => prev === 'homepage' ? 'business' : 'homepage');
   };
 
   return (
