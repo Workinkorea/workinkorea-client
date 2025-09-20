@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import Layout from "@/components/layout/Layout";
-import BusinessLoginForm from "@/components/features/business-login/BusinessLoginForm";
+import BusinessLoginForm from "@/components/business-login/BusinessLoginForm";
 
 function BusinessLoginContent() {
 

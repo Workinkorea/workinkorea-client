@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import BusinessSignupStep2 from '@/components/features/business-signup/BusinessSignupStep2';
+import BusinessSignupStep2 from '@/components/business-signup/BusinessSignupStep2';
 import { SignupStep2Data } from '@/types/signup.type';
 import { useRouter } from 'next/navigation';
 
