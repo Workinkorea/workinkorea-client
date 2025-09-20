@@ -169,7 +169,7 @@ export default function LoginContent() {
               </svg>
               
               <span className="text-gray-600 font-medium ml-2">
-                Google로 계속하기
+                Google로 로그인
               </span>
             </motion.button>
 

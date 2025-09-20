@@ -42,7 +42,7 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
                   WorkInKorea
                 </span>
                 <span className="ml-2 text-caption-2 text-label-500 bg-component-alternative px-2 py-1 rounded">
-                  {type === 'homepage' ? '기업' : '개인'}
+                  {type === 'homepage' ? '개인' : '기업'}
                 </span>
               </Link>
             </div>
@@ -81,7 +81,7 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
                 `}
               >
                 <span className="whitespace-nowrap">
-                  {type === 'homepage' ? '개인회원으로' : '기업회원으로'}
+                  {type === 'homepage' ? '기업회원으로' : '개인회원으로'}
                 </span>
               </button>
             </div>
@@ -89,19 +89,19 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
             {type === 'homepage' ? (
               <div className="flex items-center gap-3">
                 <Link 
-                  href="/business-login"
+                  href="/login"
                   className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
                 >
-                  기업 로그인
+                  개인 로그인
                 </Link>
               </div>
             ) : (
               <div className="flex items-center gap-3">
                 <Link 
-                  href="/login"
+                  href="/business-login"
                   className="text-label-700 hover:text-secondary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
                 >
-                  개인 로그인
+                  기업 로그인
                 </Link>
               </div>
             )}

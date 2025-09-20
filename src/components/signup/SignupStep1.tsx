@@ -59,7 +59,7 @@ export default function SignupStep1() {
               </svg>
               
               <span className="text-gray-600 font-medium ml-2">
-                Google로 계속하기
+                Google로 회원가입
               </span>
             </motion.button>
         </motion.div>
