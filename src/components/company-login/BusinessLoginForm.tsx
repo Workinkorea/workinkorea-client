@@ -34,7 +34,10 @@ const getDefaultValues = (): BusinessLoginFormData => {
       rememberMe: !!savedBusinessNumber,
     };
   } catch (error) {
-    console.warn('localStorage access failed:', error);
+    // localStorage 접근 실패 시 기본값 반환
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('localStorage access failed:', error);
+    }
     return {
       businessNumber: '',
       password: '',
@@ -159,7 +162,10 @@ export default function BusinessLoginForm() {
       router.push('/');
 
     } catch (error: unknown) {
-      console.error('Login error:', error);
+      // 프로덕션에서는 에러 로깅 서비스로 전송
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Login error:', error);
+      }
 
       setError('password', {
         type: 'manual',
@@ -285,7 +291,7 @@ export default function BusinessLoginForm() {
 
             <motion.button
               type="button"
-              onClick={() => router.push('/business-signup/step1')}
+              onClick={() => router.push('/company-signup/step1')}
               className="w-full py-3 px-4 border border-primary-300 text-primary-300 rounded-lg font-medium text-sm hover:bg-primary-300 hover:text-white transition-colors cursor-pointer"
               whileTap={{ scale: 0.98 }}
             >

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { SignupStep2Data } from '@/types/signup.type';
 import { useRouter } from 'next/navigation';
-import BusinessSignupStep2 from '@/components/business-signup/BusinessSignupStep2';
+import BusinessSignupStep2 from '@/components/company-signup/BusinessSignupStep2';
 
 export default function SignupStep2Page() {
   const router = useRouter();
@@ -23,8 +23,8 @@ export default function SignupStep2Page() {
 
   const handleNext = async (data: SignupStep2Data) => {
     setFormData(data);
-    console.log('Step 2 data:', data);
-    router.push('/business-login?signup=success');
+    // TODO: 회원가입 API 호출
+    router.push('/company-login?signup=success');
   };
 
   return (

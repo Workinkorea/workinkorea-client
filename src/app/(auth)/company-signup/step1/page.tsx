@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import BusinessSignupStep1 from '@/components/business-signup/BusinessSignupStep1';
+import BusinessSignupStep1 from '@/components/company-signup/BusinessSignupStep1';
 import { SignupStep1Data } from '@/types/signup.type';
 
 export default function SignupStep1Page() {
@@ -28,7 +28,7 @@ export default function SignupStep1Page() {
     setFormData(data);
     localStorage.setItem('signup_step1', JSON.stringify(data));
 
-    router.push('/business-signup/step2');
+    router.push('/company-signup/step2');
   };
 
   const handleViewTerms = (termType: string) => {
@@ -43,7 +43,8 @@ export default function SignupStep1Page() {
     if (url) {
       window.open(url, '_blank', 'noopener,noreferrer');
     } else {
-      console.error('약관을 찾을 수 없습니다.')
+      // 약관을 찾을 수 없는 경우 사용자에게 알림
+      alert('약관 페이지를 찾을 수 없습니다. 관리자에게 문의해주세요.');
     }
   };
 

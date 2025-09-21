@@ -1,17 +1,15 @@
 import { ReactNode } from 'react';
 import Layout from '@/components/layout/Layout';
-import Header from '@/components/layout/Header';
 
-export default function BusinessSignupLayout({
+export default function AuthLayout({
   children,
 }: {
   children: ReactNode;
 }) {
   return (
     <Layout>
-      <Header type='business' />
-      <main className='flex justify-center'>
-        <Layout.Main className="max-w-[32.5rem]">
+      <main className='flex justify-center min-h-screen'>
+        <Layout.Main className="max-w-[32.5rem] w-full">
           {children}
         </Layout.Main>
       </main>
