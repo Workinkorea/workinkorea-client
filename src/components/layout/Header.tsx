@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { SearchIcon } from '@/components/ui/AccessibleIcon';
 
 interface HeaderProps {
   type: 'homepage' | 'business';
@@ -63,10 +64,11 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
           </nav>
 
           <div className="flex items-center space-x-3">
-            <button className="p-2 text-label-500 hover:text-label-700 transition-colors">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+            <button
+              className="p-2 text-label-500 hover:text-label-700 transition-colors"
+              aria-label="검색"
+            >
+              <SearchIcon />
             </button>
 
             <div className="relative">
@@ -98,7 +100,7 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
             ) : (
               <div className="flex items-center gap-3">
                 <Link 
-                  href="/business-login"
+                  href="/company-login"
                   className="text-label-700 hover:text-secondary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
                 >
                   기업 로그인

@@ -1,6 +1,7 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import { SearchIcon } from '@/components/ui/AccessibleIcon';
 
 const IndividualHeader = () => {
 
@@ -20,12 +21,14 @@ const IndividualHeader = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Image
+              <OptimizedImage
                 src="/logo.png"
-                alt="WorkInKorea"
+                alt="워크인코리아 - 한국 취업 플랫폼"
                 width={120}
                 height={40}
                 className="h-8 w-auto"
+                context="logo"
+                priority
               />
             </div>
           </div>
@@ -45,10 +48,11 @@ const IndividualHeader = () => {
           </nav>
 
           <div className="flex items-center space-x-4">
-            <button className="p-2 text-gray-400 hover:text-gray-600">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+            <button
+              className="p-2 text-gray-400 hover:text-gray-600"
+              aria-label="검색"
+            >
+              <SearchIcon />
             </button>
 
             <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-50">
