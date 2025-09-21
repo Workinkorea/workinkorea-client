@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 
-export default function BusinessSignupLayout({
+export default function BusinessLoginLayout({
   children,
 }: {
   children: ReactNode;

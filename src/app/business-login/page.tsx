@@ -9,12 +9,7 @@ function BusinessLoginContent() {
 
   return (
     <>
-      <Layout>
-        <Header type="business" />
-        <Layout.Main>
-          <BusinessLoginForm />
-        </Layout.Main>
-      </Layout>
+      <BusinessLoginForm />
     </>
   );
 }
