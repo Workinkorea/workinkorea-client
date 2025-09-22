@@ -49,7 +49,7 @@ export default function SignupStep2() {
     }
 
     try {
-      const response = await authApi.sendEmailVerification([email]);
+      await authApi.sendEmailVerification([email]);
 
       setFormState(prev => ({
         ...prev,
@@ -58,7 +58,7 @@ export default function SignupStep2() {
 
       clearErrors('email');
       toast.success('인증번호가 이메일로 전송되었습니다.');
-    } catch (error) {
+    } catch {
       setFormState(prev => ({
         ...prev,
         isEmailSent: true
@@ -237,7 +237,7 @@ export default function SignupStep2() {
                 className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
               >
                 <div className="flex items-center gap-2 text-green-700 text-sm">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-label="인증 완료">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   이메일 인증이 완료되었습니다.

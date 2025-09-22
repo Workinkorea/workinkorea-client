@@ -7,21 +7,34 @@ export const apiClient = {
   ): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
       },
+      signal: controller.signal,
       ...options,
     };
 
-    const response = await fetch(url, config);
+    try {
+      const response = await fetch(url, config);
+      clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Request timeout: API call took longer than 3 seconds');
+      }
+      throw error;
     }
-
-    return response.json();
   },
 
   get<T>(endpoint: string, options?: RequestInit): Promise<T> {

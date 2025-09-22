@@ -1,5 +1,6 @@
-import { ReactNode } from 'react';
+import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
+import { ReactNode } from 'react';
 
 export default function BusinessSignupLayout({
   children,
@@ -8,8 +9,9 @@ export default function BusinessSignupLayout({
 }) {
   return (
     <Layout>
-      <main className='flex justify-center'>
-        <Layout.Main className="max-w-[32.5rem]">
+      <Header type="business" />
+      <main className='flex justify-center min-h-screen'>
+        <Layout.Main className="max-w-[32.5rem] w-full">
           {children}
         </Layout.Main>
       </main>

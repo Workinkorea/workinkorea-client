@@ -18,12 +18,12 @@ export const CompanyRegistration = ({
         <h2 className="text-xl font-bold text-gray-900 mb-2">기업회원 로그인</h2>
         <div className="flex gap-2 justify-end">
           <button 
-            onClick={() => router.push('/business-login')}
+            onClick={() => router.push('/company-login')}
             className="px-6 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors cursor-pointer">
             로그인
           </button>
           <button 
-            onClick={() => router.push('/business-signup/step1')}
+            onClick={() => router.push('/company-signup/step1')}
             className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer">
             회원가입
           </button>

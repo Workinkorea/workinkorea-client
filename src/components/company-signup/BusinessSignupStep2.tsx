@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { SignupStep2Data, Step2Form } from '@/types/signup.type';
 import { useForm } from 'react-hook-form';
@@ -8,7 +8,6 @@ import { FormField } from '@/components/ui/FormField';
 import Input from '@/components/ui/Input';
 import { formatBusinessNumber, isValidBusinessNumber, validateBirthDate, validateConfirmPassword, validatePassword, validatePhoneNumber } from '@/lib/utils/authNumber';
 import { toast } from 'sonner';
-import { throttle } from '@/lib/utils/throttle';
 
 interface BusinessSignupStep2Props {
   initialData?: SignupStep2Data;
@@ -19,9 +18,6 @@ export default function BusinessSignupStep2({
   initialData, 
   onNextAction,
 }: BusinessSignupStep2Props) {
-  const [isProgressBarSticky, setIsProgressBarSticky] = useState(false);
-  const [showProgressToast, setShowProgressToast] = useState(false);
-  const [currentToastId, setCurrentToastId] = useState<string | number | null>(null);
 
   const {
     control,
@@ -236,14 +232,6 @@ export default function BusinessSignupStep2({
 
   return (
     <div className="h-full">
-      {isProgressBarSticky && (
-        <div className="fixed top-[64px] left-0 right-0 z-40">
-          <div 
-            className="bg-primary-300 h-1 transition-all duration-300" 
-            style={{ width: `${currentProgress}%` }}
-          ></div>
-        </div>
-      )}
 
       <div className="px-4 py-8">
         <motion.div 
