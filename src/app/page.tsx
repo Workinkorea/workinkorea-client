@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { createMetadata } from '@/lib/metadata';
-import HomePageClient from '@/components/pages/HomePageClient';
 
 export const metadata: Metadata = createMetadata({
   title: '워크인코리아 - 한국 취업의 모든 것',
@@ -8,5 +7,9 @@ export const metadata: Metadata = createMetadata({
 });
 
 export default function Home() {
-  return <HomePageClient />;
+  return (
+    <div>
+      <h1>워크인코리아</h1>
+    </div>
+  );
 }
