@@ -69,7 +69,7 @@ const jobCategories = [
 
 export default function JobCategoriesSection() {
   return (
-    <section className="py-16 bg-gray-50">
+    <section id="job-categories" className="py-16 bg-gray-50">
       <div className="flex flex-col justify-center px-4 sm:px-6 lg:px-8">
         {/* 섹션 헤더 */}
         <div className="text-center mx-auto mb-12">
