@@ -109,7 +109,7 @@ const ResumeCard: React.FC<ResumeCardProps> = ({
         {/* 공개/비공개 아이콘 */}
         <button
           onClick={onTogglePublic}
-          className={`p-2 rounded-lg transition-colors ${
+          className={`p-2 rounded-lg transition-colors cursor-pointer ${
             resume.isPublic
               ? 'text-primary-600 hover:bg-primary-50'
               : 'text-label-400 hover:bg-component-alternative'
@@ -143,14 +143,14 @@ const ResumeCard: React.FC<ResumeCardProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={onView}
-            className="flex items-center gap-2 px-3 py-1.5 text-caption-1 font-medium text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 text-caption-1 font-medium text-primary-600 hover:bg-primary-50 rounded-lg transition-colors cursor-pointer"
           >
             <Eye size={14} />
             미리보기
           </button>
 
           {statistics && (
-            <button className="flex items-center gap-2 px-3 py-1.5 text-caption-1 font-medium text-label-600 hover:bg-component-alternative rounded-lg transition-colors">
+            <button className="flex items-center gap-2 px-3 py-1.5 text-caption-1 font-medium text-label-600 hover:bg-component-alternative rounded-lg transition-colors cursor-pointer">
               <Download size={14} />
               다운로드
             </button>
@@ -160,14 +160,14 @@ const ResumeCard: React.FC<ResumeCardProps> = ({
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={onEdit}
-            className="p-1.5 text-label-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+            className="p-1.5 text-label-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors cursor-pointer"
             title="편집"
           >
             <Edit3 size={14} />
           </button>
           <button
             onClick={onDelete}
-            className="p-1.5 text-label-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            className="p-1.5 text-label-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
             title="삭제"
           >
             <Trash2 size={14} />

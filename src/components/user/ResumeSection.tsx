@@ -87,13 +87,13 @@ const ResumeSection: React.FC<ResumeSectionProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowUpload(!showUpload)}
-            className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors"
+            className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors cursor-pointer"
           >
             파일 업로드
           </button>
           <button
             onClick={handleCreateResume}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
           >
             <Plus size={16} />
             새 이력서 작성
@@ -104,7 +104,7 @@ const ResumeSection: React.FC<ResumeSectionProps> = ({
       {/* 업로드/생성 영역 */}
       {showUpload && (
         <motion.div
-          className="bg-white border border-line-300 rounded-lg p-6"
+          className="bg-white border border-line-400 rounded-lg p-6"
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
@@ -116,7 +116,7 @@ const ResumeSection: React.FC<ResumeSectionProps> = ({
             </h4>
             <button
               onClick={() => setShowUpload(false)}
-              className="text-label-400 hover:text-label-600 transition-colors"
+              className="text-label-400 hover:text-label-600 transition-colors cursor-pointer"
             >
               ✕
             </button>
@@ -155,7 +155,7 @@ const ResumeSection: React.FC<ResumeSectionProps> = ({
         </div>
       ) : (
         <motion.div
-          className="bg-component-alternative border border-line-300 rounded-lg p-12 text-center"
+          className="bg-component-alternative border border-line-400 rounded-lg p-12 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
@@ -177,13 +177,13 @@ const ResumeSection: React.FC<ResumeSectionProps> = ({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowUpload(true)}
-                  className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors"
+                  className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors cursor-pointer"
                 >
                   파일 업로드
                 </button>
                 <button
                   onClick={handleCreateResume}
-                  className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors"
+                  className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
                 >
                   첫 이력서 작성하기
                 </button>
@@ -209,7 +209,7 @@ const ResumeSection: React.FC<ResumeSectionProps> = ({
                     setSearchQuery('');
                     setFilterStatus('all');
                   }}
-                  className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors"
+                  className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors cursor-pointer"
                 >
                   필터 초기화
                 </button>
@@ -221,7 +221,7 @@ const ResumeSection: React.FC<ResumeSectionProps> = ({
 
       {/* 통계 요약 */}
       {resumes.length > 0 && (
-        <div className="bg-white border border-line-300 rounded-lg p-6">
+        <div className="bg-white border border-line-400 rounded-lg p-6">
           <h4 className="text-body-2 font-semibold text-label-900 mb-4">
             이력서 요약
           </h4>
@@ -234,13 +234,13 @@ const ResumeSection: React.FC<ResumeSectionProps> = ({
               <div className="text-caption-2 text-label-600">총 이력서</div>
             </div>
             <div className="text-center">
-              <div className="text-title-4 font-bold text-amber-600">
+              <div className="text-title-4 font-bold text-status-caution">
                 {statusCounts.draft}
               </div>
               <div className="text-caption-2 text-label-600">작성중</div>
             </div>
             <div className="text-center">
-              <div className="text-title-4 font-bold text-green-600">
+              <div className="text-title-4 font-bold text-status-correct">
                 {statusCounts.completed}
               </div>
               <div className="text-caption-2 text-label-600">완료</div>

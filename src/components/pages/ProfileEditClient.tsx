@@ -378,7 +378,7 @@ const ProfileEditClient: React.FC = () => {
             className={cn(
               "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
               "border-line-400 focus:ring-primary",
-              preferencesForm.formState.errors.availability && "border-red-500 focus:ring-red-500"
+              preferencesForm.formState.errors.availability && "border-status-error focus:ring-status-error"
             )}
           >
             <option value="">상태를 선택하세요</option>
@@ -420,7 +420,7 @@ const ProfileEditClient: React.FC = () => {
                 className={cn(
                   "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent resize-none",
                   "border-line-400 focus:ring-primary",
-                  basicForm.formState.errors.bio && "border-red-500 focus:ring-red-500"
+                  basicForm.formState.errors.bio && "border-status-error focus:ring-status-error"
                 )}
               />
               <div className="absolute bottom-2 right-2 text-caption-2 text-label-400">
@@ -598,6 +598,7 @@ const ProfileEditClient: React.FC = () => {
                   id={fieldId}
                   type="checkbox"
                   checked={field.value}
+                  value=""
                   className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
                 />
               </label>
@@ -619,6 +620,7 @@ const ProfileEditClient: React.FC = () => {
                   id={fieldId}
                   type="checkbox"
                   checked={field.value}
+                  value=""
                   className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
                 />
               </label>
@@ -638,7 +640,7 @@ const ProfileEditClient: React.FC = () => {
         </div>
 
         <div className="space-y-3">
-          <button className="w-full text-left p-3 border border-status-error rounded-lg text-body-3 text-status-error hover:bg-red-50 transition-colors">
+          <button className="w-full text-left p-3 border border-status-error rounded-lg text-body-3 text-status-error hover:bg-component-alternative transition-colors cursor-pointer">
             계정 삭제 요청
           </button>
         </div>
@@ -661,7 +663,7 @@ const ProfileEditClient: React.FC = () => {
             <div className="flex items-center gap-4">
               <button
                 onClick={handleBack}
-                className="flex items-center gap-2 text-label-600 hover:text-label-800 transition-colors"
+                className="flex items-center gap-2 text-label-600 hover:text-label-800 transition-colors cursor-pointer"
               >
                 <ArrowLeft size={20} />
                 <span>돌아가기</span>
@@ -679,11 +681,11 @@ const ProfileEditClient: React.FC = () => {
                   <span>저장되지 않은 변경사항</span>
                 </div>
               )}
-              
+
               <button
                 onClick={handleSave}
                 disabled={updateProfileMutation.isPending}
-                className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {updateProfileMutation.isPending ? (
                   <>
@@ -717,10 +719,10 @@ const ProfileEditClient: React.FC = () => {
                         key={section.key}
                         onClick={() => setActiveSection(section.key as SectionType)}
                         className={cn(
-                          'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors',
+                          'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer',
                           activeSection === section.key
                             ? 'bg-primary-50 text-primary-700 border border-primary-200'
-                            : 'text-label-600 hover:bg-component-alternative'
+                            : 'text-label-700 hover:bg-component-alternative'
                         )}
                       >
                         <Icon size={18} />

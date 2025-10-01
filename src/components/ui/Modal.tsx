@@ -163,7 +163,7 @@ const Modal: React.FC<ModalProps> = ({
                       {showCloseButton && (
                         <button
                           onClick={onClose}
-                          className="p-1 text-label-500 hover:text-label-700 hover:bg-component-alternative rounded-lg transition-colors"
+                          className="p-1 text-label-500 hover:text-label-700 hover:bg-component-alternative rounded-lg transition-colors cursor-pointer"
                           aria-label="모달 닫기"
                         >
                           <X size={20} />

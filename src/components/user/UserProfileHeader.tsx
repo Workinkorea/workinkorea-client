@@ -175,18 +175,18 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
               {isOwnProfile && onEditClick && (
                 <button
                   onClick={onEditClick}
-                  className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors"
+                  className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
                 >
                   프로필 편집
                 </button>
               )}
-              
+
               {!isOwnProfile && (
                 <>
-                  <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors">
+                  <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer">
                     연락하기
                   </button>
-                  <button className="px-4 py-2 border border-primary-500 text-primary-500 rounded-lg text-body-3 font-medium hover:bg-primary-50 transition-colors">
+                  <button className="px-4 py-2 border border-primary-500 text-primary-500 rounded-lg text-body-3 font-medium hover:bg-primary-50 transition-colors cursor-pointer">
                     즐겨찾기
                   </button>
                 </>

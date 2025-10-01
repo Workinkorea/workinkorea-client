@@ -136,7 +136,7 @@ export default function PopularJobsSection() {
 
         {/* 더 보기 버튼 */}
         <div className="text-center">
-          <button className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors text-body-1">
+          <button className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors text-body-1 cursor-pointer">
             더 많은 공고 보기
             <ChevronRight className="w-4 h-4" />
           </button>

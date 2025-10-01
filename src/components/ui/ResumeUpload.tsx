@@ -115,7 +115,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors"
+              className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
             >
               파일 선택
             </button>

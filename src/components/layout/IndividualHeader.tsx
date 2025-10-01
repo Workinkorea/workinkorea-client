@@ -49,17 +49,17 @@ const IndividualHeader = () => {
 
           <div className="flex items-center space-x-4">
             <button
-              className="p-2 text-gray-400 hover:text-gray-600"
+              className="p-2 text-gray-400 hover:text-gray-600 cursor-pointer"
               aria-label="검색"
             >
               <SearchIcon />
             </button>
 
-            <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-50">
+            <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-50 cursor-pointer">
               개인회원
             </button>
 
-            <button className="bg-primary-300 text-white px-4 py-2 rounded text-sm hover:bg-primary-400">
+            <button className="bg-primary-300 text-white px-4 py-2 rounded text-sm hover:bg-primary-400 cursor-pointer">
               사업소개
             </button>
           </div>

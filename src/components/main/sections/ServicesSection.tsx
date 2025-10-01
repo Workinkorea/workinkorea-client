@@ -79,7 +79,7 @@ export default function ServicesSection() {
 
                 {/* 더 알아보기 버튼 */}
                 <div className="mt-6">
-                  <button className="text-green-600 hover:text-green-700 font-medium transition-colors text-body-3">
+                  <button className="text-green-600 hover:text-green-700 font-medium transition-colors text-body-3 cursor-pointer">
                     더 알아보기 →
                   </button>
                 </div>

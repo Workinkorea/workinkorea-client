@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { Edit3 } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
@@ -196,9 +197,11 @@ const MyProfileClient: React.FC = () => {
     }
   });
 
+  const router = useRouter();
+
   const handleEditClick = () => {
     // 편집 페이지로 이동
-    window.location.href = '/user/profile/edit';
+    router.push('/user/profile/edit');
   };
 
 
@@ -330,10 +333,10 @@ const MyProfileClient: React.FC = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all ${
+                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${
                     activeTab === tab.key
                       ? 'bg-primary-500 text-white shadow-sm'
-                      : 'text-label-600 hover:bg-component-alternative'
+                      : 'text-label-700 hover:bg-component-alternative'
                   }`}
                 >
                   {tab.label}
@@ -385,9 +388,9 @@ const MyProfileClient: React.FC = () => {
                       <h3 className="text-title-4 font-semibold text-label-900">
                         종합 역량 분석
                       </h3>
-                      <button 
+                      <button
                         onClick={handleEditClick}
-                        className="text-primary-500 hover:text-primary-600 transition-colors"
+                        className="text-primary-500 hover:text-primary-600 transition-colors cursor-pointer"
                       >
                         <Edit3 size={16} />
                       </button>
@@ -417,7 +420,7 @@ const MyProfileClient: React.FC = () => {
                   <h3 className="text-title-4 font-semibold text-label-900">
                     스킬 관리
                   </h3>
-                  <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors">
+                  <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer">
                     스킬 추가
                   </button>
                 </div>
@@ -443,10 +446,10 @@ const MyProfileClient: React.FC = () => {
                     경력 및 교육 관리
                   </h3>
                   <div className="flex gap-2">
-                    <button className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors">
+                    <button className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors cursor-pointer">
                       교육 추가
                     </button>
-                    <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors">
+                    <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer">
                       경력 추가
                     </button>
                   </div>
@@ -465,7 +468,7 @@ const MyProfileClient: React.FC = () => {
                             {edu.startDate} ~ {edu.endDate || '현재'}
                           </p>
                         </div>
-                        <button className="text-label-400 hover:text-label-600 transition-colors">
+                        <button className="text-label-400 hover:text-label-600 transition-colors cursor-pointer">
                           <Edit3 size={16} />
                         </button>
                       </div>
@@ -477,7 +480,7 @@ const MyProfileClient: React.FC = () => {
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <h4 className="text-body-2 font-semibold text-label-700">자격증</h4>
-                        <button className="text-primary-500 hover:text-primary-600 text-caption-2 font-medium transition-colors">
+                        <button className="text-primary-500 hover:text-primary-600 text-caption-2 font-medium transition-colors cursor-pointer">
                           관리
                         </button>
                       </div>

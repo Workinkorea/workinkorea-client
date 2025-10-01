@@ -411,7 +411,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key as TabType)}
                 className={cn(
-                  'flex items-center gap-2 px-4 py-3 text-body-3 font-medium border-b-2 transition-colors',
+                  'flex items-center gap-2 px-4 py-3 text-body-3 font-medium border-b-2 transition-colors cursor-pointer',
                   activeTab === tab.key
                     ? 'border-primary-500 text-primary-600'
                     : 'border-transparent text-label-600 hover:text-label-800'
@@ -443,14 +443,14 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           <button
             onClick={onClose}
             disabled={isSaving}
-            className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors disabled:opacity-50"
+            className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors disabled:opacity-50 cursor-pointer"
           >
             취소
           </button>
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 cursor-pointer"
           >
             <Save size={16} />
             {isSaving ? '저장 중...' : '저장'}
