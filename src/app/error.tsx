@@ -20,7 +20,7 @@ export default function Error({
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <motion.div
-        className="text-center max-w-md mx-auto"
+        className="text-center mx-auto"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
