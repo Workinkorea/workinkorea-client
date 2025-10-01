@@ -155,7 +155,7 @@ export default function SignupStep2() {
                         }));
                         clearErrors('email');
                       }}
-                      className="flex-1 border border-line-400 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                     <motion.button
                       type="button"
@@ -204,7 +204,7 @@ export default function SignupStep2() {
                           }));
                           clearErrors('verificationCode');
                         }}
-                        className="flex-1 border border-line-400 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                        className="flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
                       />
                       <motion.button
                         type="button"

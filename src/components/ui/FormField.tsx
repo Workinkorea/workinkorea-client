@@ -4,7 +4,8 @@ import {
   Controller,
   type ControllerRenderProps,
   type FieldValues,
-  type Path
+  type Path,
+  type RegisterOptions
 } from 'react-hook-form';
 import { ErrorMessage } from './ErrorMessage';
 
@@ -14,6 +15,7 @@ interface FormFieldProps<T extends FieldValues, N extends Path<T>> {
   label?: string;
   render: (field: ControllerRenderProps<T, N>, fieldId: string) => ReactElement;
   error?: string;
+  rules?: RegisterOptions<T, N>;
 }
 
 export const FormField = <T extends FieldValues, N extends Path<T>>({
@@ -21,7 +23,8 @@ export const FormField = <T extends FieldValues, N extends Path<T>>({
   control,
   label,
   render,
-  error
+  error,
+  rules
 }: FormFieldProps<T, N>) => {
   const fieldId = `field-${name}`;
 
@@ -36,7 +39,13 @@ export const FormField = <T extends FieldValues, N extends Path<T>>({
       <Controller
         name={name}
         control={control}
-        render={({ field }) => render(field as ControllerRenderProps<T, N>, fieldId)}
+        rules={rules}
+        render={({ field, fieldState }) => (
+          <>
+            {render(field as ControllerRenderProps<T, N>, fieldId)}
+            {fieldState.error && <ErrorMessage message={fieldState.error.message || ''} />}
+          </>
+        )}
       />
       {error && <ErrorMessage message={error} />}
     </div>

@@ -94,7 +94,7 @@ export default function Footer() {
         </div>
 
         {/* 구분선 */}
-        <div className="border-t border-gray-800 mt-12 pt-8">
+        <div className="border-t border-line-200 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-caption-1">
               © 2024 Work In Korea. All rights reserved.

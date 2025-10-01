@@ -31,7 +31,7 @@ export default function SignupStep1() {
           <motion.button
               type="button"
               onClick={onClickSignup}
-              className="w-full py-2 border border-gray-300 rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-center"
+              className="w-full py-2 border border-line-200 rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-center"
               whileTap={{ scale: 0.98 }}
             >
               <svg 

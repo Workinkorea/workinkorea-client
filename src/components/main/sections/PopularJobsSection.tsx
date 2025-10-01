@@ -82,7 +82,7 @@ export default function PopularJobsSection() {
           {popularJobs.map((job) => (
             <div
               key={job.id}
-              className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow cursor-pointer group"
+              className="bg-white border border-line-200 rounded-xl p-6 hover:shadow-lg transition-shadow cursor-pointer group"
             >
               {/* 회사명과 시간 */}
               <div className="flex items-start justify-between mb-4">

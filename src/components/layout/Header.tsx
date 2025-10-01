@@ -26,7 +26,7 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
 
   return (
     <header className="w-full bg-color-background-default border-b border-line-200 shadow-normal">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-6 lg:px-8">
 
         <div className="w-full flex items-center h-16">
           <div className="flex-shrink-0">

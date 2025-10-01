@@ -260,7 +260,7 @@ export default function BusinessLoginForm() {
                   <input
                     id={fieldId}
                     type="checkbox"
-                    className="h-4 w-4 text-primary-500 focus:ring-primary border-gray-300 rounded cursor-pointer"
+                    className="h-4 w-4 text-primary-500 focus:ring-primary border-line-200 rounded cursor-pointer"
                     name={field.name}
                     ref={field.ref}
                     checked={!!field.value}
@@ -292,7 +292,7 @@ export default function BusinessLoginForm() {
             <motion.button
               type="button"
               onClick={() => router.push('/company-signup/step1')}
-              className="w-full py-3 px-4 border border-primary-300 text-primary-300 rounded-lg font-medium text-sm hover:bg-primary-300 hover:text-white transition-colors cursor-pointer"
+              className="w-full py-3 px-4 border border-line-200 text-primary-300 rounded-lg font-medium text-sm hover:bg-primary-300 hover:text-white transition-colors cursor-pointer"
               whileTap={{ scale: 0.98 }}
             >
               회원가입

@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Search, MessageCircle } from 'lucide-react';
 
 export default function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,12 +58,15 @@ export default function HeroSection() {
 
             {/* 버튼들 */}
             <div className='flex justify-center gap-4 mt-6'>
-              <button className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-lg font-medium transition-colors shadow-sm cursor-pointer">
+              <button
+                onClick={() => router.push('/self-diagnosis')}
+                className="bg-white border border-line-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-lg font-medium transition-colors shadow-sm cursor-pointer"
+              >
                 자가진단
               </button>
               <button
                 onClick={scrollToJobCategories}
-                className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-lg font-medium transition-colors shadow-sm cursor-pointer"
+                className="bg-white border border-line-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-lg font-medium transition-colors shadow-sm cursor-pointer"
               >
                 직종별 정보 보러가기
               </button>
