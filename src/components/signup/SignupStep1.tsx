@@ -36,18 +36,28 @@ export default function SignupStep1() {
         `width=${width},height=${height},left=${left},top=${top}`
       );
 
+      const checkPopupClosed = setInterval(() => {
+        if (popup?.closed) {
+          clearInterval(checkPopupClosed);
+          window.removeEventListener('message', handleMessage);
+          setIsGoogleLoading(false);
+        }
+      }, 500);
+
       const handleMessage = (event: MessageEvent) => {
         if (event.origin !== window.location.origin) return;
 
         if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
           const { accessToken } = event.data;
           login(accessToken);
+          clearInterval(checkPopupClosed);
           popup?.close();
           window.removeEventListener('message', handleMessage);
           setIsGoogleLoading(false);
           router.push('/');
         } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
           console.error('Google signup failed:', event.data.error);
+          clearInterval(checkPopupClosed);
           popup?.close();
           window.removeEventListener('message', handleMessage);
           setIsGoogleLoading(false);
