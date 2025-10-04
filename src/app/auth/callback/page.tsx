@@ -7,74 +7,65 @@ function CallbackContent() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const handleCallback = async () => {
-      const code = searchParams.get('code');
-      const error = searchParams.get('error');
+    const handleCallback = () => {
+      const status = searchParams.get('status');
+      const token = searchParams.get('token');
+      const name = searchParams.get('name');
+      const message = searchParams.get('message');
 
-      if (error) {
-        if (window.opener) {
-          window.opener.postMessage(
-            {
-              type: 'GOOGLE_AUTH_ERROR',
-              error: error,
-            },
-            window.location.origin
-          );
-        }
+      if (!window.opener) {
+        console.error('No opener window found');
         return;
       }
 
-      if (!code) {
-        if (window.opener) {
-          window.opener.postMessage(
-            {
-              type: 'GOOGLE_AUTH_ERROR',
-              error: 'No authorization code received',
-            },
-            window.location.origin
-          );
-        }
+      // 회원가입 필요
+      if (status === 'signup') {
+        window.opener.postMessage(
+          {
+            type: 'GOOGLE_AUTH_SIGNUP_REQUIRED',
+            name: name,
+          },
+          window.location.origin
+        );
+        window.close();
         return;
       }
 
-      try {
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-        const response = await fetch(`${API_BASE_URL}/api/auth/login/google/callback?code=${code}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to authenticate');
-        }
-
-        const data = await response.json();
-        const accessToken = data.accessToken || data.access_token || data.token;
-        const user = data.user;
-
-        if (window.opener) {
-          window.opener.postMessage(
-            {
-              type: 'GOOGLE_AUTH_SUCCESS',
-              accessToken,
-              user,
-            },
-            window.location.origin
-          );
-        }
-      } catch (error) {
-        console.error('Authentication error:', error);
-        if (window.opener) {
-          window.opener.postMessage(
-            {
-              type: 'GOOGLE_AUTH_ERROR',
-              error: error instanceof Error ? error.message : 'Unknown error',
-            },
-            window.location.origin
-          );
-        }
+      // 로그인 성공
+      if (status === 'success' && token) {
+        window.opener.postMessage(
+          {
+            type: 'GOOGLE_AUTH_SUCCESS',
+            accessToken: token,
+          },
+          window.location.origin
+        );
+        window.close();
+        return;
       }
+
+      // 에러
+      if (status === 'error') {
+        window.opener.postMessage(
+          {
+            type: 'GOOGLE_AUTH_ERROR',
+            error: message || 'Authentication failed',
+          },
+          window.location.origin
+        );
+        window.close();
+        return;
+      }
+
+      // 예상치 못한 상태
+      window.opener.postMessage(
+        {
+          type: 'GOOGLE_AUTH_ERROR',
+          error: 'Invalid callback parameters',
+        },
+        window.location.origin
+      );
+      window.close();
     };
 
     handleCallback();

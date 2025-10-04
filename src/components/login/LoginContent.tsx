@@ -80,13 +80,9 @@ export default function LoginContent() {
         `width=${width},height=${height},left=${left},top=${top}`
       );
 
-      const checkPopupClosed = setInterval(() => {
-        if (popup?.closed) {
-          clearInterval(checkPopupClosed);
-          window.removeEventListener('message', handleMessage);
-          setFormState(prev => ({ ...prev, isGoogleLoading: false }));
-        }
-      }, 500);
+      if (!popup) {
+        throw new Error('Failed to open popup window');
+      }
 
       const handleMessage = (event: MessageEvent) => {
         if (event.origin !== window.location.origin) return;
@@ -94,15 +90,30 @@ export default function LoginContent() {
         if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
           const { accessToken } = event.data;
           login(accessToken);
-          clearInterval(checkPopupClosed);
-          popup?.close();
+          try {
+            popup.close();
+          } catch (e) {
+          }
           window.removeEventListener('message', handleMessage);
           setFormState(prev => ({ ...prev, isGoogleLoading: false }));
           router.push('/');
+        } else if (event.data.type === 'GOOGLE_AUTH_SIGNUP_REQUIRED') {
+          try {
+            popup.close();
+          } catch (e) {
+          }
+          window.removeEventListener('message', handleMessage);
+          setFormState(prev => ({ ...prev, isGoogleLoading: false }));
+          router.push('/signup/step1');
         } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
           console.error('Google login failed:', event.data.error);
-          clearInterval(checkPopupClosed);
-          popup?.close();
+          try {
+            popup.close();
+          } catch (e) {
+          }
+          window.removeEventListener('message', handleMessage);
+          setFormState(prev => ({ ...prev, isGoogleLoading: false }));
+        } else if (event.data.type === 'GOOGLE_AUTH_CLOSED') {
           window.removeEventListener('message', handleMessage);
           setFormState(prev => ({ ...prev, isGoogleLoading: false }));
         }
