@@ -272,7 +272,7 @@ export default function BusinessSignupStep2({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="flex-1 border border-line-400 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
                       placeholder="-제외 10자리 입력"
                       maxLength={12}
                       onChange={(e) => {

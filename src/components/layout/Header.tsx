@@ -11,21 +11,13 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
   const getNavigationItems = () => {
     if (type === 'homepage') {
       return [
-        { name: '채용·모집', href: '/jobs' },
-        { name: '해외취업 상담', href: '/consulting' }, 
-        { name: '해외취업 교육', href: '/education' },
-        { name: '설명회·박람회', href: '/events' },
-        { name: '자료실', href: '/resources' },
-        { name: '공지·문의', href: '/support' }
+        { name: '공고', href: '/jobs' },
+        { name: '기업 정보', href: '/company-info' }, 
       ];
     } else {
       return [
         { name: '인재채용', href: '/company/recruitment' },
         { name: '채용공고 관리', href: '/company/jobs' },
-        { name: '지원자 관리', href: '/company/applicants' }, 
-        { name: '기업정보 관리', href: '/company/profile' },
-        { name: '고객지원', href: '/company/support' },
-        { name: '공지사항', href: '/company/notices' }
       ];
     }
   };
@@ -34,23 +26,22 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
 
   return (
     <header className="w-full bg-color-background-default border-b border-line-200 shadow-normal">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <Link href="/" className="flex items-center">
-                <span className="text-title-3 font-bold text-primary-500">
-                  WorkInKorea
-                </span>
-                <span className="ml-2 text-caption-2 text-label-500 bg-component-alternative px-2 py-1 rounded">
-                  {type === 'homepage' ? '개인' : '기업'}
-                </span>
-              </Link>
-            </div>
+      <div className="px-4 sm:px-6 lg:px-8">
+
+        <div className="w-full flex items-center h-16">
+          <div className="flex-shrink-0">
+            <Link href="/" className="flex items-center">
+              <span className="text-title-3 font-bold text-primary-500">
+                WorkInKorea
+              </span>
+              <span className="ml-2 text-caption-2 text-label-500 bg-component-alternative px-2 py-1 rounded">
+                {type === 'homepage' ? '개인' : '기업'}
+              </span>
+            </Link>
           </div>
 
           <nav className="hidden md:block">
-            <div className="ml-10 flex items-center gap-8">
+            <div className="ml-10 flex gap-8">
               {navigationItems.map((item) => (
                 <Link
                   key={item.name}
@@ -63,7 +54,7 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
             </div>
           </nav>
 
-          <div className="flex items-center space-x-3">
+          <div className="w-full flex justify-end items-center space-x-3">
             <button
               className="p-2 text-label-500 hover:text-label-700 transition-colors"
               aria-label="검색"
