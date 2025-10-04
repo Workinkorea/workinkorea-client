@@ -2,21 +2,12 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import TemplateSelector from '@/components/resume/TemplateSelector';
 import ResumeEditor from '@/components/resume/ResumeEditor';
 import { ResumeTemplate } from '@/types/user';
 
 const CreateResumePage: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState<'template' | 'editor'>('editor');
-  const [selectedTemplate, setSelectedTemplate] = useState<ResumeTemplate>('modern');
-
-  const handleTemplateSelect = (template: ResumeTemplate) => {
-    setSelectedTemplate(template);
-  };
-
-  const handleNext = () => {
-    setCurrentStep('editor');
-  };
+  const [currentStep] = useState<'template' | 'editor'>('editor');
+  const [selectedTemplate] = useState<ResumeTemplate>('modern');
 
   return (
     <div className="space-y-6">

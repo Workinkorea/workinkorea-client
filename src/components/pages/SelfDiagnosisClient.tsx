@@ -16,12 +16,10 @@ interface SelfDiagnosisFormData {
 }
 
 const SelfDiagnosisClient: React.FC = () => {
-  const router = useRouter();
-
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm<SelfDiagnosisFormData>({
     mode: 'onChange',
     defaultValues: {

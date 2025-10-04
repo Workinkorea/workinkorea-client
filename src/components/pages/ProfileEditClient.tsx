@@ -194,7 +194,7 @@ const ProfileEditClient: React.FC = () => {
         },
       });
     }
-  }, [profile, basicForm, contactForm]);
+  }, [profile, basicForm, contactForm, preferencesForm]);
 
   // 변경사항 감지
   useEffect(() => {

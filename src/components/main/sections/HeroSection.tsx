@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, MessageCircle } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 export default function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');
