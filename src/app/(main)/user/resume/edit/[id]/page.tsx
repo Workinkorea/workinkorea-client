@@ -40,9 +40,6 @@ const EditResumePage: React.FC = () => {
   const params = useParams();
   const resumeId = params.id as string;
 
-  // TODO: resumeId를 사용해서 실제 이력서 데이터를 가져오기
-  console.log('편집할 이력서 ID:', resumeId);
-
   return (
     <div>
       <ResumeEditor

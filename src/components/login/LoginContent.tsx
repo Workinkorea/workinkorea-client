@@ -57,7 +57,7 @@ export default function LoginContent() {
     !errors.password;
 
   const handleGoogleLogin = () => {
-    window.location.href = '/api/auth/login/google/test';
+    window.location.href = '/api/auth/login/google';
   };
 
   return (

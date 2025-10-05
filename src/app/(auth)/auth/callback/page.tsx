@@ -10,7 +10,7 @@ function CallbackContent() {
   const { login } = useAuth();
 
   useEffect(() => {
-    const handleCallback = () => {
+    const handleCallback = async () => {
       const status = searchParams.get('status');
       const token = searchParams.get('token');
       const name = searchParams.get('name');

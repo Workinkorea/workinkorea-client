@@ -1,6 +1,6 @@
 import { tokenManager } from '../utils/tokenManager';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = '/api';
 
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
@@ -15,9 +15,9 @@ const onTokenRefreshed = (token: string) => {
 };
 
 const refreshAccessToken = async (): Promise<string> => {
-  const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
+  const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
     method: 'POST',
-    credentials: 'include',
+    credentials: 'include', // refreshToken 쿠키 자동 전송
     headers: {
       'Content-Type': 'application/json',
     },
@@ -29,7 +29,6 @@ const refreshAccessToken = async (): Promise<string> => {
 
   const data = await response.json();
 
-  // 서버 응답 형식에 맞게 accessToken 추출
   const accessToken = data.accessToken || data.access_token || data.token;
 
   if (!accessToken) {

@@ -37,13 +37,10 @@ export const useAuth = () => {
     tokenManager.removeAccessToken();
     setIsAuthenticated(false);
 
-    // 외부 서버에 로그아웃 요청 (refreshToken 쿠키 삭제를 위해)
     if (typeof window !== 'undefined') {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
       try {
-        await fetch(`${API_BASE_URL}/api/auth/logout`, {
-          method: 'POST',
+        await fetch(`/api/auth/logout`, {
+          method: 'DELETE',
           credentials: 'include',
         });
       } catch (err) {
