@@ -56,24 +56,8 @@ export default function LoginContent() {
     !errors.businessNumber &&
     !errors.password;
 
-  const handleGoogleLogin = async () => {
-    try {
-      setFormState(prev => ({ ...prev, isGoogleLoading: true }));
-
-      const response = await fetch(`${API_BASE_URL}/api/auth/login/google`);
-
-      if (!response.ok) {
-        throw new Error('Failed to get Google login URL');
-      }
-
-      const data = await response.json();
-      const googleAuthUrl = data.url || data.authUrl || data;
-
-      window.location.href = googleAuthUrl;
-    } catch (error) {
-      console.error('Google login error:', error);
-      setFormState(prev => ({ ...prev, isGoogleLoading: false }));
-    }
+  const handleGoogleLogin = () => {
+    window.location.href = '/api/auth/login/google/test';
   };
 
   return (
