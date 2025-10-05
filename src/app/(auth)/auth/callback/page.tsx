@@ -1,10 +1,13 @@
 'use client';
 
 import { useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 
 function CallbackContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { login } = useAuth();
 
   useEffect(() => {
     const handleCallback = () => {
@@ -13,63 +16,33 @@ function CallbackContent() {
       const name = searchParams.get('name');
       const message = searchParams.get('message');
 
-      if (!window.opener) {
-        console.error('No opener window found');
-        return;
-      }
-
       // 회원가입 필요
       if (status === 'signup') {
-        window.opener.postMessage(
-          {
-            type: 'GOOGLE_AUTH_SIGNUP_REQUIRED',
-            name: name,
-          },
-          window.location.origin
-        );
-        window.close();
+        router.push('/signup/step1');
         return;
       }
 
       // 로그인 성공
       if (status === 'success' && token) {
-        window.opener.postMessage(
-          {
-            type: 'GOOGLE_AUTH_SUCCESS',
-            accessToken: token,
-          },
-          window.location.origin
-        );
-        window.close();
+        login(token);
+        router.push('/');
         return;
       }
 
       // 에러
       if (status === 'error') {
-        window.opener.postMessage(
-          {
-            type: 'GOOGLE_AUTH_ERROR',
-            error: message || 'Authentication failed',
-          },
-          window.location.origin
-        );
-        window.close();
+        console.error('Google login failed:', message || 'Authentication failed');
+        router.push('/login');
         return;
       }
 
       // 예상치 못한 상태
-      window.opener.postMessage(
-        {
-          type: 'GOOGLE_AUTH_ERROR',
-          error: 'Invalid callback parameters',
-        },
-        window.location.origin
-      );
-      window.close();
+      console.error('Invalid callback parameters');
+      router.push('/login');
     };
 
     handleCallback();
-  }, [searchParams]);
+  }, [searchParams, router, login]);
 
   return (
     <div className="flex min-h-screen items-center justify-center">

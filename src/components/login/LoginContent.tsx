@@ -69,57 +69,7 @@ export default function LoginContent() {
       const data = await response.json();
       const googleAuthUrl = data.url || data.authUrl || data;
 
-      const width = 500;
-      const height = 600;
-      const left = window.screen.width / 2 - width / 2;
-      const top = window.screen.height / 2 - height / 2;
-
-      const popup = window.open(
-        googleAuthUrl,
-        'Google Login',
-        `width=${width},height=${height},left=${left},top=${top}`
-      );
-
-      if (!popup) {
-        throw new Error('Failed to open popup window');
-      }
-
-      const handleMessage = (event: MessageEvent) => {
-        if (event.origin !== window.location.origin) return;
-
-        if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-          const { accessToken } = event.data;
-          login(accessToken);
-          try {
-            popup.close();
-          } catch (e) {
-          }
-          window.removeEventListener('message', handleMessage);
-          setFormState(prev => ({ ...prev, isGoogleLoading: false }));
-          router.push('/');
-        } else if (event.data.type === 'GOOGLE_AUTH_SIGNUP_REQUIRED') {
-          try {
-            popup.close();
-          } catch (e) {
-          }
-          window.removeEventListener('message', handleMessage);
-          setFormState(prev => ({ ...prev, isGoogleLoading: false }));
-          router.push('/signup/step1');
-        } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
-          console.error('Google login failed:', event.data.error);
-          try {
-            popup.close();
-          } catch (e) {
-          }
-          window.removeEventListener('message', handleMessage);
-          setFormState(prev => ({ ...prev, isGoogleLoading: false }));
-        } else if (event.data.type === 'GOOGLE_AUTH_CLOSED') {
-          window.removeEventListener('message', handleMessage);
-          setFormState(prev => ({ ...prev, isGoogleLoading: false }));
-        }
-      };
-
-      window.addEventListener('message', handleMessage);
+      window.location.href = googleAuthUrl;
     } catch (error) {
       console.error('Google login error:', error);
       setFormState(prev => ({ ...prev, isGoogleLoading: false }));
