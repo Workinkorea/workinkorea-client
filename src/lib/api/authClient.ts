@@ -17,7 +17,7 @@ const onTokenRefreshed = (token: string) => {
 const refreshAccessToken = async (): Promise<string> => {
   const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
     method: 'POST',
-    credentials: 'include', // refreshToken 쿠키 자동 전송
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },

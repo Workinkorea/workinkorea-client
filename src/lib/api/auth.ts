@@ -1,9 +1,12 @@
 import { apiClient } from './client';
+import { authClient } from './authClient';
 import type {
   EmailVerificationResponse,
   LoginRequest,
   LoginResponse,
-  LogoutResponse
+  LogoutResponse,
+  RefreshTokenResponse,
+  GetUserInfoResponse
 } from './types';
 
 export const authApi = {
@@ -21,5 +24,25 @@ export const authApi = {
 
   async logout(): Promise<LogoutResponse> {
     return apiClient.post<LogoutResponse>('/api/auth/logout');
+  },
+
+  async refreshToken(): Promise<RefreshTokenResponse> {
+    const response = await fetch('/api/auth/refresh', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to refresh token');
+    }
+
+    return response.json();
+  },
+
+  async getUserInfo(): Promise<GetUserInfoResponse> {
+    return authClient.get<GetUserInfoResponse>('/auth/user');
   },
 };

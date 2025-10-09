@@ -5,9 +5,11 @@ import { SearchIcon } from '@/components/ui/AccessibleIcon';
 interface HeaderProps {
   type: 'homepage' | 'business';
   onToggleType?: () => void;
+  isAuthenticated?: boolean;
+  onLogout?: () => void;
 }
 
-const Header = ({ type, onToggleType }: HeaderProps) => {
+const Header = ({ type, onToggleType, isAuthenticated, onLogout }: HeaderProps) => {
   const getNavigationItems = () => {
     if (type === 'homepage') {
       return [
@@ -79,24 +81,35 @@ const Header = ({ type, onToggleType }: HeaderProps) => {
               </button>
             </div>
 
-            {type === 'homepage' ? (
+            {isAuthenticated ? (
               <div className="flex items-center gap-3">
-                <Link 
-                  href="/login"
+                <button
+                  onClick={onLogout}
                   className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
                 >
-                  개인 로그인
-                </Link>
+                  로그아웃
+                </button>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
-                <Link 
-                  href="/company-login"
-                  className="text-label-700 hover:text-secondary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
-                >
-                  기업 로그인
-                </Link>
-              </div>
+              type === 'homepage' ? (
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="/login"
+                    className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
+                  >
+                    개인 로그인
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="/company-login"
+                    className="text-label-700 hover:text-secondary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
+                  >
+                    기업 로그인
+                  </Link>
+                </div>
+              )
             )}
           </div>
         </div>
