@@ -6,8 +6,7 @@ import { useRouter } from 'next/navigation';
 import {
   Save,
   Eye,
-  ArrowLeft,
-  Edit3
+  ArrowLeft
 } from 'lucide-react';
 import { Resume, ResumeTemplate } from '@/types/user';
 

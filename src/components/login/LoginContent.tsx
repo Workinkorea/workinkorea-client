@@ -8,9 +8,13 @@ import { useRouter } from 'next/navigation';
 import { validatePassword } from '@/lib/utils/authNumber';
 import { useState } from 'react';
 import { GoogleIcon } from '@/components/ui/AccessibleIcon';
+import { useAuth } from '@/hooks/useAuth';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function LoginContent() {
   const router = useRouter();
+  const { login } = useAuth();
 
   const {
     control,
@@ -25,6 +29,7 @@ export default function LoginContent() {
   const [formState, setFormState] = useState({
     showPassword: false,
     isLoading: false,
+    isGoogleLoading: false,
   });
 
   const password = watch('password');
@@ -45,11 +50,15 @@ export default function LoginContent() {
     }
   };
 
-  const isFormValid = 
+  const isFormValid =
     password &&
     password.length >= 8 &&
     !errors.businessNumber &&
     !errors.password;
+
+  const handleGoogleLogin = () => {
+    window.location.href = '/api/auth/login/google';
+  };
 
   return (
     <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -141,15 +150,16 @@ export default function LoginContent() {
           <motion.div className="space-y-3">
             <motion.button
               type="button"
-              onClick={() => router.push('/')}
-              className="w-full py-2 border border-line-200 rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-center"
+              onClick={handleGoogleLogin}
+              disabled={formState.isGoogleLoading}
+              className="w-full py-2 border border-line-200 rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               whileTap={{ scale: 0.98 }}
               aria-label="Google 계정으로 로그인"
             >
               <GoogleIcon label="Google 로고" size="md" />
 
               <span className="text-gray-600 font-medium ml-2">
-                Google로 로그인
+                {formState.isGoogleLoading ? '로그인 중...' : 'Google로 로그인'}
               </span>
             </motion.button>
 
