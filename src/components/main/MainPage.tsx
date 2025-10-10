@@ -13,7 +13,7 @@ import { useAuth } from '@/hooks/useAuth';
 
 export default function MainPage() {
   const router = useRouter();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, isLoading, logout } = useAuth();
   const [headerType, setHeaderType] = useState<'homepage' | 'business'>('homepage');
 
   const toggleHeaderType = () => {
@@ -31,6 +31,7 @@ export default function MainPage() {
         type={headerType}
         onToggleType={toggleHeaderType}
         isAuthenticated={isAuthenticated}
+        isLoading={isLoading}
         onLogout={handleLogout}
       />
 

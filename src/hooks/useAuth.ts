@@ -1,20 +1,40 @@
 import { useState, useEffect } from 'react';
 import { tokenManager } from '@/lib/utils/tokenManager';
+import { authApi } from '@/lib/api/auth';
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const checkAuth = () => {
+    const checkAuth = async () => {
       const hasToken = tokenManager.hasAccessToken();
-      setIsAuthenticated(hasToken);
-      setIsLoading(false);
+
+      if (hasToken) {
+        setIsAuthenticated(true);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await authApi.refreshToken();
+        const accessToken = response.accessToken;
+
+        if (accessToken) {
+          tokenManager.setAccessToken(accessToken);
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     checkAuth();
 
-    // 스토리지 변경 감지 (다른 탭에서 로그인/로그아웃 시)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'accessToken') {
         checkAuth();
