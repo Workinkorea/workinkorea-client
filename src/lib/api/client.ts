@@ -46,13 +46,11 @@ export const apiClient = {
 
     // 요청 전에 토큰이 곧 만료될지 확인하고 사전에 갱신
     if (tokenManager.isTokenExpiringSoon()) {
-      console.log('Token expiring soon, refreshing proactively...');
       try {
         const newAccessToken = await refreshAccessToken();
         tokenManager.setAccessToken(newAccessToken);
-      } catch {
-        console.log('Proactive refresh failed, will retry on 401');
-        // 사전 갱신 실패해도 요청은 계속 진행 (401 백업 로직이 있음)
+      } catch (error) {
+        tokenManager.removeAccessToken();
       }
     }
 
@@ -76,9 +74,7 @@ export const apiClient = {
       const response = await fetch(url, config);
       clearTimeout(timeoutId);
 
-      // 401 에러 처리 - 토큰 만료
       if (response.status === 401) {
-        // 이미 토큰 갱신 중이면 대기
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             subscribeTokenRefresh(async (newToken: string) => {
@@ -111,7 +107,6 @@ export const apiClient = {
           });
         }
 
-        // 토큰 갱신 시작
         isRefreshing = true;
 
         try {
@@ -120,7 +115,6 @@ export const apiClient = {
           isRefreshing = false;
           onTokenRefreshed(newAccessToken);
 
-          // 원래 요청 재시도
           const retryController = new AbortController();
           const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
 
@@ -146,7 +140,6 @@ export const apiClient = {
           refreshSubscribers = [];
           tokenManager.removeAccessToken();
 
-          // 로그인 페이지로 리다이렉트
           if (typeof window !== 'undefined') {
             window.location.href = '/login';
           }

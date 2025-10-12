@@ -24,6 +24,8 @@ export const useAuth = () => {
       }
       return false;
     } catch {
+      // refresh 실패 시 만료된 accessToken 제거
+      tokenManager.removeAccessToken();
       setIsAuthenticated(false);
       return false;
     }
@@ -83,9 +85,11 @@ export const useAuth = () => {
       try {
         const success = await refreshAccessToken();
         if (!success) {
+          tokenManager.removeAccessToken();
           setIsAuthenticated(false);
         }
       } catch {
+        tokenManager.removeAccessToken();
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
