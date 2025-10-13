@@ -24,10 +24,11 @@ pipeline {
                     docker rmi ${env.DOCKER_IMAGE_NAME} || true
                     """
 
-                    sh "docker build \
-                    -e NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} \
-                    -t ${env.DOCKER_IMAGE_NAME} .
-                    "
+                    sh """
+                    docker build \
+                      --build-arg NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} \
+                      -t ${env.DOCKER_IMAGE_NAME} .
+                    """
                 }
                 echo "Docker build finished"
             }
