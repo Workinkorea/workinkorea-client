@@ -24,7 +24,10 @@ pipeline {
                     docker rmi ${env.DOCKER_IMAGE_NAME} || true
                     """
 
-                    sh "docker build -t ${env.DOCKER_IMAGE_NAME} ."
+                    sh "docker build \
+                    -e NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} \
+                    -t ${env.DOCKER_IMAGE_NAME} .
+                    "
                 }
                 echo "Docker build finished"
             }
@@ -53,8 +56,7 @@ pipeline {
                         --label 'traefik.http.services.workinkorea-client.loadbalancer.server.port=3000' \
                         --label 'traefik.http.routers.workinkorea-client.middlewares=client-auth@docker' \
                         --label 'traefik.http.middlewares.client-auth.basicauth.users=${env.TRAEFIK_BASIC_AUTH_USERS}' \
-                        --e NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} \
-                        workinkorea-client
+                        ${env.DOCKER_IMAGE_NAME}
                         """
                 }
                 echo "Deploy finished"
