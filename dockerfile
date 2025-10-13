@@ -31,7 +31,6 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
 
 # runner 이미지에 추가해주기 위해 복사
 COPY --from=builder /app/public ./public
