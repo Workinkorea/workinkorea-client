@@ -3,7 +3,7 @@
 
 FROM node:20-alpine AS base
 
-# 의존성 설치
+# 1. 의존성 설치
 FROM base AS deps
 
 RUN apk add --no-cache libc6-compat
@@ -16,7 +16,7 @@ COPY package.json package-lock.json ./
 RUN npm ci 
 
 
-# 빌드
+# 2. 빌드
 FROM base AS builder
 
 
@@ -31,10 +31,13 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 RUN npm run build
 
 
-# 실행
+# 3. 실행
 FROM base AS runner
 WORKDIR /app
 
+# 리눅스 그룹과 유저 생성
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
 # runner 이미지에 추가해주기 위해 복사
 COPY --from=builder /app/public ./public
@@ -43,6 +46,8 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# 리눅스 사용자
+USER nextjs
 
 EXPOSE 3000
 
