@@ -37,10 +37,10 @@ export const tokenManager = {
    * 토큰이 곧 만료될지 확인합니다 (기본: 5분 이내)
    * @param bufferSeconds 만료 전 버퍼 시간 (초)
    */
-  isTokenExpiringSoon: (bufferSeconds: number = 300): boolean => {
+  isTokenExpiringSoon: (): boolean => {
     const token = tokenManager.getAccessToken();
     if (!token) return true;
-    return isTokenExpiringSoon(token, bufferSeconds);
+    return isTokenExpiringSoon(token, 5);
   },
 
   /**

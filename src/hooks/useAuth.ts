@@ -19,12 +19,11 @@ export const useAuth = () => {
       if (accessToken) {
         tokenManager.setAccessToken(accessToken);
         setIsAuthenticated(true);
-        scheduleTokenRefreshRef.current?.(); // 갱신 후 다음 갱신 스케줄링
+        scheduleTokenRefreshRef.current?.();
         return true;
       }
       return false;
     } catch {
-      // refresh 실패 시 만료된 accessToken 제거
       tokenManager.removeAccessToken();
       setIsAuthenticated(false);
       return false;
@@ -48,12 +47,12 @@ export const useAuth = () => {
 
     // 만료 5분 전에 갱신 (300초 = 5분)
     // 단, 남은 시간이 5분보다 적으면 남은 시간의 50% 지점에 갱신
-    const bufferTime = 300; // 5분
+    const bufferTime = 5; // 5분
     let refreshIn: number;
 
     if (remainingTime <= bufferTime) {
       // 남은 시간이 5분 이하면, 남은 시간의 50% 지점에 갱신
-      refreshIn = Math.max(remainingTime * 0.5, 10); // 최소 10초
+      refreshIn = Math.max(remainingTime * 0.5); // 최소 10초
     } else {
       // 만료 5분 전에 갱신
       refreshIn = remainingTime - bufferTime;

@@ -54,7 +54,7 @@ export const isTokenExpired = (token: string): boolean => {
  * @param bufferSeconds 만료 전 버퍼 시간 (초) - 기본값 5분 (300초)
  * @returns 곧 만료 여부
  */
-export const isTokenExpiringSoon = (token: string, bufferSeconds: number = 300): boolean => {
+export const isTokenExpiringSoon = (token: string, bufferSeconds: number = 5): boolean => {
   const exp = getTokenExpiration(token);
   if (!exp) return true;
 
