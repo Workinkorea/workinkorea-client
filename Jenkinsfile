@@ -6,7 +6,7 @@ pipeline {
         BRANCH_NAME = "dev"
         BASE_URL = "byeong98.xyz"
         DOCKER_IMAGE_NAME = "workinkorea-client"
-        PORT = 3000
+        PORT = 3001
 
         TRAEFIK_BASIC_AUTH_USERS = credentials('traefik-basic-auth-users')
         NEXT_PUBLIC_API_URL = credentials('next-public-api-url')
@@ -54,7 +54,7 @@ pipeline {
                         --label 'traefik.http.routers.workinkorea-client.rule=Host(`byeong98.xyz`)' \
                         --label 'traefik.http.routers.workinkorea-client.entrypoints=websecure' \
                         --label 'traefik.http.routers.workinkorea-client.tls.certresolver=le' \
-                        --label 'traefik.http.services.workinkorea-client.loadbalancer.server.port=3000' \
+                        --label 'traefik.http.services.workinkorea-client.loadbalancer.server.port=${env.PORT}' \
                         --label 'traefik.http.routers.workinkorea-client.middlewares=client-auth@docker' \
                         --label 'traefik.http.middlewares.client-auth.basicauth.users=${env.TRAEFIK_BASIC_AUTH_USERS}' \
                         ${env.DOCKER_IMAGE_NAME}
