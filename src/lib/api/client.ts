@@ -24,6 +24,15 @@ export const refreshAccessToken = async (): Promise<string> => {
   });
 
   if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+
+    if (data.message === 'Refresh token not found') {
+      tokenManager.removeAccessToken();
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+    }
+
     throw new Error('Failed to refresh token');
   }
 

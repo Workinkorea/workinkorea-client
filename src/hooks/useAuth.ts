@@ -1,11 +1,25 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { tokenManager } from '@/lib/utils/tokenManager';
 import { authApi } from '@/lib/api/auth';
+import { usePathname } from 'next/navigation';
+
+// 인증이 필요 없는 페이지 경로 (로그인/회원가입)
+const AUTH_PATHS = ['/login', '/signup', '/company-login', '/company-signup'];
+
+// 로그인이 필수인 페이지 경로
+const PROTECTED_PATHS = ['/user'];
 
 export const useAuth = () => {
+  const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 현재 경로가 인증 페이지인지 확인
+  const isAuthPath = AUTH_PATHS.some(path => pathname?.startsWith(path));
+
+  // 현재 경로가 로그인이 필수인 페이지인지 확인
+  const isProtectedPath = PROTECTED_PATHS.some(path => pathname?.startsWith(path));
 
   // 토큰 갱신 스케줄링 (전방 선언을 위한 ref)
   const scheduleTokenRefreshRef = useRef<(() => void) | null>(null);
@@ -45,20 +59,16 @@ export const useAuth = () => {
       return;
     }
 
-    // 만료 5분 전에 갱신 (300초 = 5분)
-    // 단, 남은 시간이 5분보다 적으면 남은 시간의 50% 지점에 갱신
-    const bufferTime = 5; // 5분
+    const bufferTime = 5 * 60;
     let refreshIn: number;
 
     if (remainingTime <= bufferTime) {
       // 남은 시간이 5분 이하면, 남은 시간의 50% 지점에 갱신
-      refreshIn = Math.max(remainingTime * 0.5); // 최소 10초
+      refreshIn = Math.max(remainingTime * 0.5, 1); // 최소 1초
     } else {
       // 만료 5분 전에 갱신
       refreshIn = remainingTime - bufferTime;
     }
-
-    console.log(`Token refresh scheduled in ${Math.floor(refreshIn)} seconds`);
 
     refreshTimerRef.current = setTimeout(() => {
       refreshAccessToken();
@@ -70,6 +80,13 @@ export const useAuth = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      // 인증 페이지에서는 토큰 체크를 하지 않음
+      if (isAuthPath) {
+        setIsAuthenticated(false);
+        setIsLoading(false);
+        return;
+      }
+
       const hasToken = tokenManager.hasAccessToken();
 
       if (hasToken && tokenManager.isTokenValid()) {
@@ -80,17 +97,23 @@ export const useAuth = () => {
         return;
       }
 
-      // 토큰이 없거나 만료되었으면 refresh 시도
-      try {
-        const success = await refreshAccessToken();
-        if (!success) {
+      // 로그인이 필수인 페이지에서만 자동으로 refresh 시도
+      if (isProtectedPath) {
+        try {
+          const success = await refreshAccessToken();
+          if (!success) {
+            tokenManager.removeAccessToken();
+            setIsAuthenticated(false);
+          }
+        } catch {
           tokenManager.removeAccessToken();
           setIsAuthenticated(false);
+        } finally {
+          setIsLoading(false);
         }
-      } catch {
-        tokenManager.removeAccessToken();
+      } else {
+        // 로그인이 선택적인 페이지에서는 토큰이 없어도 그냥 진행
         setIsAuthenticated(false);
-      } finally {
         setIsLoading(false);
       }
     };
@@ -114,7 +137,7 @@ export const useAuth = () => {
     };
     // scheduleTokenRefresh는 ref를 통해 호출하므로 의존성에서 제외
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshAccessToken]);
+  }, [refreshAccessToken, isAuthPath, isProtectedPath]);
 
   const login = (accessToken: string) => {
     tokenManager.setAccessToken(accessToken);

@@ -6,7 +6,6 @@ import { WebsiteSchema, OrganizationSchema } from "@/components/seo/StructuredDa
 import "./globals.css";
 import ReactQueryProvider from "@/lib/providers/QueryProvider";
 import { Toaster } from 'sonner';
-import { TokenDebugLoader } from "@/components/debug/TokenDebugLoader";
 
 export const metadata: Metadata = defaultMetadata;
 
@@ -22,7 +21,6 @@ export default function RootLayout({
         <OrganizationSchema />
       </head>
       <body suppressHydrationWarning={true}>
-        <TokenDebugLoader />
         <ReactQueryProvider>
           {children}
         </ReactQueryProvider>
