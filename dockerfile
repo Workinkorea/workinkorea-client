@@ -49,6 +49,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # 리눅스 사용자
 USER nextjs
 
+ENV PORT=3001
 EXPOSE 3001
 
 # 'standalone' 옵션 사용 시 server.js 사용
