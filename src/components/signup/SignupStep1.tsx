@@ -1,74 +1,11 @@
 'use client'
 
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
-import { useState } from 'react';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function SignupStep1() {
-  const router = useRouter();
-  const { login } = useAuth();
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-  const handleGoogleSignup = async () => {
-    try {
-      setIsGoogleLoading(true);
-
-      const response = await fetch(`${API_BASE_URL}/api/auth/login/google`);
-
-      if (!response.ok) {
-        throw new Error('Failed to get Google login URL');
-      }
-
-      const data = await response.json();
-      const googleAuthUrl = data.url || data.authUrl || data;
-
-      const width = 500;
-      const height = 600;
-      const left = window.screen.width / 2 - width / 2;
-      const top = window.screen.height / 2 - height / 2;
-
-      const popup = window.open(
-        googleAuthUrl,
-        'Google Login',
-        `width=${width},height=${height},left=${left},top=${top}`
-      );
-
-      const checkPopupClosed = setInterval(() => {
-        if (popup?.closed) {
-          clearInterval(checkPopupClosed);
-          window.removeEventListener('message', handleMessage);
-          setIsGoogleLoading(false);
-        }
-      }, 500);
-
-      const handleMessage = (event: MessageEvent) => {
-        if (event.origin !== window.location.origin) return;
-
-        if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-          const { accessToken } = event.data;
-          login(accessToken);
-          clearInterval(checkPopupClosed);
-          popup?.close();
-          window.removeEventListener('message', handleMessage);
-          setIsGoogleLoading(false);
-          router.push('/');
-        } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
-          console.error('Google signup failed:', event.data.error);
-          clearInterval(checkPopupClosed);
-          popup?.close();
-          window.removeEventListener('message', handleMessage);
-          setIsGoogleLoading(false);
-        }
-      };
-
-      window.addEventListener('message', handleMessage);
-    } catch (error) {
-      console.error('Google signup error:', error);
-      setIsGoogleLoading(false);
-    }
+  const handleGoogleLogin = () => {
+    window.location.href = '/api/auth/login/google';
   };
 
   return (
@@ -91,9 +28,8 @@ export default function SignupStep1() {
         >
           <motion.button
               type="button"
-              onClick={handleGoogleSignup}
-              disabled={isGoogleLoading}
-              className="w-full py-2 border border-line-200 rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleGoogleLogin}
+              className="w-full py-2 border border-line-200 rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-center"
               whileTap={{ scale: 0.98 }}
             >
               <svg
@@ -120,7 +56,7 @@ export default function SignupStep1() {
               </svg>
 
               <span className="text-gray-600 font-medium ml-2">
-                {isGoogleLoading ? '로그인 중...' : 'Google로 회원가입'}
+                Google로 회원가입
               </span>
             </motion.button>
         </motion.div>
