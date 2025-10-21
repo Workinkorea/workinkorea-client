@@ -5,7 +5,8 @@ import type {
   LoginResponse,
   LogoutResponse,
   RefreshTokenResponse,
-  GetUserInfoResponse
+  GetUserInfoResponse,
+  SignupRequest
 } from './types';
 
 export const authApi = {
@@ -23,6 +24,10 @@ export const authApi = {
 
   async logout(): Promise<LogoutResponse> {
     return apiClient.post<LogoutResponse>('/api/auth/logout');
+  },
+
+  async signup(data: SignupRequest) {
+    return apiClient.post('/api/auth/signup', data);
   },
 
   async refreshToken(): Promise<RefreshTokenResponse> {

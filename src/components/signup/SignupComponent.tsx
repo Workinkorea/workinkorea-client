@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
@@ -11,12 +11,12 @@ import { validateEmail } from '@/lib/utils/validation';
 import { authApi } from '@/lib/api/auth';
 import { toast } from 'sonner';
 
-export default function SignupComponent() {
+export default function SignupComponent({ userEmail }: { userEmail?: string }) {
   const router = useRouter();
 
   const [formState, setFormState] = useState({
-    isEmailSent: false,
-    isEmailVerified: false,
+    isEmailSent: !!userEmail,
+    isEmailVerified: !!userEmail,
     verificationCode: '',
   });
 
@@ -25,19 +25,31 @@ export default function SignupComponent() {
     handleSubmit,
     watch,
     setError,
-    clearErrors
+    clearErrors,
+    setValue
   } = useForm({
     defaultValues: {
       name: '',
       birth: '',
       country: '',
-      email: '',
+      email: userEmail || '',
       verificationCode: '',
     }
   });
 
+  useEffect(() => {
+    if (userEmail) {
+      setValue('email', userEmail);
+    }
+  }, [userEmail, setValue]);
+
   const emailValue = watch('email');
   const codeValue = watch('verificationCode');
+  const nameValue = watch('name');
+  const birthValue = watch('birth');
+  const countryValue = watch('country');
+
+  const isEmailFromParam = !!userEmail;
 
   const handleSendVerificationCode = async (email: string) => {
     const validationError = validateEmail(email);
@@ -79,8 +91,40 @@ export default function SignupComponent() {
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    router.push('/login');
+
+    if (!formState.isEmailVerified) {
+      toast.error('이메일 인증 완료해주세요.');
+      return;
+    }
+    const { email, name, birth, country } = data;
+
+    const birth_date = `${birth.substring(0, 4)}-${birth.substring(4, 6)}-${birth.substring(6, 8)}`;
+
+    const signupData = {
+      email: email,
+      name: name,
+      birth_date: birth_date,
+      country_code: country,
+    };
+
+    try {
+      const response = await authApi.signup(signupData);
+      console.log(response);
+
+      toast.success('회원가입이 완료되었습니다. 로그인 해주세요.');
+      // router.push('/login');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message;
+      toast.error(errorMessage);
+    }
   };
+
+  const isFormValid = 
+    formState.isEmailVerified && 
+    nameValue && 
+    birthValue && 
+    birthValue.length === 8 && 
+    countryValue;
 
   return (
     <div className='w-full flex'>
@@ -112,47 +156,49 @@ export default function SignupComponent() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="space-y-4"
             >
-              <div className='mb-6'>
-                <FormField
-                  name="email"
-                  control={control}
-                  label="이메일"
-                  render={(field, fieldId) => (
-                    <div className="flex gap-2">
-                      <input
-                        {...field}
-                        id={fieldId}
-                        type="email"
-                        value={field.value || ''}
-                        placeholder="example@email.com"
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                          setFormState(prev => ({
-                            ...prev,
-                            isEmailSent: false,
-                            isEmailVerified: false
-                          }));
-                          clearErrors('email');
-                        }}
-                        className="flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
-                      />
-                      <motion.button
-                        type="button"
-                        onClick={() => emailValue && handleSendVerificationCode(emailValue)}
-                        disabled={!emailValue || validateEmail(emailValue) !== null || formState.isEmailSent}
-                        className={`relative px-4 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
-                          emailValue && validateEmail(emailValue) === null && !formState.isEmailSent
-                            ? 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
-                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        }`}
-                        whileTap={emailValue && validateEmail(emailValue) === null && !formState.isEmailSent ? { scale: 0.95 } : {}}
-                      >
-                        {formState.isEmailSent ? '전송완료' : '인증하기'}
-                      </motion.button>
-                    </div>
-                  )}
-                />
-              </div>
+              {!isEmailFromParam && (
+                <div className='mb-6'>
+                  <FormField
+                    name="email"
+                    control={control}
+                    label="이메일"
+                    render={(field, fieldId) => (
+                      <div className="flex gap-2">
+                        <input
+                          {...field}
+                          id={fieldId}
+                          type="email"
+                          value={field.value || ''}
+                          placeholder="example@email.com"
+                          onChange={(e) => {
+                            field.onChange(e.target.value);
+                            setFormState(prev => ({
+                              ...prev,
+                              isEmailSent: false,
+                              isEmailVerified: false
+                            }));
+                            clearErrors('email');
+                          }}
+                          className="flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                        />
+                        <motion.button
+                          type="button"
+                          onClick={() => emailValue && handleSendVerificationCode(emailValue)}
+                          disabled={!emailValue || validateEmail(emailValue) !== null || formState.isEmailSent}
+                          className={`relative px-4 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
+                            emailValue && validateEmail(emailValue) === null && !formState.isEmailSent
+                              ? 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
+                              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          }`}
+                          whileTap={emailValue && validateEmail(emailValue) === null && !formState.isEmailSent ? { scale: 0.95 } : {}}
+                        >
+                          {formState.isEmailSent ? '전송완료' : '인증하기'}
+                        </motion.button>
+                      </div>
+                    )}
+                  />
+                </div>
+              )}
 
               {formState.isEmailSent && !formState.isEmailVerified && (
                 <motion.div
@@ -263,8 +309,8 @@ export default function SignupComponent() {
               <motion.button
                 type="submit"
                 className="w-full py-3 px-4 rounded-lg font-medium text-sm bg-primary-300 text-white hover:bg-primary-400 cursor-pointer transition-colors"
-                disabled={true}
-                whileTap={{ scale: 0.98 }}
+                disabled={!isFormValid}
+                whileTap={isFormValid ? { scale: 0.98 }: {}}
               >
                 회원가입
               </motion.button>

@@ -42,3 +42,10 @@ export interface GetUserInfoResponse {
   success: boolean;
   user: UserInfo;
 }
+
+export interface SignupRequest {
+  email: string;
+  name: string;
+  birth_date: string;
+  country_code: string;
+}
