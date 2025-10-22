@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense } from "react";
-import BusinessLoginForm from "@/components/company-login/BusinessLoginForm";
+import BusinessLoginForm from "@/components/business-login/BusinessLoginForm";
 
 function BusinessLoginContent() {
   return (

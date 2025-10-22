@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { SignupStep2Data } from '@/types/signup.type';
 import { useRouter } from 'next/navigation';
-import BusinessSignupStep2 from '@/components/company-signup/BusinessSignupStep2';
+import BusinessSignupStep2 from '@/components/business-signup/BusinessSignupStep2';
 
 export default function SignupStep2Page() {
   const router = useRouter();

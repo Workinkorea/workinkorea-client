@@ -4,16 +4,12 @@ import { motion } from 'framer-motion';
 import { FormField } from '../ui/FormField';
 import Input from '../ui/Input';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { validatePassword } from '@/lib/utils/authNumber';
 import { useState } from 'react';
 import { GoogleIcon } from '@/components/ui/AccessibleIcon';
 import { useAuth } from '@/hooks/useAuth';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
 export default function LoginContent() {
-  const router = useRouter();
   const { login } = useAuth();
 
   const {
@@ -159,7 +155,7 @@ export default function LoginContent() {
               <GoogleIcon label="Google 로고" size="md" />
 
               <span className="text-gray-600 font-medium ml-2">
-                {formState.isGoogleLoading ? '로그인 중...' : 'Google로 로그인'}
+                {formState.isGoogleLoading ? '로그인 중...' : 'Google로 시작하기'}
               </span>
             </motion.button>
 
@@ -174,15 +170,6 @@ export default function LoginContent() {
               whileTap={isFormValid && !formState.isLoading ? { scale: 0.98 } : {}}
             >
               {formState.isLoading ? '로그인 중...' : '로그인'}
-            </motion.button>
-
-            <motion.button
-              type="button"
-              onClick={() => router.push('/signup/step1')}
-              className="w-full py-3 px-4 border border-line-200 text-primary-300 rounded-lg font-medium text-sm hover:bg-primary-300 hover:text-white transition-colors cursor-pointer"
-              whileTap={{ scale: 0.98 }}
-            >
-              회원가입
             </motion.button>
           </motion.div>
         </motion.form>

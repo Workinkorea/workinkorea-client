@@ -15,7 +15,8 @@ interface SelfDiagnosisFormData {
   desiredSalary: string;
 }
 
-const SelfDiagnosisClient: React.FC = () => {
+const SelfDiagnosisClient = () => {
+  const router = useRouter();
   const {
     control,
     handleSubmit,
@@ -31,10 +32,9 @@ const SelfDiagnosisClient: React.FC = () => {
 
   const onSubmit = async (data: SelfDiagnosisFormData) => {
     try {
-      console.log('자가진단 데이터:', data);
       toast.success('자가진단이 완료되었습니다!');
       // TODO: API 호출 및 결과 페이지로 이동
-      // router.push('/self-diagnosis/result');
+      router.push('/');
     } catch (error) {
       toast.error('자가진단 제출 중 오류가 발생했습니다.');
       console.error('Self-diagnosis error:', error);
@@ -180,7 +180,7 @@ const SelfDiagnosisClient: React.FC = () => {
                 }`}
                 whileTap={isValid ? { scale: 0.98 } : {}}
               >
-                자가진단 완료
+                기본정보 입력 완료
               </motion.button>
             </form>
           </motion.div>
