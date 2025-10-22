@@ -9,7 +9,6 @@ interface UserProfilePageProps {
   }>;
 }
 
-// 메타데이터 생성
 export async function generateMetadata({ params }: UserProfilePageProps): Promise<Metadata> {
   const { id } = await params;
   

@@ -6,10 +6,11 @@ interface HeaderProps {
   type: 'homepage' | 'business';
   onToggleType?: () => void;
   isAuthenticated?: boolean;
+  isLoading?: boolean;
   onLogout?: () => void;
 }
 
-const Header = ({ type, onToggleType, isAuthenticated, onLogout }: HeaderProps) => {
+const Header = ({ type, onToggleType, isAuthenticated, isLoading, onLogout }: HeaderProps) => {
   const getNavigationItems = () => {
     if (type === 'homepage') {
       return [
@@ -81,7 +82,9 @@ const Header = ({ type, onToggleType, isAuthenticated, onLogout }: HeaderProps) 
               </button>
             </div>
 
-            {isAuthenticated ? (
+            {isLoading ? (
+              <div className="w-24 h-9 bg-component-alternative animate-pulse rounded"></div>
+            ) : isAuthenticated ? (
               <div className="flex items-center gap-3">
                 <button
                   onClick={onLogout}

@@ -1,4 +1,50 @@
+import { tokenManager } from '../utils/tokenManager';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+const subscribeTokenRefresh = (cb: (token: string) => void) => {
+  refreshSubscribers.push(cb);
+};
+
+const onTokenRefreshed = (token: string) => {
+  refreshSubscribers.forEach((cb) => cb(token));
+  refreshSubscribers = [];
+};
+
+export const refreshAccessToken = async (): Promise<string> => {
+  const response = await fetch('/api/auth/refresh', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+
+    if (data.message === 'Refresh token not found') {
+      tokenManager.removeAccessToken();
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+    }
+
+    throw new Error('Failed to refresh token');
+  }
+
+  const data = await response.json();
+  const accessToken = data.accessToken || data.access_token || data.token;
+
+  if (!accessToken) {
+    throw new Error('No access token received');
+  }
+
+  return accessToken;
+};
 
 export const apiClient = {
   async request<T>(
@@ -7,14 +53,28 @@ export const apiClient = {
   ): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
 
+    // 요청 전에 토큰이 곧 만료될지 확인하고 사전에 갱신
+    if (tokenManager.isTokenExpiringSoon()) {
+      try {
+        const newAccessToken = await refreshAccessToken();
+        tokenManager.setAccessToken(newAccessToken);
+      } catch (error) {
+        tokenManager.removeAccessToken();
+      }
+    }
+
+    const accessToken = tokenManager.getAccessToken();
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
 
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
+        ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
         ...options.headers,
       },
+      credentials: 'include',
       signal: controller.signal,
       ...options,
     };
@@ -22,6 +82,80 @@ export const apiClient = {
     try {
       const response = await fetch(url, config);
       clearTimeout(timeoutId);
+
+      if (response.status === 401) {
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            subscribeTokenRefresh(async (newToken: string) => {
+              try {
+                const retryController = new AbortController();
+                const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
+
+                const retryConfig: RequestInit = {
+                  ...config,
+                  headers: {
+                    ...config.headers,
+                    Authorization: `Bearer ${newToken}`,
+                  },
+                  signal: retryController.signal,
+                };
+
+                const retryResponse = await fetch(url, retryConfig);
+                clearTimeout(retryTimeoutId);
+
+                if (!retryResponse.ok) {
+                  throw new Error(`API Error: ${retryResponse.status}`);
+                }
+
+                const data = await retryResponse.json();
+                resolve(data);
+              } catch (error) {
+                reject(error);
+              }
+            });
+          });
+        }
+
+        isRefreshing = true;
+
+        try {
+          const newAccessToken = await refreshAccessToken();
+          tokenManager.setAccessToken(newAccessToken);
+          isRefreshing = false;
+          onTokenRefreshed(newAccessToken);
+
+          const retryController = new AbortController();
+          const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
+
+          const retryConfig: RequestInit = {
+            ...config,
+            headers: {
+              ...config.headers,
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+            signal: retryController.signal,
+          };
+
+          const retryResponse = await fetch(url, retryConfig);
+          clearTimeout(retryTimeoutId);
+
+          if (!retryResponse.ok) {
+            throw new Error(`API Error: ${retryResponse.status}`);
+          }
+
+          return retryResponse.json();
+        } catch (error) {
+          isRefreshing = false;
+          refreshSubscribers = [];
+          tokenManager.removeAccessToken();
+
+          if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+          }
+
+          throw error;
+        }
+      }
 
       if (!response.ok) {
         throw new Error(`API Error: ${response.status} ${response.statusText}`);

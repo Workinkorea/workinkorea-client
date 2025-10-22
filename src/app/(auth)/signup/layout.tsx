@@ -10,10 +10,8 @@ export default function SignupLayout({
   return (
     <Layout>
       <Header type="homepage" />
-      <main className='flex justify-center min-h-screen'>
-        <Layout.Main className="max-w-[32.5rem] w-full">
-          {children}
-        </Layout.Main>
+      <main className='flex min-h-screen'>
+        {children}
       </main>
     </Layout>
   );
