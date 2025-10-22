@@ -7,10 +7,8 @@ import { useForm } from 'react-hook-form';
 import { validatePassword } from '@/lib/utils/authNumber';
 import { useState } from 'react';
 import { GoogleIcon } from '@/components/ui/AccessibleIcon';
-import { useAuth } from '@/hooks/useAuth';
 
 export default function LoginContent() {
-  const { login } = useAuth();
 
   const {
     control,

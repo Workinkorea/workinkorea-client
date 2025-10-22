@@ -58,7 +58,7 @@ export const apiClient = {
       try {
         const newAccessToken = await refreshAccessToken();
         tokenManager.setAccessToken(newAccessToken);
-      } catch (error) {
+      } catch {
         tokenManager.removeAccessToken();
       }
     }

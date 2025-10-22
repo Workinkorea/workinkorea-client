@@ -4,15 +4,21 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
-import { useRouter } from 'next/navigation';
 import { SelectSearchInput } from '@/components/ui/SelectSearchInput';
 import { COUNTRIES } from '@/constants/countries';
 import { validateEmail } from '@/lib/utils/validation';
 import { authApi } from '@/lib/api/auth';
 import { toast } from 'sonner';
 
+interface SignupFormData {
+  name: string;
+  birth: string;
+  country: string;
+  email: string;
+  verificationCode: string;
+}
+
 export default function SignupComponent({ userEmail }: { userEmail?: string }) {
-  const router = useRouter();
 
   const [formState, setFormState] = useState({
     isEmailSent: !!userEmail,
@@ -89,7 +95,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
     }
   }
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: SignupFormData) => {
     console.log(data);
 
     if (!formState.isEmailVerified) {
@@ -112,10 +118,12 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
       console.log(response);
 
       toast.success('회원가입이 완료되었습니다. 로그인 해주세요.');
-      // router.push('/login');
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message;
-      toast.error(errorMessage);
+    } catch (error: unknown) {
+      const errorMessage =
+        error && typeof error === 'object' && 'response' in error
+          ? (error.response as { data?: { message?: string } })?.data?.message
+          : '회원가입 중 오류가 발생했습니다.';
+      toast.error(errorMessage || '회원가입 중 오류가 발생했습니다.');
     }
   };
 

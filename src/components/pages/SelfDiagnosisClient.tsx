@@ -30,7 +30,8 @@ const SelfDiagnosisClient = () => {
     }
   });
 
-  const onSubmit = async (data: SelfDiagnosisFormData) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onSubmit = async (_data: SelfDiagnosisFormData) => {
     try {
       toast.success('자가진단이 완료되었습니다!');
       // TODO: API 호출 및 결과 페이지로 이동

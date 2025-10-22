@@ -13,7 +13,6 @@ function CallbackContent() {
     const handleCallback = async () => {
       const status = searchParams.get('status');
       const token = searchParams.get('token');
-      const name = searchParams.get('name');
       const message = searchParams.get('message');
 
       // 회원가입 필요
