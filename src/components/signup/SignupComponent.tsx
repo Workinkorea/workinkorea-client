@@ -136,10 +136,10 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
 
   return (
     <div className='w-full flex'>
-      <div className='w-full h-full bg-blue-400'>
+      <div className='w-full bg-blue-400'>
         약관동의 넣으면됨
       </div>
-      <div className="flex items-center justify-center w-full py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-center w-full py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-[400px] w-full space-y-8">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}

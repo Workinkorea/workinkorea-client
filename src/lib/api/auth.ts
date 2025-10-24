@@ -11,15 +11,15 @@ import type {
 
 export const authApi = {
   async sendEmailVerification(email: string[]): Promise<EmailVerificationResponse> {
-    return apiClient.post<EmailVerificationResponse>('/api/auth/email', { email });
+    return apiClient.post<EmailVerificationResponse>('/api/auth/email', { email }, { skipAuth: true });
   },
 
   async verifyEmailCode(email: string, code: string): Promise<EmailVerificationResponse> {
-    return apiClient.post<EmailVerificationResponse>('/api/auth/email/verify', { email, code });
+    return apiClient.post<EmailVerificationResponse>('/api/auth/email/verify', { email, code }, { skipAuth: true });
   },
 
   async login(data: LoginRequest): Promise<LoginResponse> {
-    return apiClient.post<LoginResponse>('/api/auth/login', data);
+    return apiClient.post<LoginResponse>('/api/auth/login', data, { skipAuth: true });
   },
 
   async logout(): Promise<LogoutResponse> {
@@ -27,7 +27,7 @@ export const authApi = {
   },
 
   async signup(data: SignupRequest) {
-    return apiClient.post('/api/auth/signup', data);
+    return apiClient.post('/api/auth/signup', data, { skipAuth: true });
   },
 
   async refreshToken(): Promise<RefreshTokenResponse> {
