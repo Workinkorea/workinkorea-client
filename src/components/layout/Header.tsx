@@ -37,19 +37,19 @@ const Header = ({ type, onToggleType, isAuthenticated, isLoading, onLogout }: He
               <span className="text-title-3 font-bold text-primary-500">
                 WorkInKorea
               </span>
-              <span className="ml-2 text-caption-2 text-label-500 bg-component-alternative px-2 py-1 rounded">
+              <span className="hidden sm:block ml-2 text-caption-2 text-label-500 bg-component-alternative px-2 py-1 rounded">
                 {type === 'homepage' ? '개인' : '기업'}
               </span>
             </Link>
           </div>
 
-          <nav className="hidden md:block">
+          <nav className="hidden sm:block">
             <div className="ml-10 flex gap-8">
               {navigationItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-label-900 hover:text-primary-500 text-body-3 font-medium transition-colors whitespace-nowrap"
+                  className="text-label-900 hover:text-primary-500 font-medium text-body-3 transition-colors whitespace-nowrap"
                 >
                   {item.name}
                 </Link>
@@ -59,7 +59,7 @@ const Header = ({ type, onToggleType, isAuthenticated, isLoading, onLogout }: He
 
           <div className="w-full flex justify-end items-center space-x-3">
             <button
-              className="p-2 text-label-500 hover:text-label-700 transition-colors"
+              className="hidden sm:block p-2 text-label-500 hover:text-label-700 transition-colors"
               aria-label="검색"
             >
               <SearchIcon />
@@ -118,13 +118,13 @@ const Header = ({ type, onToggleType, isAuthenticated, isLoading, onLogout }: He
         </div>
       </div>
 
-      <div className="md:hidden">
-        <div className="pt-2 pb-3 space-y-1 bg-background-alternative">
+      <div className="sm:hidden">
+        <div className="flex flex-col gap-1 pl-5 pt-1 pb-1 bg-gray-50">
           {navigationItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className="text-label-900 hover:text-primary-500 block mx-4 py-3 text-body-2 font-medium transition-colors border-b border-label-100 last:border-b-0"
+              className="text-label-900 hover:text-primary-500 py-0.5 text-caption-1 font-medium transition-colors border-b border-label-100 last:border-b-0"
             >
               {item.name}
             </Link>
