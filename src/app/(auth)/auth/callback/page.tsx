@@ -17,7 +17,7 @@ function CallbackContent() {
 
       // 회원가입 필요
       if (status === 'signup') {
-        router.push('/signup/step1');
+        router.push('/signup');
         return;
       }
 

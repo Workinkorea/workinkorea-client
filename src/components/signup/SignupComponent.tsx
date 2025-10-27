@@ -19,7 +19,6 @@ interface SignupFormData {
 }
 
 export default function SignupComponent({ userEmail }: { userEmail?: string }) {
-
   const [formState, setFormState] = useState({
     isEmailSent: !!userEmail,
     isEmailVerified: !!userEmail,
@@ -38,7 +37,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
       name: '',
       birth: '',
       country: '',
-      email: userEmail || '',
+      email: userEmail || 'hie',
       verificationCode: '',
     }
   });
@@ -96,8 +95,6 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
   }
 
   const onSubmit = async (data: SignupFormData) => {
-    console.log(data);
-
     if (!formState.isEmailVerified) {
       toast.error('이메일 인증 완료해주세요.');
       return;
@@ -114,8 +111,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
     };
 
     try {
-      const response = await authApi.signup(signupData);
-      console.log(response);
+      await authApi.signup(signupData);
 
       toast.success('회원가입이 완료되었습니다. 로그인 해주세요.');
     } catch (error: unknown) {

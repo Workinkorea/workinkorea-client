@@ -510,19 +510,18 @@ const MyProfileClient: React.FC = () => {
                   resumes={mockResumes}
                   resumeStatistics={mockResumeStatistics}
                   onUploadResume={(file) => {
-                    console.log('이력서 파일 업로드:', file);
                     // TODO: 실제 파일 업로드 API 구현
                   }}
                   onDeleteResume={(resumeId) => {
-                    console.log('이력서 삭제:', resumeId);
+                    
                     // TODO: 삭제 확인 모달 및 API 호출
                   }}
                   onTogglePublic={(resumeId) => {
-                    console.log('이력서 공개 설정 변경:', resumeId);
+                    
                     // TODO: 공개/비공개 설정 API 호출
                   }}
                   onViewResume={(resumeId) => {
-                    console.log('이력서 미리보기:', resumeId);
+                    
                     // TODO: 이력서 미리보기 모달 또는 페이지로 이동
                   }}
                 />
