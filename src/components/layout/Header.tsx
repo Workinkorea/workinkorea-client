@@ -4,13 +4,12 @@ import { SearchIcon } from '@/components/ui/AccessibleIcon';
 
 interface HeaderProps {
   type: 'homepage' | 'business';
-  onToggleType?: () => void;
   isAuthenticated?: boolean;
   isLoading?: boolean;
   onLogout?: () => void;
 }
 
-const Header = ({ type, onToggleType, isAuthenticated, isLoading, onLogout }: HeaderProps) => {
+const Header = ({ type, isAuthenticated, isLoading, onLogout }: HeaderProps) => {
   const getNavigationItems = () => {
     if (type === 'homepage') {
       return [
@@ -65,23 +64,6 @@ const Header = ({ type, onToggleType, isAuthenticated, isLoading, onLogout }: He
               <SearchIcon />
             </button>
 
-            <div className="relative">
-              <button
-                onClick={onToggleType}
-                className={`
-                  flex items-center gap-2 h-9 px-3 rounded-lg text-body-3 font-medium transition-all duration-200 cursor-pointer
-                  ${type === 'homepage' 
-                    ? 'bg-primary-50 text-primary-700 border border-primary-200 hover:bg-primary-100' 
-                    : 'bg-secondary-50 text-secondary-700 border border-secondary-200 hover:bg-secondary-100'
-                  }
-                `}
-              >
-                <span className="whitespace-nowrap">
-                  {type === 'homepage' ? '기업회원으로' : '개인회원으로'}
-                </span>
-              </button>
-            </div>
-
             {isLoading ? (
               <div className="w-24 h-9 bg-component-alternative animate-pulse rounded"></div>
             ) : isAuthenticated ? (
@@ -94,25 +76,21 @@ const Header = ({ type, onToggleType, isAuthenticated, isLoading, onLogout }: He
                 </button>
               </div>
             ) : (
-              type === 'homepage' ? (
-                <div className="flex items-center gap-3">
-                  <Link
-                    href="/login"
-                    className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
-                  >
-                    개인 로그인
-                  </Link>
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <Link
-                    href="/company-login"
-                    className="text-label-700 hover:text-secondary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
-                  >
-                    기업 로그인
-                  </Link>
-                </div>
-              )
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/login-select"
+                  className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
+                >
+                  로그인
+                </Link>
+                <div className="h-4 w-px bg-line-400"></div>
+                <Link
+                  href="/signup-select"
+                  className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
+                >
+                  회원가입
+                </Link>
+              </div>
             )}
           </div>
         </div>

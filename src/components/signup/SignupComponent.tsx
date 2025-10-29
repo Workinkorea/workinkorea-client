@@ -160,31 +160,34 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="space-y-4"
             >
-              {!isEmailFromParam && (
-                <div className='mb-6'>
-                  <FormField
-                    name="email"
-                    control={control}
-                    label="이메일"
-                    render={(field, fieldId) => (
-                      <div className="flex gap-2">
-                        <input
-                          {...field}
-                          id={fieldId}
-                          type="email"
-                          value={field.value || ''}
-                          placeholder="example@email.com"
-                          onChange={(e) => {
-                            field.onChange(e.target.value);
-                            setFormState(prev => ({
-                              ...prev,
-                              isEmailSent: false,
-                              isEmailVerified: false
-                            }));
-                            clearErrors('email');
-                          }}
-                          className="flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
-                        />
+              <div className='mb-6'>
+                <FormField
+                  name="email"
+                  control={control}
+                  label="이메일"
+                  render={(field, fieldId) => (
+                    <div className="flex gap-2">
+                      <input
+                        {...field}
+                        id={fieldId}
+                        type="email"
+                        value={field.value || ''}
+                        placeholder="example@email.com"
+                        disabled={isEmailFromParam}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          setFormState(prev => ({
+                            ...prev,
+                            isEmailSent: false,
+                            isEmailVerified: false
+                          }));
+                          clearErrors('email');
+                        }}
+                        className={`flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent ${
+                          isEmailFromParam ? 'bg-gray-50 cursor-not-allowed' : ''
+                        }`}
+                      />
+                      {!isEmailFromParam && (
                         <motion.button
                           type="button"
                           onClick={() => emailValue && handleSendVerificationCode(emailValue)}
@@ -198,11 +201,11 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                         >
                           {formState.isEmailSent ? '전송완료' : '인증하기'}
                         </motion.button>
-                      </div>
-                    )}
-                  />
-                </div>
-              )}
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
 
               {formState.isEmailSent && !formState.isEmailVerified && (
                 <motion.div
