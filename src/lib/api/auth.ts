@@ -11,11 +11,11 @@ import type {
 
 export const authApi = {
   async sendEmailVerification(email: string[]): Promise<EmailVerificationResponse> {
-    return apiClient.post<EmailVerificationResponse>('/api/auth/email', { email }, { skipAuth: true });
+    return apiClient.post<EmailVerificationResponse>('/api/auth/email/certify', { email }, { skipAuth: true });
   },
 
   async verifyEmailCode(email: string, code: string): Promise<EmailVerificationResponse> {
-    return apiClient.post<EmailVerificationResponse>('/api/auth/email/verify', { email, code }, { skipAuth: true });
+    return apiClient.post<EmailVerificationResponse>('/api/auth/email/certify/verify', { email, code }, { skipAuth: true });
   },
 
   async login(data: LoginRequest): Promise<LoginResponse> {
