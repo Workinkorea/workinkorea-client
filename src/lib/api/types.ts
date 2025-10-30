@@ -49,3 +49,17 @@ export interface SignupRequest {
   birth_date: string;
   country_code: string;
 }
+
+export interface CompanySignupRequest {
+  company_number: number;
+  company_name: string;
+  email: string;
+  password: string;
+  name: string;
+  phone: number;
+}
+
+export interface CompanySignupResponse {
+  success: boolean;
+  message?: string;
+}
