@@ -6,7 +6,9 @@ import type {
   LogoutResponse,
   RefreshTokenResponse,
   GetUserInfoResponse,
-  SignupRequest
+  SignupRequest,
+  CompanySignupRequest,
+  CompanySignupResponse
 } from './types';
 
 export const authApi = {
@@ -28,6 +30,10 @@ export const authApi = {
 
   async signup(data: SignupRequest) {
     return apiClient.post('/api/auth/signup', data, { skipAuth: true });
+  },
+
+  async companySignup(data: CompanySignupRequest): Promise<CompanySignupResponse> {
+    return apiClient.post<CompanySignupResponse>('/api/auth/company/signup', data, { skipAuth: true });
   },
 
   async refreshToken(): Promise<RefreshTokenResponse> {
