@@ -10,8 +10,8 @@ import type {
 } from './types';
 
 export const authApi = {
-  async sendEmailVerification(email: string[]): Promise<EmailVerificationResponse> {
-    return apiClient.post<EmailVerificationResponse>('/api/auth/email/certify', { email }, { skipAuth: true });
+  async sendEmailVerification(email: string): Promise<EmailVerificationResponse> {
+    return apiClient.post<EmailVerificationResponse>('/api/auth/email/certify', {email}, { skipAuth: true });
   },
 
   async verifyEmailCode(email: string, code: string): Promise<EmailVerificationResponse> {

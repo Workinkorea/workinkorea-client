@@ -80,7 +80,7 @@ export const apiClient = {
         ...(accessToken && !skipAuth && { Authorization: `Bearer ${accessToken}` }),
         ...fetchOptions.headers,
       },
-      credentials: 'include',
+      credentials: skipAuth ? 'omit' : 'include',
       signal: controller.signal,
       ...fetchOptions,
     };

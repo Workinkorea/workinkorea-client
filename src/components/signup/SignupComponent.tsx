@@ -37,7 +37,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
       name: '',
       birth: '',
       country: '',
-      email: userEmail || 'hie',
+      email: userEmail || '',
       verificationCode: '',
     }
   });
@@ -67,7 +67,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
     }
 
     try {
-      await authApi.sendEmailVerification([email]);
+      await authApi.sendEmailVerification(email);
 
       setFormState(prev => ({
         ...prev,
@@ -91,6 +91,29 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
         message: '6자리 인증번호를 입력해주세요.'
       });
       return;
+    }
+
+    try {
+      await authApi.verifyEmailCode(email, code);
+
+      setFormState(prev => ({
+        ...prev,
+        isEmailVerified: true
+      }));
+
+      clearErrors('verificationCode');
+      toast.success('이메일 인증이 완료되었습니다.');
+    } catch (error: unknown) {
+      const errorMessage =
+        error && typeof error === 'object' && 'response' in error
+          ? (error.response as { data?: { message?: string } })?.data?.message
+          : '인증번호 확인 중 오류가 발생했습니다.';
+
+      setError('verificationCode', {
+        type: 'manual',
+        message: errorMessage || '인증번호가 올바르지 않습니다.'
+      });
+      toast.error(errorMessage || '인증번호가 올바르지 않습니다.');
     }
   }
 
