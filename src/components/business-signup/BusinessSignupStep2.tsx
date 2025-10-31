@@ -138,7 +138,7 @@ export default function BusinessSignupStep2({
 
     const companySignupData = {
       company_number: parseInt(data.businessNumber.replace(/[^0-9]/g, '')),
-      company_name: data.company,
+      company_name: 'workinkorea', // data.company,
       email: data.email,
       password: data.password,
       name: data.name,
