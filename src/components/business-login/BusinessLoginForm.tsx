@@ -6,9 +6,10 @@ import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
 import Input from '@/components/ui/Input';
 import { useRouter } from 'next/navigation';
-import { formatBusinessNumber, isValidBusinessNumber, removeBusinessNumberHyphen, validatePassword } from '@/lib/utils/authNumber';
+import { validatePassword } from '@/lib/utils/authNumber';
 import { authApi } from '@/lib/api/auth';
 import { tokenManager } from '@/lib/utils/tokenManager';
+// import { formatBusinessNumber, isValidBusinessNumber, removeBusinessNumberHyphen } from '@/lib/utils/authNumber'; // 사업자등록번호 방식에서 사용
 
 interface BusinessLoginFormData {
   email: string;
@@ -197,10 +198,16 @@ export default function BusinessLoginForm() {
         password: data.password
       });
 
-      if (response.success && (response.token || response.accessToken)) {
-        const token = response.token || response.accessToken;
+      if (response.url) {
+        // URL에서 token, user_id, company_id 파싱
+        const url = new URL(response.url);
+        const token = url.searchParams.get('token');
+        const userId = url.searchParams.get('user_id');
+        const companyId = url.searchParams.get('company_id');
+
         if (token) {
-          tokenManager.setAccessToken(token);
+          // 기업 로그인 토큰을 세션 스토리지에 별도로 저장
+          tokenManager.setCompanyAccessToken(token);
         }
 
         if (data.rememberMe) {
@@ -209,11 +216,16 @@ export default function BusinessLoginForm() {
           localStorage.removeItem(SAVED_EMAIL_KEY);
         }
 
-        router.push('/');
+        // 기업 페이지로 리다이렉트 (쿼리 파라미터 포함)
+        if (userId && companyId) {
+          router.push(`/company?user_id=${userId}&company_id=${companyId}`);
+        } else {
+          router.push('/');
+        }
       } else {
         setError('password', {
           type: 'manual',
-          message: response.message || '로그인에 실패했습니다.'
+          message: '로그인 응답이 올바르지 않습니다.'
         });
         setFormState(prev => ({ ...prev, isLoading: false }));
       }

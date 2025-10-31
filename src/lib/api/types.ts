@@ -65,17 +65,11 @@ export interface CompanySignupResponse {
 }
 
 export interface CompanyLoginRequest {
-  email: string; // 사업자등록번호 (숫자)
+  email: string;
   password: string;
 }
 
 export interface CompanyLoginResponse {
-  success: boolean;
-  token?: string;
-  accessToken?: string;
-  user?: {
-    id: string;
-    companyNumber: string;
-  };
-  message?: string;
+  url: string; // 리다이렉트 URL (user_id, company_id, token 포함)
+  // token은 accessToken이며, refreshToken은 httpOnly 쿠키로 관리됨
 }
