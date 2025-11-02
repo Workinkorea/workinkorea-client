@@ -10,7 +10,7 @@ export default function SignupLayout({
   return (
     <Layout>
       <Header type="homepage" />
-      <main className='flex min-h-screen'>
+      <main className='flex'>
         {children}
       </main>
     </Layout>

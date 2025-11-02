@@ -19,7 +19,6 @@ interface SignupFormData {
 }
 
 export default function SignupComponent({ userEmail }: { userEmail?: string }) {
-
   const [formState, setFormState] = useState({
     isEmailSent: !!userEmail,
     isEmailVerified: !!userEmail,
@@ -68,7 +67,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
     }
 
     try {
-      await authApi.sendEmailVerification([email]);
+      await authApi.sendEmailVerification(email);
 
       setFormState(prev => ({
         ...prev,
@@ -93,11 +92,32 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
       });
       return;
     }
+
+    try {
+      await authApi.verifyEmailCode(email, code);
+
+      setFormState(prev => ({
+        ...prev,
+        isEmailVerified: true
+      }));
+
+      clearErrors('verificationCode');
+      toast.success('이메일 인증이 완료되었습니다.');
+    } catch (error: unknown) {
+      const errorMessage =
+        error && typeof error === 'object' && 'response' in error
+          ? (error.response as { data?: { message?: string } })?.data?.message
+          : '인증번호 확인 중 오류가 발생했습니다.';
+
+      setError('verificationCode', {
+        type: 'manual',
+        message: errorMessage || '인증번호가 올바르지 않습니다.'
+      });
+      toast.error(errorMessage || '인증번호가 올바르지 않습니다.');
+    }
   }
 
   const onSubmit = async (data: SignupFormData) => {
-    console.log(data);
-
     if (!formState.isEmailVerified) {
       toast.error('이메일 인증 완료해주세요.');
       return;
@@ -114,8 +134,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
     };
 
     try {
-      const response = await authApi.signup(signupData);
-      console.log(response);
+      await authApi.signup(signupData);
 
       toast.success('회원가입이 완료되었습니다. 로그인 해주세요.');
     } catch (error: unknown) {
@@ -136,10 +155,10 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
 
   return (
     <div className='w-full flex'>
-      <div className='w-full h-full bg-blue-400'>
+      <div className='w-full bg-blue-400'>
         약관동의 넣으면됨
       </div>
-      <div className="flex items-center justify-center w-full py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-center w-full py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-[400px] w-full space-y-8">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -164,31 +183,34 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="space-y-4"
             >
-              {!isEmailFromParam && (
-                <div className='mb-6'>
-                  <FormField
-                    name="email"
-                    control={control}
-                    label="이메일"
-                    render={(field, fieldId) => (
-                      <div className="flex gap-2">
-                        <input
-                          {...field}
-                          id={fieldId}
-                          type="email"
-                          value={field.value || ''}
-                          placeholder="example@email.com"
-                          onChange={(e) => {
-                            field.onChange(e.target.value);
-                            setFormState(prev => ({
-                              ...prev,
-                              isEmailSent: false,
-                              isEmailVerified: false
-                            }));
-                            clearErrors('email');
-                          }}
-                          className="flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
-                        />
+              <div className='mb-6'>
+                <FormField
+                  name="email"
+                  control={control}
+                  label="이메일"
+                  render={(field, fieldId) => (
+                    <div className="flex gap-2">
+                      <input
+                        {...field}
+                        id={fieldId}
+                        type="email"
+                        value={field.value || ''}
+                        placeholder="example@email.com"
+                        disabled={isEmailFromParam}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          setFormState(prev => ({
+                            ...prev,
+                            isEmailSent: false,
+                            isEmailVerified: false
+                          }));
+                          clearErrors('email');
+                        }}
+                        className={`flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent ${
+                          isEmailFromParam ? 'bg-gray-50 cursor-not-allowed' : ''
+                        }`}
+                      />
+                      {!isEmailFromParam && (
                         <motion.button
                           type="button"
                           onClick={() => emailValue && handleSendVerificationCode(emailValue)}
@@ -202,11 +224,11 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                         >
                           {formState.isEmailSent ? '전송완료' : '인증하기'}
                         </motion.button>
-                      </div>
-                    )}
-                  />
-                </div>
-              )}
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
 
               {formState.isEmailSent && !formState.isEmailVerified && (
                 <motion.div

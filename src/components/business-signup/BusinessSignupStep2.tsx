@@ -6,8 +6,9 @@ import { SignupStep2Data, Step2Form } from '@/types/signup.type';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
 import Input from '@/components/ui/Input';
-import { formatBusinessNumber, isValidBusinessNumber, validateBirthDate, validateConfirmPassword, validatePassword, validatePhoneNumber } from '@/lib/utils/authNumber';
+import { formatBusinessNumber, isValidBusinessNumber, validateConfirmPassword, validatePassword, validatePhoneNumber } from '@/lib/utils/authNumber';
 import { toast } from 'sonner';
+import { authApi } from '@/lib/api/auth';
 
 interface BusinessSignupStep2Props {
   initialData?: SignupStep2Data;
@@ -34,7 +35,6 @@ export default function BusinessSignupStep2({
       confirmPassword: '',
       company: 'workinkorea',
       name: '',
-      birthDate: '',
       phoneNumber: '',
       email: '',
     }
@@ -52,7 +52,6 @@ export default function BusinessSignupStep2({
 
   const businessNumber = watch('businessNumber');
   const name = watch('name');
-  const birthDate = watch('birthDate');
   const phoneNumber = watch('phoneNumber');
   const email = watch('email');
   const password = watch('password');
@@ -111,7 +110,7 @@ export default function BusinessSignupStep2({
     toast.success('사업자등록번호 인증이 완료되었습니다.');
   };
 
-  const isFormValid = 
+  const isFormValid =
     businessNumber &&
     password &&
     confirmPassword &&
@@ -122,32 +121,50 @@ export default function BusinessSignupStep2({
     !errors.confirmPassword &&
     formState.isBusinessNumberVerified &&
     name &&
-    birthDate &&
-    birthDate.length === 8 &&
     phoneNumber &&
     phoneNumber.length >= 12 &&
     email &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
     !errors.company &&
     !errors.name &&
-    !errors.birthDate &&
     !errors.phoneNumber &&
     !errors.email;
 
-  const onSubmit = (data: Step2Form) => {
+  const onSubmit = async (data: Step2Form) => {
     if (!isValid) {
       alert('모든 항목을 올바르게 입력해주세요.');
       return;
     }
 
-    const transformedData = {
-      userInfo: {
-        ...data,
-        businessNumberVerifyToken: formState.businessNumberVerifyToken,
-      }
+    const companySignupData = {
+      company_number: parseInt(data.businessNumber.replace(/[^0-9]/g, '')),
+      company_name: 'workinkorea', // data.company,
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      phone: parseInt(data.phoneNumber.replace(/[^0-9]/g, '')),
     };
 
-    onNextAction(transformedData);
+    try {
+      await authApi.companySignup(companySignupData);
+
+      toast.success('기업 회원가입이 완료되었습니다. 로그인 해주세요.');
+
+      const transformedData = {
+        userInfo: {
+          ...data,
+          businessNumberVerifyToken: formState.businessNumberVerifyToken,
+        }
+      };
+
+      onNextAction(transformedData);
+    } catch (error: unknown) {
+      const errorMessage =
+        error && typeof error === 'object' && 'response' in error
+          ? (error.response as { data?: { message?: string } })?.data?.message
+          : '회원가입 중 오류가 발생했습니다.';
+      toast.error(errorMessage || '회원가입 중 오류가 발생했습니다.');
+    }
   };
 
   const calculateProgress = useCallback(() => {
@@ -158,15 +175,11 @@ export default function BusinessSignupStep2({
     }
 
     if (password && password.length >= 8 && !errors.password) {
-      progress += 15;
+      progress += 20;
     }
 
     if (confirmPassword && confirmPassword === password && !errors.confirmPassword) {
-      progress += 15;
-    }
-
-    if (birthDate && birthDate.length === 8 && !errors.birthDate) {
-      progress += 15;
+      progress += 20;
     }
 
     if (phoneNumber && phoneNumber.length >= 12 && !errors.phoneNumber) {
@@ -174,11 +187,11 @@ export default function BusinessSignupStep2({
     }
 
     if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && !errors.email) {
-      progress += 10;
+      progress += 15;
     }
 
     return Math.min(progress, 100);
-  }, [formState.isBusinessNumberVerified, password, confirmPassword, birthDate, phoneNumber, email, errors]);
+  }, [formState.isBusinessNumberVerified, password, confirmPassword, phoneNumber, email, errors]);
 
   const currentProgress = useMemo(() => calculateProgress(), [calculateProgress]);
 
@@ -406,38 +419,7 @@ export default function BusinessSignupStep2({
                     />
                   )}
                 />
-                
-                <FormField
-                  name="birthDate"
-                  control={control}
-                  label="대표자 생년월일"
-                  error={errors.birthDate?.message}
-                  render={(field, fieldId) => (
-                    <Input
-                      {...field}
-                      id={fieldId}
-                      placeholder="생년월일 8자리 입력 (19900101)"
-                      maxLength={8}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, '');
-                        field.onChange(value);
-                      }}
-                      onBlur={(e) => {
-                        const birthDateError = validateBirthDate(e.target.value);
-                        if (birthDateError) {
-                          setError('birthDate', {
-                            type: 'manual',
-                            message: birthDateError
-                          });
-                        } else {
-                          clearErrors('birthDate');
-                        }
-                      }}
-                      error={!!errors.birthDate}
-                    />
-                  )}
-                />
-                
+
                 <FormField
                   name="phoneNumber"
                   control={control}

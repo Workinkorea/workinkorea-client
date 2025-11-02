@@ -1,5 +1,10 @@
 import { tokenManager } from '../utils/tokenManager';
 
+
+export interface ApiRequestOptions extends RequestInit {
+  skipAuth?: boolean;
+}
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 let isRefreshing = false;
@@ -49,12 +54,13 @@ export const refreshAccessToken = async (): Promise<string> => {
 export const apiClient = {
   async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: ApiRequestOptions = {}
   ): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
+    const { skipAuth, ...fetchOptions } = options;
 
-    // 요청 전에 토큰이 곧 만료될지 확인하고 사전에 갱신
-    if (tokenManager.isTokenExpiringSoon()) {
+    // skipAuth가 true가 아닐 때만 토큰 갱신 체크
+    if (!skipAuth && tokenManager.isTokenExpiringSoon()) {
       try {
         const newAccessToken = await refreshAccessToken();
         tokenManager.setAccessToken(newAccessToken);
@@ -71,12 +77,12 @@ export const apiClient = {
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
-        ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-        ...options.headers,
+        ...(accessToken && !skipAuth && { Authorization: `Bearer ${accessToken}` }),
+        ...fetchOptions.headers,
       },
-      credentials: 'include',
+      credentials: skipAuth ? 'omit' : 'include',
       signal: controller.signal,
-      ...options,
+      ...fetchOptions,
     };
 
     try {
@@ -171,11 +177,11 @@ export const apiClient = {
     }
   },
 
-  get<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  get<T>(endpoint: string, options?: ApiRequestOptions): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'GET' });
   },
 
-  post<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
+  post<T>(endpoint: string, data?: unknown, options?: ApiRequestOptions): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: 'POST',
@@ -183,7 +189,7 @@ export const apiClient = {
     });
   },
 
-  put<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
+  put<T>(endpoint: string, data?: unknown, options?: ApiRequestOptions): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: 'PUT',
@@ -191,7 +197,7 @@ export const apiClient = {
     });
   },
 
-  delete<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  delete<T>(endpoint: string, options?: ApiRequestOptions): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   },
 };

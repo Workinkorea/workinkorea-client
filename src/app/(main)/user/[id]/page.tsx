@@ -12,9 +12,6 @@ interface UserProfilePageProps {
 export async function generateMetadata({ params }: UserProfilePageProps): Promise<Metadata> {
   const { id } = await params;
   
-  // TODO: 실제 구현에서는 API에서 사용자 정보를 가져와야 함
-  // const user = await getUserProfile(id);
-  console.log('Generating metadata for user:', id);
   
   return createMetadata({
     title: `사용자 프로필 - WorkInKorea`,
