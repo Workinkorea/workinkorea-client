@@ -9,6 +9,7 @@ pipeline {
 
         TRAEFIK_BASIC_AUTH_USERS = credentials('traefik-basic-auth-users')
         NEXT_PUBLIC_API_URL = credentials('next-public-api-url')
+        DISCORD_WEBHOOK_URL = credentials('discord-webhook-url')
     }
 
     stages {
@@ -149,6 +150,9 @@ pipeline {
                     """
                 }
             }
+            discordSend description: "${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} deployed successfully",
+                  title: "Success : Workinkorea-Client", 
+                  webhookURL: "${env.DISCORD_WEBHOOK_URL}"
             echo "old container : ${env.DOCKER_IMAGE_NAME}-${env.COLOR} stopped"
         }
         failure {
@@ -174,6 +178,9 @@ pipeline {
                     ${env.DOCKER_IMAGE_NAME}-${env.COLOR}
                 """
             }
+            discordSend description: "${env.DOCKER_IMAGE_NAME}-${env.COLOR} rolled back",
+                  title: "Failure : Workinkorea-Client", 
+                  webhookURL: "${env.DISCORD_WEBHOOK_URL}"
             echo "Rollback ${env.DOCKER_IMAGE_NAME}-${env.COLOR} started"
         }
     }
