@@ -12,7 +12,6 @@ export default function SignupStep2Page() {
       businessNumber: '',
       password: '',
       confirmPassword: '',
-      birthDate: '',
       phoneNumber: '',
       email: '',
       name: '',

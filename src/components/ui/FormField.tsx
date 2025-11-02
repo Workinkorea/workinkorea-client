@@ -47,7 +47,6 @@ export const FormField = <T extends FieldValues, N extends Path<T>>({
           </>
         )}
       />
-      {error && <ErrorMessage message={error} />}
     </div>
   );
 };

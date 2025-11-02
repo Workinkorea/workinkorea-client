@@ -3,8 +3,6 @@ pipeline {
     agent any
 
     environment {
-        BRANCH_NAME = "dev"
-        BASE_URL = "byeong98.xyz"
         DOCKER_IMAGE_NAME = "workinkorea-client"
         PORT = 3001
 
@@ -51,7 +49,7 @@ pipeline {
                         --name workinkorea-client \
                         --network core_network \
                         --label 'traefik.enable=true' \
-                        --label 'traefik.http.routers.workinkorea-client.rule=Host(`byeong98.xyz`)' \
+                        --label 'traefik.http.routers.workinkorea-client.rule=Host(`wik.byeong98.xyz`)' \
                         --label 'traefik.http.routers.workinkorea-client.entrypoints=websecure' \
                         --label 'traefik.http.routers.workinkorea-client.tls.certresolver=le' \
                         --label 'traefik.http.services.workinkorea-client.loadbalancer.server.port=${env.PORT}' \

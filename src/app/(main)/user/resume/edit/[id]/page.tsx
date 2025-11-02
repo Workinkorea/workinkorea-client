@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useParams } from 'next/navigation';
 import ResumeEditor from '@/components/resume/ResumeEditor';
 import { Resume } from '@/types/user';
 
@@ -37,8 +36,7 @@ const mockResumeData: Resume = {
 };
 
 const EditResumePage: React.FC = () => {
-  const params = useParams();
-  const resumeId = params.id as string;
+  // TODO: 실제 API 호출에서 params.id를 사용하여 이력서 데이터를 가져올 예정
 
   return (
     <div>

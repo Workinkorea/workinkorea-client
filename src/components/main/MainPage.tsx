@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import HeroSection from './sections/HeroSection';
@@ -14,11 +13,6 @@ import { useAuth } from '@/hooks/useAuth';
 export default function MainPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading, logout } = useAuth();
-  const [headerType, setHeaderType] = useState<'homepage' | 'business'>('homepage');
-
-  const toggleHeaderType = () => {
-    setHeaderType(prev => prev === 'homepage' ? 'business' : 'homepage');
-  };
 
   const handleLogout = async () => {
     await logout();
@@ -28,8 +22,7 @@ export default function MainPage() {
   return (
     <div className="min-h-screen bg-white">
       <Header
-        type={headerType}
-        onToggleType={toggleHeaderType}
+        type="homepage"
         isAuthenticated={isAuthenticated}
         isLoading={isLoading}
         onLogout={handleLogout}

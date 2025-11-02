@@ -6,32 +6,39 @@ import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
 import Input from '@/components/ui/Input';
 import { useRouter } from 'next/navigation';
-import { formatBusinessNumber, isValidBusinessNumber, removeBusinessNumberHyphen, validatePassword } from '@/lib/utils/authNumber';
+import { validatePassword } from '@/lib/utils/authNumber';
+import { authApi } from '@/lib/api/auth';
+import { tokenManager } from '@/lib/utils/tokenManager';
+// import { formatBusinessNumber, isValidBusinessNumber, removeBusinessNumberHyphen } from '@/lib/utils/authNumber'; // 사업자등록번호 방식에서 사용
 
 interface BusinessLoginFormData {
-  businessNumber: string;
+  email: string;
   password: string;
   rememberMe: boolean;
+  // businessNumber: string;
 }
 
-const SAVED_BUSINESS_NUMBER_KEY = 'savedBusinessNumber';
+const SAVED_EMAIL_KEY = 'savedBusinessEmail';
+// const SAVED_BUSINESS_NUMBER_KEY = 'savedBusinessNumber';
 
 const getDefaultValues = (): BusinessLoginFormData => {
   if (typeof window === 'undefined') {
     return {
-      businessNumber: '',
+      email: '',
       password: '',
       rememberMe: false,
     };
   }
 
   try {
-    const savedBusinessNumber = localStorage.getItem(SAVED_BUSINESS_NUMBER_KEY);
-    
+    const savedEmail = localStorage.getItem(SAVED_EMAIL_KEY);
+    // const savedBusinessNumber = localStorage.getItem(SAVED_BUSINESS_NUMBER_KEY);
+
     return {
-      businessNumber: savedBusinessNumber ? formatBusinessNumber(savedBusinessNumber) : '',
+      email: savedEmail || '',
+      // businessNumber: savedBusinessNumber ? formatBusinessNumber(savedBusinessNumber) : '',
       password: '',
-      rememberMe: !!savedBusinessNumber,
+      rememberMe: !!savedEmail,
     };
   } catch (error) {
     // localStorage 접근 실패 시 기본값 반환
@@ -39,7 +46,7 @@ const getDefaultValues = (): BusinessLoginFormData => {
       console.warn('localStorage access failed:', error);
     }
     return {
-      businessNumber: '',
+      email: '',
       password: '',
       rememberMe: false,
     };
@@ -66,23 +73,44 @@ export default function BusinessLoginForm() {
     isLoading: false,
   });
 
-  const businessNumber = watch('businessNumber');
+  const email = watch('email');
+  // const businessNumber = watch('businessNumber');
   const password = watch('password');
 
-  const handleBusinessNumberBlur = (businessNumber: string) => {
-    if (businessNumber) {
-      if (!isValidBusinessNumber(businessNumber)) {
-        setError('businessNumber', {
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailBlur = (email: string) => {
+    if (email) {
+      if (!isValidEmail(email)) {
+        setError('email', {
           type: 'manual',
-          message: '사업자등록번호 10자리를 입력해주세요.'
+          message: '올바른 이메일 형식을 입력해주세요.'
         });
       } else {
-        clearErrors('businessNumber');
+        clearErrors('email');
       }
     } else {
-      clearErrors('businessNumber');
+      clearErrors('email');
     }
   };
+
+  // const handleBusinessNumberBlur = (businessNumber: string) => {
+  //   if (businessNumber) {
+  //     if (!isValidBusinessNumber(businessNumber)) {
+  //       setError('businessNumber', {
+  //         type: 'manual',
+  //         message: '사업자등록번호 10자리를 입력해주세요.'
+  //       });
+  //     } else {
+  //       clearErrors('businessNumber');
+  //     }
+  //   } else {
+  //     clearErrors('businessNumber');
+  //   }
+  // };
 
   const handlePasswordBlur = (password: string) => {
     if (password) {
@@ -100,22 +128,36 @@ export default function BusinessLoginForm() {
     }
   };
 
-  const isFormValid = 
-    businessNumber &&
+  const isFormValid =
+    email &&
     password &&
-    isValidBusinessNumber(businessNumber) &&
+    isValidEmail(email) &&
     password.length >= 8 &&
-    !errors.businessNumber &&
+    !errors.email &&
     !errors.password;
+
+  // const isFormValid =
+  //   businessNumber &&
+  //   password &&
+  //   isValidBusinessNumber(businessNumber) &&
+  //   password.length >= 8 &&
+  //   !errors.businessNumber &&
+  //   !errors.password;
 
   const onSubmit = async (data: BusinessLoginFormData) => {
     if (!isFormValid) {
-      if (!businessNumber) {
-        setError('businessNumber', {
+      if (!email) {
+        setError('email', {
           type: 'manual',
-          message: '사업자등록번호를 입력해주세요.'
+          message: '이메일을 입력해주세요.'
         });
       }
+      // if (!businessNumber) {
+      //   setError('businessNumber', {
+      //     type: 'manual',
+      //     message: '사업자등록번호를 입력해주세요.'
+      //   });
+      // }
       if (!password) {
         setError('password', {
           type: 'manual',
@@ -125,23 +167,23 @@ export default function BusinessLoginForm() {
       return;
     }
 
-    const cleanBusinessNumber = removeBusinessNumberHyphen(data.businessNumber);
-    
-    if (cleanBusinessNumber.length < 10) {
-      setError('businessNumber', {
-        type: 'manual',
-        message: '사업자등록번호 10자리를 입력해주세요.'
-      });
-      return;
-    }
+    // const cleanBusinessNumber = removeBusinessNumberHyphen(data.businessNumber);
 
-    if (cleanBusinessNumber === data.password) {
-      setError('password', {
-        type: 'manual',
-        message: '가입하지 않은 사업자번호에요. 아래 회원가입을 해 주세요.'
-      });
-      return;
-    }
+    // if (cleanBusinessNumber.length < 10) {
+    //   setError('businessNumber', {
+    //     type: 'manual',
+    //     message: '사업자등록번호 10자리를 입력해주세요.'
+    //   });
+    //   return;
+    // }
+
+    // if (cleanBusinessNumber === data.password) {
+    //   setError('password', {
+    //     type: 'manual',
+    //     message: '가입하지 않은 사업자번호에요. 아래 회원가입을 해 주세요.'
+    //   });
+    //   return;
+    // }
 
     if (formState.isLoading) {
       return;
@@ -151,27 +193,52 @@ export default function BusinessLoginForm() {
     clearErrors();
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await authApi.companyLogin({
+        username: data.email,
+        password: data.password
+      });
 
-      if (data.rememberMe) {
-        localStorage.setItem(SAVED_BUSINESS_NUMBER_KEY, cleanBusinessNumber);
+      if (response.url) {
+        // URL에서 token 파싱
+        const url = new URL(response.url);
+        const token = url.searchParams.get('token');
+
+        if (token) {
+          // 기업 로그인 토큰을 세션 스토리지에 별도로 저장
+          tokenManager.setCompanyAccessToken(token);
+        }
+
+        if (data.rememberMe) {
+          localStorage.setItem(SAVED_EMAIL_KEY, data.email);
+        } else {
+          localStorage.removeItem(SAVED_EMAIL_KEY);
+        }
+
+        // 홈으로 리다이렉트
+        router.push('/');
       } else {
-        localStorage.removeItem(SAVED_BUSINESS_NUMBER_KEY);
+        setError('password', {
+          type: 'manual',
+          message: '로그인 응답이 올바르지 않습니다.'
+        });
+        setFormState(prev => ({ ...prev, isLoading: false }));
       }
 
-      router.push('/');
-
     } catch (error: unknown) {
-      // 프로덕션에서는 에러 로깅 서비스로 전송
       if (process.env.NODE_ENV === 'development') {
         console.error('Login error:', error);
       }
 
+      const errorMessage = error instanceof Error
+        ? error.message.includes('401') || error.message.includes('unauthorized')
+          ? '이메일 또는 비밀번호가 일치하지 않습니다.'
+          : '기업 로그인 중 오류가 발생했습니다.'
+        : '기업 로그인 중 오류가 발생했습니다.';
+
       setError('password', {
         type: 'manual',
-        message: '사업자 로그인 중 오류가 발생했습니다.'
+        message: errorMessage
       });
-    } finally {
       setFormState(prev => ({ ...prev, isLoading: false }));
     }
   };
@@ -185,7 +252,7 @@ export default function BusinessLoginForm() {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-title-2 text-label-900 mb-8">
-            사업자 로그인
+            기업 로그인
           </h1>
         </motion.div>
 
@@ -197,6 +264,30 @@ export default function BusinessLoginForm() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <div>
+            <FormField
+              name="email"
+              control={control}
+              label="이메일 (기업 ID)"
+              error={errors.email?.message}
+              render={(field, fieldId) => (
+                <Input
+                  {...field}
+                  id={fieldId}
+                  type="email"
+                  placeholder="example@company.com"
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    clearErrors('email');
+                  }}
+                  onBlur={(e) => handleEmailBlur(e.target.value)}
+                  error={!!errors.email}
+                />
+              )}
+            />
+          </div>
+
+          {/* 사업자등록번호 방식 (주석 처리) */}
+          {/* <div>
             <FormField
               name="businessNumber"
               control={control}
@@ -220,7 +311,7 @@ export default function BusinessLoginForm() {
                 />
               )}
             />
-          </div>
+          </div> */}
 
           <div>
             <FormField
@@ -268,7 +359,7 @@ export default function BusinessLoginForm() {
                     onBlur={field.onBlur}
                   />
                   <label htmlFor={fieldId} className="ml-2 block text-sm text-gray-900">
-                    사업자번호 저장
+                    이메일 저장
                   </label>
                 </div>
               )}
@@ -286,7 +377,7 @@ export default function BusinessLoginForm() {
               }`}
               whileTap={isFormValid && !formState.isLoading ? { scale: 0.98 } : {}}
             >
-              {formState.isLoading ? '사업자 로그인 중...' : '사업자 로그인'}
+              {formState.isLoading ? '기업 로그인 중...' : '기업 로그인'}
             </motion.button>
 
             <motion.button

@@ -4,13 +4,12 @@ import { SearchIcon } from '@/components/ui/AccessibleIcon';
 
 interface HeaderProps {
   type: 'homepage' | 'business';
-  onToggleType?: () => void;
   isAuthenticated?: boolean;
   isLoading?: boolean;
   onLogout?: () => void;
 }
 
-const Header = ({ type, onToggleType, isAuthenticated, isLoading, onLogout }: HeaderProps) => {
+const Header = ({ type, isAuthenticated, isLoading, onLogout }: HeaderProps) => {
   const getNavigationItems = () => {
     if (type === 'homepage') {
       return [
@@ -37,19 +36,19 @@ const Header = ({ type, onToggleType, isAuthenticated, isLoading, onLogout }: He
               <span className="text-title-3 font-bold text-primary-500">
                 WorkInKorea
               </span>
-              <span className="ml-2 text-caption-2 text-label-500 bg-component-alternative px-2 py-1 rounded">
+              <span className="hidden sm:block ml-2 text-caption-2 text-label-500 bg-component-alternative px-2 py-1 rounded">
                 {type === 'homepage' ? '개인' : '기업'}
               </span>
             </Link>
           </div>
 
-          <nav className="hidden md:block">
+          <nav className="hidden sm:block">
             <div className="ml-10 flex gap-8">
               {navigationItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-label-900 hover:text-primary-500 text-body-3 font-medium transition-colors whitespace-nowrap"
+                  className="text-label-900 hover:text-primary-500 font-medium text-body-3 transition-colors whitespace-nowrap"
                 >
                   {item.name}
                 </Link>
@@ -59,28 +58,11 @@ const Header = ({ type, onToggleType, isAuthenticated, isLoading, onLogout }: He
 
           <div className="w-full flex justify-end items-center space-x-3">
             <button
-              className="p-2 text-label-500 hover:text-label-700 transition-colors"
+              className="hidden sm:block p-2 text-label-500 hover:text-label-700 transition-colors"
               aria-label="검색"
             >
               <SearchIcon />
             </button>
-
-            <div className="relative">
-              <button
-                onClick={onToggleType}
-                className={`
-                  flex items-center gap-2 h-9 px-3 rounded-lg text-body-3 font-medium transition-all duration-200 cursor-pointer
-                  ${type === 'homepage' 
-                    ? 'bg-primary-50 text-primary-700 border border-primary-200 hover:bg-primary-100' 
-                    : 'bg-secondary-50 text-secondary-700 border border-secondary-200 hover:bg-secondary-100'
-                  }
-                `}
-              >
-                <span className="whitespace-nowrap">
-                  {type === 'homepage' ? '기업회원으로' : '개인회원으로'}
-                </span>
-              </button>
-            </div>
 
             {isLoading ? (
               <div className="w-24 h-9 bg-component-alternative animate-pulse rounded"></div>
@@ -94,37 +76,33 @@ const Header = ({ type, onToggleType, isAuthenticated, isLoading, onLogout }: He
                 </button>
               </div>
             ) : (
-              type === 'homepage' ? (
-                <div className="flex items-center gap-3">
-                  <Link
-                    href="/login"
-                    className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
-                  >
-                    개인 로그인
-                  </Link>
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <Link
-                    href="/company-login"
-                    className="text-label-700 hover:text-secondary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
-                  >
-                    기업 로그인
-                  </Link>
-                </div>
-              )
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/login-select"
+                  className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
+                >
+                  로그인
+                </Link>
+                <div className="h-4 w-px bg-line-400"></div>
+                <Link
+                  href="/signup-select"
+                  className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
+                >
+                  회원가입
+                </Link>
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="md:hidden">
-        <div className="pt-2 pb-3 space-y-1 bg-background-alternative">
+      <div className="sm:hidden">
+        <div className="flex flex-col gap-1 pl-5 pt-1 pb-1 bg-gray-50">
           {navigationItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className="text-label-900 hover:text-primary-500 block mx-4 py-3 text-body-2 font-medium transition-colors border-b border-label-100 last:border-b-0"
+              className="text-label-900 hover:text-primary-500 py-0.5 text-caption-1 font-medium transition-colors border-b border-label-100 last:border-b-0"
             >
               {item.name}
             </Link>

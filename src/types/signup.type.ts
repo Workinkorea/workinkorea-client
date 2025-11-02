@@ -14,7 +14,6 @@ export interface SignupStep2Data {
     businessNumber: string;
     password: string;
     confirmPassword: string;
-    birthDate: string;
     phoneNumber: string;
     email: string;
     name: string;
@@ -27,7 +26,6 @@ export type Step2Form = {
   businessNumber: string;
   password: string;
   confirmPassword: string;
-  birthDate: string;
   phoneNumber: string;
   email: string;
   name: string;

@@ -1,7 +1,15 @@
 import SignupComponent from "@/components/signup/SignupComponent";
 
-export default async function SignupPage() {
+interface SignupPageProps {
+  searchParams: {
+    user_email?: string;
+  };
+}
+
+export default async function SignupPage({ searchParams }: SignupPageProps) {
+  const { user_email: userEmail } = await searchParams;
+
   return (
-    <SignupComponent />
+    <SignupComponent userEmail={userEmail} />
   )
 };
