@@ -65,7 +65,7 @@ export interface CompanySignupResponse {
 }
 
 export interface CompanyLoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 

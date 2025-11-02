@@ -39,7 +39,19 @@ export const authApi = {
   },
 
   async companyLogin(data: CompanyLoginRequest): Promise<CompanyLoginResponse> {
-    return apiClient.post<CompanyLoginResponse>('/api/auth/company/login', data, { skipAuth: true });
+    // OAuth2PasswordRequestForm을 위한 form-urlencoded 형식으로 변환
+    const formData = new URLSearchParams();
+    formData.append('username', data.username);
+    formData.append('password', data.password);
+
+    return apiClient.request<CompanyLoginResponse>('/api/auth/company/login', {
+      method: 'POST',
+      body: formData.toString(),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      skipAuth: true,
+    });
   },
 
   async refreshToken(): Promise<RefreshTokenResponse> {

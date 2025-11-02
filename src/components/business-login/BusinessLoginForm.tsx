@@ -194,16 +194,14 @@ export default function BusinessLoginForm() {
 
     try {
       const response = await authApi.companyLogin({
-        email: data.email,
+        username: data.email,
         password: data.password
       });
 
       if (response.url) {
-        // URL에서 token, user_id, company_id 파싱
+        // URL에서 token 파싱
         const url = new URL(response.url);
         const token = url.searchParams.get('token');
-        const userId = url.searchParams.get('user_id');
-        const companyId = url.searchParams.get('company_id');
 
         if (token) {
           // 기업 로그인 토큰을 세션 스토리지에 별도로 저장
@@ -216,12 +214,8 @@ export default function BusinessLoginForm() {
           localStorage.removeItem(SAVED_EMAIL_KEY);
         }
 
-        // 기업 페이지로 리다이렉트 (쿼리 파라미터 포함)
-        if (userId && companyId) {
-          router.push(`/company?user_id=${userId}&company_id=${companyId}`);
-        } else {
-          router.push('/');
-        }
+        // 홈으로 리다이렉트
+        router.push('/');
       } else {
         setError('password', {
           type: 'manual',
