@@ -4,6 +4,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE_NAME = "workinkorea-client"
+        BASE_URL = "byeong98.xyz"
         PORT = 3001
 
         TRAEFIK_BASIC_AUTH_USERS = credentials('traefik-basic-auth-users')
@@ -11,55 +12,169 @@ pipeline {
     }
 
     stages {
+        stage("Docker container check"){
+            steps{
+                echo "Docker container check..."
+                script{ 
+                    def blueRunning = sh(
+                        script: "docker ps -q -f name=${env.DOCKER_IMAGE_NAME}-blue",
+                        returnStdout: true
+                    ).trim()
+
+                    def greenRunning = sh(
+                        script: "docker ps -q -f name=${env.DOCKER_IMAGE_NAME}-green",
+                        returnStdout: true
+                    ).trim()
+
+                    if(blueRunning){
+                        env.COLOR = "blue"
+                        env.NEW_COLOR = "green"
+                    } else if(greenRunning){
+                        env.COLOR = "green"
+                        env.NEW_COLOR = "blue"
+                    } else {
+                        env.COLOR = "none"
+                        env.NEW_COLOR = "blue"
+                    }
+                }
+                echo "COLOR: ${env.COLOR}, NEW_COLOR: ${env.NEW_COLOR}"
+            }
+        }
         stage("Docker build") {
-            // 기존 docker 중지 및 삭제
+            // docker image build
             steps {
                 echo "Building.."
                 script{
                     sh """
-                    docker stop ${env.DOCKER_IMAGE_NAME} || true
-                    docker rm ${env.DOCKER_IMAGE_NAME} || true
-                    docker rmi ${env.DOCKER_IMAGE_NAME} || true
-                    """
-
-                    sh """
                     docker build \
                       --build-arg NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} \
-                      -t ${env.DOCKER_IMAGE_NAME} .
+                      -t ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} .
                     """
                 }
                 echo "Docker build finished"
             }
         }
-        stage("Test") {
-            // 테스트 코드 실행
-            steps {
-                echo "Testing.."
-                // 테스트 코드 추가 예정
-                echo "Test finished"
-            }
-        }
-        stage("Deploy") {
+        
+        stage("Docker run") {
             // 배포
             steps {
-                echo "Deploying...."
+                echo "Docker run..."
                 script {
                     sh """
                         docker run -d \
-                        --name workinkorea-client \
+                        --name ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} \
                         --network core_network \
-                        --label 'traefik.enable=true' \
-                        --label 'traefik.http.routers.workinkorea-client.rule=Host(`wik.byeong98.xyz`)' \
-                        --label 'traefik.http.routers.workinkorea-client.entrypoints=websecure' \
-                        --label 'traefik.http.routers.workinkorea-client.tls.certresolver=le' \
-                        --label 'traefik.http.services.workinkorea-client.loadbalancer.server.port=${env.PORT}' \
-                        --label 'traefik.http.routers.workinkorea-client.middlewares=client-auth@docker' \
+                        --label 'traefik.enable=false' \
+                        --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.rule=Host(`wik.${env.BASE_URL}`)' \
+                        --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.entrypoints=websecure' \
+                        --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.tls.certresolver=le' \
+                        --label 'traefik.http.services.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.loadbalancer.server.port=${env.PORT}' \
+                        --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.middlewares=client-auth@docker' \
                         --label 'traefik.http.middlewares.client-auth.basicauth.users=${env.TRAEFIK_BASIC_AUTH_USERS}' \
-                        ${env.DOCKER_IMAGE_NAME}
+                        ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}
                         """
                 }
-                echo "Deploy finished"
+                echo "Docker run finished"
             }
+        }
+
+        stage("Health check and traefik switch") {
+            steps{
+                echo "Health check and traefik switch..."
+                script{
+                    def healthCheck = sh(
+                            script: "docker inspect -f '{{.State.Running}}' ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}",
+                            returnStdout: true
+                        ).trim()
+                    
+                    if (healthCheck == "true"){
+                        sh """
+                            docker stop ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} || true
+                            docker rm ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} || true
+                            docker run -d \
+                            --name ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} \
+                            --network core_network \
+                            --label 'traefik.enable=true' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.rule=Host(`wik.${env.BASE_URL}`)' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.entrypoints=websecure' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.tls.certresolver=le' \
+                            --label 'traefik.http.services.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.loadbalancer.server.port=${env.PORT}' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.middlewares=client-auth@docker' \
+                            --label 'traefik.http.middlewares.client-auth.basicauth.users=${env.TRAEFIK_BASIC_AUTH_USERS}' \
+                            ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}
+                            """
+                    } else {
+                        error("Health check failed. Container is not running : ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}")
+                    }
+                    
+                    sleep 5
+
+                    if (env.COLOR != "none") {
+                        sh "docker stop ${env.DOCKER_IMAGE_NAME}-${env.COLOR}"
+                    }
+                }
+                echo "Health check and traefik switch finished"
+            }
+        }
+
+        stage("Traefik test"){
+            steps{
+                echo "Traefik test..."
+                script{
+                    def traefikTest = sh(
+                        script: """docker run --rm --network core_network curlimages/curl:latest \
+                            curl -s -o /dev/null -w '%{http_code}' -H 'Host: wik.${env.BASE_URL}' \
+                            http://${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}:${env.PORT}""",
+                        returnStdout: true
+                    ).trim()
+                    
+                    echo "Traefik test passed. HTTP Status: ${traefikTest}"
+                    if (traefikTest != "200") {
+                        error("Traefik test failed. HTTP Status: ${traefikTest}")
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Deployment successful"
+            script{
+                if (env.COLOR != "none") {
+                    sh """
+                        docker stop ${env.DOCKER_IMAGE_NAME}-${env.COLOR} || true
+                        docker rm ${env.DOCKER_IMAGE_NAME}-${env.COLOR} || true
+                        docker rmi ${env.DOCKER_IMAGE_NAME}-${env.COLOR} || true
+                    """
+                }
+            }
+            echo "old container : ${env.DOCKER_IMAGE_NAME}-${env.COLOR} stopped"
+        }
+        failure {
+            echo "Deployment failed"
+            script{
+                sh """
+                    docker stop ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} || true
+                    docker rm ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} || true
+                    docker rmi ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} || true
+                """
+                sleep 5
+                sh """
+                    docker run -d \
+                    --name ${env.DOCKER_IMAGE_NAME}-${env.COLOR} \
+                    --network core_network \
+                    --label 'traefik.enable=true' \
+                    --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.rule=Host(`wik.${env.BASE_URL}`)' \
+                    --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.entrypoints=websecure' \
+                    --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.tls.certresolver=le' \
+                    --label 'traefik.http.services.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.loadbalancer.server.port=${env.PORT}' \
+                    --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.middlewares=client-auth@docker' \
+                    --label 'traefik.http.middlewares.client-auth.basicauth.users=${env.TRAEFIK_BASIC_AUTH_USERS}' \
+                    ${env.DOCKER_IMAGE_NAME}-${env.COLOR}
+                """
+            }
+            echo "Rollback ${env.DOCKER_IMAGE_NAME}-${env.COLOR} started"
         }
     }
 }
