@@ -46,9 +46,32 @@ pipeline {
             steps {
                 echo "Building.."
                 script{
+                    def blueRunning = sh(
+                        script: "docker ps -q -f 'name=workinkorea-server-blue'",
+                        returnStdout: true
+                    ).trim()
+
+                    def greenRunning = sh(
+                        script: "docker ps -q -f 'name=workinkorea-server-green'",
+                        returnStdout: true
+                    ).trim()
+
+                    if (blueRunning) {
+                        env.SERVER_COLOR = "blue"
+                    } else if (greenRunning) {
+                        env.SERVER_COLOR = "green"
+                    } else {
+                        // 서버가 없는 경우
+                        env.SERVER_COLOR = "blue"
+                    }
+                    
+                    echo "SERVER_COLOR: ${env.SERVER_COLOR}"
+
+                    sleep 5
+                    
                     sh """
                     docker build \
-                      --build-arg NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} \
+                      --build-arg NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL}-${env.SERVER_COLOR}:8000 \
                       -t ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} .
                     """
                 }
