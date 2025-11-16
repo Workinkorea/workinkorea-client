@@ -111,6 +111,18 @@ export interface CompanyProfileResponse {
   email: string;
 }
 
+export interface CompanyProfileRequest {
+  industry_type: string;
+  employee_count: number;
+  establishment_date: string;
+  company_type: string;
+  insurance: string;
+  phone_number: number;
+  address: string;
+  website_url: string;
+  email: string;
+}
+
 export interface ApiErrorResponse {
   error: string;
 }
