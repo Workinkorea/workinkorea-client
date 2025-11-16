@@ -18,6 +18,11 @@ export default function LoginContent() {
     clearErrors,
   } = useForm({
     mode: 'onChange',
+    defaultValues: {
+      email: '',
+      password: '',
+      rememberMe: false,
+    }
   });
 
   const [formState, setFormState] = useState({
@@ -47,7 +52,6 @@ export default function LoginContent() {
   const isFormValid =
     password &&
     password.length >= 8 &&
-    !errors.businessNumber &&
     !errors.password;
 
   const handleGoogleLogin = () => {

@@ -93,7 +93,7 @@ export default function LoginSelectContent() {
           <div className="text-center mt-8">
             <p className="text-body-3 text-label-600">
               아직 회원이 아니신가요?{' '}
-              <Link href="/signup-select" className="text-primary-500 hover:text-primary-600 font-medium">
+              <Link href="/-select" className="text-primary-500 hover:text-primary-600 font-medium">
                 회원가입
               </Link>
             </p>

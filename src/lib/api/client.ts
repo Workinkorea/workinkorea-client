@@ -1,8 +1,19 @@
 import { tokenManager } from '../utils/tokenManager';
-
+import { ApiErrorResponse } from './types';
 
 export interface ApiRequestOptions extends RequestInit {
   skipAuth?: boolean;
+}
+
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public data: ApiErrorResponse
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -164,7 +175,12 @@ export const apiClient = {
       }
 
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new ApiError(
+          errorData.error || `API Error: ${response.status}`,
+          response.status,
+          errorData
+        );
       }
 
       return response.json();
