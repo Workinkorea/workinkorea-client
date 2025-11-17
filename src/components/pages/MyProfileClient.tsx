@@ -13,6 +13,7 @@ import SkillBarChart from '@/components/user/SkillBarChart';
 import RadarChart from '@/components/ui/RadarChart';
 import ResumeSection from '@/components/user/ResumeSection';
 import { UserProfile, ProfileStatistics, SkillStats, RadarChartData, Resume, ResumeStatistics } from '@/types/user';
+import { profileApi } from '@/lib/api/profile';
 
 // TODO: 실제 API 호출로 대체 (로그인된 사용자의 프로필)
 const mockMyProfile: UserProfile = {
@@ -188,12 +189,30 @@ const mockResumeStatistics: { [resumeId: string]: ResumeStatistics } = {
 const MyProfileClient: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience' | 'resume'>('overview');
 
-  // TODO: 실제 API 쿼리로 대체
+  // 프로필 데이터 조회
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ['myProfile'],
     queryFn: async () => {
-      await new Promise(resolve => setTimeout(resolve, 800));
-      return mockMyProfile;
+      try {
+        const apiProfile = await profileApi.getProfile();
+
+        // API 응답을 UserProfile 형태로 변환
+        const transformedProfile: UserProfile = {
+          ...mockMyProfile, // 기본값으로 mock 데이터 사용
+          name: apiProfile.name,
+          profileImage: apiProfile.profile_image_url || undefined,
+          location: apiProfile.location,
+          bio: apiProfile.introduction,
+          portfolioUrl: apiProfile.portfolio_url,
+          // TODO: position_id, job_status, country_id 등을 적절히 매핑
+        };
+
+        return transformedProfile;
+      } catch (err) {
+        console.error('프로필 로드 실패:', err);
+        // 에러 시 mock 데이터 반환 (개발 환경용)
+        return mockMyProfile;
+      }
     }
   });
 

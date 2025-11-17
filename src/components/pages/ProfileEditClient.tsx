@@ -23,9 +23,9 @@ import Header from '@/components/layout/Header';
 import { FormField } from '@/components/ui/FormField';
 import Input from '@/components/ui/Input';
 import { UserProfile } from '@/types/user';
-import { 
+import {
   basicProfileSchema,
-  contactInfoSchema, 
+  contactInfoSchema,
   preferencesSchema,
   passwordChangeSchema,
   accountSettingsSchema,
@@ -36,6 +36,7 @@ import {
   AccountSettingsForm
 } from '@/lib/validations/profile';
 import { cn } from '@/lib/utils/utils';
+import { profileApi } from '@/lib/api/profile';
 
 // 임시 데이터 - 실제로는 API에서 가져올 데이터
 const mockProfile: UserProfile = {
@@ -80,17 +81,44 @@ const ProfileEditClient: React.FC = () => {
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ['myProfile'],
     queryFn: async () => {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      return mockProfile;
+      try {
+        const apiProfile = await profileApi.getProfile();
+
+        // API 응답을 UserProfile 형태로 변환
+        const transformedProfile: UserProfile = {
+          ...mockProfile, // 기본값으로 mock 데이터 사용
+          name: apiProfile.name,
+          profileImage: apiProfile.profile_image_url || undefined,
+          location: apiProfile.location,
+          bio: apiProfile.introduction,
+          portfolioUrl: apiProfile.portfolio_url,
+          // TODO: position_id, job_status, country_id 등을 적절히 매핑
+        };
+
+        return transformedProfile;
+      } catch (err) {
+        console.error('프로필 로드 실패:', err);
+        // 에러 시 mock 데이터 반환 (개발 환경용)
+        return mockProfile;
+      }
     }
   });
 
   // 프로필 업데이트 뮤테이션
   const updateProfileMutation = useMutation({
     mutationFn: async (updatedData: Partial<UserProfile>) => {
-      // TODO: 실제 API 호출
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return { ...profile, ...updatedData };
+      // UserProfile 데이터를 ProfileUpdateRequest 형식으로 변환
+      const requestData = {
+        name: updatedData.name,
+        profile_image_url: updatedData.profileImage,
+        location: updatedData.location,
+        introduction: updatedData.bio,
+        portfolio_url: updatedData.portfolioUrl,
+        job_status: updatedData.availability,
+        // position_id, country_id, birth_date는 나중에 추가
+      };
+
+      return profileApi.updateProfile(requestData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
@@ -106,30 +134,30 @@ const ProfileEditClient: React.FC = () => {
   const basicForm = useForm<BasicProfileForm>({
     resolver: zodResolver(basicProfileSchema),
     defaultValues: {
-      name: profile?.name || '',
-      title: profile?.title || '',
-      location: profile?.location || '',
-      bio: profile?.bio || '',
+      name: '',
+      title: '',
+      location: '',
+      bio: '',
     }
   });
 
   const contactForm = useForm<ContactInfoForm>({
     resolver: zodResolver(contactInfoSchema),
     defaultValues: {
-      email: profile?.email || '',
-      githubUrl: profile?.githubUrl || '',
-      linkedinUrl: profile?.linkedinUrl || '',
-      portfolioUrl: profile?.portfolioUrl || '',
+      email: '',
+      githubUrl: '',
+      linkedinUrl: '',
+      portfolioUrl: '',
     }
   });
 
   const preferencesForm = useForm<PreferencesForm>({
     resolver: zodResolver(preferencesSchema),
     defaultValues: {
-      availability: profile?.availability || 'available',
-      experience: profile?.experience || 0,
-      completedProjects: profile?.completedProjects || 0,
-      preferredSalary: profile?.preferredSalary || {
+      availability: 'available',
+      experience: 0,
+      completedProjects: 0,
+      preferredSalary: {
         min: 0,
         max: 0,
         currency: '만원'

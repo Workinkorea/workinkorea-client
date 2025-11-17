@@ -1,8 +1,20 @@
 import { tokenManager } from '../utils/tokenManager';
-
+import { ApiErrorResponse } from './types';
 
 export interface ApiRequestOptions extends RequestInit {
   skipAuth?: boolean;
+  tokenType?: 'user' | 'company';
+}
+
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public data: ApiErrorResponse
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -57,19 +69,19 @@ export const apiClient = {
     options: ApiRequestOptions = {}
   ): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
-    const { skipAuth, ...fetchOptions } = options;
+    const { skipAuth, tokenType = 'user', ...fetchOptions } = options;
 
     // skipAuth가 true가 아닐 때만 토큰 갱신 체크
-    if (!skipAuth && tokenManager.isTokenExpiringSoon()) {
+    if (!skipAuth && tokenManager.isTokenExpiringSoon(tokenType)) {
       try {
         const newAccessToken = await refreshAccessToken();
-        tokenManager.setAccessToken(newAccessToken);
+        tokenManager.setToken(newAccessToken, tokenType);
       } catch {
-        tokenManager.removeAccessToken();
+        tokenManager.removeToken(tokenType);
       }
     }
 
-    const accessToken = tokenManager.getAccessToken();
+    const accessToken = tokenManager.getToken(tokenType);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -164,7 +176,12 @@ export const apiClient = {
       }
 
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new ApiError(
+          errorData.error || `API Error: ${response.status}`,
+          response.status,
+          errorData
+        );
       }
 
       return response.json();
