@@ -3,6 +3,7 @@ import { ApiErrorResponse } from './types';
 
 export interface ApiRequestOptions extends RequestInit {
   skipAuth?: boolean;
+  tokenType?: 'user' | 'company';
 }
 
 export class ApiError extends Error {
@@ -68,19 +69,19 @@ export const apiClient = {
     options: ApiRequestOptions = {}
   ): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
-    const { skipAuth, ...fetchOptions } = options;
+    const { skipAuth, tokenType = 'user', ...fetchOptions } = options;
 
     // skipAuth가 true가 아닐 때만 토큰 갱신 체크
-    if (!skipAuth && tokenManager.isTokenExpiringSoon()) {
+    if (!skipAuth && tokenManager.isTokenExpiringSoon(tokenType)) {
       try {
         const newAccessToken = await refreshAccessToken();
-        tokenManager.setAccessToken(newAccessToken);
+        tokenManager.setToken(newAccessToken, tokenType);
       } catch {
-        tokenManager.removeAccessToken();
+        tokenManager.removeToken(tokenType);
       }
     }
 
-    const accessToken = tokenManager.getAccessToken();
+    const accessToken = tokenManager.getToken(tokenType);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);

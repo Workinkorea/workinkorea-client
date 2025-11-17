@@ -219,3 +219,25 @@ export interface UpdateResumeResponse {
 export interface DeleteResumeResponse {
   message: string;
 }
+
+// Company Post API types
+export interface CompanyPost {
+  id: number;
+  company_id: number;
+  title: string;
+  content: string;
+  work_experience: string;
+  position_id: number;
+  education: string;
+  language: string;
+  employment_type: string;
+  work_location: string;
+  working_hours: number;
+  salary: number;
+  start_date: string;
+  end_date: string;
+}
+
+export interface CompanyPostsResponse {
+  company_posts: CompanyPost[];
+}
