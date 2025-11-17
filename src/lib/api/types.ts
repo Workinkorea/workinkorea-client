@@ -241,3 +241,88 @@ export interface CompanyPost {
 export interface CompanyPostsResponse {
   company_posts: CompanyPost[];
 }
+
+export interface CreateCompanyPostRequest {
+  title: string;
+  content: string;
+  work_experience: string;
+  position_id: string;
+  education: string;
+  language: string;
+  employment_type: string;
+  work_location: string;
+  working_hours: number;
+  salary: number;
+  start_date: string;
+  end_date: string;
+}
+
+export interface CreateCompanyPostResponse {
+  id: number;
+  company_id: number;
+  title: string;
+  content: string;
+  work_experience: string;
+  position_id: number;
+  education: string;
+  language: string;
+  employment_type: string;
+  work_location: string;
+  working_hours: number;
+  salary: number;
+  start_date: string;
+  end_date: string;
+}
+
+export interface CompanyPostDetailResponse {
+  id: number;
+  company_id: number;
+  title: string;
+  content: string;
+  work_experience: string;
+  position_id: number;
+  education: string;
+  language: string;
+  employment_type: string;
+  work_location: string;
+  working_hours: number;
+  salary: number;
+  start_date: string;
+  end_date: string;
+}
+
+export interface UpdateCompanyPostRequest {
+  title?: string;
+  content?: string;
+  work_experience?: string;
+  position_id?: number;
+  education?: string;
+  language?: string;
+  employment_type?: string;
+  work_location?: string;
+  working_hours?: number;
+  salary?: number;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface UpdateCompanyPostResponse {
+  id: number;
+  company_id: number;
+  title: string;
+  content: string;
+  work_experience: string;
+  position_id: number;
+  education: string;
+  language: string;
+  employment_type: string;
+  work_location: string;
+  working_hours: number;
+  salary: number;
+  start_date: string;
+  end_date: string;
+}
+
+export interface DeleteCompanyPostResponse {
+  message: string;
+}
