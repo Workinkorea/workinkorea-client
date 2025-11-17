@@ -1,5 +1,5 @@
 // 사용 예시
-import { profileApi } from './getProfileCompany';
+import { profileApi } from './profileCompany';
 import { ApiError } from '../client';
 
 // 예시 1: try-catch를 사용한 에러 핸들링

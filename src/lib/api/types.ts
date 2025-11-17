@@ -70,8 +70,7 @@ export interface CompanyLoginRequest {
 }
 
 export interface CompanyLoginResponse {
-  url: string; // 리다이렉트 URL (user_id, company_id, token 포함)
-  // token은 accessToken이며, refreshToken은 httpOnly 쿠키로 관리됨
+  url: string;
 }
 
 export interface ProfileResponse {
@@ -125,4 +124,98 @@ export interface CompanyProfileRequest {
 
 export interface ApiErrorResponse {
   error: string;
+}
+
+// Resume API types
+export interface ResumeListItem {
+  id: number;
+  title: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ResumeListResponse {
+  resume_list: ResumeListItem[];
+}
+
+export interface LanguageSkill {
+  language_type: string;
+  level: string;
+}
+
+export interface School {
+  school_name: string;
+  major_name: string;
+  start_date: string;
+  end_date: string;
+  is_graduated: boolean;
+}
+
+export interface CareerHistory {
+  company_name: string;
+  start_date: string;
+  end_date: string;
+  is_working: boolean;
+  department: string;
+  position_title: string;
+  main_role: string;
+}
+
+export interface Introduction {
+  title: string;
+  content: string;
+}
+
+export interface License {
+  license_name: string;
+  license_agency: string;
+  license_date: string;
+}
+
+export interface ResumeDetail {
+  id: number;
+  user_id: number;
+  title: string;
+  profile_url: string;
+  language_skills: LanguageSkill[];
+  schools: School[];
+  career_history: CareerHistory[];
+  introduction: Introduction[];
+  licenses: License[];
+}
+
+export interface ResumeDetailResponse {
+  resume: ResumeDetail;
+}
+
+export interface CreateResumeRequest {
+  title: string;
+  profile_url?: string;
+  language_skills?: LanguageSkill[];
+  schools?: School[];
+  career_history?: CareerHistory[];
+  introduction?: Introduction[];
+  licenses?: License[];
+}
+
+export interface CreateResumeResponse {
+  resume_id: number;
+}
+
+export interface UpdateResumeRequest {
+  title?: string;
+  profile_url?: string;
+  language_skills?: LanguageSkill[];
+  schools?: School[];
+  career_history?: CareerHistory[];
+  introduction?: Introduction[];
+  licenses?: License[];
+}
+
+export interface UpdateResumeResponse {
+  resume_id: number;
+}
+
+export interface DeleteResumeResponse {
+  message: string;
 }
