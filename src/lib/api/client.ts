@@ -31,7 +31,7 @@ const onTokenRefreshed = (token: string) => {
   refreshSubscribers = [];
 };
 
-export const refreshAccessToken = async (): Promise<string> => {
+export const refreshAccessToken = async (tokenType: 'user' | 'company' = 'user'): Promise<string> => {
   const response = await fetch('/api/auth/refresh', {
     method: 'POST',
     credentials: 'include',
@@ -44,7 +44,7 @@ export const refreshAccessToken = async (): Promise<string> => {
     const data = await response.json().catch(() => ({}));
 
     if (data.message === 'Refresh token not found') {
-      tokenManager.removeAccessToken();
+      tokenManager.removeToken(tokenType);
       if (typeof window !== 'undefined') {
         window.location.href = '/login';
       }

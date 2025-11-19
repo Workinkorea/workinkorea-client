@@ -51,12 +51,12 @@ export interface SignupRequest {
 }
 
 export interface CompanySignupRequest {
-  company_number: number;
+  company_number: string;
   company_name: string;
   email: string;
   password: string;
   name: string;
-  phone: number;
+  phone: string;
 }
 
 export interface CompanySignupResponse {

@@ -25,7 +25,7 @@ export const authApi = {
   async login(data: LoginRequest): Promise<LoginResponse> {
     return apiClient.post<LoginResponse>('/api/auth/login', data, {
       skipAuth: true,
-      credentials: 'include' // httpOnly 쿠키로 refreshToken 받기 위해 필요
+      credentials: 'include'
     });
   },
 
