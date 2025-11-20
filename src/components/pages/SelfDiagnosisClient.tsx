@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import { FormField } from '@/components/ui/FormField';
+import { useAuth } from '@/hooks/useAuth';
 
 interface SelfDiagnosisFormData {
   gender: 'male' | 'female' | '';
@@ -17,6 +18,7 @@ interface SelfDiagnosisFormData {
 
 const SelfDiagnosisClient = () => {
   const router = useRouter();
+  const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: false });
   const {
     control,
     handleSubmit,
@@ -29,6 +31,11 @@ const SelfDiagnosisClient = () => {
       desiredSalary: '',
     }
   });
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/');
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = async (_data: SelfDiagnosisFormData) => {
@@ -44,7 +51,12 @@ const SelfDiagnosisClient = () => {
 
   return (
     <Layout>
-      <Header type="homepage" />
+      <Header
+        type={userType === 'company' ? 'business' : 'homepage'}
+        isAuthenticated={isAuthenticated}
+        isLoading={isLoading}
+        onLogout={handleLogout}
+      />
       <div className="min-h-screen bg-background-alternative py-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <motion.div

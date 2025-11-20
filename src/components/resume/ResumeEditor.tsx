@@ -3,25 +3,32 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import {
   Save,
   Eye,
   ArrowLeft
 } from 'lucide-react';
 import { Resume, ResumeTemplate } from '@/types/user';
+import { resumeApi } from '@/lib/api/resume';
+import { CreateResumeRequest, UpdateResumeRequest } from '@/lib/api/types';
 
 interface ResumeEditorProps {
   templateType: ResumeTemplate;
   initialData?: Resume;
   isEditMode?: boolean;
+  resumeId?: number | null;
 }
 
 const ResumeEditor: React.FC<ResumeEditorProps> = ({
   templateType,
   initialData,
-  isEditMode = false
+  isEditMode = false,
+  resumeId
 }) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isSaving, setIsSaving] = useState(false);
   const [resumeData, setResumeData] = useState<Partial<Resume>>({
     title: initialData?.title || '',
@@ -47,24 +54,83 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
     }
   });
 
+  // 이력서 생성 뮤테이션
+  const createResumeMutation = useMutation({
+    mutationFn: async (data: CreateResumeRequest) => {
+      return resumeApi.createResume(data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['resumes'] });
+      toast.success('이력서가 생성되었습니다.');
+      router.push('/user/profile?tab=resume');
+    },
+    onError: () => {
+      toast.error('이력서 생성에 실패했습니다.');
+    }
+  });
+
+  // 이력서 업데이트 뮤테이션
+  const updateResumeMutation = useMutation({
+    mutationFn: async (data: UpdateResumeRequest) => {
+      if (!resumeId) throw new Error('Resume ID is required');
+      return resumeApi.updateResume(resumeId, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['resume', resumeId] });
+      queryClient.invalidateQueries({ queryKey: ['resumes'] });
+      toast.success('이력서가 수정되었습니다.');
+    },
+    onError: () => {
+      toast.error('이력서 수정에 실패했습니다.');
+    }
+  });
+
   const handleSave = async (status: 'draft' | 'completed' | 'published' = 'draft') => {
     setIsSaving(true);
 
     try {
-      const dataToSave = {
-        ...resumeData,
-        status,
-        updatedAt: new Date().toISOString()
+      // Resume 데이터를 API 요청 형식으로 변환
+      const requestData: CreateResumeRequest | UpdateResumeRequest = {
+        title: resumeData.title || '',
+        profile_url: resumeData.content?.personalInfo?.profileImage,
+        language_skills: resumeData.content?.languages?.map(lang => ({
+          language_type: lang.name,
+          level: lang.proficiency
+        })),
+        schools: resumeData.content?.education?.map(edu => ({
+          school_name: edu.institution,
+          major_name: edu.field,
+          start_date: edu.startDate,
+          end_date: edu.endDate || '',
+          is_graduated: edu.degree === '졸업'
+        })),
+        career_history: resumeData.content?.workExperience?.map(work => ({
+          company_name: work.company,
+          start_date: work.startDate,
+          end_date: work.endDate || '',
+          is_working: work.current || false,
+          department: '',
+          position_title: work.position,
+          main_role: work.description || ''
+        })),
+        introduction: [{
+          title: '자기소개',
+          content: resumeData.content?.objective || ''
+        }],
+        licenses: resumeData.content?.certifications?.map(cert => ({
+          license_name: cert,
+          license_agency: '',
+          license_date: ''
+        }))
       };
 
-      console.log('이력서 저장:', dataToSave);
-      // TODO: 실제 API 호출 구현
-
-      // 임시 지연
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (isEditMode && resumeId) {
+        await updateResumeMutation.mutateAsync(requestData as UpdateResumeRequest);
+      } else {
+        await createResumeMutation.mutateAsync(requestData as CreateResumeRequest);
+      }
 
       if (status === 'completed' || status === 'published') {
-        // 완료 또는 게시 시 프로필 페이지로 이동
         router.push('/user/profile?tab=resume');
       }
     } catch (error) {

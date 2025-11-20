@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -14,6 +14,8 @@ import RadarChart from '@/components/ui/RadarChart';
 import ResumeSection from '@/components/user/ResumeSection';
 import { UserProfile, ProfileStatistics, SkillStats, RadarChartData, Resume, ResumeStatistics } from '@/types/user';
 import { profileApi } from '@/lib/api/profile';
+import { resumeApi } from '@/lib/api/resume';
+import { useAuth } from '@/hooks/useAuth';
 
 // TODO: 실제 API 호출로 대체 (로그인된 사용자의 프로필)
 const mockMyProfile: UserProfile = {
@@ -188,6 +190,7 @@ const mockResumeStatistics: { [resumeId: string]: ResumeStatistics } = {
 
 const MyProfileClient: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience' | 'resume'>('overview');
+  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
 
   // 프로필 데이터 조회
   const { data: profile, isLoading, error } = useQuery({
@@ -216,7 +219,61 @@ const MyProfileClient: React.FC = () => {
     }
   });
 
+  // 이력서 목록 조회
+  const { data: resumesData, isLoading: resumesLoading } = useQuery({
+    queryKey: ['resumes'],
+    queryFn: async () => {
+      try {
+        const response = await resumeApi.getMyResumes();
+
+        // API 응답을 Resume 타입으로 변환
+        const resumes: Resume[] = response.resume_list.map(item => ({
+          id: String(item.id),
+          title: item.title,
+          templateType: 'modern',
+          status: 'completed',
+          isPublic: true,
+          userId: 'me',
+          content: {
+            personalInfo: {
+              name: '',
+              email: '',
+              phone: '',
+              address: ''
+            },
+            workExperience: [],
+            education: [],
+            skills: [],
+            projects: [],
+            certifications: [],
+            languages: []
+          },
+          createdAt: item.created_at,
+          updatedAt: item.updated_at
+        }));
+
+        return resumes;
+      } catch (err) {
+        console.error('이력서 목록 로드 실패:', err);
+        // 에러 시 mock 데이터 반환
+        return mockResumes;
+      }
+    }
+  });
+
   const router = useRouter();
+
+  // 인증 체크 및 리다이렉트
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, authLoading, router]);
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/');
+  };
 
   const handleEditClick = () => {
     // 편집 페이지로 이동
@@ -251,10 +308,15 @@ const MyProfileClient: React.FC = () => {
     leadership: 55
   });
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <Layout>
-      <Header type="homepage" />
+      <Header
+        type={userType === 'company' ? 'business' : 'homepage'}
+        isAuthenticated={isAuthenticated}
+        isLoading={authLoading}
+        onLogout={handleLogout}
+      />
         <div className="min-h-screen bg-background-alternative py-8">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="animate-pulse space-y-6">
@@ -273,7 +335,12 @@ const MyProfileClient: React.FC = () => {
   if (error || !profile) {
     return (
       <Layout>
-      <Header type="homepage" />
+      <Header
+        type={userType === 'company' ? 'business' : 'homepage'}
+        isAuthenticated={isAuthenticated}
+        isLoading={authLoading}
+        onLogout={handleLogout}
+      />
         <div className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-title-3 font-semibold text-label-700 mb-2">
@@ -293,7 +360,12 @@ const MyProfileClient: React.FC = () => {
 
   return (
     <Layout>
-      <Header type="homepage" />
+      <Header
+        type={userType === 'company' ? 'business' : 'homepage'}
+        isAuthenticated={isAuthenticated}
+        isLoading={authLoading}
+        onLogout={handleLogout}
+      />
       <div className="min-h-screen bg-background-alternative py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           {/* 페이지 헤더 */}
@@ -525,25 +597,33 @@ const MyProfileClient: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <ResumeSection
-                  resumes={mockResumes}
-                  resumeStatistics={mockResumeStatistics}
-                  onUploadResume={(file) => {
-                    // TODO: 실제 파일 업로드 API 구현
-                  }}
-                  onDeleteResume={(resumeId) => {
-                    
-                    // TODO: 삭제 확인 모달 및 API 호출
-                  }}
-                  onTogglePublic={(resumeId) => {
-                    
-                    // TODO: 공개/비공개 설정 API 호출
-                  }}
-                  onViewResume={(resumeId) => {
-                    
-                    // TODO: 이력서 미리보기 모달 또는 페이지로 이동
-                  }}
-                />
+                {resumesLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full"></div>
+                  </div>
+                ) : (
+                  <ResumeSection
+                    resumes={resumesData || mockResumes}
+                    resumeStatistics={mockResumeStatistics}
+                    onUploadResume={(file) => {
+                      // TODO: 실제 파일 업로드 API 구현
+                    }}
+                    onDeleteResume={async (resumeId) => {
+                      try {
+                        await resumeApi.deleteResume(Number(resumeId));
+                        // TODO: 쿼리 무효화하여 목록 갱신
+                      } catch (err) {
+                        console.error('이력서 삭제 실패:', err);
+                      }
+                    }}
+                    onTogglePublic={(resumeId) => {
+                      // TODO: 공개/비공개 설정 API 호출
+                    }}
+                    onViewResume={(resumeId) => {
+                      // TODO: 이력서 미리보기 모달 또는 페이지로 이동
+                    }}
+                  />
+                )}
               </motion.div>
             )}
           </div>

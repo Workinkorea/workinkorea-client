@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import UserProfileHeader from '@/components/user/UserProfileHeader';
@@ -10,6 +11,7 @@ import ProfileStats from '@/components/user/ProfileStats';
 import SkillBarChart from '@/components/user/SkillBarChart';
 import RadarChart from '@/components/ui/RadarChart';
 import { UserProfile, ProfileStatistics, SkillStats, RadarChartData } from '@/types/user';
+import { useAuth } from '@/hooks/useAuth';
 
 interface UserProfileClientProps {
   userId: string;
@@ -81,9 +83,20 @@ const mockSkillStats: SkillStats = {
 };
 
 const UserProfileClient: React.FC<UserProfileClientProps> = ({ userId }) => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience'>('overview');
+  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: false });
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/');
+  };
 
   // TODO: 실제 API 쿼리로 대체
+  // 현재 profileApi에는 자신의 프로필만 가져오는 getProfile()만 있음
+  // 다른 사용자의 프로필을 가져오는 API 엔드포인트가 필요함 (예: GET /api/profile/{userId})
+  // 백엔드에 해당 API가 추가되면 아래와 같이 구현:
+  // const response = await profileApi.getUserProfile(userId);
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ['userProfile', userId],
     queryFn: async () => {
@@ -123,7 +136,12 @@ const UserProfileClient: React.FC<UserProfileClientProps> = ({ userId }) => {
   if (isLoading) {
     return (
       <Layout>
-      <Header type="homepage" />
+      <Header
+        type={userType === 'company' ? 'business' : 'homepage'}
+        isAuthenticated={isAuthenticated}
+        isLoading={authLoading}
+        onLogout={handleLogout}
+      />
         <div className="min-h-screen bg-background-alternative py-8">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="animate-pulse space-y-6">
@@ -142,7 +160,12 @@ const UserProfileClient: React.FC<UserProfileClientProps> = ({ userId }) => {
   if (error || !profile) {
     return (
       <Layout>
-      <Header type="homepage" />
+      <Header
+        type={userType === 'company' ? 'business' : 'homepage'}
+        isAuthenticated={isAuthenticated}
+        isLoading={authLoading}
+        onLogout={handleLogout}
+      />
         <div className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-title-3 font-semibold text-label-700 mb-2">
@@ -162,7 +185,12 @@ const UserProfileClient: React.FC<UserProfileClientProps> = ({ userId }) => {
 
   return (
     <Layout>
-      <Header type="homepage" />
+      <Header
+        type={userType === 'company' ? 'business' : 'homepage'}
+        isAuthenticated={isAuthenticated}
+        isLoading={authLoading}
+        onLogout={handleLogout}
+      />
       <div className="min-h-screen bg-background-alternative py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           {/* 헤더 */}

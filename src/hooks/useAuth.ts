@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { tokenManager } from '@/lib/utils/tokenManager';
+import { tokenManager, TokenType } from '@/lib/utils/tokenManager';
 import { authApi } from '@/lib/api/auth';
 import { usePathname } from 'next/navigation';
 
@@ -7,19 +7,27 @@ import { usePathname } from 'next/navigation';
 const AUTH_PATHS = ['/login', '/signup', '/company-login', '/company-signup'];
 
 // 로그인이 필수인 페이지 경로
-const PROTECTED_PATHS = ['/user'];
+const PROTECTED_PATHS = ['/user', '/company'];
 
-export const useAuth = () => {
+interface UseAuthOptions {
+  required?: boolean; // true: 토큰 없으면 refresh 시도, false: 토큰 체크만
+}
+
+export const useAuth = (options: UseAuthOptions = {}) => {
+  const { required } = options;
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [userType, setUserType] = useState<TokenType | null>(null);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // 현재 경로가 인증 페이지인지 확인
   const isAuthPath = AUTH_PATHS.some(path => pathname?.startsWith(path));
 
-  // 현재 경로가 로그인이 필수인 페이지인지 확인
-  const isProtectedPath = PROTECTED_PATHS.some(path => pathname?.startsWith(path));
+  // required 옵션이 있으면 우선 사용, 없으면 경로 기반으로 판단
+  const isProtectedPath = required !== undefined
+    ? required
+    : PROTECTED_PATHS.some(path => pathname?.startsWith(path));
 
   // 토큰 갱신 스케줄링 (전방 선언을 위한 ref)
   const scheduleTokenRefreshRef = useRef<(() => void) | null>(null);
@@ -83,15 +91,33 @@ export const useAuth = () => {
       // 인증 페이지에서는 토큰 체크를 하지 않음
       if (isAuthPath) {
         setIsAuthenticated(false);
+        setUserType(null);
         setIsLoading(false);
         return;
       }
 
-      const hasToken = tokenManager.hasAccessToken();
+      // 어떤 타입의 토큰이 있는지 확인
+      const hasUserToken = tokenManager.getAccessToken();
+      const hasCompanyToken = tokenManager.getCompanyAccessToken();
 
-      if (hasToken && tokenManager.isTokenValid()) {
+      let currentTokenType: TokenType | null = null;
+      let hasValidToken = false;
+
+      // 개인 토큰 먼저 확인
+      if (hasUserToken && tokenManager.isTokenValid('user')) {
+        currentTokenType = 'user';
+        hasValidToken = true;
+      }
+      // 개인 토큰이 없거나 유효하지 않으면 기업 토큰 확인
+      else if (hasCompanyToken && tokenManager.isTokenValid('company')) {
+        currentTokenType = 'company';
+        hasValidToken = true;
+      }
+
+      if (hasValidToken && currentTokenType) {
         // 유효한 토큰이 있으면 인증 상태 설정 및 갱신 스케줄링
         setIsAuthenticated(true);
+        setUserType(currentTokenType);
         setIsLoading(false);
         scheduleTokenRefresh();
         return;
@@ -104,16 +130,19 @@ export const useAuth = () => {
           if (!success) {
             tokenManager.removeAccessToken();
             setIsAuthenticated(false);
+            setUserType(null);
           }
         } catch {
           tokenManager.removeAccessToken();
           setIsAuthenticated(false);
+          setUserType(null);
         } finally {
           setIsLoading(false);
         }
       } else {
         // 로그인이 선택적인 페이지에서는 토큰이 없어도 그냥 진행
         setIsAuthenticated(false);
+        setUserType(null);
         setIsLoading(false);
       }
     };
@@ -169,6 +198,7 @@ export const useAuth = () => {
   return {
     isAuthenticated,
     isLoading,
+    userType,
     login,
     logout,
   };
