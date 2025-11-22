@@ -52,7 +52,7 @@ export const authApi = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      credentials: 'include', // httpOnly 쿠키로 refreshToken 받기 위해 필요
+      credentials: 'include',
       skipAuth: true,
     });
   },
