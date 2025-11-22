@@ -1,36 +1,14 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 📄 통합 기능 명세서
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| 섹션 | 기능 명세 (화면 내용) | 관련 API 엔드포인트 | 디자이너를 위한 핵심 고려 사항 |
+| :--- | :--- | :--- | :--- |
+| **🔑 인증 (Auth)** | **로그인 / 회원가입** 폼 및 소셜 로그인 연동. (일반/기업 분리) | `POST /api/auth/signup`<br>`POST /api/auth/company/login`<br>`GET /api/auth/login/google` | 사용자 여정(Journey)이 간단해야 하며, 일반/기업 계정 분리가 명확해야 합니다. 이메일 인증 절차의 안내 메시지 디자인을 검토하세요. |
+| | **로그아웃 및 토큰 관리** | `DELETE /api/auth/logout`<br>`POST /api/auth/refresh` | 로그아웃 버튼의 위치와 디자인은 실수 클릭을 방지해야 합니다. |
+| **📢 채용 공고** | **메인 화면 및 직종 탐색** (인기 공고 표시) | `GET /api/posts/company` | 직종 카테고리의 아이콘 및 색상이 직관적이어야 합니다. 검색창의 접근성을 높여야 합니다. |
+| | **공고 목록 및 필터링** | `GET /api/posts/company?params...` | 필터 영역은 복잡하지 않게 디자인되어야 합니다. 공고 카드에는 **핵심 정보(직무, 회사, 위치, 마감일)**가 명료하게 포함되어야 합니다. |
+| **👤 사용자 프로필** | **내 프로필 요약** (경력, 연봉, 링크 등) | (프로필 조회용 API) | 정보의 **시각적 위계**와 **가독성**이 중요합니다. |
+| | **프로필 세부 편집** (기본 정보, 연락처, 설정) | (사용자 프로필 PUT API) | **탭/내비게이션**(`기본 정보`, `연락처` 등)의 일관성을 유지하고, **저장되지 않은 변경사항** 메시지를 명확히 표시해야 합니다. |
+| | **계정 설정** (알림, 계정 삭제) | (알림 설정 PUT API, 계정 삭제 DELETE API) | **계정 삭제** 버튼은 다른 설정과 **시각적으로 명확히 분리**하여 사용자에게 위험을 인지시켜야 합니다. |
+| **📜 이력서 관리** | **이력서 목록** (상태, 통계 표시) | `GET /api/posts/resume/list/me` | 이력서 카드의 **상태 태그**(`게시됨`, `작성 중`)가 명확하게 구분되어야 합니다. |
+| | **새 이력서 작성** 폼 | `POST /api/posts/resume` | 긴 폼 작성을 위한 **섹션 구분 및 단계별 UX**를 고려해야 합니다. 필수 입력 사항(`*`)을 명확히 표시하세요. |
+| | **경력 및 교육 관리** | (이력 정보 PUT/POST API) | 정보 추가/수정이 쉽도록 **아이콘 및 버튼**의 클릭 영역을 검토해야 합니다. |
