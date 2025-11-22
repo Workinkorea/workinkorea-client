@@ -51,12 +51,12 @@ export interface SignupRequest {
 }
 
 export interface CompanySignupRequest {
-  company_number: number;
+  company_number: string;
   company_name: string;
   email: string;
   password: string;
   name: string;
-  phone: number;
+  phone: string;
 }
 
 export interface CompanySignupResponse {
@@ -74,9 +74,11 @@ export interface CompanyLoginResponse {
 }
 
 export interface ProfileResponse {
+  user_id: number;
   profile_image_url: string;
   location: string;
   introduction: string;
+  address: string;
   position_id: number;
   job_status: string;
   portfolio_url: string;
@@ -86,15 +88,43 @@ export interface ProfileResponse {
 }
 
 export interface ProfileUpdateRequest {
+  user_id?: number;
   profile_image_url?: string;
   location?: string;
   introduction?: string;
+  address?: string;
   position_id?: number;
   job_status?: string;
   portfolio_url?: string;
-  birth_date?: string;
-  name?: string;
   country_id?: number;
+}
+
+export interface ContactResponse {
+  user_id: number;
+  phone_number: string;
+  github_url: string;
+  linkedin_url: string;
+  website_url: string;
+}
+
+export interface ContactUpdateRequest {
+  user_id?: number;
+  phone_number?: string;
+  github_url?: string;
+  linkedin_url?: string;
+  website_url?: string;
+}
+
+export interface AccountConfigResponse {
+  user_id: number;
+  sns_message_notice: boolean;
+  email_notice: boolean;
+}
+
+export interface AccountConfigUpdateRequest {
+  user_id?: number;
+  sns_message_notice?: boolean;
+  email_notice?: boolean;
 }
 
 export interface CompanyProfileResponse {

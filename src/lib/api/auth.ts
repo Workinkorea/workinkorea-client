@@ -5,7 +5,6 @@ import type {
   LoginResponse,
   LogoutResponse,
   RefreshTokenResponse,
-  GetUserInfoResponse,
   SignupRequest,
   CompanySignupRequest,
   CompanySignupResponse,
@@ -25,7 +24,7 @@ export const authApi = {
   async login(data: LoginRequest): Promise<LoginResponse> {
     return apiClient.post<LoginResponse>('/api/auth/login', data, {
       skipAuth: true,
-      credentials: 'include' // httpOnly 쿠키로 refreshToken 받기 위해 필요
+      credentials: 'include'
     });
   },
 
@@ -53,7 +52,7 @@ export const authApi = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      credentials: 'include', // httpOnly 쿠키로 refreshToken 받기 위해 필요
+      credentials: 'include',
       skipAuth: true,
     });
   },
@@ -64,9 +63,5 @@ export const authApi = {
       success: true,
       accessToken
     };
-  },
-
-  async getUserInfo(): Promise<GetUserInfoResponse> {
-    return apiClient.get<GetUserInfoResponse>('/api/auth/user');
   },
 };

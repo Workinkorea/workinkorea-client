@@ -1,46 +1,50 @@
 'use client';
 
-import { MapPin, Clock, ChevronRight } from 'lucide-react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { postsApi } from '@/lib/api/posts';
+import { MapPin, Clock, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import Layout from '@/components/layout/Layout';
+import Header from '@/components/layout/Header';
+import { postsApi } from '@/lib/api/posts';
 
-export default function PopularJobsSection() {
-  // 공고 목록 조회
+export default function JobsPage() {
   const { data: postsData, isLoading } = useQuery({
     queryKey: ['companyPosts'],
     queryFn: async () => {
       try {
         const response = await postsApi.getCompanyPosts();
-        return response.company_posts.slice(0, 6); // 최대 6개만 표시
+        return response.company_posts;
       } catch (err) {
         console.error('공고 목록 로드 실패:', err);
         return [];
       }
     }
   });
-  return (
-    <section className="py-16 bg-white">
-      <div className="flex flex-col justify-center px-4 sm:px-6 lg:px-8">
-        {/* 섹션 헤더 */}
-        <div className="text-center mb-12">
-          <h2 className="text-title-1 font-bold text-gray-900 mb-4">
-            인기 공고
-          </h2>
-          <p className="text-body-1 text-gray-600">
-            지금 가장 주목받는 기업들의 채용공고입니다
-          </p>
-        </div>
 
-        {/* 공고 그리드 */}
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full"></div>
+  return (
+    <Layout>
+      <Header type="homepage" />
+      <div className="min-h-screen bg-background-alternative py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* 헤더 */}
+          <div className="mb-8">
+            <h1 className="text-title-1 font-bold text-label-900 mb-2">
+              채용 공고
+            </h1>
+            <p className="text-body-2 text-label-600">
+              한국에서 외국인을 위한 다양한 채용 기회를 찾아보세요
+            </p>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {postsData && postsData.length > 0 ? (
-              postsData.map((post) => {
+
+          {/* 공고 목록 */}
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full"></div>
+            </div>
+          ) : postsData && postsData.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {postsData.map((post) => {
                 const isRecent = new Date(post.start_date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
                 const language = post.language ? post.language.split(',').map(l => l.trim()) : [];
 
@@ -57,11 +61,11 @@ export default function PopularJobsSection() {
                           {post.company_id}
                         </div>
                         <div>
-                          <h3 className="font-semibold text-title-4 text-gray-900 group-hover:text-green-600 transition-colors">
+                          <h3 className="font-semibold text-title-4 text-gray-900 group-hover:text-primary-500 transition-colors">
                             회사 #{post.company_id}
                           </h3>
                           {isRecent && (
-                            <span className="inline-flex items-center gap-1 text-body-3 text-green-600">
+                            <span className="inline-flex items-center gap-1 text-body-3 text-primary-500">
                               <Clock className="w-4 h-4" />
                               신규
                             </span>
@@ -82,7 +86,7 @@ export default function PopularJobsSection() {
                         <span className="text-body-3">{post.work_location}</span>
                         <span className="text-body-3">• {post.employment_type}</span>
                       </div>
-                      <p className="text-green-600 font-semibold text-body-2">
+                      <p className="text-primary-500 font-semibold text-body-2">
                         {post.salary ? `${post.salary.toLocaleString()}원` : '연봉 협의'}
                       </p>
                     </div>
@@ -100,23 +104,15 @@ export default function PopularJobsSection() {
                     </div>
                   </Link>
                 );
-              })
-            ) : (
-              <div className="col-span-full text-center py-12">
-                <p className="text-label-500">등록된 공고가 없습니다.</p>
-              </div>
-            )}
-        </div>
-        )}
-
-        {/* 더 보기 버튼 */}
-        <div className="text-center">
-          <Link href="/jobs" className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors text-body-1 cursor-pointer">
-            더 많은 공고 보기
-            <ChevronRight className="w-4 h-4" />
-          </Link>
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <p className="text-label-500 text-body-2">등록된 공고가 없습니다.</p>
+            </div>
+          )}
         </div>
       </div>
-    </section>
+    </Layout>
   );
 }
