@@ -5,7 +5,6 @@ import type {
   LoginResponse,
   LogoutResponse,
   RefreshTokenResponse,
-  GetUserInfoResponse,
   SignupRequest,
   CompanySignupRequest,
   CompanySignupResponse,
@@ -64,9 +63,5 @@ export const authApi = {
       success: true,
       accessToken
     };
-  },
-
-  async getUserInfo(): Promise<GetUserInfoResponse> {
-    return apiClient.get<GetUserInfoResponse>('/api/auth/user');
   },
 };

@@ -1,18 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   Save,
-  Eye,
-  ArrowLeft
+  ArrowLeft,
+  Plus,
+  Trash2
 } from 'lucide-react';
 import { Resume, ResumeTemplate } from '@/types/user';
 import { resumeApi } from '@/lib/api/resume';
-import { CreateResumeRequest, UpdateResumeRequest } from '@/lib/api/types';
+import { FormField } from '@/components/ui/FormField';
+import type {
+  CreateResumeRequest,
+  UpdateResumeRequest
+} from '@/lib/api/types';
 
 interface ResumeEditorProps {
   templateType: ResumeTemplate;
@@ -20,6 +26,40 @@ interface ResumeEditorProps {
   isEditMode?: boolean;
   resumeId?: number | null;
 }
+
+type ResumeFormData = {
+  title: string;
+  profile_url?: string;
+  language_skills: Array<{
+    language_type: string;
+    level: string;
+  }>;
+  schools: Array<{
+    school_name: string;
+    major_name: string;
+    start_date: string;
+    end_date: string;
+    is_graduated: boolean;
+  }>;
+  career_history: Array<{
+    company_name: string;
+    start_date: string;
+    end_date: string;
+    is_working: boolean;
+    department: string;
+    position_title: string;
+    main_role: string;
+  }>;
+  introduction: Array<{
+    title: string;
+    content: string;
+  }>;
+  licenses: Array<{
+    license_name: string;
+    license_agency: string;
+    license_date: string;
+  }>;
+};
 
 const ResumeEditor: React.FC<ResumeEditorProps> = ({
   templateType,
@@ -29,29 +69,66 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
 }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [isSaving, setIsSaving] = useState(false);
-  const [resumeData, setResumeData] = useState<Partial<Resume>>({
-    title: initialData?.title || '',
-    description: initialData?.description || '',
-    templateType,
-    status: initialData?.status || 'draft',
-    isPublic: initialData?.isPublic || false,
-    content: {
-      personalInfo: {
-        name: initialData?.content?.personalInfo?.name || '',
-        email: initialData?.content?.personalInfo?.email || '',
-        phone: initialData?.content?.personalInfo?.phone || '',
-        address: initialData?.content?.personalInfo?.address || '',
-        profileImage: initialData?.content?.personalInfo?.profileImage
-      },
-      objective: initialData?.content?.objective || '',
-      workExperience: initialData?.content?.workExperience || [],
-      education: initialData?.content?.education || [],
-      skills: initialData?.content?.skills || [],
-      projects: initialData?.content?.projects || [],
-      certifications: initialData?.content?.certifications || [],
-      languages: initialData?.content?.languages || []
+
+  const { control, handleSubmit, watch, formState: { isSubmitting } } = useForm<ResumeFormData>({
+    defaultValues: {
+      title: initialData?.title || '',
+      profile_url: initialData?.content?.personalInfo?.profileImage || '',
+      language_skills: initialData?.content?.languages?.map(lang => ({
+        language_type: lang.name,
+        level: lang.proficiency
+      })) || [],
+      schools: initialData?.content?.education?.map(edu => ({
+        school_name: edu.institution,
+        major_name: edu.field,
+        start_date: edu.startDate,
+        end_date: edu.endDate || '',
+        is_graduated: edu.degree === '졸업'
+      })) || [],
+      career_history: initialData?.content?.workExperience?.map(work => ({
+        company_name: work.company,
+        start_date: work.startDate,
+        end_date: work.endDate || '',
+        is_working: work.current || false,
+        department: '',
+        position_title: work.position,
+        main_role: work.description || ''
+      })) || [],
+      introduction: initialData?.content?.objective ? [{
+        title: '자기소개',
+        content: initialData.content.objective
+      }] : [],
+      licenses: initialData?.content?.certifications?.map(cert => ({
+        license_name: cert,
+        license_agency: '',
+        license_date: ''
+      })) || []
     }
+  });
+
+  const { fields: languageFields, append: appendLanguage, remove: removeLanguage } = useFieldArray({
+    control,
+    name: 'language_skills'
+  });
+
+  const { fields: schoolFields, append: appendSchool, remove: removeSchool } = useFieldArray({
+    control,
+    name: 'schools'
+  });
+
+  const { fields: careerFields, append: appendCareer, remove: removeCareer } = useFieldArray({
+    control,
+    name: 'career_history'
+  });
+
+  const { fields: introFields, append: appendIntro, remove: removeIntro } = useFieldArray({
+    control,
+    name: 'introduction'
+  });
+
+  const { fields: licenseFields, append: appendLicense, remove: removeLicense } = useFieldArray({
+    control,
+    name: 'licenses'
   });
 
   // 이력서 생성 뮤테이션
@@ -62,7 +139,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['resumes'] });
       toast.success('이력서가 생성되었습니다.');
-      router.push('/user/profile?tab=resume');
+      router.push('/user/profile');
     },
     onError: () => {
       toast.error('이력서 생성에 실패했습니다.');
@@ -85,43 +162,16 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
     }
   });
 
-  const handleSave = async (status: 'draft' | 'completed' | 'published' = 'draft') => {
-    setIsSaving(true);
-
+  const onSubmit = async (data: ResumeFormData) => {
     try {
-      // Resume 데이터를 API 요청 형식으로 변환
       const requestData: CreateResumeRequest | UpdateResumeRequest = {
-        title: resumeData.title || '',
-        profile_url: resumeData.content?.personalInfo?.profileImage,
-        language_skills: resumeData.content?.languages?.map(lang => ({
-          language_type: lang.name,
-          level: lang.proficiency
-        })),
-        schools: resumeData.content?.education?.map(edu => ({
-          school_name: edu.institution,
-          major_name: edu.field,
-          start_date: edu.startDate,
-          end_date: edu.endDate || '',
-          is_graduated: edu.degree === '졸업'
-        })),
-        career_history: resumeData.content?.workExperience?.map(work => ({
-          company_name: work.company,
-          start_date: work.startDate,
-          end_date: work.endDate || '',
-          is_working: work.current || false,
-          department: '',
-          position_title: work.position,
-          main_role: work.description || ''
-        })),
-        introduction: [{
-          title: '자기소개',
-          content: resumeData.content?.objective || ''
-        }],
-        licenses: resumeData.content?.certifications?.map(cert => ({
-          license_name: cert,
-          license_agency: '',
-          license_date: ''
-        }))
+        title: data.title,
+        profile_url: data.profile_url || undefined,
+        language_skills: data.language_skills.length > 0 ? data.language_skills : undefined,
+        schools: data.schools.length > 0 ? data.schools : undefined,
+        career_history: data.career_history.length > 0 ? data.career_history : undefined,
+        introduction: data.introduction.length > 0 ? data.introduction : undefined,
+        licenses: data.licenses.length > 0 ? data.licenses : undefined,
       };
 
       if (isEditMode && resumeId) {
@@ -129,14 +179,8 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
       } else {
         await createResumeMutation.mutateAsync(requestData as CreateResumeRequest);
       }
-
-      if (status === 'completed' || status === 'published') {
-        router.push('/user/profile?tab=resume');
-      }
     } catch (error) {
       console.error('이력서 저장 실패:', error);
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -144,17 +188,13 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
     router.back();
   };
 
-  const handlePreview = () => {
-    console.log('이력서 미리보기');
-    // TODO: 미리보기 모달 또는 페이지 구현
-  };
-
   return (
-    <div className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
+            type="button"
             onClick={handleBack}
             className="p-2 text-label-600 hover:text-label-900 hover:bg-component-alternative rounded-lg transition-colors cursor-pointer"
           >
@@ -172,257 +212,533 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
 
         <div className="flex items-center gap-2">
           <button
-            onClick={handlePreview}
-            className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors cursor-pointer"
-          >
-            <Eye size={16} />
-            미리보기
-          </button>
-          <button
-            onClick={() => handleSave('draft')}
-            disabled={isSaving}
-            className="flex items-center gap-2 px-4 py-2 bg-line-300 text-label-700 rounded-lg text-body-3 font-medium hover:bg-line-400 transition-colors disabled:opacity-50 cursor-pointer"
+            type="submit"
+            disabled={isSubmitting}
+            className="flex items-center gap-2 px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 cursor-pointer"
           >
             <Save size={16} />
-            {isSaving ? '저장중...' : '임시저장'}
-          </button>
-          <button
-            onClick={() => handleSave('completed')}
-            disabled={isSaving || !resumeData.title}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 cursor-pointer"
-          >
-            완료
+            {isSubmitting ? '저장중...' : isEditMode ? '수정하기' : '생성하기'}
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols gap-8">
-        {/* 편집 영역 */}
-        <div className="space-y-6">
-          {/* 기본 정보 */}
-          <motion.div
-            className="bg-white rounded-lg p-6 shadow-normal"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <h3 className="text-body-2 font-semibold text-label-900 mb-4">
-              기본 정보
-            </h3>
+      <div className="space-y-6">
+        {/* 기본 정보 */}
+        <motion.div
+          className="bg-white rounded-lg p-6 shadow-normal"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h3 className="text-body-2 font-semibold text-label-900 mb-4">
+            기본 정보
+          </h3>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-body-3 font-medium text-label-700 mb-2">
-                  이력서 제목 *
-                </label>
+          <div className="space-y-4">
+            <FormField
+              name="title"
+              control={control}
+              label="이력서 제목 *"
+              rules={{ required: '이력서 제목을 입력해주세요' }}
+              render={(field, fieldId) => (
                 <input
+                  {...field}
+                  id={fieldId}
                   type="text"
-                  value={resumeData.title || ''}
-                  onChange={(e) => setResumeData({ ...resumeData, title: e.target.value })}
                   placeholder="예: 프론트엔드 개발자 이력서"
-                  className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
-              </div>
+              )}
+            />
 
-              <div>
-                <label className="block text-body-3 font-medium text-label-700 mb-2">
-                  간단한 설명
-                </label>
-                <textarea
-                  value={resumeData.description || ''}
-                  onChange={(e) => setResumeData({ ...resumeData, description: e.target.value })}
-                  placeholder="이력서에 대한 간단한 설명을 입력하세요"
-                  rows={3}
-                  className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+            <FormField
+              name="profile_url"
+              control={control}
+              label="프로필 이미지 URL"
+              render={(field, fieldId) => (
+                <input
+                  {...field}
+                  id={fieldId}
+                  type="text"
+                  placeholder="https://example.com/profile.jpg"
+                  className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
-              </div>
-            </div>
-          </motion.div>
+              )}
+            />
+          </div>
+        </motion.div>
 
-          {/* 개인 정보 */}
-          <motion.div
-            className="bg-white rounded-lg p-6 shadow-normal"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-          >
-            <h3 className="text-body-2 font-semibold text-label-900 mb-4">
-              개인 정보
+        {/* 자기소개 */}
+        <motion.div
+          className="bg-white rounded-lg p-6 shadow-normal"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-body-2 font-semibold text-label-900">
+              자기소개
             </h3>
+            {introFields.length === 0 && (
+              <button
+                type="button"
+                onClick={() => appendIntro({ title: '자기소개', content: '' })}
+                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
+              >
+                <Plus size={14} />
+                추가
+              </button>
+            )}
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-body-3 font-medium text-label-700 mb-2">
-                  이름 *
-                </label>
-                <input
-                  type="text"
-                  value={resumeData.content?.personalInfo?.name || ''}
-                  onChange={(e) => setResumeData({
-                    ...resumeData,
-                    content: {
-                      ...resumeData.content!,
-                      personalInfo: {
-                        ...resumeData.content!.personalInfo!,
-                        name: e.target.value
-                      }
-                    }
-                  })}
-                  className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-body-3 font-medium text-label-700 mb-2">
-                  이메일 *
-                </label>
-                <input
-                  type="email"
-                  value={resumeData.content?.personalInfo?.email || ''}
-                  onChange={(e) => setResumeData({
-                    ...resumeData,
-                    content: {
-                      ...resumeData.content!,
-                      personalInfo: {
-                        ...resumeData.content!.personalInfo!,
-                        email: e.target.value
-                      }
-                    }
-                  })}
-                  className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-body-3 font-medium text-label-700 mb-2">
-                  전화번호
-                </label>
-                <input
-                  type="tel"
-                  value={resumeData.content?.personalInfo?.phone || ''}
-                  onChange={(e) => setResumeData({
-                    ...resumeData,
-                    content: {
-                      ...resumeData.content!,
-                      personalInfo: {
-                        ...resumeData.content!.personalInfo!,
-                        phone: e.target.value
-                      }
-                    }
-                  })}
-                  className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-body-3 font-medium text-label-700 mb-2">
-                  주소
-                </label>
-                <input
-                  type="text"
-                  value={resumeData.content?.personalInfo?.address || ''}
-                  onChange={(e) => setResumeData({
-                    ...resumeData,
-                    content: {
-                      ...resumeData.content!,
-                      personalInfo: {
-                        ...resumeData.content!.personalInfo!,
-                        address: e.target.value
-                      }
-                    }
-                  })}
-                  className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <label className="block text-body-3 font-medium text-label-700 mb-2">
-                자기소개 / 목표
-              </label>
-              <textarea
-                value={resumeData.content?.objective || ''}
-                onChange={(e) => setResumeData({
-                  ...resumeData,
-                  content: {
-                    ...resumeData.content!,
-                    objective: e.target.value
-                  }
-                })}
-                placeholder="자신을 소개하고 목표를 간단히 작성해주세요"
-                rows={4}
-                className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+          {introFields.map((field, index) => (
+            <div key={field.id} className="space-y-4">
+              <FormField
+                name={`introduction.${index}.title`}
+                control={control}
+                label="제목"
+                render={(field, fieldId) => (
+                  <input
+                    {...field}
+                    id={fieldId}
+                    type="text"
+                    className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                  />
+                )}
+              />
+              <FormField
+                name={`introduction.${index}.content`}
+                control={control}
+                label="내용"
+                render={(field, fieldId) => (
+                  <textarea
+                    {...field}
+                    id={fieldId}
+                    rows={4}
+                    className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 resize-none"
+                  />
+                )}
               />
             </div>
-          </motion.div>
+          ))}
+        </motion.div>
 
-          {/* TODO(human) */}
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-            <h4 className="text-body-3 font-semibold text-amber-800 mb-2">
-              추가 섹션 구현 필요
-            </h4>
-            <p className="text-caption-1 text-amber-700">
-              경력사항, 학력, 스킬, 프로젝트, 자격증 등의 섹션을 추가로 구현해야 합니다.
-              각 섹션은 동적으로 항목을 추가/삭제할 수 있는 형태로 만들어야 합니다.
-            </p>
-          </div>
-        </div>
-
-        {/* 미리보기 영역 */}
-        {/* <div className="lg:sticky lg:top-8">
-          <motion.div
-            className="bg-white rounded-lg p-6 shadow-normal"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-          >
-            <h3 className="text-body-2 font-semibold text-label-900 mb-4">
-              실시간 미리보기
+        {/* 경력 */}
+        <motion.div
+          className="bg-white rounded-lg p-6 shadow-normal"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-body-2 font-semibold text-label-900">
+              경력사항
             </h3>
+            <button
+              type="button"
+              onClick={() => appendCareer({
+                company_name: '',
+                start_date: '',
+                end_date: '',
+                is_working: false,
+                department: '',
+                position_title: '',
+                main_role: ''
+              })}
+              className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
+            >
+              <Plus size={14} />
+              추가
+            </button>
+          </div>
 
-            <div className="border border-line-200 rounded-lg p-4 bg-gray-50 min-h-[600px]">
-              <div className="text-center text-label-500">
-                <div className="w-16 h-16 mx-auto bg-line-200 rounded-lg flex items-center justify-center mb-4">
-                  <Edit3 size={24} />
+          {careerFields.map((field, index) => (
+            <div key={field.id} className="mb-6 p-4 border border-line-200 rounded-lg">
+              <div className="flex justify-between items-start mb-4">
+                <h4 className="text-body-3 font-semibold">경력 {index + 1}</h4>
+                <button
+                  type="button"
+                  onClick={() => removeCareer(index)}
+                  className="text-red-600 hover:bg-red-50 p-1 rounded cursor-pointer"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  name={`career_history.${index}.company_name`}
+                  control={control}
+                  label="회사명 *"
+                  rules={{ required: '회사명을 입력해주세요' }}
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="text"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <FormField
+                  name={`career_history.${index}.position_title`}
+                  control={control}
+                  label="직책 *"
+                  rules={{ required: '직책을 입력해주세요' }}
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="text"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <FormField
+                  name={`career_history.${index}.department`}
+                  control={control}
+                  label="부서"
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="text"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <FormField
+                  name={`career_history.${index}.start_date`}
+                  control={control}
+                  label="시작일 *"
+                  rules={{ required: '시작일을 입력해주세요' }}
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="date"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <FormField
+                  name={`career_history.${index}.end_date`}
+                  control={control}
+                  label="종료일"
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="date"
+                      disabled={watch(`career_history.${index}.is_working`)}
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 disabled:bg-gray-100"
+                    />
+                  )}
+                />
+                <div className="flex items-center pt-6">
+                  <FormField
+                    name={`career_history.${index}.is_working`}
+                    control={control}
+                    render={(field) => (
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={field.value}
+                          onChange={(e) => field.onChange(e.target.checked)}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-caption-1 text-label-700">재직중</span>
+                      </label>
+                    )}
+                  />
                 </div>
-                <h4 className="text-body-3 font-medium mb-2">이력서 미리보기</h4>
-                <p className="text-caption-2">
-                  작성하신 내용이 실시간으로 여기에 표시됩니다
-                </p>
-
-                {resumeData.title && (
-                  <div className="mt-6 text-left">
-                    <h5 className="text-body-2 font-semibold text-label-900 mb-2">
-                      {resumeData.title}
-                    </h5>
-                    {resumeData.content?.personalInfo?.name && (
-                      <p className="text-body-3 text-label-700">
-                        {resumeData.content.personalInfo.name}
-                      </p>
+                <div className="col-span-2">
+                  <FormField
+                    name={`career_history.${index}.main_role`}
+                    control={control}
+                    label="주요 업무"
+                    render={(field, fieldId) => (
+                      <textarea
+                        {...field}
+                        id={fieldId}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 resize-none"
+                      />
                     )}
-                    {resumeData.content?.personalInfo?.email && (
-                      <p className="text-caption-1 text-label-600">
-                        {resumeData.content.personalInfo.email}
-                      </p>
-                    )}
-                    {resumeData.content?.objective && (
-                      <div className="mt-4">
-                        <h6 className="text-caption-1 font-semibold text-label-700 mb-1">
-                          자기소개
-                        </h6>
-                        <p className="text-caption-2 text-label-600">
-                          {resumeData.content.objective}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
+                  />
+                </div>
               </div>
             </div>
-          </motion.div>
-        </div> */}
+          ))}
+        </motion.div>
+
+        {/* 학력 */}
+        <motion.div
+          className="bg-white rounded-lg p-6 shadow-normal"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-body-2 font-semibold text-label-900">
+              학력사항
+            </h3>
+            <button
+              type="button"
+              onClick={() => appendSchool({
+                school_name: '',
+                major_name: '',
+                start_date: '',
+                end_date: '',
+                is_graduated: false
+              })}
+              className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
+            >
+              <Plus size={14} />
+              추가
+            </button>
+          </div>
+
+          {schoolFields.map((field, index) => (
+            <div key={field.id} className="mb-6 p-4 border border-line-200 rounded-lg">
+              <div className="flex justify-between items-start mb-4">
+                <h4 className="text-body-3 font-semibold">학력 {index + 1}</h4>
+                <button
+                  type="button"
+                  onClick={() => removeSchool(index)}
+                  className="text-red-600 hover:bg-red-50 p-1 rounded cursor-pointer"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  name={`schools.${index}.school_name`}
+                  control={control}
+                  label="학교명 *"
+                  rules={{ required: '학교명을 입력해주세요' }}
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="text"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <FormField
+                  name={`schools.${index}.major_name`}
+                  control={control}
+                  label="전공 *"
+                  rules={{ required: '전공을 입력해주세요' }}
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="text"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <FormField
+                  name={`schools.${index}.start_date`}
+                  control={control}
+                  label="입학일 *"
+                  rules={{ required: '입학일을 입력해주세요' }}
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="date"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <FormField
+                  name={`schools.${index}.end_date`}
+                  control={control}
+                  label="졸업일"
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="date"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <div className="flex items-center pt-6">
+                  <FormField
+                    name={`schools.${index}.is_graduated`}
+                    control={control}
+                    render={(field) => (
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={field.value}
+                          onChange={(e) => field.onChange(e.target.checked)}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-caption-1 text-label-700">졸업</span>
+                      </label>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* 언어 능력 */}
+        <motion.div
+          className="bg-white rounded-lg p-6 shadow-normal"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-body-2 font-semibold text-label-900">
+              언어 능력
+            </h3>
+            <button
+              type="button"
+              onClick={() => appendLanguage({ language_type: '', level: '' })}
+              className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
+            >
+              <Plus size={14} />
+              추가
+            </button>
+          </div>
+
+          {languageFields.map((field, index) => (
+            <div key={field.id} className="mb-4 p-4 border border-line-200 rounded-lg">
+              <div className="flex justify-between items-start mb-4">
+                <h4 className="text-body-3 font-semibold">언어 {index + 1}</h4>
+                <button
+                  type="button"
+                  onClick={() => removeLanguage(index)}
+                  className="text-red-600 hover:bg-red-50 p-1 rounded cursor-pointer"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  name={`language_skills.${index}.language_type`}
+                  control={control}
+                  label="언어 *"
+                  rules={{ required: '언어를 입력해주세요' }}
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="text"
+                      placeholder="예: 영어, 한국어"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <FormField
+                  name={`language_skills.${index}.level`}
+                  control={control}
+                  label="수준 *"
+                  rules={{ required: '수준을 선택해주세요' }}
+                  render={(field, fieldId) => (
+                    <select
+                      {...field}
+                      id={fieldId}
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    >
+                      <option value="">선택하세요</option>
+                      <option value="beginner">초급</option>
+                      <option value="intermediate">중급</option>
+                      <option value="advanced">고급</option>
+                      <option value="native">모국어</option>
+                    </select>
+                  )}
+                />
+              </div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* 자격증 */}
+        <motion.div
+          className="bg-white rounded-lg p-6 shadow-normal"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-body-2 font-semibold text-label-900">
+              자격증
+            </h3>
+            <button
+              type="button"
+              onClick={() => appendLicense({ license_name: '', license_agency: '', license_date: '' })}
+              className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
+            >
+              <Plus size={14} />
+              추가
+            </button>
+          </div>
+
+          {licenseFields.map((field, index) => (
+            <div key={field.id} className="mb-4 p-4 border border-line-200 rounded-lg">
+              <div className="flex justify-between items-start mb-4">
+                <h4 className="text-body-3 font-semibold">자격증 {index + 1}</h4>
+                <button
+                  type="button"
+                  onClick={() => removeLicense(index)}
+                  className="text-red-600 hover:bg-red-50 p-1 rounded cursor-pointer"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  name={`licenses.${index}.license_name`}
+                  control={control}
+                  label="자격증명 *"
+                  rules={{ required: '자격증명을 입력해주세요' }}
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="text"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <FormField
+                  name={`licenses.${index}.license_agency`}
+                  control={control}
+                  label="발급기관"
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="text"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <FormField
+                  name={`licenses.${index}.license_date`}
+                  control={control}
+                  label="취득일"
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="date"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+              </div>
+            </div>
+          ))}
+        </motion.div>
       </div>
-    </div>
+    </form>
   );
 };
 

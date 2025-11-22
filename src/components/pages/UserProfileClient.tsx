@@ -12,10 +12,9 @@ import SkillBarChart from '@/components/user/SkillBarChart';
 import RadarChart from '@/components/ui/RadarChart';
 import { UserProfile, ProfileStatistics, SkillStats, RadarChartData } from '@/types/user';
 import { useAuth } from '@/hooks/useAuth';
-
-interface UserProfileClientProps {
-  userId: string;
-}
+import { resumeApi } from '@/lib/api/resume';
+import { profileApi } from '@/lib/api/profile';
+import type { CareerHistory } from '@/lib/api/types';
 
 // TODO: 실제 API 호출로 대체
 const mockUserProfile: UserProfile = {
@@ -82,29 +81,101 @@ const mockSkillStats: SkillStats = {
   industryRanking: 85
 };
 
-const UserProfileClient: React.FC<UserProfileClientProps> = ({ userId }) => {
+const UserProfileClient: React.FC = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience'>('overview');
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: false });
+  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
 
   const handleLogout = async () => {
     await logout();
     router.push('/');
   };
 
-  // TODO: 실제 API 쿼리로 대체
-  // 현재 profileApi에는 자신의 프로필만 가져오는 getProfile()만 있음
-  // 다른 사용자의 프로필을 가져오는 API 엔드포인트가 필요함 (예: GET /api/profile/{userId})
-  // 백엔드에 해당 API가 추가되면 아래와 같이 구현:
-  // const response = await profileApi.getUserProfile(userId);
-  const { data: profile, isLoading, error } = useQuery({
-    queryKey: ['userProfile', userId],
-    queryFn: async () => {
-      // 모킹용 지연
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return mockUserProfile;
-    }
+  // 프로필 정보 가져오기
+  const { data: profileData } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => profileApi.getProfile(),
+    enabled: isAuthenticated,
   });
+
+  // 연락처 정보 가져오기
+  const { data: contactData } = useQuery({
+    queryKey: ['contact'],
+    queryFn: () => profileApi.getContact(),
+    enabled: isAuthenticated,
+  });
+
+  // 이력서 목록 가져오기
+  const { data: resumeList } = useQuery({
+    queryKey: ['resumeList'],
+    queryFn: () => resumeApi.getMyResumes(),
+    enabled: isAuthenticated,
+  });
+
+  // 첫 번째 이력서 상세 정보 가져오기
+  const firstResumeId = resumeList?.resume_list?.[0]?.id;
+  const { data: resumeData, isLoading, error } = useQuery({
+    queryKey: ['resume', firstResumeId],
+    queryFn: async () => {
+      if (!firstResumeId) return null;
+      const response = await resumeApi.getResumeById(firstResumeId);
+
+      // Resume, Profile, Contact 데이터를 UserProfile 형태로 변환
+      const profile: UserProfile = {
+        id: String(response.resume.user_id),
+        name: profileData?.name || '',
+        email: contactData?.phone_number || '', // phone_number를 임시로 email로 사용
+        profileImage: response.resume.profile_url || profileData?.profile_image_url,
+        title: profileData?.introduction || '구직자',
+        location: profileData?.location || '',
+        bio: response.resume.introduction?.[0]?.content || profileData?.introduction || '',
+        experience: calculateExperience(response.resume.career_history),
+        completedProjects: 0, // API에서 제공하지 않음
+        certifications: response.resume.licenses.map(l => l.license_name),
+        availability: 'available',
+        skills: [], // 스킬 데이터가 API에 없음
+        education: response.resume.schools.map(school => ({
+          id: `${school.school_name}-${school.start_date}`,
+          institution: school.school_name,
+          degree: school.is_graduated ? '졸업' : '재학',
+          field: school.major_name,
+          startDate: school.start_date,
+          endDate: school.end_date
+        })),
+        languages: response.resume.language_skills.map(lang => ({
+          name: lang.language_type,
+          proficiency: lang.level as 'native' | 'advanced' | 'intermediate' | 'beginner'
+        })),
+        githubUrl: contactData?.github_url,
+        linkedinUrl: contactData?.linkedin_url,
+        portfolioUrl: contactData?.website_url || profileData?.portfolio_url,
+        preferredSalary: undefined,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      return profile;
+    },
+    enabled: !!firstResumeId && !!profileData,
+  });
+
+  // 경력 계산 함수
+  function calculateExperience(careerHistory: CareerHistory[]): number {
+    if (!careerHistory || careerHistory.length === 0) return 0;
+
+    let totalMonths = 0;
+    careerHistory.forEach(career => {
+      const start = new Date(career.start_date);
+      const end = career.is_working ? new Date() : new Date(career.end_date);
+      const months = (end.getFullYear() - start.getFullYear()) * 12 +
+                     (end.getMonth() - start.getMonth());
+      totalMonths += months;
+    });
+
+    return Math.floor(totalMonths / 12);
+  }
+
+  const profile = resumeData || mockUserProfile;
 
   // 레이더 차트 데이터 생성
   const generateRadarData = (skills: UserProfile['skills']): RadarChartData => {
@@ -133,7 +204,7 @@ const UserProfileClient: React.FC<UserProfileClientProps> = ({ userId }) => {
     leadership: 55
   });
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <Layout>
       <Header
@@ -172,8 +243,18 @@ const UserProfileClient: React.FC<UserProfileClientProps> = ({ userId }) => {
               프로필을 불러올 수 없습니다
             </h2>
             <p className="text-body-3 text-label-500">
-              잠시 후 다시 시도해주세요.
+              {!resumeList?.resume_list?.length
+                ? '먼저 이력서를 작성해주세요.'
+                : '잠시 후 다시 시도해주세요.'}
             </p>
+            {!resumeList?.resume_list?.length && (
+              <button
+                onClick={() => router.push('/user/resume/create')}
+                className="mt-4 px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600"
+              >
+                이력서 작성하기
+              </button>
+            )}
           </div>
         </div>
       </Layout>
@@ -193,10 +274,32 @@ const UserProfileClient: React.FC<UserProfileClientProps> = ({ userId }) => {
       />
       <div className="min-h-screen bg-background-alternative py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          {/* 상단 액션 버튼 */}
+          {resumeList?.resume_list && resumeList.resume_list.length > 0 ? (
+            <div className="flex justify-end">
+              <button
+                onClick={() => router.push(`/user/resume/edit/${resumeList.resume_list[0].id}`)}
+                className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+              >
+                이력서 수정하기
+              </button>
+            </div>
+          ) : (
+            <div className="flex justify-end">
+              <button
+                onClick={() => router.push('/user/resume/create')}
+                className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+              >
+                이력서 작성하기
+              </button>
+            </div>
+          )}
+
           {/* 헤더 */}
-          <UserProfileHeader 
-            profile={profile} 
-            isOwnProfile={false}
+          <UserProfileHeader
+            profile={profile}
+            isOwnProfile={true}
+            onResumeClick={() => router.push('/user/profile?tab=resume')}
           />
 
           {/* 탭 네비게이션 */}

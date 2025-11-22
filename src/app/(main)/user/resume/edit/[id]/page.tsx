@@ -38,11 +38,12 @@ const EditResumePage: React.FC = () => {
             id: `${career.company_name}-${career.start_date}`,
             company: career.company_name,
             position: career.position_title,
+            department: career.department,
+            achievements: [], // fix: add empty achievements array to satisfy WorkExperience type
             startDate: career.start_date,
             endDate: career.end_date,
             current: career.is_working,
-            description: career.main_role,
-            achievements: []
+            description: career.main_role
           })),
           education: response.resume.schools.map(school => ({
             id: `${school.school_name}-${school.start_date}`,

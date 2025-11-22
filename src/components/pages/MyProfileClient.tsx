@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Edit3 } from 'lucide-react';
+import { toast } from 'sonner';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import UserProfileHeader from '@/components/user/UserProfileHeader';
@@ -191,23 +192,41 @@ const mockResumeStatistics: { [resumeId: string]: ResumeStatistics } = {
 const MyProfileClient: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience' | 'resume'>('overview');
   const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   // 프로필 데이터 조회
+  const { data: profileData } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => profileApi.getProfile(),
+    enabled: isAuthenticated,
+  });
+
+  // 연락처 데이터 조회
+  const { data: contactData } = useQuery({
+    queryKey: ['contact'],
+    queryFn: () => profileApi.getContact(),
+    enabled: isAuthenticated,
+  });
+
+  // 프로필과 연락처 데이터 병합
   const { data: profile, isLoading, error } = useQuery({
-    queryKey: ['myProfile'],
+    queryKey: ['myProfile', profileData, contactData],
     queryFn: async () => {
       try {
-        const apiProfile = await profileApi.getProfile();
+        if (!profileData) return mockMyProfile;
 
         // API 응답을 UserProfile 형태로 변환
         const transformedProfile: UserProfile = {
           ...mockMyProfile, // 기본값으로 mock 데이터 사용
-          name: apiProfile.name,
-          profileImage: apiProfile.profile_image_url || undefined,
-          location: apiProfile.location,
-          bio: apiProfile.introduction,
-          portfolioUrl: apiProfile.portfolio_url,
-          // TODO: position_id, job_status, country_id 등을 적절히 매핑
+          id: String(profileData.user_id),
+          name: profileData.name,
+          profileImage: profileData.profile_image_url || undefined,
+          location: profileData.location,
+          bio: profileData.introduction,
+          portfolioUrl: contactData?.website_url || profileData.portfolio_url,
+          githubUrl: contactData?.github_url,
+          linkedinUrl: contactData?.linkedin_url,
         };
 
         return transformedProfile;
@@ -216,7 +235,8 @@ const MyProfileClient: React.FC = () => {
         // 에러 시 mock 데이터 반환 (개발 환경용)
         return mockMyProfile;
       }
-    }
+    },
+    enabled: !!profileData,
   });
 
   // 이력서 목록 조회
@@ -260,8 +280,6 @@ const MyProfileClient: React.FC = () => {
       }
     }
   });
-
-  const router = useRouter();
 
   // 인증 체크 및 리다이렉트
   useEffect(() => {
@@ -611,16 +629,20 @@ const MyProfileClient: React.FC = () => {
                     onDeleteResume={async (resumeId) => {
                       try {
                         await resumeApi.deleteResume(Number(resumeId));
-                        // TODO: 쿼리 무효화하여 목록 갱신
+                        // 쿼리 무효화하여 목록 갱신
+                        queryClient.invalidateQueries({ queryKey: ['resumes'] });
+                        toast.success('이력서가 삭제되었습니다.');
                       } catch (err) {
                         console.error('이력서 삭제 실패:', err);
+                        toast.error('이력서 삭제에 실패했습니다.');
                       }
                     }}
                     onTogglePublic={(resumeId) => {
                       // TODO: 공개/비공개 설정 API 호출
                     }}
                     onViewResume={(resumeId) => {
-                      // TODO: 이력서 미리보기 모달 또는 페이지로 이동
+                      // 이력서 편집 페이지로 이동
+                      router.push(`/user/resume/edit/${resumeId}`);
                     }}
                   />
                 )}
