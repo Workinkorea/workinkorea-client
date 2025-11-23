@@ -179,7 +179,6 @@ const onTokenRefreshed = (token: string) => {
 
 export const refreshAccessToken = async (tokenType: 'user' | 'company' = 'user'): Promise<string> => {
   const response = await apiClient.post<any>('/api/auth/refresh');
-  console.log(response);
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
