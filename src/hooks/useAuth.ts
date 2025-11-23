@@ -115,11 +115,16 @@ export const useAuth = (options: UseAuthOptions = {}) => {
       }
 
       if (hasValidToken && currentTokenType) {
-        // 유효한 토큰이 있으면 인증 상태 설정 및 갱신 스케줄링
+        // 유효한 토큰이 있으면 인증 상태 설정
         setIsAuthenticated(true);
         setUserType(currentTokenType);
         setIsLoading(false);
-        scheduleTokenRefresh();
+
+        // protected path에서만 토큰 갱신 스케줄링
+        // 메인 페이지 등 선택적 로그인 페이지에서는 자동 갱신하지 않음
+        if (isProtectedPath) {
+          scheduleTokenRefresh();
+        }
         return;
       }
 

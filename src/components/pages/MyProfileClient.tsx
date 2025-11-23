@@ -623,8 +623,16 @@ const MyProfileClient: React.FC = () => {
                   <ResumeSection
                     resumes={resumesData || mockResumes}
                     resumeStatistics={mockResumeStatistics}
-                    onUploadResume={(file) => {
-                      // TODO: 실제 파일 업로드 API 구현
+                    onUploadResume={async (file) => {
+                      try {
+                        const response = await resumeApi.uploadResumeFile(file);
+                        // 쿼리 무효화하여 목록 갱신
+                        queryClient.invalidateQueries({ queryKey: ['resumes'] });
+                        toast.success(`이력서 파일이 업로드되었습니다. (ID: ${response.resume_id})`);
+                      } catch (err) {
+                        console.error('이력서 파일 업로드 실패:', err);
+                        throw err; // ResumeSection에서 에러 처리
+                      }
                     }}
                     onDeleteResume={async (resumeId) => {
                       try {
