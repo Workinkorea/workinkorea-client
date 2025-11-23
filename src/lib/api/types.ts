@@ -250,6 +250,12 @@ export interface DeleteResumeResponse {
   message: string;
 }
 
+export interface UploadResumeFileResponse {
+  resume_id: number;
+  file_url: string;
+  message: string;
+}
+
 // Company Post API types
 export interface CompanyPost {
   id: number;

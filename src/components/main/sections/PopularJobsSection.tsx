@@ -1,24 +1,76 @@
 'use client';
 
 import { MapPin, Clock, ChevronRight } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import { postsApi } from '@/lib/api/posts';
 import Link from 'next/link';
 
 export default function PopularJobsSection() {
-  // 공고 목록 조회
-  const { data: postsData, isLoading } = useQuery({
-    queryKey: ['companyPosts'],
-    queryFn: async () => {
-      try {
-        const response = await postsApi.getCompanyPosts();
-        return response.company_posts.slice(0, 6); // 최대 6개만 표시
-      } catch (err) {
-        console.error('공고 목록 로드 실패:', err);
-        return [];
-      }
-    }
-  });
+  // TODO: 인기 공고 API가 준비되면 교체 필요
+  // Mock 데이터 사용 (임시)
+  const mockPopularPosts = [
+    {
+      id: 1,
+      company_id: 101,
+      title: '프론트엔드 개발자',
+      work_location: '서울 강남구',
+      employment_type: '정규직',
+      salary: 50000000,
+      language: 'React, TypeScript, Next.js',
+      start_date: new Date().toISOString(),
+    },
+    {
+      id: 2,
+      company_id: 102,
+      title: '백엔드 개발자',
+      work_location: '서울 판교',
+      employment_type: '정규직',
+      salary: 55000000,
+      language: 'Java, Spring Boot, MySQL',
+      start_date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 3,
+      company_id: 103,
+      title: '풀스택 개발자',
+      work_location: '서울 서초구',
+      employment_type: '정규직',
+      salary: 60000000,
+      language: 'Python, Django, React',
+      start_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 4,
+      company_id: 104,
+      title: 'DevOps 엔지니어',
+      work_location: '서울 강남구',
+      employment_type: '정규직',
+      salary: 65000000,
+      language: 'AWS, Docker, Kubernetes',
+      start_date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 5,
+      company_id: 105,
+      title: '데이터 엔지니어',
+      work_location: '서울 판교',
+      employment_type: '정규직',
+      salary: 58000000,
+      language: 'Python, Spark, Airflow',
+      start_date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 6,
+      company_id: 106,
+      title: '모바일 개발자',
+      work_location: '서울 강남구',
+      employment_type: '정규직',
+      salary: 52000000,
+      language: 'React Native, iOS, Android',
+      start_date: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+  ];
+
+  const postsData = mockPopularPosts;
+  const isLoading = false;
   return (
     <section className="py-16 bg-white">
       <div className="flex flex-col justify-center px-4 sm:px-6 lg:px-8">

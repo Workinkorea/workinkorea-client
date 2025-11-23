@@ -10,6 +10,14 @@ import {
 } from './types';
 
 export const postsApi = {
+  // 공개 API: 인증 없이 공고 목록 조회 (메인 페이지용)
+  async getPublicCompanyPosts(): Promise<CompanyPostsResponse> {
+    return apiClient.get<CompanyPostsResponse>('/api/posts/company', {
+      skipAuth: true,
+    });
+  },
+
+  // 인증 필요: 기업 회원 전용 공고 목록 조회
   async getCompanyPosts(): Promise<CompanyPostsResponse> {
     return apiClient.get<CompanyPostsResponse>('/api/posts/company', {
       tokenType: 'company',

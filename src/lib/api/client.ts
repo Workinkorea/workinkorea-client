@@ -71,16 +71,6 @@ export const apiClient = {
     const url = `${API_BASE_URL}${endpoint}`;
     const { skipAuth, tokenType = 'user', ...fetchOptions } = options;
 
-    // skipAuth가 true가 아닐 때만 토큰 갱신 체크
-    if (!skipAuth && tokenManager.isTokenExpiringSoon(tokenType)) {
-      try {
-        const newAccessToken = await refreshAccessToken();
-        tokenManager.setToken(newAccessToken, tokenType);
-      } catch {
-        tokenManager.removeToken(tokenType);
-      }
-    }
-
     const accessToken = tokenManager.getToken(tokenType);
 
     const controller = new AbortController();
