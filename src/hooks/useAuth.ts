@@ -2,13 +2,14 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { tokenManager, TokenType } from '@/lib/utils/tokenManager';
 import { authApi } from '@/lib/api/auth';
 import { usePathname } from 'next/navigation';
+import { apiClient } from '@/lib/api/client';
 
 // 인증이 필요 없는 페이지 경로 (로그인/회원가입)
 const AUTH_PATHS = ['/login', '/signup', '/company-login', '/company-signup'];
 
 // 로그인이 필수인 페이지 경로
-const PROTECTED_PATHS = ['/user', '/company'];
-
+const PROTECTED_PATHS = ['/gg'];
+//'/user', '/company'
 interface UseAuthOptions {
   required?: boolean; // true: 토큰 없으면 refresh 시도, false: 토큰 체크만
 }
@@ -190,10 +191,7 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
     if (typeof window !== 'undefined') {
       try {
-        await fetch(`/api/auth/logout`, {
-          method: 'DELETE',
-          credentials: 'include',
-        });
+        await apiClient.delete(`/api/auth/logout`);
       } catch (err) {
         console.error('Logout failed:', err);
       }

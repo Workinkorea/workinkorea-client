@@ -22,47 +22,6 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
-const subscribeTokenRefresh = (cb: (token: string) => void) => {
-  refreshSubscribers.push(cb);
-};
-
-const onTokenRefreshed = (token: string) => {
-  refreshSubscribers.forEach((cb) => cb(token));
-  refreshSubscribers = [];
-};
-
-export const refreshAccessToken = async (tokenType: 'user' | 'company' = 'user'): Promise<string> => {
-  const response = await fetch('/api/auth/refresh', {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-
-    if (data.message === 'Refresh token not found') {
-      tokenManager.removeToken(tokenType);
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
-      }
-    }
-
-    throw new Error('Failed to refresh token');
-  }
-
-  const data = await response.json();
-  const accessToken = data.accessToken || data.access_token || data.token;
-
-  if (!accessToken) {
-    throw new Error('No access token received');
-  }
-
-  return accessToken;
-};
-
 export const apiClient = {
   async request<T>(
     endpoint: string,
@@ -207,4 +166,40 @@ export const apiClient = {
   delete<T>(endpoint: string, options?: ApiRequestOptions): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   },
+};
+
+const subscribeTokenRefresh = (cb: (token: string) => void) => {
+  refreshSubscribers.push(cb);
+};
+
+const onTokenRefreshed = (token: string) => {
+  refreshSubscribers.forEach((cb) => cb(token));
+  refreshSubscribers = [];
+};
+
+export const refreshAccessToken = async (tokenType: 'user' | 'company' = 'user'): Promise<string> => {
+  const response = await apiClient.post<any>('/api/auth/refresh');
+  console.log(response);
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+
+    if (data.message === 'Refresh token not found') {
+      tokenManager.removeToken(tokenType);
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+    }
+
+    throw new Error('Failed to refresh token');
+  }
+
+  const data = await response.json();
+  const accessToken = data.accessToken || data.access_token || data.token;
+
+  if (!accessToken) {
+    throw new Error('No access token received');
+  }
+
+  return accessToken;
 };
