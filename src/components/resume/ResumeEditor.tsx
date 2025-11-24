@@ -98,11 +98,17 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
         title: '자기소개',
         content: initialData.content.objective
       }] : [],
-      licenses: initialData?.content?.certifications?.map(cert => ({
-        license_name: cert,
-        license_agency: '',
-        license_date: ''
-      })) || []
+      licenses: initialData?.licenses && initialData.licenses.length > 0
+        ? initialData.licenses.map(license => ({
+            license_name: license.license_name,
+            license_agency: license.license_agency,
+            license_date: license.license_date
+          }))
+        : initialData?.content?.certifications?.map(cert => ({
+            license_name: cert,
+            license_agency: '',
+            license_date: ''
+          })) || []
     }
   });
 
@@ -139,7 +145,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['resumes'] });
       toast.success('이력서가 생성되었습니다.');
-      router.push('/user/profile');
+      router.push('/user');
     },
     onError: () => {
       toast.error('이력서 생성에 실패했습니다.');
@@ -156,6 +162,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
       queryClient.invalidateQueries({ queryKey: ['resume', resumeId] });
       queryClient.invalidateQueries({ queryKey: ['resumes'] });
       toast.success('이력서가 수정되었습니다.');
+      router.push('/user');
     },
     onError: () => {
       toast.error('이력서 수정에 실패했습니다.');
@@ -237,7 +244,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
             <FormField
               name="title"
               control={control}
-              label="이력서 제목 *"
+              label="이력서 제목"
               rules={{ required: '이력서 제목을 입력해주세요' }}
               render={(field, fieldId) => (
                 <input
@@ -366,7 +373,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 <FormField
                   name={`career_history.${index}.company_name`}
                   control={control}
-                  label="회사명 *"
+                  label="회사명"
                   rules={{ required: '회사명을 입력해주세요' }}
                   render={(field, fieldId) => (
                     <input
@@ -380,7 +387,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 <FormField
                   name={`career_history.${index}.position_title`}
                   control={control}
-                  label="직책 *"
+                  label="직책"
                   rules={{ required: '직책을 입력해주세요' }}
                   render={(field, fieldId) => (
                     <input
@@ -407,7 +414,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 <FormField
                   name={`career_history.${index}.start_date`}
                   control={control}
-                  label="시작일 *"
+                  label="시작일"
                   rules={{ required: '시작일을 입력해주세요' }}
                   render={(field, fieldId) => (
                     <input
@@ -512,7 +519,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 <FormField
                   name={`schools.${index}.school_name`}
                   control={control}
-                  label="학교명 *"
+                  label="학교명"
                   rules={{ required: '학교명을 입력해주세요' }}
                   render={(field, fieldId) => (
                     <input
@@ -526,7 +533,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 <FormField
                   name={`schools.${index}.major_name`}
                   control={control}
-                  label="전공 *"
+                  label="전공"
                   rules={{ required: '전공을 입력해주세요' }}
                   render={(field, fieldId) => (
                     <input
@@ -540,7 +547,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 <FormField
                   name={`schools.${index}.start_date`}
                   control={control}
-                  label="입학일 *"
+                  label="입학일"
                   rules={{ required: '입학일을 입력해주세요' }}
                   render={(field, fieldId) => (
                     <input
@@ -623,7 +630,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 <FormField
                   name={`language_skills.${index}.language_type`}
                   control={control}
-                  label="언어 *"
+                  label="언어"
                   rules={{ required: '언어를 입력해주세요' }}
                   render={(field, fieldId) => (
                     <input
@@ -638,7 +645,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 <FormField
                   name={`language_skills.${index}.level`}
                   control={control}
-                  label="수준 *"
+                  label="수준"
                   rules={{ required: '수준을 선택해주세요' }}
                   render={(field, fieldId) => (
                     <select
@@ -696,7 +703,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 <FormField
                   name={`licenses.${index}.license_name`}
                   control={control}
-                  label="자격증명 *"
+                  label="자격증명"
                   rules={{ required: '자격증명을 입력해주세요' }}
                   render={(field, fieldId) => (
                     <input

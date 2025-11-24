@@ -8,6 +8,22 @@ import { Resume } from '@/types/user';
 import { resumeApi } from '@/lib/api/resume';
 import { profileApi } from '@/lib/api/profile';
 
+// ISO 날짜 형식(2022-02-23T00:00:00)을 YYYY-MM-DD 형식으로 변환
+const formatDateForInput = (dateString: string | null | undefined): string => {
+  if (!dateString) return '';
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  } catch (error) {
+    console.error('날짜 변환 오류:', error);
+    return '';
+  }
+};
+
 const EditResumePage: React.FC = () => {
   const params = useParams();
   const resumeId = params?.id ? Number(params.id) : null;
@@ -58,8 +74,8 @@ const EditResumePage: React.FC = () => {
             position: career.position_title,
             department: career.department,
             achievements: [], // fix: add empty achievements array to satisfy WorkExperience type
-            startDate: career.start_date,
-            endDate: career.end_date,
+            startDate: formatDateForInput(career.start_date),
+            endDate: formatDateForInput(career.end_date),
             current: career.is_working,
             description: career.main_role
           })),
@@ -68,8 +84,8 @@ const EditResumePage: React.FC = () => {
             institution: school.school_name,
             degree: school.is_graduated ? '졸업' : '재학',
             field: school.major_name,
-            startDate: school.start_date,
-            endDate: school.end_date
+            startDate: formatDateForInput(school.start_date),
+            endDate: formatDateForInput(school.end_date)
           })),
           skills: [],
           projects: [],
@@ -79,6 +95,12 @@ const EditResumePage: React.FC = () => {
             proficiency: lang.level as 'native' | 'advanced' | 'intermediate' | 'beginner'
           }))
         },
+        // 자격증 상세 정보 저장 (ResumeEditor에서 사용)
+        licenses: response.resume.licenses.map(license => ({
+          license_name: license.license_name,
+          license_agency: license.license_agency,
+          license_date: formatDateForInput(license.license_date)
+        })),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };

@@ -10,7 +10,7 @@ import UserProfileHeader from '@/components/user/UserProfileHeader';
 import ProfileStats from '@/components/user/ProfileStats';
 import SkillBarChart from '@/components/user/SkillBarChart';
 import RadarChart from '@/components/ui/RadarChart';
-import { UserProfile, ProfileStatistics, SkillStats, RadarChartData } from '@/types/user';
+import { UserProfile, ProfileStatistics, SkillStats, RadarChartData, UserSkill } from '@/types/user';
 import { useAuth } from '@/hooks/useAuth';
 import { resumeApi } from '@/lib/api/resume';
 import { profileApi } from '@/lib/api/profile';
@@ -120,6 +120,32 @@ const UserProfileClient: React.FC = () => {
       if (!firstResumeId) return null;
       const response = await resumeApi.getResumeById(firstResumeId);
 
+      // 언어 숙련도를 숫자로 변환하는 함수
+      const proficiencyToLevel = (level: string): number => {
+        switch (level) {
+          case 'native':
+            return 100;
+          case 'advanced':
+            return 85;
+          case 'intermediate':
+            return 65;
+          case 'beginner':
+            return 40;
+          default:
+            return 50;
+        }
+      };
+
+      // language_skills를 UserSkill 형태로 변환
+      const languageSkills: UserSkill[] = response.resume.language_skills.map((lang, index) => ({
+        id: `lang-${index}`,
+        name: lang.language_type,
+        level: proficiencyToLevel(lang.level),
+        average: 50, // 언어 스킬의 업계 평균 (기본값)
+        category: 'language' as const,
+        description: `${lang.language_type} - ${lang.level}`
+      }));
+
       // Resume, Profile, Contact 데이터를 UserProfile 형태로 변환
       const profile: UserProfile = {
         id: String(response.resume.user_id),
@@ -133,7 +159,7 @@ const UserProfileClient: React.FC = () => {
         completedProjects: 0, // API에서 제공하지 않음
         certifications: response.resume.licenses.map(l => l.license_name),
         availability: 'available',
-        skills: [], // 스킬 데이터가 API에 없음
+        skills: languageSkills, // language_skills를 UserSkill 형태로 변환하여 추가
         education: response.resume.schools.map(school => ({
           id: `${school.school_name}-${school.start_date}`,
           institution: school.school_name,

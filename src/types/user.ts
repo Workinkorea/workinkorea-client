@@ -104,6 +104,11 @@ export interface Resume {
       proficiency: 'beginner' | 'intermediate' | 'advanced' | 'native';
     }[];
   };
+  licenses?: Array<{
+    license_name: string;
+    license_agency: string;
+    license_date: string;
+  }>;
   createdAt: string;
   updatedAt: string;
   lastViewedAt?: string;
