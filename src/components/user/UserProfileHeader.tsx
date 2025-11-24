@@ -10,7 +10,6 @@ interface UserProfileHeaderProps {
   profile: UserProfile;
   isOwnProfile?: boolean;
   onEditClick?: () => void;
-  onResumeClick?: () => void;
   className?: string;
 }
 
@@ -18,7 +17,6 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
   profile,
   isOwnProfile = false,
   onEditClick,
-  onResumeClick,
   className = ''
 }) => {
   // 가용성 상태에 따른 스타일
@@ -182,14 +180,6 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
                       className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
                     >
                       프로필 편집
-                    </button>
-                  )}
-                  {onResumeClick && (
-                    <button
-                      onClick={onResumeClick}
-                      className="px-4 py-2 border border-primary-500 text-primary-500 rounded-lg text-body-3 font-medium hover:bg-primary-50 transition-colors cursor-pointer"
-                    >
-                      이력서 보기
                     </button>
                   )}
                 </>

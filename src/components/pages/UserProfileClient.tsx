@@ -83,7 +83,7 @@ const mockSkillStats: SkillStats = {
 
 const UserProfileClient: React.FC = () => {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience'>('overview');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'resume' | 'skills' | 'career'>('dashboard');
   const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
 
   const handleLogout = async () => {
@@ -299,7 +299,6 @@ const UserProfileClient: React.FC = () => {
           <UserProfileHeader
             profile={profile}
             isOwnProfile={true}
-            onResumeClick={() => router.push('/user/profile?tab=resume')}
           />
 
           {/* 탭 네비게이션 */}
@@ -311,9 +310,10 @@ const UserProfileClient: React.FC = () => {
           >
             <div className="flex gap-2">
               {[
-                { key: 'overview', label: '개요' },
-                { key: 'skills', label: '스킬 분석' },
-                { key: 'experience', label: '경력 & 교육' }
+                { key: 'dashboard', label: '대시보드' },
+                { key: 'resume', label: '이력서' },
+                { key: 'skills', label: '스킬 관리' },
+                { key: 'career', label: '경력 관리' }
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -332,7 +332,7 @@ const UserProfileClient: React.FC = () => {
 
           {/* 탭 컨텐츠 */}
           <div className="space-y-6">
-            {activeTab === 'overview' && (
+            {activeTab === 'dashboard' && (
               <>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* 레이더 차트 */}
@@ -364,6 +364,47 @@ const UserProfileClient: React.FC = () => {
               </>
             )}
 
+            {activeTab === 'resume' && (
+              <motion.div 
+                className="bg-white rounded-lg p-6 shadow-normal"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <h3 className="text-title-4 font-semibold text-label-900 mb-6">
+                  이력서
+                </h3>
+                {resumeList?.resume_list && resumeList.resume_list.length > 0 ? (
+                  <div className="space-y-4">
+                    {resumeList.resume_list.map((resume) => (
+                      <div 
+                        key={resume.id}
+                        className="border border-line-200 rounded-lg p-4 hover:border-primary-300 transition-colors cursor-pointer"
+                        onClick={() => router.push(`/user/resume/edit/${resume.id}`)}
+                      >
+                        <h4 className="text-body-2 font-semibold text-label-900 mb-2">
+                          {resume.title || '이력서'}
+                        </h4>
+                        <p className="text-body-3 text-label-600">
+                          {resume.updated_at ? new Date(resume.updated_at).toLocaleDateString('ko-KR') : '날짜 정보 없음'}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-body-3 text-label-600 mb-4">작성된 이력서가 없습니다.</p>
+                    <button
+                      onClick={() => router.push('/user/resume/create')}
+                      className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                    >
+                      이력서 작성하기
+                    </button>
+                  </div>
+                )}
+              </motion.div>
+            )}
+
             {activeTab === 'skills' && (
               <SkillBarChart 
                 skills={profile.skills}
@@ -373,7 +414,7 @@ const UserProfileClient: React.FC = () => {
               />
             )}
 
-            {activeTab === 'experience' && (
+            {activeTab === 'career' && (
               <motion.div 
                 className="bg-white rounded-lg p-6 shadow-normal"
                 initial={{ opacity: 0, y: 20 }}

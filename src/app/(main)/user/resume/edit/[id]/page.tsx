@@ -6,16 +6,34 @@ import { useQuery } from '@tanstack/react-query';
 import ResumeEditor from '@/components/resume/ResumeEditor';
 import { Resume } from '@/types/user';
 import { resumeApi } from '@/lib/api/resume';
+import { profileApi } from '@/lib/api/profile';
 
 const EditResumePage: React.FC = () => {
   const params = useParams();
   const resumeId = params?.id ? Number(params.id) : null;
 
+  // 프로필 정보 가져오기
+  const { data: profileData } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => profileApi.getProfile(),
+  });
+
+  // 연락처 정보 가져오기
+  const { data: contactData } = useQuery({
+    queryKey: ['contact'],
+    queryFn: () => profileApi.getContact(),
+  });
+
   const { data: resumeData, isLoading, error } = useQuery({
-    queryKey: ['resume', resumeId],
+    queryKey: ['resume', resumeId, profileData, contactData],
     queryFn: async () => {
       if (!resumeId) throw new Error('Invalid resume ID');
       const response = await resumeApi.getResumeById(resumeId);
+
+      // introduction 배열에서 첫 번째 항목의 content를 objective로 사용
+      const objective = response.resume.introduction && response.resume.introduction.length > 0
+        ? response.resume.introduction[0].content
+        : '';
 
       // API 응답을 Resume 타입으로 변환
       const resume: Resume = {
@@ -27,13 +45,13 @@ const EditResumePage: React.FC = () => {
         isPublic: true,
         content: {
           personalInfo: {
-            name: '',
-            email: '',
-            phone: '',
-            address: '',
-            profileImage: response.resume.profile_url
+            name: profileData?.name || '',
+            email: '', // 프로필 API에 email이 없음
+            phone: contactData?.phone_number || '',
+            address: profileData?.address || '',
+            profileImage: response.resume.profile_url || profileData?.profile_image_url
           },
-          objective: '',
+          objective: objective,
           workExperience: response.resume.career_history.map(career => ({
             id: `${career.company_name}-${career.start_date}`,
             company: career.company_name,
