@@ -341,7 +341,7 @@ const ProfileEditClient: React.FC = () => {
 
     try {
       const formData = new FormData();
-      formData.append('image', file);
+      formData.append('file_name', file);
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/metest/user/image`, {
         method: 'POST',
