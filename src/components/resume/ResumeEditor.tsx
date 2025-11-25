@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -10,7 +11,9 @@ import {
   Save,
   ArrowLeft,
   Plus,
-  Trash2
+  Trash2,
+  Upload,
+  X
 } from 'lucide-react';
 import { Resume, ResumeTemplate } from '@/types/user';
 import { resumeApi } from '@/lib/api/resume';
@@ -69,8 +72,12 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
 }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    initialData?.content?.personalInfo?.profileImage || null
+  );
 
-  const { control, handleSubmit, watch, formState: { isSubmitting } } = useForm<ResumeFormData>({
+  const { control, handleSubmit, watch, setValue, formState: { isSubmitting } } = useForm<ResumeFormData>({
     defaultValues: {
       title: initialData?.title || '',
       profile_url: initialData?.content?.personalInfo?.profileImage || '',
@@ -127,7 +134,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
     name: 'career_history'
   });
 
-  const { fields: introFields, append: appendIntro, remove: removeIntro } = useFieldArray({
+  const { fields: introFields, append: appendIntro } = useFieldArray({
     control,
     name: 'introduction'
   });
@@ -189,6 +196,50 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
     } catch (error) {
       console.error('이력서 저장 실패:', error);
     }
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // 이미지 파일인지 확인
+    if (!file.type.startsWith('image/')) {
+      toast.error('이미지 파일만 업로드할 수 있습니다.');
+      return;
+    }
+
+    // 파일 크기 체크 (5MB 제한)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('이미지 크기는 5MB 이하여야 합니다.');
+      return;
+    }
+
+    try {
+      setUploadingImage(true);
+
+      // 미리보기 생성
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      // API 업로드
+      const response = await resumeApi.uploadResumeImage(file);
+      setValue('profile_url', response.file_name);
+      toast.success('이미지가 업로드되었습니다.');
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      toast.error('이미지 업로드에 실패했습니다.');
+      setPreviewImage(null);
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setPreviewImage(null);
+    setValue('profile_url', '');
   };
 
   const handleBack = () => {
@@ -257,20 +308,56 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
               )}
             />
 
-            <FormField
-              name="profile_url"
-              control={control}
-              label="프로필 이미지 URL"
-              render={(field, fieldId) => (
-                <input
-                  {...field}
-                  id={fieldId}
-                  type="text"
-                  placeholder="https://example.com/profile.jpg"
-                  className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-              )}
-            />
+            <div>
+              <label className="block text-caption-1 font-medium text-label-700 mb-2">
+                프로필 이미지
+              </label>
+              <div className="flex items-start gap-4">
+                {/* 이미지 미리보기 */}
+                {previewImage && (
+                  <div className="relative">
+                    <Image
+                      src={previewImage}
+                      alt="프로필 미리보기"
+                      width={96}
+                      height={96}
+                      className="w-24 h-24 rounded-lg object-cover border border-line-300"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
+
+                {/* 업로드 버튼 */}
+                <div className="flex-1">
+                  <label
+                    htmlFor="profile-image-upload"
+                    className={`flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-line-300 rounded-lg text-body-3 text-label-600 hover:border-primary-500 hover:text-primary-600 transition-colors cursor-pointer ${
+                      uploadingImage ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    <Upload size={16} />
+                    {uploadingImage ? '업로드 중...' : '이미지 업로드'}
+                  </label>
+                  <input
+                    id="profile-image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={uploadingImage}
+                    className="hidden"
+                  />
+                  <p className="text-caption-2 text-label-500 mt-2">
+                    JPG, PNG, GIF 파일 (최대 5MB)
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </motion.div>
 

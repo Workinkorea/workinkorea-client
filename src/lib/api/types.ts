@@ -256,6 +256,10 @@ export interface UploadResumeFileResponse {
   message: string;
 }
 
+export interface UploadResumeImageResponse {
+  file_name: string;
+}
+
 // Company Post API types
 export interface CompanyPost {
   id: number;
@@ -361,4 +365,22 @@ export interface UpdateCompanyPostResponse {
 
 export interface DeleteCompanyPostResponse {
   message: string;
+}
+
+// User Image Upload API types
+export interface UploadUserImageRequest {
+  file_name: string;
+}
+
+export interface PresignedPostResponse {
+  url: string;
+  fields: Record<string, string>;
+  object_name: string;
+  expires: string;
+}
+
+export interface UploadUserImageResponse {
+  success: boolean;
+  message?: string;
+  image_url?: string;
 }

@@ -9,6 +9,9 @@ import type {
   UpdateResumeResponse,
   DeleteResumeResponse,
   UploadResumeFileResponse,
+  UploadResumeImageResponse,
+  UploadUserImageResponse,
+  PresignedPostResponse,
 } from './types';
 
 export const resumeApi = {
@@ -39,34 +42,150 @@ export const resumeApi = {
   },
 
   async uploadResumeFile(file: File): Promise<UploadResumeFileResponse> {
-    // 파일을 ArrayBuffer로 변환 (바이너리)
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = new Uint8Array(arrayBuffer);
-
-    // 토큰 가져오기
     const token = tokenManager.getToken('user');
-
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-    // FastAPI 서버로 바이너리 데이터 전송
-    const response = await fetch(`${API_BASE_URL}/api/posts/resume/upload`, {
+    // 1단계: 백엔드에서 presigned POST URL 받기
+    const presignedResponse = await fetch(`${API_BASE_URL}/api/metest/user/image`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/octet-stream',
-        'X-File-Name': file.name,
-        'X-File-Type': file.type,
-        'X-File-Size': file.size.toString(),
+        'Content-Type': 'application/json',
         ...(token && { Authorization: `Bearer ${token}` }),
       },
-      body: buffer,
+      body: JSON.stringify({ file_name: file.name }),
       credentials: 'include',
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
-      throw new Error(errorData.message || `파일 업로드 실패: ${response.status}`);
+    if (!presignedResponse.ok) {
+      const errorData = await presignedResponse.json().catch(() => ({ message: 'Unknown error' }));
+      throw new Error(errorData.message || `Presigned URL 생성 실패: ${presignedResponse.status}`);
     }
 
-    return response.json();
+    const presignedData: PresignedPostResponse = await presignedResponse.json();
+
+    // 2단계: MinIO에 직접 파일 업로드
+    const formData = new FormData();
+
+    // presigned POST의 fields를 먼저 추가
+    Object.entries(presignedData.fields).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    // 파일을 마지막에 추가
+    formData.append('file', file);
+
+    const uploadResponse = await fetch(presignedData.url, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error(`파일 업로드 실패: ${uploadResponse.status}`);
+    }
+
+    // 업로드 성공 응답 생성
+    return {
+      resume_id: 0, // 필요시 백엔드에서 받아오도록 수정
+      file_url: `${presignedData.url}/${presignedData.object_name}`,
+      message: '파일 업로드 성공',
+    };
+  },
+
+  async uploadResumeImage(file: File): Promise<UploadResumeImageResponse> {
+    const token = tokenManager.getToken('user');
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+
+    // 1단계: 백엔드에서 presigned POST URL 받기
+    const presignedResponse = await fetch(`${API_BASE_URL}/api/metest/user/image`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: JSON.stringify({ file_name: file.name }),
+      credentials: 'include',
+    });
+
+    if (!presignedResponse.ok) {
+      const errorData = await presignedResponse.json().catch(() => ({ message: 'Unknown error' }));
+      throw new Error(errorData.message || `Presigned URL 생성 실패: ${presignedResponse.status}`);
+    }
+
+    const presignedData: PresignedPostResponse = await presignedResponse.json();
+
+    // 2단계: MinIO에 직접 파일 업로드
+    const formData = new FormData();
+
+    // presigned POST의 fields를 먼저 추가
+    Object.entries(presignedData.fields).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    // 파일을 마지막에 추가
+    formData.append('file', file);
+
+    const uploadResponse = await fetch(presignedData.url, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error(`이미지 업로드 실패: ${uploadResponse.status}`);
+    }
+
+    // 업로드 성공 응답 생성
+    return {
+      file_name: presignedData.object_name,
+    };
+  },
+
+  async uploadUserImage(file: File): Promise<UploadUserImageResponse> {
+    const token = tokenManager.getToken('user');
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+
+    // 1단계: 백엔드에서 presigned POST URL 받기
+    const presignedResponse = await fetch(`${API_BASE_URL}/api/metest/user/image`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: JSON.stringify({ file_name: file.name }),
+      credentials: 'include',
+    });
+
+    if (!presignedResponse.ok) {
+      const errorData = await presignedResponse.json().catch(() => ({ message: 'Unknown error' }));
+      throw new Error(errorData.message || `Presigned URL 생성 실패: ${presignedResponse.status}`);
+    }
+
+    const presignedData: PresignedPostResponse = await presignedResponse.json();
+
+    // 2단계: MinIO에 직접 파일 업로드
+    const formData = new FormData();
+
+    // presigned POST의 fields를 먼저 추가
+    Object.entries(presignedData.fields).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    // 파일을 마지막에 추가
+    formData.append('file', file);
+
+    const uploadResponse = await fetch(presignedData.url, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error(`사용자 이미지 업로드 실패: ${uploadResponse.status}`);
+    }
+
+    // 업로드 성공 응답 생성
+    return {
+      success: true,
+      message: '이미지 업로드 성공',
+      image_url: `${presignedData.url}/${presignedData.object_name}`,
+    };
   },
 };

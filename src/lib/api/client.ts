@@ -177,28 +177,30 @@ const onTokenRefreshed = (token: string) => {
   refreshSubscribers = [];
 };
 
+interface RefreshTokenResponse {
+  accessToken?: string;
+  access_token?: string;
+  token?: string;
+  message?: string;
+}
+
 export const refreshAccessToken = async (tokenType: 'user' | 'company' = 'user'): Promise<string> => {
-  const response = await apiClient.post<any>('/api/auth/refresh');
+  try {
+    const data = await apiClient.post<RefreshTokenResponse>('/api/auth/refresh');
+    const accessToken = data.accessToken || data.access_token || data.token;
 
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
+    if (!accessToken) {
+      throw new Error('No access token received');
+    }
 
-    if (data.message === 'Refresh token not found') {
+    return accessToken;
+  } catch (error) {
+    if (error instanceof ApiError && error.data?.error === 'Refresh token not found') {
       tokenManager.removeToken(tokenType);
       if (typeof window !== 'undefined') {
         window.location.href = '/login';
       }
     }
-
-    throw new Error('Failed to refresh token');
+    throw error;
   }
-
-  const data = await response.json();
-  const accessToken = data.accessToken || data.access_token || data.token;
-
-  if (!accessToken) {
-    throw new Error('No access token received');
-  }
-
-  return accessToken;
 };

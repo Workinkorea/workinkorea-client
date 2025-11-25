@@ -23,7 +23,6 @@ export const FormField = <T extends FieldValues, N extends Path<T>>({
   control,
   label,
   render,
-  error,
   rules
 }: FormFieldProps<T, N>) => {
   const fieldId = `field-${name}`;

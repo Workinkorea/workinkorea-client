@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // Resume API 사용 예시
 import { resumeApi } from '../resume';
 import { ApiError } from '../client';
 import type { CreateResumeRequest, UpdateResumeRequest } from '../types';
 
 // 예시 1-1: 이력서 목록 조회 - try-catch를 사용한 에러 핸들링
-async function fetchMyResumes() {
+async function _fetchMyResumes() {
   try {
     const response = await resumeApi.getMyResumes();
     console.log('Resume List:', response.resume_list);
@@ -45,7 +46,7 @@ async function fetchMyResumes() {
 }
 
 // 예시 1-2: 이력서 상세 조회 - try-catch를 사용한 에러 핸들링
-async function fetchResumeById(resumeId: number) {
+async function _fetchResumeById(resumeId: number) {
   try {
     const response = await resumeApi.getResumeById(resumeId);
     console.log('Resume Detail:', response.resume);
@@ -362,7 +363,7 @@ export function ResumeDetailWithQuery({ resumeId }: ResumeDetailWithQueryProps) 
 */
 
 // 예시 4: 이력서 생성 - try-catch를 사용한 에러 핸들링
-async function createNewResume() {
+async function _createNewResume() {
   const resumeData: CreateResumeRequest = {
     title: 'Software Engineer Resume',
     profile_url: 'https://example.com/profile.jpg',
@@ -612,7 +613,7 @@ export function CreateResumeWithMutation() {
 */
 
 // 예시 7: 이력서 수정 - try-catch를 사용한 에러 핸들링
-async function updateExistingResume(resumeId: number) {
+async function _updateExistingResume(resumeId: number) {
   const updateData: UpdateResumeRequest = {
     title: 'Updated Software Engineer Resume',
     language_skills: [
@@ -884,7 +885,7 @@ export function UpdateResumeWithMutation({ resumeId }: UpdateResumeWithMutationP
 */
 
 // 예시 10: 이력서 삭제 - try-catch를 사용한 에러 핸들링
-async function deleteExistingResume(resumeId: number) {
+async function _deleteExistingResume(resumeId: number) {
   try {
     const response = await resumeApi.deleteResume(resumeId);
     console.log('Resume deleted successfully!', response.message);

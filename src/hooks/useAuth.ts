@@ -55,14 +55,12 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
   // 토큰 갱신 스케줄링
   const scheduleTokenRefresh = useCallback(() => {
-    console.log(refreshTimerRef.current);
     // 기존 타이머 정리
     if (refreshTimerRef.current) {
       clearTimeout(refreshTimerRef.current);
     }
 
     const remainingTime = tokenManager.getTokenRemainingTime();
-    console.log(`남은시간: ${remainingTime}`)
 
     if (!remainingTime || remainingTime <= 0) {
       // 토큰이 이미 만료됨 - 즉시 갱신

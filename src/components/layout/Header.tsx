@@ -69,7 +69,7 @@ const Header = ({ type, isAuthenticated, isLoading, onLogout }: HeaderProps) => 
             ) : isAuthenticated ? (
               <div className="flex items-center gap-3">
                 <Link
-                  href={type === 'homepage' ? '/user' : '/company'}
+                  href={type === 'homepage' ? '/user/profile' : '/company'}
                   className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
                 >
                   MY홈

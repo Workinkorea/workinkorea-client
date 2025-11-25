@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Example usage for Company Posts API
  *
@@ -162,7 +163,7 @@ export function CompanyPostsWithReactQuery() {
 // Example 3: Server-side usage (Next.js server component or API route)
 // ============================================================================
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export async function getServerSideProps(_context: GetServerSidePropsContext) {
   try {
     // Note: In server-side, you need to pass the token from cookies
     // This is just a basic example - you'll need to handle auth properly
@@ -307,7 +308,7 @@ export async function CompanyPostsServerComponent() {
         ))}
       </div>
     );
-  } catch (error) {
+  } catch (_error) {
     return <div>공고를 불러올 수 없습니다.</div>;
   }
 }
@@ -652,7 +653,7 @@ export function useCreateCompanyPost() {
 export function CreatePostWithReactQuery() {
   const createPost = useCreateCompanyPost();
 
-  const handleCreatePost = async (formData: CreateCompanyPostRequest) => {
+  const _handleCreatePost = async (formData: CreateCompanyPostRequest) => {
     try {
       if (!tokenManager.isTokenValid('company')) {
         alert('기업 로그인이 필요합니다.');
@@ -929,7 +930,7 @@ export function useUpdateCompanyPost() {
 export function UpdatePostWithReactQuery({ postId }: { postId: number }) {
   const updatePost = useUpdateCompanyPost();
 
-  const handleUpdatePost = async (formData: UpdateCompanyPostRequest) => {
+  const _handleUpdatePost = async (formData: UpdateCompanyPostRequest) => {
     try {
       if (!tokenManager.isTokenValid('company')) {
         alert('기업 로그인이 필요합니다.');

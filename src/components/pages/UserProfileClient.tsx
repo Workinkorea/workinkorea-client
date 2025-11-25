@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
@@ -17,55 +17,6 @@ import { profileApi } from '@/lib/api/profile';
 import type { CareerHistory } from '@/lib/api/types';
 
 // TODO: 실제 API 호출로 대체
-const mockUserProfile: UserProfile = {
-  id: '1',
-  name: '김민수',
-  email: 'minsu.kim@example.com',
-  profileImage: undefined,
-  title: '프론트엔드 개발자',
-  location: '서울, 한국',
-  bio: '5년차 프론트엔드 개발자로 React, TypeScript, Next.js에 전문성을 가지고 있습니다. 사용자 경험을 최우선으로 하는 웹 애플리케이션 개발에 열정을 가지고 있습니다.',
-  experience: 5,
-  completedProjects: 12,
-  certifications: ['AWS Solutions Architect', 'Google Cloud Professional'],
-  availability: 'available',
-  skills: [
-    { id: '1', name: 'React', level: 85, average: 70, category: 'technical', description: 'React 생태계 전반에 걸친 깊은 이해' },
-    { id: '2', name: 'TypeScript', level: 80, average: 65, category: 'technical' },
-    { id: '3', name: 'Next.js', level: 90, average: 75, category: 'technical' },
-    { id: '4', name: 'Node.js', level: 70, average: 68, category: 'technical' },
-    { id: '5', name: '팀 리더십', level: 75, average: 60, category: 'soft' },
-    { id: '6', name: '프로젝트 관리', level: 70, average: 65, category: 'soft' },
-    { id: '7', name: '영어', level: 80, average: 55, category: 'language' },
-    { id: '8', name: '일본어', level: 60, average: 40, category: 'language' }
-  ],
-  education: [
-    {
-      id: '1',
-      institution: '서울대학교',
-      degree: '학사',
-      field: '컴퓨터공학',
-      startDate: '2015-03',
-      endDate: '2019-02'
-    }
-  ],
-  languages: [
-    { name: '한국어', proficiency: 'native' },
-    { name: '영어', proficiency: 'advanced' },
-    { name: '일본어', proficiency: 'intermediate' }
-  ],
-  githubUrl: 'https://github.com/kimminsu',
-  linkedinUrl: 'https://linkedin.com/in/kimminsu',
-  portfolioUrl: 'https://kimminsu.dev',
-  preferredSalary: {
-    min: 6000,
-    max: 8000,
-    currency: '만원'
-  },
-  createdAt: '2023-01-15T00:00:00Z',
-  updatedAt: '2024-01-15T00:00:00Z'
-};
-
 const mockStatistics: ProfileStatistics = {
   profileViews: 1234,
   contactRequests: 23,
@@ -83,12 +34,70 @@ const mockSkillStats: SkillStats = {
 
 const UserProfileClient: React.FC = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'resume' | 'skills' | 'career'>('dashboard');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
 
   const handleLogout = async () => {
     await logout();
     router.push('/');
+  };
+
+  // 이력서 삭제 mutation
+  const deleteResumeMutation = useMutation({
+    mutationFn: (resumeId: number) => resumeApi.deleteResume(resumeId),
+    onSuccess: () => {
+      // 이력서 목록 다시 불러오기
+      queryClient.invalidateQueries({ queryKey: ['resumeList'] });
+      queryClient.invalidateQueries({ queryKey: ['resume'] });
+    },
+  });
+
+  // 사용자 이미지 업로드 mutation
+  const uploadImageMutation = useMutation({
+    mutationFn: (file: File) => resumeApi.uploadUserImage(file),
+    onSuccess: () => {
+      alert('이미지가 업로드되었습니다.');
+      setSelectedFile(null);
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+    },
+    onError: (error) => {
+      console.error('이미지 업로드 실패:', error);
+      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+    },
+  });
+
+  const handleDeleteResume = async (resumeId: number, resumeTitle: string) => {
+    if (window.confirm(`"${resumeTitle}" 이력서를 삭제하시겠습니까?`)) {
+      try {
+        await deleteResumeMutation.mutateAsync(resumeId);
+        alert('이력서가 삭제되었습니다.');
+      } catch (error) {
+        console.error('이력서 삭제 실패:', error);
+        alert('이력서 삭제에 실패했습니다. 다시 시도해주세요.');
+      }
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedFile) {
+      alert('파일을 선택해주세요.');
+      return;
+    }
+
+    try {
+      await uploadImageMutation.mutateAsync(selectedFile);
+    } catch (error) {
+      console.error('업로드 오류:', error);
+    }
   };
 
   // 프로필 정보 가져오기
@@ -106,7 +115,7 @@ const UserProfileClient: React.FC = () => {
   });
 
   // 이력서 목록 가져오기
-  const { data: resumeList } = useQuery({
+  const { data: resumeList, isLoading: resumeListLoading } = useQuery({
     queryKey: ['resumeList'],
     queryFn: () => resumeApi.getMyResumes(),
     enabled: isAuthenticated,
@@ -114,7 +123,7 @@ const UserProfileClient: React.FC = () => {
 
   // 첫 번째 이력서 상세 정보 가져오기
   const firstResumeId = resumeList?.resume_list?.[0]?.id;
-  const { data: resumeData, isLoading, error } = useQuery({
+  const { data: resumeData, isLoading: resumeDetailLoading, error } = useQuery({
     queryKey: ['resume', firstResumeId],
     queryFn: async () => {
       if (!firstResumeId) return null;
@@ -201,8 +210,6 @@ const UserProfileClient: React.FC = () => {
     return Math.floor(totalMonths / 12);
   }
 
-  const profile = resumeData || mockUserProfile;
-
   // 레이더 차트 데이터 생성
   const generateRadarData = (skills: UserProfile['skills']): RadarChartData => {
     const technicalSkills = skills.filter(s => s.category === 'technical');
@@ -230,7 +237,7 @@ const UserProfileClient: React.FC = () => {
     leadership: 55
   });
 
-  if (authLoading || isLoading) {
+  if (authLoading || resumeListLoading || resumeDetailLoading) {
     return (
       <Layout>
       <Header
@@ -254,7 +261,7 @@ const UserProfileClient: React.FC = () => {
     );
   }
 
-  if (error || !profile) {
+  if (error || !resumeData) {
     return (
       <Layout>
       <Header
@@ -287,7 +294,7 @@ const UserProfileClient: React.FC = () => {
     );
   }
 
-  const radarData = generateRadarData(profile.skills);
+  const radarData = generateRadarData(resumeData.skills);
   const averageRadarData = generateAverageRadarData();
 
   return (
@@ -323,7 +330,7 @@ const UserProfileClient: React.FC = () => {
 
           {/* 헤더 */}
           <UserProfileHeader
-            profile={profile}
+            profile={resumeData}
             isOwnProfile={true}
           />
 
@@ -381,8 +388,8 @@ const UserProfileClient: React.FC = () => {
                   </motion.div>
 
                   {/* 통계 */}
-                  <ProfileStats 
-                    profile={profile}
+                  <ProfileStats
+                    profile={resumeData}
                     statistics={mockStatistics}
                     skillStats={mockSkillStats}
                   />
@@ -391,7 +398,7 @@ const UserProfileClient: React.FC = () => {
             )}
 
             {activeTab === 'resume' && (
-              <motion.div 
+              <motion.div
                 className="bg-white rounded-lg p-6 shadow-normal"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -400,20 +407,58 @@ const UserProfileClient: React.FC = () => {
                 <h3 className="text-title-4 font-semibold text-label-900 mb-6">
                   이력서
                 </h3>
+
+                {/* 이미지 업로드 섹션 */}
+                <div className="mb-6 p-4 border border-line-200 rounded-lg bg-background-alternative">
+                  <h4 className="text-body-2 font-semibold text-label-900 mb-3">이력서 파일 업로드</h4>
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      accept="image/*,.pdf,.doc,.docx"
+                      className="flex-1 text-body-3 text-label-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-body-3 file:font-medium file:bg-primary-100 file:text-primary-700 hover:file:bg-primary-200 cursor-pointer"
+                    />
+                    <button
+                      onClick={handleUploadImage}
+                      disabled={!selectedFile || uploadImageMutation.isPending}
+                      className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {uploadImageMutation.isPending ? '업로드 중...' : '업로드'}
+                    </button>
+                  </div>
+                  {selectedFile && (
+                    <p className="mt-2 text-caption-2 text-label-600">
+                      선택된 파일: {selectedFile.name}
+                    </p>
+                  )}
+                </div>
+
                 {resumeList?.resume_list && resumeList.resume_list.length > 0 ? (
                   <div className="space-y-4">
                     {resumeList.resume_list.map((resume) => (
-                      <div 
+                      <div
                         key={resume.id}
-                        className="border border-line-200 rounded-lg p-4 hover:border-primary-300 transition-colors cursor-pointer"
+                        className="border border-line-200 rounded-lg p-4 hover:border-primary-300 transition-colors cursor-pointer flex justify-between items-center"
                         onClick={() => router.push(`/user/resume/edit/${resume.id}`)}
                       >
-                        <h4 className="text-body-2 font-semibold text-label-900 mb-2">
-                          {resume.title || '이력서'}
-                        </h4>
-                        <p className="text-body-3 text-label-600">
-                          {resume.updated_at ? new Date(resume.updated_at).toLocaleDateString('ko-KR') : '날짜 정보 없음'}
-                        </p>
+                        <div>
+                          <h4 className="text-body-2 font-semibold text-label-900 mb-2">
+                            {resume.title || '이력서'}
+                          </h4>
+                          <p className="text-body-3 text-label-600">
+                            {resume.updated_at ? new Date(resume.updated_at).toLocaleDateString('ko-KR') : '날짜 정보 없음'}
+                          </p>
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteResume(resume.id, resume.title || '이력서');
+                          }}
+                          disabled={deleteResumeMutation.isPending}
+                          className="px-4 py-2 bg-red-500 text-white rounded-lg text-body-3 font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {deleteResumeMutation.isPending ? '삭제 중...' : '삭제'}
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -432,8 +477,8 @@ const UserProfileClient: React.FC = () => {
             )}
 
             {activeTab === 'skills' && (
-              <SkillBarChart 
-                skills={profile.skills}
+              <SkillBarChart
+                skills={resumeData.skills}
                 title="세부 스킬 분석"
                 maxItems={12}
                 showCategory={true}
@@ -454,7 +499,7 @@ const UserProfileClient: React.FC = () => {
                 {/* 교육 이력 */}
                 <div className="space-y-4">
                   <h4 className="text-body-2 font-semibold text-label-700">교육 이력</h4>
-                  {profile.education.map((edu) => (
+                  {resumeData.education.map((edu) => (
                     <div key={edu.id} className="border-l-4 border-primary-200 pl-4 py-2">
                       <h5 className="text-body-3 font-semibold text-label-900">{edu.institution}</h5>
                       <p className="text-body-3 text-label-600">{edu.degree} - {edu.field}</p>
@@ -466,12 +511,12 @@ const UserProfileClient: React.FC = () => {
                 </div>
 
                 {/* 자격증 */}
-                {profile.certifications.length > 0 && (
+                {resumeData.certifications.length > 0 && (
                   <div className="mt-6 space-y-4">
                     <h4 className="text-body-2 font-semibold text-label-700">자격증</h4>
                     <div className="flex flex-wrap gap-2">
-                      {profile.certifications.map((cert, index) => (
-                        <span 
+                      {resumeData.certifications.map((cert, index) => (
+                        <span
                           key={index}
                           className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-caption-2 border border-primary-200"
                         >

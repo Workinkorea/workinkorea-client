@@ -635,6 +635,13 @@ const MyProfileClient: React.FC = () => {
                       }
                     }}
                     onDeleteResume={async (resumeId) => {
+                      const resume = (resumesData || mockResumes).find(r => r.id === resumeId);
+                      const resumeTitle = resume?.title || '이력서';
+
+                      if (!window.confirm(`"${resumeTitle}" 이력서를 삭제하시겠습니까?`)) {
+                        return;
+                      }
+
                       try {
                         await resumeApi.deleteResume(Number(resumeId));
                         // 쿼리 무효화하여 목록 갱신
@@ -645,7 +652,7 @@ const MyProfileClient: React.FC = () => {
                         toast.error('이력서 삭제에 실패했습니다.');
                       }
                     }}
-                    onTogglePublic={(resumeId) => {
+                    onTogglePublic={() => {
                       // TODO: 공개/비공개 설정 API 호출
                     }}
                     onViewResume={(resumeId) => {

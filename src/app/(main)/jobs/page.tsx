@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { MapPin, Clock, ChevronRight } from 'lucide-react';
+import { MapPin, Clock } from 'lucide-react';
 import Link from 'next/link';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
