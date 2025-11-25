@@ -37,37 +37,7 @@ import {
 } from '@/lib/validations/profile';
 import { cn } from '@/lib/utils/utils';
 import { profileApi } from '@/lib/api/profile';
-
-// 임시 데이터 - 실제로는 API에서 가져올 데이터
-const mockProfile: UserProfile = {
-  id: 'me',
-  name: '이지은',
-  email: 'jieun.lee@example.com',
-  profileImage: undefined,
-  title: 'UX/UI 디자이너 & 프론트엔드 개발자',
-  location: '서울, 한국',
-  bio: '사용자 경험에 중점을 둔 디자인과 개발을 동시에 하는 3년차 전문가입니다.',
-  experience: 3,
-  completedProjects: 8,
-  certifications: ['Adobe Certified Expert', 'Google UX Design'],
-  availability: 'busy',
-  skills: [],
-  education: [],
-  languages: [
-    { name: '한국어', proficiency: 'native' },
-    { name: '영어', proficiency: 'intermediate' }
-  ],
-  githubUrl: 'https://github.com/leejieun',
-  linkedinUrl: 'https://linkedin.com/in/leejieun',
-  portfolioUrl: 'https://leejieun.design',
-  preferredSalary: {
-    min: 4500,
-    max: 6000,
-    currency: '만원'
-  },
-  createdAt: '2023-06-15T00:00:00Z',
-  updatedAt: '2024-01-20T00:00:00Z'
-};
+import { apiClient } from '@/lib/api/client';
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
@@ -76,31 +46,39 @@ const ProfileEditClient: React.FC = () => {
   const queryClient = useQueryClient();
   const [activeSection, setActiveSection] = useState<SectionType>('basic');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // 프로필 데이터 가져오기
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ['myProfile'],
     queryFn: async () => {
-      try {
-        const apiProfile = await profileApi.getProfile();
+      const apiProfile = await profileApi.getProfile();
 
-        // API 응답을 UserProfile 형태로 변환
-        const transformedProfile: UserProfile = {
-          ...mockProfile, // 기본값으로 mock 데이터 사용
-          name: apiProfile.name,
-          profileImage: apiProfile.profile_image_url || undefined,
-          location: apiProfile.location,
-          bio: apiProfile.introduction,
-          portfolioUrl: apiProfile.portfolio_url,
-          // TODO: position_id, job_status, country_id 등을 적절히 매핑
-        };
+      // API 응답을 UserProfile 형태로 변환
+      const transformedProfile: UserProfile = {
+        id: apiProfile.user_id?.toString() || 'me',
+        name: apiProfile.name || '',
+        email: '', // ProfileResponse에 email 필드 없음
+        profileImage: apiProfile.profile_image_url || undefined,
+        title: '', // ProfileResponse에 title 필드 없음
+        location: apiProfile.location || '',
+        bio: apiProfile.introduction || '',
+        experience: 0, // ProfileResponse에 experience 필드 없음
+        completedProjects: 0, // ProfileResponse에 completedProjects 필드 없음
+        certifications: [], // ProfileResponse에 certifications 필드 없음
+        availability: (apiProfile.job_status as 'available' | 'busy' | 'not-looking') || 'available',
+        skills: [], // ProfileResponse에 skills 필드 없음
+        education: [], // ProfileResponse에 education 필드 없음
+        languages: [], // ProfileResponse에 languages 필드 없음
+        githubUrl: '', // ProfileResponse에 github_url 필드 없음
+        linkedinUrl: '', // ProfileResponse에 linkedin_url 필드 없음
+        portfolioUrl: apiProfile.portfolio_url || '',
+        preferredSalary: undefined, // ProfileResponse에 preferredSalary 필드 없음
+        createdAt: '', // ProfileResponse에 created_at 필드 없음
+        updatedAt: '' // ProfileResponse에 updated_at 필드 없음
+      };
 
-        return transformedProfile;
-      } catch (err) {
-        console.error('프로필 로드 실패:', err);
-        // 에러 시 mock 데이터 반환 (개발 환경용)
-        return mockProfile;
-      }
+      return transformedProfile;
     }
   });
 
@@ -194,27 +172,20 @@ const ProfileEditClient: React.FC = () => {
     }
   });
 
-  // 프로필 데이터가 로드되면 폼 업데이트
+  // 프로필 데이터가 로드되면 기본 정보 폼만 업데이트
   useEffect(() => {
     if (profile) {
       basicForm.reset({
-        name: profile.name,
+        name: profile.name || '',
         title: profile.title || '',
         location: profile.location || '',
         bio: profile.bio || '',
       });
 
-      contactForm.reset({
-        email: profile.email,
-        githubUrl: profile.githubUrl || '',
-        linkedinUrl: profile.linkedinUrl || '',
-        portfolioUrl: profile.portfolioUrl || '',
-      });
-
       preferencesForm.reset({
-        availability: profile.availability,
-        experience: profile.experience,
-        completedProjects: profile.completedProjects,
+        availability: profile.availability || 'available',
+        experience: profile.experience || 0,
+        completedProjects: profile.completedProjects || 0,
         preferredSalary: profile.preferredSalary || {
           min: 0,
           max: 0,
@@ -222,7 +193,7 @@ const ProfileEditClient: React.FC = () => {
         },
       });
     }
-  }, [profile, basicForm, contactForm, preferencesForm]);
+  }, [profile, basicForm, preferencesForm]);
 
   // 변경사항 감지
   useEffect(() => {
@@ -238,6 +209,59 @@ const ProfileEditClient: React.FC = () => {
       subscription5.unsubscribe();
     };
   }, [basicForm, contactForm, passwordForm, accountForm]);
+
+  // 섹션 변경 시 API 호출
+  useEffect(() => {
+    const fetchSectionData = async () => {
+      try {
+        if (activeSection === 'contact') {
+          const contactData = await apiClient.get('/api/contact');
+          console.log('연락처 데이터:', contactData);
+          if (contactData) {
+            contactForm.reset(contactData as ContactInfoForm);
+          }
+        } else if (activeSection === 'account') {
+          const accountData = await apiClient.get('/api/account-config');
+          console.log('계정 설정 데이터:', accountData);
+          if (accountData) {
+            accountForm.reset(accountData as AccountSettingsForm);
+          }
+        }
+      } catch (error) {
+        console.error('섹션 데이터 로드 실패:', error);
+        // API 호출 실패 시 빈 폼 유지 (placeholder만 표시)
+        if (activeSection === 'contact') {
+          contactForm.reset({
+            email: '',
+            githubUrl: '',
+            linkedinUrl: '',
+            portfolioUrl: '',
+          });
+        } else if (activeSection === 'account') {
+          accountForm.reset({
+            notifications: {
+              contactRequestNotifications: false,
+              skillEndorsementNotifications: false,
+              emailNotifications: false,
+              pushNotifications: false,
+              weeklyDigest: false,
+              marketingEmails: false,
+            },
+            privacy: {
+              profileVisibility: 'public' as const,
+              searchable: false,
+              showEmail: false,
+              showLocation: false,
+            }
+          });
+        }
+      }
+    };
+
+    if (activeSection === 'contact' || activeSection === 'account') {
+      fetchSectionData();
+    }
+  }, [activeSection, contactForm, accountForm]);
 
   const sections = [
     { key: 'basic', label: '기본 정보', icon: User },
@@ -298,6 +322,52 @@ const ProfileEditClient: React.FC = () => {
     router.push('/user/profile');
   };
 
+  // 프로필 이미지 업로드 핸들러
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // 파일 크기 검증 (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('파일 크기는 5MB를 초과할 수 없습니다.');
+      return;
+    }
+
+    // 파일 타입 검증
+    if (!file.type.startsWith('image/')) {
+      toast.error('이미지 파일만 업로드 가능합니다.');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/metest/user/image`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('이미지 업로드 실패');
+      }
+
+      await response.json();
+      toast.success('프로필 이미지가 업로드되었습니다.');
+
+      // 프로필 다시 로드
+      queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      toast.error('이미지 업로드에 실패했습니다.');
+    }
+  };
+
+  const handleImageButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
   if (isLoading) {
     return (
       <Layout>
@@ -342,20 +412,31 @@ const ProfileEditClient: React.FC = () => {
       <div className="flex items-center gap-4">
         <div className="relative">
           {profile.profileImage ? (
-            <div 
+            <div
               className="w-20 h-20 rounded-full bg-cover bg-center border-4 border-primary-100"
               style={{ backgroundImage: `url(${profile.profileImage})` }}
             />
           ) : (
             <div className="w-20 h-20 rounded-full bg-component-alternative border-4 border-primary-100 flex items-center justify-center">
               <span className="text-2xl font-semibold text-label-500">
-                {profile.name.charAt(0).toUpperCase()}
+                {profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}
               </span>
             </div>
           )}
-          <button className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white hover:bg-primary-600 transition-colors">
+          <button
+            type="button"
+            onClick={handleImageButtonClick}
+            className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white hover:bg-primary-600 transition-colors"
+          >
             <Camera size={16} />
           </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
         </div>
         <div>
           <h3 className="text-body-2 font-semibold text-label-900">프로필 사진</h3>
