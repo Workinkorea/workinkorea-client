@@ -86,14 +86,20 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
       language_skills: initialData?.content?.languages?.map(lang => ({
         language_type: lang.name,
         level: lang.proficiency
-      })) || [],
+      })) || [{ language_type: '', level: '' }],
       schools: initialData?.content?.education?.map(edu => ({
         school_name: edu.institution,
         major_name: edu.field,
         start_date: edu.startDate,
         end_date: edu.endDate || '',
         is_graduated: edu.degree === '졸업'
-      })) || [],
+      })) || [{
+        school_name: '',
+        major_name: '',
+        start_date: '',
+        end_date: '',
+        is_graduated: false
+      }],
       career_history: initialData?.content?.workExperience?.map(work => ({
         company_name: work.company,
         start_date: work.startDate,
@@ -102,11 +108,19 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
         department: '',
         position_title: work.position,
         main_role: work.description || ''
-      })) || [],
+      })) || [{
+        company_name: '',
+        start_date: '',
+        end_date: '',
+        is_working: false,
+        department: '',
+        position_title: '',
+        main_role: ''
+      }],
       introduction: initialData?.content?.objective ? [{
         title: '자기소개',
         content: initialData.content.objective
-      }] : [],
+      }] : [{ title: '자기소개', content: '' }],
       licenses: initialData?.licenses && initialData.licenses.length > 0
         ? initialData.licenses.map(license => ({
             license_name: license.license_name,
@@ -117,7 +131,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
             license_name: cert,
             license_agency: '',
             license_date: ''
-          })) || []
+          })) || [{ license_name: '', license_agency: '', license_date: '' }]
     }
   });
 
@@ -136,7 +150,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
     name: 'career_history'
   });
 
-  const { fields: introFields, append: appendIntro } = useFieldArray({
+  const { fields: introFields, append: appendIntro, remove: removeIntro } = useFieldArray({
     control,
     name: 'introduction'
   });
@@ -362,46 +376,56 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
             <h3 className="text-body-2 font-semibold text-label-900">
               자기소개
             </h3>
-            {introFields.length === 0 && (
-              <button
-                type="button"
-                onClick={() => appendIntro({ title: '자기소개', content: '' })}
-                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
-              >
-                <Plus size={14} />
-                추가
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => appendIntro({ title: '자기소개', content: '' })}
+              className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
+            >
+              <Plus size={14} />
+              추가
+            </button>
           </div>
 
           {introFields.map((field, index) => (
-            <div key={field.id} className="space-y-4">
-              <FormField
-                name={`introduction.${index}.title`}
-                control={control}
-                label="제목"
-                render={(field, fieldId) => (
-                  <input
-                    {...field}
-                    id={fieldId}
-                    type="text"
-                    className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
-                  />
-                )}
-              />
-              <FormField
-                name={`introduction.${index}.content`}
-                control={control}
-                label="내용"
-                render={(field, fieldId) => (
-                  <textarea
-                    {...field}
-                    id={fieldId}
-                    rows={4}
-                    className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 resize-none"
-                  />
-                )}
-              />
+            <div key={field.id} className="mb-4 p-4 border border-line-200 rounded-lg">
+              <div className="flex justify-between items-start mb-4">
+                <h4 className="text-body-3 font-semibold">자기소개 {index + 1}</h4>
+                <button
+                  type="button"
+                  onClick={() => removeIntro(index)}
+                  className="text-red-600 hover:bg-red-50 p-1 rounded cursor-pointer"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+              <div className="space-y-4">
+                <FormField
+                  name={`introduction.${index}.title`}
+                  control={control}
+                  label="제목"
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="text"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                    />
+                  )}
+                />
+                <FormField
+                  name={`introduction.${index}.content`}
+                  control={control}
+                  label="내용"
+                  render={(field, fieldId) => (
+                    <textarea
+                      {...field}
+                      id={fieldId}
+                      rows={4}
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 resize-none"
+                    />
+                  )}
+                />
+              </div>
             </div>
           ))}
         </motion.div>
@@ -704,15 +728,29 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   name={`language_skills.${index}.language_type`}
                   control={control}
                   label="언어"
-                  rules={{ required: '언어를 입력해주세요' }}
+                  rules={{ required: '언어를 선택해주세요' }}
                   render={(field, fieldId) => (
-                    <input
+                    <select
                       {...field}
                       id={fieldId}
-                      type="text"
-                      placeholder="예: 영어, 한국어"
                       className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
-                    />
+                    >
+                      <option value="">언어 선택</option>
+                      <option value="한국어">한국어</option>
+                      <option value="영어">영어</option>
+                      <option value="중국어">중국어</option>
+                      <option value="일본어">일본어</option>
+                      <option value="스페인어">스페인어</option>
+                      <option value="프랑스어">프랑스어</option>
+                      <option value="독일어">독일어</option>
+                      <option value="러시아어">러시아어</option>
+                      <option value="아랍어">아랍어</option>
+                      <option value="베트남어">베트남어</option>
+                      <option value="태국어">태국어</option>
+                      <option value="포르투갈어">포르투갈어</option>
+                      <option value="이탈리아어">이탈리아어</option>
+                      <option value="기타">기타</option>
+                    </select>
                   )}
                 />
                 <FormField
