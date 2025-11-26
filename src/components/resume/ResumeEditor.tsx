@@ -18,6 +18,8 @@ import {
 import { Resume, ResumeTemplate } from '@/types/user';
 import { resumeApi } from '@/lib/api/resume';
 import { FormField } from '@/components/ui/FormField';
+import DatePicker from '@/components/ui/DatePicker';
+import SchoolSearch from '@/components/ui/SchoolSearch';
 import type {
   CreateResumeRequest,
   UpdateResumeRequest
@@ -267,17 +269,6 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
             </p>
           </div>
         </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex items-center gap-2 px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 cursor-pointer"
-          >
-            <Save size={16} />
-            {isSubmitting ? '저장중...' : isEditMode ? '수정하기' : '생성하기'}
-          </button>
-        </div>
       </div>
 
       <div className="space-y-6">
@@ -503,12 +494,11 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   control={control}
                   label="시작일"
                   rules={{ required: '시작일을 입력해주세요' }}
-                  render={(field, fieldId) => (
-                    <input
-                      {...field}
-                      id={fieldId}
-                      type="date"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                  render={(field) => (
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="시작일을 선택하세요"
                     />
                   )}
                 />
@@ -516,13 +506,12 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   name={`career_history.${index}.end_date`}
                   control={control}
                   label="종료일"
-                  render={(field, fieldId) => (
-                    <input
-                      {...field}
-                      id={fieldId}
-                      type="date"
+                  render={(field) => (
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="종료일을 선택하세요"
                       disabled={watch(`career_history.${index}.is_working`)}
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 disabled:bg-gray-100"
                     />
                   )}
                 />
@@ -608,12 +597,11 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   control={control}
                   label="학교명"
                   rules={{ required: '학교명을 입력해주세요' }}
-                  render={(field, fieldId) => (
-                    <input
-                      {...field}
-                      id={fieldId}
-                      type="text"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                  render={(field) => (
+                    <SchoolSearch
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="학교명을 검색하세요"
                     />
                   )}
                 />
@@ -636,12 +624,11 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   control={control}
                   label="입학일"
                   rules={{ required: '입학일을 입력해주세요' }}
-                  render={(field, fieldId) => (
-                    <input
-                      {...field}
-                      id={fieldId}
-                      type="date"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                  render={(field) => (
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="입학일을 선택하세요"
                     />
                   )}
                 />
@@ -649,12 +636,11 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   name={`schools.${index}.end_date`}
                   control={control}
                   label="졸업일"
-                  render={(field, fieldId) => (
-                    <input
-                      {...field}
-                      id={fieldId}
-                      type="date"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                  render={(field) => (
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="졸업일을 선택하세요"
                     />
                   )}
                 />
@@ -818,12 +804,11 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   name={`licenses.${index}.license_date`}
                   control={control}
                   label="취득일"
-                  render={(field, fieldId) => (
-                    <input
-                      {...field}
-                      id={fieldId}
-                      type="date"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                  render={(field) => (
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="취득일을 선택하세요"
                     />
                   )}
                 />
@@ -831,6 +816,18 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
             </div>
           ))}
         </motion.div>
+      </div>
+
+      {/* 하단 저장 버튼 */}
+      <div className="flex justify-end pt-6 border-t border-line-200">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="flex items-center gap-2 px-8 py-3 bg-primary-500 text-white rounded-lg text-body-2 font-semibold hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-sm"
+        >
+          <Save size={20} />
+          {isSubmitting ? '저장중...' : isEditMode ? '수정하기' : '생성하기'}
+        </button>
       </div>
     </form>
   );

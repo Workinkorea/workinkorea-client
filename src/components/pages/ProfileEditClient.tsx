@@ -38,6 +38,7 @@ import {
 import { cn } from '@/lib/utils/utils';
 import { profileApi } from '@/lib/api/profile';
 import { apiClient } from '@/lib/api/client';
+import { tokenManager } from '@/lib/utils/tokenManager';
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
@@ -341,10 +342,16 @@ const ProfileEditClient: React.FC = () => {
 
     try {
       const formData = new FormData();
-      formData.append('file_name', file);
+      formData.append('file_name', file.name);
+      console.log(formData);
+
+      const accessToken = tokenManager.getAccessToken();
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/metest/user/image`, {
         method: 'POST',
+        headers: {
+          ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+        },
         body: formData,
         credentials: 'include',
       });

@@ -83,92 +83,6 @@ const mockMySkillStats: SkillStats = {
   industryRanking: 88
 };
 
-// TODO: 실제 API 호출로 대체 (사용자 이력서 목록)
-const mockResumes: Resume[] = [
-  {
-    id: 'resume-1',
-    title: '프론트엔드 개발자 이력서',
-    description: 'React 및 TypeScript 전문 프론트엔드 개발자로서의 경력을 정리한 이력서입니다.',
-    templateType: 'modern',
-    status: 'published',
-    isPublic: true,
-    userId: 'me',
-    content: {
-      personalInfo: {
-        name: '이지은',
-        email: 'jieun.lee@example.com',
-        phone: '010-1234-5678',
-        address: '서울시 강남구'
-      },
-      objective: '사용자 경험을 중시하는 프론트엔드 개발자로 성장하고 싶습니다.',
-      workExperience: [],
-      education: [],
-      skills: ['React', 'TypeScript', 'CSS', 'JavaScript'],
-      projects: [],
-      certifications: ['Adobe Certified Expert', 'Google UX Design'],
-      languages: [
-        { name: '한국어', proficiency: 'native' },
-        { name: '영어', proficiency: 'intermediate' }
-      ]
-    },
-    createdAt: '2024-01-15T00:00:00Z',
-    updatedAt: '2024-01-20T00:00:00Z',
-    lastViewedAt: '2024-01-22T10:30:00Z'
-  },
-  {
-    id: 'resume-2',
-    title: 'UX/UI 디자이너 포트폴리오',
-    description: '3년간의 디자인 경험과 주요 프로젝트를 담은 포트폴리오입니다.',
-    templateType: 'creative',
-    status: 'completed',
-    isPublic: false,
-    userId: 'me',
-    content: {
-      personalInfo: {
-        name: '이지은',
-        email: 'jieun.lee@example.com',
-        phone: '010-1234-5678',
-        address: '서울시 강남구'
-      },
-      workExperience: [],
-      education: [],
-      skills: ['Figma', 'Photoshop', 'Sketch', 'Prototyping'],
-      projects: [],
-      certifications: [],
-      languages: [
-        { name: '한국어', proficiency: 'native' },
-        { name: '영어', proficiency: 'intermediate' }
-      ]
-    },
-    createdAt: '2024-01-10T00:00:00Z',
-    updatedAt: '2024-01-18T00:00:00Z'
-  },
-  {
-    id: 'resume-3',
-    title: '신입 개발자 이력서 (작성중)',
-    templateType: 'professional',
-    status: 'draft',
-    isPublic: false,
-    userId: 'me',
-    content: {
-      personalInfo: {
-        name: '이지은',
-        email: 'jieun.lee@example.com',
-        phone: '010-1234-5678',
-        address: '서울시 강남구'
-      },
-      workExperience: [],
-      education: [],
-      skills: [],
-      projects: [],
-      certifications: [],
-      languages: []
-    },
-    createdAt: '2024-01-25T00:00:00Z',
-    updatedAt: '2024-01-25T00:00:00Z'
-  }
-];
-
 const mockResumeStatistics: { [resumeId: string]: ResumeStatistics } = {
   'resume-1': {
     totalViews: 245,
@@ -246,6 +160,11 @@ const MyProfileClient: React.FC = () => {
       try {
         const response = await resumeApi.getMyResumes();
 
+        // API 응답이 없거나 resume_list가 없으면 빈 배열 반환
+        if (!response || !response.resume_list) {
+          return [];
+        }
+
         // API 응답을 Resume 타입으로 변환
         const resumes: Resume[] = response.resume_list.map(item => ({
           id: String(item.id),
@@ -275,8 +194,8 @@ const MyProfileClient: React.FC = () => {
         return resumes;
       } catch (err) {
         console.error('이력서 목록 로드 실패:', err);
-        // 에러 시 mock 데이터 반환
-        return mockResumes;
+        // 에러 시 빈 배열 반환
+        return [];
       }
     }
   });
@@ -621,7 +540,7 @@ const MyProfileClient: React.FC = () => {
                   </div>
                 ) : (
                   <ResumeSection
-                    resumes={resumesData || mockResumes}
+                    resumes={resumesData || []}
                     resumeStatistics={mockResumeStatistics}
                     onUploadResume={async (file) => {
                       try {
@@ -635,7 +554,7 @@ const MyProfileClient: React.FC = () => {
                       }
                     }}
                     onDeleteResume={async (resumeId) => {
-                      const resume = (resumesData || mockResumes).find(r => r.id === resumeId);
+                      const resume = (resumesData || []).find(r => r.id === resumeId);
                       const resumeTitle = resume?.title || '이력서';
 
                       if (!window.confirm(`"${resumeTitle}" 이력서를 삭제하시겠습니까?`)) {
