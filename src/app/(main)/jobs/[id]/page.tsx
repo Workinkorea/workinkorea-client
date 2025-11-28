@@ -7,6 +7,7 @@ import { MapPin, Clock, DollarSign, Briefcase, GraduationCap, Languages, Calenda
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import { postsApi } from '@/lib/api/posts';
+import { getMockPostById } from '@/lib/mock/companyPosts';
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -17,7 +18,17 @@ export default function JobDetailPage() {
     queryKey: ['companyPost', jobId],
     queryFn: async () => {
       if (!jobId) throw new Error('Invalid job ID');
-      return postsApi.getCompanyPostById(jobId);
+      try {
+        return await postsApi.getCompanyPostById(jobId);
+      } catch (err) {
+        console.error('공고 상세 조회 실패, mock 데이터 사용:', err);
+        // API 호출 실패 시 mock 데이터 반환
+        const mockPost = getMockPostById(jobId);
+        if (mockPost) {
+          return mockPost;
+        }
+        throw err;
+      }
     },
     enabled: !!jobId
   });

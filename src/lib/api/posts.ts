@@ -17,7 +17,14 @@ export const postsApi = {
     });
   },
 
-  // 인증 필요: 기업 회원 전용 공고 목록 조회
+  // 인증 필요: 내 회사의 공고 목록만 조회 (기업 전용)
+  async getMyCompanyPosts(): Promise<CompanyPostsResponse> {
+    return apiClient.get<CompanyPostsResponse>('/api/company/posts/my', {
+      tokenType: 'company',
+    });
+  },
+
+  // 인증 필요: 기업 회원 전용 공고 목록 조회 (deprecated - getMyCompanyPosts 사용 권장)
   async getCompanyPosts(): Promise<CompanyPostsResponse> {
     return apiClient.get<CompanyPostsResponse>('/api/posts/company', {
       tokenType: 'company',
