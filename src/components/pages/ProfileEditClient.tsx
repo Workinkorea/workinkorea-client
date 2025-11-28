@@ -6,12 +6,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { 
-  Save, 
-  ArrowLeft, 
-  User, 
-  Mail, 
-  Settings, 
+import {
+  Save,
+  ArrowLeft,
+  User,
+  Mail,
+  Settings,
   Camera,
   AlertCircle,
   CheckCircle
@@ -47,6 +47,8 @@ const ProfileEditClient: React.FC = () => {
   const [activeSection, setActiveSection] = useState<SectionType>('basic');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // 프로필 데이터 가져오기
   const { data: profile, isLoading, error } = useQuery({
@@ -291,7 +293,7 @@ const ProfileEditClient: React.FC = () => {
         // 비밀번호 변경과 계정 설정을 구분하여 처리
         const passwordValid = await passwordForm.trigger();
         const accountValid = await accountForm.trigger();
-        
+
         if (passwordValid) {
           const passwordData = passwordForm.getValues();
           // 비밀번호가 입력된 경우에만 변경 요청
@@ -299,17 +301,56 @@ const ProfileEditClient: React.FC = () => {
             formData = { ...formData, password: passwordData };
           }
         }
-        
+
         if (accountValid) {
           const accountData = accountForm.getValues();
           formData = { ...formData, settings: accountData };
         }
-        
+
         isValid = passwordValid && accountValid;
         break;
     }
 
     if (isValid) {
+      let imageUrl: string | undefined;
+
+      if (selectedImageFile) {
+        // 1. Presigned URL 정보 받기
+        const uploadResponse = await apiClient.post<{ minio: { url: string; fields: Record<string, string>; key: string; expires: string; content_type: string; form_data: Record<string, string> } }>(
+          '/api/me/profile/image',
+          { file_name: selectedImageFile.name, content_type: selectedImageFile.type, max_size: selectedImageFile.size }
+        );
+
+        console.log(uploadResponse.minio);
+        // 2. 데이터 순서대로 추가
+
+        const uploadData = uploadResponse.minio;
+        const uploadFormData = new FormData();
+
+        uploadFormData.append("key", uploadData.key);
+        uploadFormData.append("Content-Type", uploadData.content_type);
+        uploadFormData.append("x-amz-algorithm", uploadData.form_data["x-amz-algorithm"]);
+        uploadFormData.append("x-amz-credential", uploadData.form_data["x-amz-credential"]);
+        uploadFormData.append("x-amz-date", uploadData.form_data["x-amz-date"]);
+        uploadFormData.append("policy", uploadData.form_data["policy"]);
+        uploadFormData.append("x-amz-signature", uploadData.form_data["x-amz-signature"]);
+        uploadFormData.append("success_action_status", "201");
+        uploadFormData.append("file", selectedImageFile);
+
+        // 3. MinIO로 업로드
+        const response = await fetch(uploadResponse.minio.url, {
+          method: "POST",
+          body: uploadFormData,
+        });
+
+        if (!(response.ok || response.status === 201)) {
+          console.error("업로드 실패");
+          console.error("에러:", response.statusText);
+        }
+
+        imageUrl = response.headers.get('Location') ?? undefined;
+        formData = { ...formData, profile_image_url: imageUrl };
+      }
       updateProfileMutation.mutate(formData);
     }
   };
@@ -339,29 +380,14 @@ const ProfileEditClient: React.FC = () => {
       return;
     }
 
-    try {
-      const formData = new FormData();
-      formData.append('file_name', file);
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/metest/user/image`, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        throw new Error('이미지 업로드 실패');
-      }
-
-      await response.json();
-      toast.success('프로필 이미지가 업로드되었습니다.');
-
-      // 프로필 다시 로드
-      queryClient.invalidateQueries({ queryKey: ['myProfile'] });
-    } catch (error) {
-      console.error('이미지 업로드 실패:', error);
-      toast.error('이미지 업로드에 실패했습니다.');
-    }
+    // 파일을 state에 저장하고 미리보기 생성
+    setSelectedImageFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+    setHasUnsavedChanges(true);
   };
 
   const handleImageButtonClick = () => {
@@ -395,7 +421,7 @@ const ProfileEditClient: React.FC = () => {
             <p className="text-body-3 text-label-500 mb-4">
               잠시 후 다시 시도해주세요.
             </p>
-            <button 
+            <button
               onClick={handleBack}
               className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
             >
@@ -411,10 +437,10 @@ const ProfileEditClient: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <div className="relative">
-          {profile.profileImage ? (
+          {imagePreview || profile.profileImage ? (
             <div
               className="w-20 h-20 rounded-full bg-cover bg-center border-4 border-primary-100"
-              style={{ backgroundImage: `url(${profile.profileImage})` }}
+              style={{ backgroundImage: `url(${imagePreview || profile.profileImage})` }}
             />
           ) : (
             <div className="w-20 h-20 rounded-full bg-component-alternative border-4 border-primary-100 flex items-center justify-center">
@@ -475,28 +501,28 @@ const ProfileEditClient: React.FC = () => {
           )}
         />
 
-      <FormField
-        name="availability"
-        control={preferencesForm.control}
-        label="구직 상태 *"
-        error={preferencesForm.formState.errors.availability?.message}
-        render={(field, fieldId) => (
-          <select
-            {...field}
-            id={fieldId}
-            className={cn(
-              "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-              "border-line-400 focus:ring-primary",
-              preferencesForm.formState.errors.availability && "border-status-error focus:ring-status-error"
-            )}
-          >
-            <option value="">상태를 선택하세요</option>
-            <option value="available">구직중</option>
-            <option value="busy">바쁨</option>
-            <option value="not-looking">구직안함</option>
-          </select>
-        )}
-      />
+        <FormField
+          name="availability"
+          control={preferencesForm.control}
+          label="구직 상태 *"
+          error={preferencesForm.formState.errors.availability?.message}
+          render={(field, fieldId) => (
+            <select
+              {...field}
+              id={fieldId}
+              className={cn(
+                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary",
+                preferencesForm.formState.errors.availability && "border-status-error focus:ring-status-error"
+              )}
+            >
+              <option value="">상태를 선택하세요</option>
+              <option value="available">구직중</option>
+              <option value="busy">바쁨</option>
+              <option value="not-looking">구직안함</option>
+            </select>
+          )}
+        />
 
         <FormField
           name="location"
@@ -609,7 +635,7 @@ const ProfileEditClient: React.FC = () => {
 
   const renderPreferencesSection = () => (
     <div className="space-y-6">
-      
+
     </div>
   );
 
@@ -763,7 +789,7 @@ const ProfileEditClient: React.FC = () => {
       <div className="min-h-screen bg-background-alternative py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* 헤더 */}
-          <motion.div 
+          <motion.div
             className="flex items-center justify-between mb-8"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -813,7 +839,7 @@ const ProfileEditClient: React.FC = () => {
 
           <div className="flex gap-8">
             {/* 사이드바 네비게이션 */}
-            <motion.div 
+            <motion.div
               className="w-64 flex-shrink-0"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -847,7 +873,7 @@ const ProfileEditClient: React.FC = () => {
             </motion.div>
 
             {/* 메인 컨텐츠 */}
-            <motion.div 
+            <motion.div
               className="flex-1 bg-white rounded-lg shadow-normal p-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
