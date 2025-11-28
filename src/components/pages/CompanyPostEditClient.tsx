@@ -11,6 +11,7 @@ import { postsApi } from '@/lib/api/posts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UpdateCompanyPostRequest } from '@/lib/api/types';
 import { getMockPostById, updateMockPost, deleteMockPost } from '@/lib/mock/companyPosts';
+import DaumPostcodeSearch from '@/components/ui/DaumPostcodeSearch';
 
 interface CompanyPostEditClientProps {
   postId: string;
@@ -37,6 +38,9 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isNegotiableSalary, setIsNegotiableSalary] = useState(false);
+  const [baseAddress, setBaseAddress] = useState(''); // 기본 주소
+  const [detailAddress, setDetailAddress] = useState(''); // 세부 주소
 
   const handleLogout = async () => {
     await logout();
@@ -79,6 +83,10 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
         start_date: post.start_date,
         end_date: post.end_date,
       });
+      // 연봉이 0이면 협의 후 결정으로 간주
+      setIsNegotiableSalary(post.salary === 0);
+      // 기본 주소만 설정 (세부 주소는 사용자가 직접 입력하도록)
+      setBaseAddress(post.work_location);
     }
   }, [post]);
 
@@ -156,13 +164,13 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
     if (!formData.content?.trim()) {
       newErrors.content = '공고 내용을 입력해주세요.';
     }
-    if (!formData.work_location?.trim()) {
+    if (!baseAddress.trim()) {
       newErrors.work_location = '근무지를 입력해주세요.';
     }
     if ((formData.working_hours ?? 0) <= 0) {
       newErrors.working_hours = '주당 근무시간을 입력해주세요.';
     }
-    if ((formData.salary ?? 0) < 0) {
+    if (!isNegotiableSalary && (formData.salary ?? 0) < 0) {
       newErrors.salary = '급여를 입력해주세요.';
     }
 
@@ -177,7 +185,15 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
       return;
     }
 
-    updatePostMutation.mutate(formData);
+    // 기본 주소 + 세부 주소 합치기
+    const fullAddress = detailAddress.trim()
+      ? `${baseAddress} ${detailAddress.trim()}`
+      : baseAddress;
+
+    updatePostMutation.mutate({
+      ...formData,
+      work_location: fullAddress,
+    });
   };
 
   const handleDelete = () => {
@@ -442,18 +458,27 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
                     <MapPin size={16} />
                     근무지 *
                   </label>
-                  <input
-                    type="text"
-                    id="work_location"
-                    name="work_location"
-                    value={formData.work_location}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-2 border ${errors.work_location ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500`}
-                    placeholder="예: 서울특별시 강남구 테헤란로 123"
-                  />
-                  {errors.work_location && (
-                    <p className="mt-1 text-caption-2 text-status-error">{errors.work_location}</p>
-                  )}
+                  <div className="space-y-2">
+                    <DaumPostcodeSearch
+                      value={baseAddress}
+                      onChange={(address) => {
+                        setBaseAddress(address);
+                        setFormData((prev) => ({ ...prev, work_location: address }));
+                        if (errors.work_location) {
+                          setErrors((prev) => ({ ...prev, work_location: '' }));
+                        }
+                      }}
+                      placeholder="주소 검색 버튼을 클릭하세요"
+                      error={errors.work_location}
+                    />
+                    <input
+                      type="text"
+                      value={detailAddress}
+                      onChange={(e) => setDetailAddress(e.target.value)}
+                      placeholder="상세 주소를 입력하세요 (예: 3층, 101호)"
+                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -481,17 +506,35 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
                       <DollarSign size={16} />
                       연봉 (만원) *
                     </label>
-                    <input
-                      type="number"
-                      id="salary"
-                      name="salary"
-                      value={formData.salary}
-                      onChange={handleChange}
-                      min="0"
-                      step="100"
-                      className={`w-full px-4 py-2 border ${errors.salary ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500`}
-                      placeholder="예: 4000"
-                    />
+                    <div className="space-y-2">
+                      <input
+                        type="number"
+                        id="salary"
+                        name="salary"
+                        value={formData.salary}
+                        onChange={handleChange}
+                        min="0"
+                        step="100"
+                        disabled={isNegotiableSalary}
+                        className={`w-full px-4 py-2 border ${errors.salary ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-background-alternative disabled:text-label-400`}
+                        placeholder={isNegotiableSalary ? '협의 후 결정' : '예: 4000'}
+                      />
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={isNegotiableSalary}
+                          onChange={(e) => {
+                            setIsNegotiableSalary(e.target.checked);
+                            if (e.target.checked) {
+                              setFormData((prev) => ({ ...prev, salary: 0 }));
+                              setErrors((prev) => ({ ...prev, salary: '' }));
+                            }
+                          }}
+                          className="w-4 h-4 text-primary-500 border-line-400 rounded focus:ring-primary-500"
+                        />
+                        <span className="text-caption-1 text-label-600">협의 후 결정</span>
+                      </label>
+                    </div>
                     {errors.salary && (
                       <p className="mt-1 text-caption-2 text-status-error">{errors.salary}</p>
                     )}
