@@ -41,7 +41,6 @@ import { apiClient } from '@/lib/api/client';
 import { uploadFileToMinio } from '@/lib/api/minio';
 import { tokenManager } from '@/lib/utils/tokenManager';
 
-
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
 const ProfileEditClient: React.FC = () => {
@@ -372,6 +371,7 @@ const ProfileEditClient: React.FC = () => {
     };
     reader.readAsDataURL(file);
     setHasUnsavedChanges(true);
+
   };
 
   const handleImageButtonClick = () => {
