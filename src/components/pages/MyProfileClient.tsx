@@ -24,13 +24,13 @@ const mockMyProfile: UserProfile = {
   name: '이지은',
   email: 'jieun.lee@example.com',
   profileImage: undefined,
-  title: 'UX/UI 디자이너 & 프론트엔드 개발자',
+  position: 'UX/UI 디자이너 & 프론트엔드 개발자',
   location: '서울, 한국',
-  bio: '사용자 경험에 중점을 둔 디자인과 개발을 동시에 하는 3년차 전문가입니다. 디자인과 코드 사이의 간극을 줄이는 것이 저의 목표입니다.',
+  introduction: '사용자 경험에 중점을 둔 디자인과 개발을 동시에 하는 3년차 전문가입니다. 디자인과 코드 사이의 간극을 줄이는 것이 저의 목표입니다.',
   experience: 3,
   completedProjects: 8,
   certifications: ['Adobe Certified Expert', 'Google UX Design'],
-  availability: 'available',
+  job_status: 'available',
   skills: [
     { id: '1', name: 'Figma', level: 95, average: 75, category: 'technical', description: 'UI/UX 디자인 툴의 고급 기능 활용' },
     { id: '2', name: 'React', level: 75, average: 70, category: 'technical' },
@@ -137,10 +137,11 @@ const MyProfileClient: React.FC = () => {
           name: profileData.name,
           profileImage: profileData.profile_image_url || undefined,
           location: profileData.location,
-          bio: profileData.introduction,
+          introduction: profileData.introduction,
           portfolioUrl: contactData?.website_url || profileData.portfolio_url,
           githubUrl: contactData?.github_url,
           linkedinUrl: contactData?.linkedin_url,
+          job_status: profileData.job_status as 'available' | 'busy' | 'not-looking' || 'available',
         };
 
         return transformedProfile;
