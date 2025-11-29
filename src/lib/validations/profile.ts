@@ -40,19 +40,19 @@ export const contactInfoSchema = z.object({
     .min(5, '이메일은 최소 5글자 이상이어야 합니다.')
     .max(100, '이메일은 100글자를 초과할 수 없습니다.'),
 
-  githubUrl: z.string()
+  github_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
     .regex(/^https?:\/\/(www\.)?github\.com\/.*/, 'GitHub URL만 입력 가능합니다.')
     .optional()
     .or(z.literal('')),
 
-  linkedinUrl: z.string()
+  linkedin_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
     .regex(/^https?:\/\/(www\.)?linkedin\.com\/.*/, 'LinkedIn URL만 입력 가능합니다.')
     .optional()
     .or(z.literal('')),
 
-  portfolioUrl: z.string()
+  portfolio_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
     .optional()
     .or(z.literal('')),

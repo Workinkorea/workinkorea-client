@@ -38,11 +38,9 @@ import {
 import { cn } from '@/lib/utils/utils';
 import { profileApi } from '@/lib/api/profile';
 import { apiClient } from '@/lib/api/client';
-<<<<<<< HEAD
 import { uploadFileToMinio } from '@/lib/api/minio';
-=======
 import { tokenManager } from '@/lib/utils/tokenManager';
->>>>>>> origin/dev
+
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
@@ -132,9 +130,9 @@ const ProfileEditClient: React.FC = () => {
     resolver: zodResolver(contactInfoSchema),
     defaultValues: {
       email: '',
-      githubUrl: '',
-      linkedinUrl: '',
-      portfolioUrl: '',
+      github_url: '',
+      linkedin_url: '',
+      portfolio_url: '',
     }
   });
 
@@ -247,9 +245,9 @@ const ProfileEditClient: React.FC = () => {
         if (activeSection === 'contact') {
           contactForm.reset({
             email: '',
-            githubUrl: '',
-            linkedinUrl: '',
-            portfolioUrl: '',
+            github_url: '',
+            linkedin_url: '',
+            portfolio_url: '',
           });
         } else if (activeSection === 'account') {
           accountForm.reset({
@@ -291,8 +289,7 @@ const ProfileEditClient: React.FC = () => {
     switch (activeSection) {
       case 'basic':
         isValid = await basicForm.trigger();
-        console.log('기본 정보 폼 검증 결과:', isValid);
-        console.log('이미지 파일:', selectedImageFile);
+        
         if (isValid || selectedImageFile) {
           if (selectedImageFile) {
             const imageUrl = await uploadFileToMinio({
@@ -367,7 +364,6 @@ const ProfileEditClient: React.FC = () => {
       return;
     }
 
-<<<<<<< HEAD
     // 파일을 state에 저장하고 미리보기 생성
     setSelectedImageFile(file);
     const reader = new FileReader();
@@ -376,37 +372,6 @@ const ProfileEditClient: React.FC = () => {
     };
     reader.readAsDataURL(file);
     setHasUnsavedChanges(true);
-=======
-    try {
-      const formData = new FormData();
-      formData.append('file_name', file.name);
-      console.log(formData);
-
-      const accessToken = tokenManager.getAccessToken();
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/metest/user/image`, {
-        method: 'POST',
-        headers: {
-          ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-        },
-        body: formData,
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        throw new Error('이미지 업로드 실패');
-      }
-
-      await response.json();
-      toast.success('프로필 이미지가 업로드되었습니다.');
-
-      // 프로필 다시 로드
-      queryClient.invalidateQueries({ queryKey: ['myProfile'] });
-    } catch (error) {
-      console.error('이미지 업로드 실패:', error);
-      toast.error('이미지 업로드에 실패했습니다.');
-    }
->>>>>>> origin/dev
   };
 
   const handleImageButtonClick = () => {
@@ -606,46 +571,46 @@ const ProfileEditClient: React.FC = () => {
       />
 
       <FormField
-        name="githubUrl"
+        name="github_url"
         control={contactForm.control}
         label="GitHub URL"
-        error={contactForm.formState.errors.githubUrl?.message}
+        error={contactForm.formState.errors.github_url?.message}
         render={(field, fieldId) => (
           <Input
             {...field}
             id={fieldId}
             placeholder="https://github.com/username"
-            error={!!contactForm.formState.errors.githubUrl}
+            error={!!contactForm.formState.errors.github_url}
           />
         )}
       />
 
       <FormField
-        name="linkedinUrl"
+        name="linkedin_url"
         control={contactForm.control}
         label="LinkedIn URL"
-        error={contactForm.formState.errors.linkedinUrl?.message}
+        error={contactForm.formState.errors.linkedin_url?.message}
         render={(field, fieldId) => (
           <Input
             {...field}
             id={fieldId}
             placeholder="https://linkedin.com/in/username"
-            error={!!contactForm.formState.errors.linkedinUrl}
+            error={!!contactForm.formState.errors.linkedin_url}
           />
         )}
       />
 
       <FormField
-        name="portfolioUrl"
+        name="portfolio_url"
         control={contactForm.control}
         label="포트폴리오 URL"
-        error={contactForm.formState.errors.portfolioUrl?.message}
+        error={contactForm.formState.errors.portfolio_url?.message}
         render={(field, fieldId) => (
           <Input
             {...field}
             id={fieldId}
             placeholder="https://yourportfolio.com"
-            error={!!contactForm.formState.errors.portfolioUrl}
+            error={!!contactForm.formState.errors.portfolio_url}
           />
         )}
       />
