@@ -161,13 +161,13 @@ const UserProfileClient: React.FC = () => {
         name: profileData?.name || '',
         email: contactData?.phone_number || '', // phone_number를 임시로 email로 사용
         profileImage: response.resume.profile_url || profileData?.profile_image_url,
-        title: profileData?.introduction || '구직자',
+        position_id: profileData?.position_id || undefined,
         location: profileData?.location || '',
-        bio: response.resume.introduction?.[0]?.content || profileData?.introduction || '',
+        introduction: response.resume.introduction?.[0]?.content || profileData?.introduction || '',
         experience: calculateExperience(response.resume.career_history),
         completedProjects: 0, // API에서 제공하지 않음
         certifications: response.resume.licenses.map(l => l.license_name),
-        availability: 'available',
+        job_status: 'available',
         skills: languageSkills, // language_skills를 UserSkill 형태로 변환하여 추가
         education: response.resume.schools.map(school => ({
           id: `${school.school_name}-${school.start_date}`,

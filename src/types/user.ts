@@ -24,9 +24,10 @@ export interface UserProfile {
   name: string;
   email: string;
   profileImage?: string;
-  title?: string; // 직책/포지션
+  position_id?: number; // 직책/포지션
+  position?: string;
   location?: string;
-  bio?: string;
+  introduction?: string;
   skills: UserSkill[];
   experience: number; // 경력 년차
   completedProjects: number;
@@ -35,7 +36,7 @@ export interface UserProfile {
   githubUrl?: string;
   linkedinUrl?: string;
   portfolioUrl?: string;
-  availability: 'available' | 'busy' | 'not-looking';
+  job_status: 'available' | 'busy' | 'not-looking';
   preferredSalary?: {
     min: number;
     max: number;
