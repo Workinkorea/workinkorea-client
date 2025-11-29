@@ -38,6 +38,7 @@ import {
 import { cn } from '@/lib/utils/utils';
 import { profileApi } from '@/lib/api/profile';
 import { apiClient } from '@/lib/api/client';
+import { uploadFileToMinio } from '@/lib/api/minio';
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
@@ -62,13 +63,13 @@ const ProfileEditClient: React.FC = () => {
         name: apiProfile.name || '',
         email: '', // ProfileResponse에 email 필드 없음
         profileImage: apiProfile.profile_image_url || undefined,
-        title: '', // ProfileResponse에 title 필드 없음
+        position: '', // ProfileResponse에 title 필드 없음
         location: apiProfile.location || '',
-        bio: apiProfile.introduction || '',
+        introduction: apiProfile.introduction || '',
         experience: 0, // ProfileResponse에 experience 필드 없음
         completedProjects: 0, // ProfileResponse에 completedProjects 필드 없음
         certifications: [], // ProfileResponse에 certifications 필드 없음
-        availability: (apiProfile.job_status as 'available' | 'busy' | 'not-looking') || 'available',
+        job_status: (apiProfile.job_status as 'available' | 'busy' | 'not-looking') || 'available',
         skills: [], // ProfileResponse에 skills 필드 없음
         education: [], // ProfileResponse에 education 필드 없음
         languages: [], // ProfileResponse에 languages 필드 없음
@@ -92,9 +93,9 @@ const ProfileEditClient: React.FC = () => {
         name: updatedData.name,
         profile_image_url: updatedData.profileImage,
         location: updatedData.location,
-        introduction: updatedData.bio,
+        introduction: updatedData.introduction,
         portfolio_url: updatedData.portfolioUrl,
-        job_status: updatedData.availability,
+        job_status: updatedData.job_status,
         // position_id, country_id, birth_date는 나중에 추가
       };
 
@@ -115,9 +116,11 @@ const ProfileEditClient: React.FC = () => {
     resolver: zodResolver(basicProfileSchema),
     defaultValues: {
       name: '',
-      title: '',
+      profile_image_url: '',
+      position_id: '',
       location: '',
-      bio: '',
+      introduction: '',
+      job_status: '',
     }
   });
 
@@ -134,7 +137,7 @@ const ProfileEditClient: React.FC = () => {
   const preferencesForm = useForm<PreferencesForm>({
     resolver: zodResolver(preferencesSchema),
     defaultValues: {
-      availability: 'available',
+      job_status: 'available',
       experience: 0,
       completedProjects: 0,
       preferredSalary: {
@@ -179,13 +182,15 @@ const ProfileEditClient: React.FC = () => {
     if (profile) {
       basicForm.reset({
         name: profile.name || '',
-        title: profile.title || '',
+        profile_image_url: profile.profileImage || '',
+        position_id: profile.position || '',
         location: profile.location || '',
-        bio: profile.bio || '',
+        introduction: profile.introduction || '',
+        job_status: profile.job_status || '',
       });
 
       preferencesForm.reset({
-        availability: profile.availability || 'available',
+        job_status: profile.job_status || 'available',
         experience: profile.experience || 0,
         completedProjects: profile.completedProjects || 0,
         preferredSalary: profile.preferredSalary || {
@@ -195,6 +200,9 @@ const ProfileEditClient: React.FC = () => {
         },
       });
     }
+    
+    setHasUnsavedChanges(false);
+
   }, [profile, basicForm, preferencesForm]);
 
   // 변경사항 감지
@@ -279,8 +287,24 @@ const ProfileEditClient: React.FC = () => {
     switch (activeSection) {
       case 'basic':
         isValid = await basicForm.trigger();
-        if (isValid) {
-          formData = basicForm.getValues();
+        console.log('기본 정보 폼 검증 결과:', isValid);
+        console.log('이미지 파일:', selectedImageFile);
+        if (isValid || selectedImageFile) {
+          if (selectedImageFile) {
+            const imageUrl = await uploadFileToMinio({
+              file: selectedImageFile,
+              file_type: 'profile_image',
+              endpoint: '/api/minio/user/file',
+            });
+            console.log('이미지 URL:', imageUrl);
+            if (imageUrl) {
+              formData = { ...basicForm.getValues(), profile_image_url: imageUrl };
+            }
+          } else {
+            formData = basicForm.getValues();
+          }
+
+          updateProfileMutation.mutate(formData);
         }
         break;
       case 'contact':
@@ -288,6 +312,7 @@ const ProfileEditClient: React.FC = () => {
         if (isValid) {
           formData = contactForm.getValues();
         }
+        profileApi.updateContact(formData);
         break;
       case 'account':
         // 비밀번호 변경과 계정 설정을 구분하여 처리
@@ -311,48 +336,6 @@ const ProfileEditClient: React.FC = () => {
         break;
     }
 
-    if (isValid) {
-      let imageUrl: string | undefined;
-
-      if (selectedImageFile) {
-        // 1. Presigned URL 정보 받기
-        const uploadResponse = await apiClient.post<{ minio: { url: string; fields: Record<string, string>; key: string; expires: string; content_type: string; form_data: Record<string, string> } }>(
-          '/api/me/profile/image',
-          { file_name: selectedImageFile.name, content_type: selectedImageFile.type, max_size: selectedImageFile.size }
-        );
-
-        console.log(uploadResponse.minio);
-        // 2. 데이터 순서대로 추가
-
-        const uploadData = uploadResponse.minio;
-        const uploadFormData = new FormData();
-
-        uploadFormData.append("key", uploadData.key);
-        uploadFormData.append("Content-Type", uploadData.content_type);
-        uploadFormData.append("x-amz-algorithm", uploadData.form_data["x-amz-algorithm"]);
-        uploadFormData.append("x-amz-credential", uploadData.form_data["x-amz-credential"]);
-        uploadFormData.append("x-amz-date", uploadData.form_data["x-amz-date"]);
-        uploadFormData.append("policy", uploadData.form_data["policy"]);
-        uploadFormData.append("x-amz-signature", uploadData.form_data["x-amz-signature"]);
-        uploadFormData.append("success_action_status", "201");
-        uploadFormData.append("file", selectedImageFile);
-
-        // 3. MinIO로 업로드
-        const response = await fetch(uploadResponse.minio.url, {
-          method: "POST",
-          body: uploadFormData,
-        });
-
-        if (!(response.ok || response.status === 201)) {
-          console.error("업로드 실패");
-          console.error("에러:", response.statusText);
-        }
-
-        imageUrl = response.headers.get('Location') ?? undefined;
-        formData = { ...formData, profile_image_url: imageUrl };
-      }
-      updateProfileMutation.mutate(formData);
-    }
   };
 
   const handleBack = () => {
@@ -487,25 +470,25 @@ const ProfileEditClient: React.FC = () => {
         />
 
         <FormField
-          name="title"
+          name="position_id"
           control={basicForm.control}
           label="직책/포지션"
-          error={basicForm.formState.errors.title?.message}
+          error={basicForm.formState.errors.position_id?.message}
           render={(field, fieldId) => (
             <Input
               {...field}
               id={fieldId}
               placeholder="예: 프론트엔드 개발자"
-              error={!!basicForm.formState.errors.title}
+              error={!!basicForm.formState.errors.position_id}
             />
           )}
         />
 
         <FormField
-          name="availability"
+          name="job_status"
           control={preferencesForm.control}
           label="구직 상태 *"
-          error={preferencesForm.formState.errors.availability?.message}
+          error={preferencesForm.formState.errors.job_status?.message}
           render={(field, fieldId) => (
             <select
               {...field}
@@ -513,7 +496,7 @@ const ProfileEditClient: React.FC = () => {
               className={cn(
                 "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                 "border-line-400 focus:ring-primary",
-                preferencesForm.formState.errors.availability && "border-status-error focus:ring-status-error"
+                preferencesForm.formState.errors.job_status && "border-status-error focus:ring-status-error"
               )}
             >
               <option value="">상태를 선택하세요</option>
@@ -540,10 +523,10 @@ const ProfileEditClient: React.FC = () => {
         />
 
         <FormField
-          name="bio"
+          name="introduction"
           control={basicForm.control}
           label="소개"
-          error={basicForm.formState.errors.bio?.message}
+          error={basicForm.formState.errors.introduction?.message}
           render={(field, fieldId) => (
             <div className="relative">
               <textarea
@@ -555,7 +538,7 @@ const ProfileEditClient: React.FC = () => {
                 className={cn(
                   "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent resize-none",
                   "border-line-400 focus:ring-primary",
-                  basicForm.formState.errors.bio && "border-status-error focus:ring-status-error"
+                  basicForm.formState.errors.introduction && "border-status-error focus:ring-status-error"
                 )}
               />
               <div className="absolute bottom-2 right-2 text-caption-2 text-label-400">
