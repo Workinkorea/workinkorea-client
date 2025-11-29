@@ -38,7 +38,11 @@ import {
 import { cn } from '@/lib/utils/utils';
 import { profileApi } from '@/lib/api/profile';
 import { apiClient } from '@/lib/api/client';
+<<<<<<< HEAD
 import { uploadFileToMinio } from '@/lib/api/minio';
+=======
+import { tokenManager } from '@/lib/utils/tokenManager';
+>>>>>>> origin/dev
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
@@ -200,7 +204,7 @@ const ProfileEditClient: React.FC = () => {
         },
       });
     }
-    
+
     setHasUnsavedChanges(false);
 
   }, [profile, basicForm, preferencesForm]);
@@ -363,6 +367,7 @@ const ProfileEditClient: React.FC = () => {
       return;
     }
 
+<<<<<<< HEAD
     // 파일을 state에 저장하고 미리보기 생성
     setSelectedImageFile(file);
     const reader = new FileReader();
@@ -371,6 +376,37 @@ const ProfileEditClient: React.FC = () => {
     };
     reader.readAsDataURL(file);
     setHasUnsavedChanges(true);
+=======
+    try {
+      const formData = new FormData();
+      formData.append('file_name', file.name);
+      console.log(formData);
+
+      const accessToken = tokenManager.getAccessToken();
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/metest/user/image`, {
+        method: 'POST',
+        headers: {
+          ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+        },
+        body: formData,
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('이미지 업로드 실패');
+      }
+
+      await response.json();
+      toast.success('프로필 이미지가 업로드되었습니다.');
+
+      // 프로필 다시 로드
+      queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      toast.error('이미지 업로드에 실패했습니다.');
+    }
+>>>>>>> origin/dev
   };
 
   const handleImageButtonClick = () => {
