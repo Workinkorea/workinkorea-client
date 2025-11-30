@@ -9,7 +9,7 @@ import Header from '@/components/layout/Header';
 import { useAuth } from '@/hooks/useAuth';
 import { postsApi } from '@/lib/api/posts';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CreateCompanyPostRequest } from '@/lib/api/types';
+import { CreateCompanyPostRequest, UpdateCompanyPostRequest } from '@/lib/api/types';
 import { addMockPost } from '@/lib/mock/companyPosts';
 import { CompanyPostForm } from '@/components/company-posts/CompanyPostForm';
 
@@ -57,8 +57,9 @@ const CompanyPostCreateClient: React.FC = () => {
     },
   });
 
-  const handleSubmit = (data: CreateCompanyPostRequest) => {
-    createPostMutation.mutate(data);
+  const handleSubmit = (data: CreateCompanyPostRequest | UpdateCompanyPostRequest) => {
+    // create 모드에서는 CreateCompanyPostRequest만 사용되므로 타입 단언 사용
+    createPostMutation.mutate(data as CreateCompanyPostRequest);
   };
 
   if (authLoading) {
