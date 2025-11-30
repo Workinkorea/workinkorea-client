@@ -6,6 +6,7 @@ import { WebsiteSchema, OrganizationSchema } from "@/components/seo/StructuredDa
 import "./globals.css";
 import ReactQueryProvider from "@/lib/providers/QueryProvider";
 import { Toaster } from 'sonner';
+import Script from 'next/script';
 
 export const metadata: Metadata = defaultMetadata;
 
@@ -19,7 +20,7 @@ export default function RootLayout({
       <head>
         <WebsiteSchema />
         <OrganizationSchema />
-        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+        <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></Script>
       </head>
       <body suppressHydrationWarning={true}>
         <ReactQueryProvider>
