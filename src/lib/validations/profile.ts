@@ -2,65 +2,52 @@ import { z } from 'zod';
 
 // 기본 프로필 정보 검증 스키마
 export const basicProfileSchema = z.object({
-  name: z.string()
-    .min(2, '이름은 최소 2글자 이상이어야 합니다.')
-    .max(50, '이름은 50글자를 초과할 수 없습니다.')
-    .regex(/^[가-힣a-zA-Z\s]+$/, '이름은 한글, 영문, 공백만 사용할 수 있습니다.'),
-
-  profile_image_url: z.union([
-    z.string().url('올바른 URL 형식을 입력해주세요.'),
-    z.literal('')
-  ]).optional(),
-
-  position_id: z.string()
-    .min(1, '직책을 선택해주세요.')
-    .optional()
-    .or(z.literal('')),
+  profile_image_url: z.string()
+    .url('올바른 URL 형식을 입력해주세요.'),
 
   location: z.string()
-    .max(100, '위치는 100글자를 초과할 수 없습니다.')
-    .optional()
-    .or(z.literal('')),
+    .min(1, '위치를 입력해주세요.')
+    .max(100, '위치는 100글자를 초과할 수 없습니다.'),
 
   introduction: z.string()
-    .max(500, '소개는 500글자를 초과할 수 없습니다.')
-    .optional()
-    .or(z.literal('')),
+    .min(1, '소개를 입력해주세요.')
+    .max(500, '소개는 500글자를 초과할 수 없습니다.'),
+
+  address: z.string()
+    .min(1, '주소를 입력해주세요.')
+    .max(200, '주소는 200글자를 초과할 수 없습니다.'),
+
+  position_id: z.number()
+    .min(1, '직책을 선택해주세요.'),
 
   job_status: z.string()
-    .min(1, '직업 상태를 선택해주세요.')
-    .optional()
-    .or(z.literal('')),
+    .min(1, '직업 상태를 선택해주세요.'),
 
   portfolio_url: z.string()
-    .url('올바른 URL 형식을 입력해주세요.')
-    .optional()
-    .or(z.literal('')),
+    .url('올바른 URL 형식을 입력해주세요.'),
+
+  country_id: z.number()
+    .min(1, '국가를 선택해주세요.'),
 });
 
 // 연락처 정보 검증 스키마
 export const contactInfoSchema = z.object({
-  email: z.string()
-    .email('올바른 이메일 형식을 입력해주세요.')
-    .min(5, '이메일은 최소 5글자 이상이어야 합니다.')
-    .max(100, '이메일은 100글자를 초과할 수 없습니다.'),
+  user_id: z.number(),
+
+  phone_number: z.string()
+    .min(1, '전화번호를 입력해주세요.')
+    .max(20, '전화번호는 20자를 초과할 수 없습니다.'),
 
   github_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
-    .regex(/^https?:\/\/(www\.)?github\.com\/.*/, 'GitHub URL만 입력 가능합니다.')
-    .optional()
-    .or(z.literal('')),
+    .regex(/^https?:\/\/(www\.)?github\.com\/.*/, 'GitHub URL만 입력 가능합니다.'),
 
   linkedin_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
-    .regex(/^https?:\/\/(www\.)?linkedin\.com\/.*/, 'LinkedIn URL만 입력 가능합니다.')
-    .optional()
-    .or(z.literal('')),
+    .regex(/^https?:\/\/(www\.)?linkedin\.com\/.*/, 'LinkedIn URL만 입력 가능합니다.'),
 
-  portfolio_url: z.string()
-    .url('올바른 URL 형식을 입력해주세요.')
-    .optional()
-    .or(z.literal('')),
+  website_url: z.string()
+    .url('올바른 URL 형식을 입력해주세요.'),
 });
 
 // 선호도 및 상태 검증 스키마

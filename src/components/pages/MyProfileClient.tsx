@@ -133,7 +133,7 @@ const MyProfileClient: React.FC = () => {
         // API 응답을 UserProfile 형태로 변환
         const transformedProfile: UserProfile = {
           ...mockMyProfile, // 기본값으로 mock 데이터 사용
-          id: String(profileData.user_id),
+          id: 'me',
           name: profileData.name,
           profileImage: profileData.profile_image_url || undefined,
           location: profileData.location,

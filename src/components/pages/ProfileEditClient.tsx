@@ -22,16 +22,13 @@ import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import { FormField } from '@/components/ui/FormField';
 import Input from '@/components/ui/Input';
-import { UserProfile } from '@/types/user';
 import {
   basicProfileSchema,
   contactInfoSchema,
-  preferencesSchema,
   passwordChangeSchema,
   accountSettingsSchema,
   BasicProfileForm,
   ContactInfoForm,
-  PreferencesForm,
   PasswordChangeForm,
   AccountSettingsForm
 } from '@/lib/validations/profile';
@@ -51,38 +48,13 @@ const ProfileEditClient: React.FC = () => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number>(0);
 
   // 프로필 데이터 가져오기
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ['myProfile'],
     queryFn: async () => {
-      const apiProfile = await profileApi.getProfile();
-
-      // API 응답을 UserProfile 형태로 변환
-      const transformedProfile: UserProfile = {
-        id: apiProfile.user_id?.toString() || 'me',
-        name: apiProfile.name || '',
-        email: '', // ProfileResponse에 email 필드 없음
-        profileImage: apiProfile.profile_image_url || undefined,
-        position: '', // ProfileResponse에 title 필드 없음
-        location: apiProfile.location || '',
-        introduction: apiProfile.introduction || '',
-        experience: 0, // ProfileResponse에 experience 필드 없음
-        completedProjects: 0, // ProfileResponse에 completedProjects 필드 없음
-        certifications: [], // ProfileResponse에 certifications 필드 없음
-        job_status: (apiProfile.job_status as 'available' | 'busy' | 'not-looking') || 'available',
-        skills: [], // ProfileResponse에 skills 필드 없음
-        education: [], // ProfileResponse에 education 필드 없음
-        languages: [], // ProfileResponse에 languages 필드 없음
-        githubUrl: '', // ProfileResponse에 github_url 필드 없음
-        linkedinUrl: '', // ProfileResponse에 linkedin_url 필드 없음
-        portfolioUrl: apiProfile.portfolio_url || '',
-        preferredSalary: undefined, // ProfileResponse에 preferredSalary 필드 없음
-        createdAt: '', // ProfileResponse에 created_at 필드 없음
-        updatedAt: '' // ProfileResponse에 updated_at 필드 없음
-      };
-
-      return transformedProfile;
+      return await profileApi.getProfile();
     }
   });
 
@@ -105,36 +77,25 @@ const ProfileEditClient: React.FC = () => {
   const basicForm = useForm<BasicProfileForm>({
     resolver: zodResolver(basicProfileSchema),
     defaultValues: {
-      name: '',
       profile_image_url: '',
-      position_id: '',
       location: '',
       introduction: '',
+      address: '',
+      position_id: 0,
       job_status: '',
+      portfolio_url: '',
+      country_id: 0,
     }
   });
 
   const contactForm = useForm<ContactInfoForm>({
     resolver: zodResolver(contactInfoSchema),
     defaultValues: {
-      email: '',
+      user_id: 0,
+      phone_number: '',
       github_url: '',
       linkedin_url: '',
-      portfolio_url: '',
-    }
-  });
-
-  const preferencesForm = useForm<PreferencesForm>({
-    resolver: zodResolver(preferencesSchema),
-    defaultValues: {
-      job_status: 'available',
-      experience: 0,
-      completedProjects: 0,
-      preferredSalary: {
-        min: 0,
-        max: 0,
-        currency: '만원'
-      },
+      website_url: '',
     }
   });
 
@@ -170,30 +131,24 @@ const ProfileEditClient: React.FC = () => {
   // 프로필 데이터가 로드되면 기본 정보 폼만 업데이트
   useEffect(() => {
     if (profile) {
+      // ProfileResponse에는 user_id가 없으므로 임의의 값 사용
+      setUserId(1);
+
       basicForm.reset({
-        name: profile.name || '',
-        profile_image_url: profile.profileImage || '',
-        position_id: profile.position || '',
+        profile_image_url: profile.profile_image_url || '',
         location: profile.location || '',
         introduction: profile.introduction || '',
+        address: profile.address || '',
+        position_id: profile.position_id || 0,
         job_status: profile.job_status || '',
-      });
-
-      preferencesForm.reset({
-        job_status: profile.job_status || 'available',
-        experience: profile.experience || 0,
-        completedProjects: profile.completedProjects || 0,
-        preferredSalary: profile.preferredSalary || {
-          min: 0,
-          max: 0,
-          currency: '만원'
-        },
+        portfolio_url: profile.portfolio_url || '',
+        country_id: profile.country_id || 0,
       });
     }
 
     setHasUnsavedChanges(false);
 
-  }, [profile, basicForm, preferencesForm]);
+  }, [profile, basicForm]);
 
   // 변경사항 감지
   useEffect(() => {
@@ -232,10 +187,11 @@ const ProfileEditClient: React.FC = () => {
         // API 호출 실패 시 빈 폼 유지 (placeholder만 표시)
         if (activeSection === 'contact') {
           contactForm.reset({
-            email: '',
+            user_id: userId,
+            phone_number: '',
             github_url: '',
             linkedin_url: '',
-            portfolio_url: '',
+            website_url: '',
           });
         } else if (activeSection === 'account') {
           accountForm.reset({
@@ -261,7 +217,7 @@ const ProfileEditClient: React.FC = () => {
     if (activeSection === 'contact' || activeSection === 'account') {
       fetchSectionData();
     }
-  }, [activeSection, contactForm, accountForm]);
+  }, [activeSection, contactForm, accountForm, userId]);
 
   const sections = [
     { key: 'basic', label: '기본 정보', icon: User },
@@ -275,8 +231,9 @@ const ProfileEditClient: React.FC = () => {
       case 'basic': {
         const isValid = await basicForm.trigger();
 
-        if (isValid || selectedImageFile) {
+        if (isValid) {
           let profileData: ProfileUpdateRequest;
+          const formValues = basicForm.getValues();
 
           if (selectedImageFile) {
             const imageUrl = await uploadFileToMinio({
@@ -286,28 +243,15 @@ const ProfileEditClient: React.FC = () => {
             });
             console.log('이미지 URL:', imageUrl);
             if (imageUrl) {
-              const formValues = basicForm.getValues();
               profileData = {
+                ...formValues,
                 profile_image_url: imageUrl,
-                location: formValues.location,
-                introduction: formValues.introduction,
-                job_status: formValues.job_status,
-                portfolio_url: formValues.portfolio_url,
-                position_id: formValues.position_id ? Number(formValues.position_id) : undefined,
               };
             } else {
               return;
             }
           } else {
-            const formValues = basicForm.getValues();
-            profileData = {
-              profile_image_url: formValues.profile_image_url,
-              location: formValues.location,
-              introduction: formValues.introduction,
-              job_status: formValues.job_status,
-              portfolio_url: formValues.portfolio_url,
-              position_id: formValues.position_id ? Number(formValues.position_id) : undefined,
-            };
+            profileData = formValues;
           }
 
           updateProfileMutation.mutate(profileData);
@@ -317,7 +261,11 @@ const ProfileEditClient: React.FC = () => {
       case 'contact': {
         const isValid = await contactForm.trigger();
         if (isValid) {
-          const contactData: ContactUpdateRequest = contactForm.getValues();
+          const formValues = contactForm.getValues();
+          const contactData: ContactUpdateRequest = {
+            ...formValues,
+            user_id: userId,
+          };
           profileApi.updateContact(contactData);
         }
         break;
@@ -327,15 +275,17 @@ const ProfileEditClient: React.FC = () => {
         const accountValid = await accountForm.trigger();
 
         if (accountValid) {
-          const accountData: AccountConfigUpdateRequest = {
+          const accountConfigData: AccountConfigUpdateRequest = {
+            user_id: userId,
             sns_message_notice: accountForm.getValues().notifications.contactRequestNotifications,
             email_notice: accountForm.getValues().notifications.emailNotifications,
           };
-          profileApi.updateAccountConfig(accountData);
+          profileApi.updateAccountConfig(accountConfigData);
         }
         break;
       }
     }
+
   };
 
   const handleBack = () => {
@@ -421,15 +371,15 @@ const ProfileEditClient: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <div className="relative">
-          {imagePreview || profile.profileImage ? (
+          {imagePreview || profile?.profile_image_url ? (
             <div
               className="w-20 h-20 rounded-full bg-cover bg-center border-4 border-primary-100"
-              style={{ backgroundImage: `url(${imagePreview || profile.profileImage})` }}
+              style={{ backgroundImage: `url(${imagePreview || profile?.profile_image_url})` }}
             />
           ) : (
             <div className="w-20 h-20 rounded-full bg-component-alternative border-4 border-primary-100 flex items-center justify-center">
               <span className="text-2xl font-semibold text-label-500">
-                {profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}
+                {profile?.name ? profile.name.charAt(0).toUpperCase() : 'U'}
               </span>
             </div>
           )}
@@ -456,62 +406,9 @@ const ProfileEditClient: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-6">
         <FormField
-          name="name"
-          control={basicForm.control}
-          label="이름 *"
-          error={basicForm.formState.errors.name?.message}
-          render={(field, fieldId) => (
-            <Input
-              {...field}
-              id={fieldId}
-              placeholder="이름을 입력하세요"
-              error={!!basicForm.formState.errors.name}
-            />
-          )}
-        />
-
-        <FormField
-          name="position_id"
-          control={basicForm.control}
-          label="직책/포지션"
-          error={basicForm.formState.errors.position_id?.message}
-          render={(field, fieldId) => (
-            <Input
-              {...field}
-              id={fieldId}
-              placeholder="예: 프론트엔드 개발자"
-              error={!!basicForm.formState.errors.position_id}
-            />
-          )}
-        />
-
-        <FormField
-          name="job_status"
-          control={preferencesForm.control}
-          label="구직 상태 *"
-          error={preferencesForm.formState.errors.job_status?.message}
-          render={(field, fieldId) => (
-            <select
-              {...field}
-              id={fieldId}
-              className={cn(
-                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                "border-line-400 focus:ring-primary",
-                preferencesForm.formState.errors.job_status && "border-status-error focus:ring-status-error"
-              )}
-            >
-              <option value="">상태를 선택하세요</option>
-              <option value="available">구직중</option>
-              <option value="busy">바쁨</option>
-              <option value="not-looking">구직안함</option>
-            </select>
-          )}
-        />
-
-        <FormField
           name="location"
           control={basicForm.control}
-          label="위치"
+          label="위치 *"
           error={basicForm.formState.errors.location?.message}
           render={(field, fieldId) => (
             <Input
@@ -524,9 +421,24 @@ const ProfileEditClient: React.FC = () => {
         />
 
         <FormField
+          name="address"
+          control={basicForm.control}
+          label="주소 *"
+          error={basicForm.formState.errors.address?.message}
+          render={(field, fieldId) => (
+            <Input
+              {...field}
+              id={fieldId}
+              placeholder="상세 주소를 입력하세요"
+              error={!!basicForm.formState.errors.address}
+            />
+          )}
+        />
+
+        <FormField
           name="introduction"
           control={basicForm.control}
-          label="소개"
+          label="소개 *"
           error={basicForm.formState.errors.introduction?.message}
           render={(field, fieldId) => (
             <div className="relative">
@@ -548,6 +460,78 @@ const ProfileEditClient: React.FC = () => {
             </div>
           )}
         />
+
+        <FormField
+          name="job_status"
+          control={basicForm.control}
+          label="구직 상태 *"
+          error={basicForm.formState.errors.job_status?.message}
+          render={(field, fieldId) => (
+            <select
+              {...field}
+              id={fieldId}
+              className={cn(
+                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary",
+                basicForm.formState.errors.job_status && "border-status-error focus:ring-status-error"
+              )}
+            >
+              <option value="">상태를 선택하세요</option>
+              <option value="available">구직중</option>
+              <option value="busy">바쁨</option>
+              <option value="not-looking">구직안함</option>
+            </select>
+          )}
+        />
+
+        <FormField
+          name="portfolio_url"
+          control={basicForm.control}
+          label="포트폴리오 URL *"
+          error={basicForm.formState.errors.portfolio_url?.message}
+          render={(field, fieldId) => (
+            <Input
+              {...field}
+              id={fieldId}
+              placeholder="https://yourportfolio.com"
+              error={!!basicForm.formState.errors.portfolio_url}
+            />
+          )}
+        />
+
+        <FormField
+          name="position_id"
+          control={basicForm.control}
+          label="직책 ID *"
+          error={basicForm.formState.errors.position_id?.message}
+          render={(field, fieldId) => (
+            <Input
+              {...field}
+              id={fieldId}
+              type="number"
+              placeholder="직책 ID를 입력하세요"
+              error={!!basicForm.formState.errors.position_id}
+              onChange={(e) => field.onChange(Number(e.target.value))}
+            />
+          )}
+        />
+
+        <FormField
+          name="country_id"
+          control={basicForm.control}
+          label="국가 ID *"
+          error={basicForm.formState.errors.country_id?.message}
+          render={(field, fieldId) => (
+            <Input
+              {...field}
+              id={fieldId}
+              type="number"
+              placeholder="국가 ID를 입력하세요"
+              error={!!basicForm.formState.errors.country_id}
+              onChange={(e) => field.onChange(Number(e.target.value))}
+            />
+          )}
+        />
       </div>
     </div>
   );
@@ -555,17 +539,17 @@ const ProfileEditClient: React.FC = () => {
   const renderContactSection = () => (
     <div className="space-y-6">
       <FormField
-        name="email"
+        name="phone_number"
         control={contactForm.control}
-        label="이메일 *"
-        error={contactForm.formState.errors.email?.message}
+        label="전화번호 *"
+        error={contactForm.formState.errors.phone_number?.message}
         render={(field, fieldId) => (
           <Input
             {...field}
             id={fieldId}
-            type="email"
-            placeholder="이메일을 입력하세요"
-            error={!!contactForm.formState.errors.email}
+            type="tel"
+            placeholder="전화번호를 입력하세요"
+            error={!!contactForm.formState.errors.phone_number}
           />
         )}
       />
@@ -573,7 +557,7 @@ const ProfileEditClient: React.FC = () => {
       <FormField
         name="github_url"
         control={contactForm.control}
-        label="GitHub URL"
+        label="GitHub URL *"
         error={contactForm.formState.errors.github_url?.message}
         render={(field, fieldId) => (
           <Input
@@ -588,7 +572,7 @@ const ProfileEditClient: React.FC = () => {
       <FormField
         name="linkedin_url"
         control={contactForm.control}
-        label="LinkedIn URL"
+        label="LinkedIn URL *"
         error={contactForm.formState.errors.linkedin_url?.message}
         render={(field, fieldId) => (
           <Input
@@ -601,16 +585,16 @@ const ProfileEditClient: React.FC = () => {
       />
 
       <FormField
-        name="portfolio_url"
+        name="website_url"
         control={contactForm.control}
-        label="포트폴리오 URL"
-        error={contactForm.formState.errors.portfolio_url?.message}
+        label="웹사이트 URL *"
+        error={contactForm.formState.errors.website_url?.message}
         render={(field, fieldId) => (
           <Input
             {...field}
             id={fieldId}
-            placeholder="https://yourportfolio.com"
-            error={!!contactForm.formState.errors.portfolio_url}
+            placeholder="https://yourwebsite.com"
+            error={!!contactForm.formState.errors.website_url}
           />
         )}
       />
