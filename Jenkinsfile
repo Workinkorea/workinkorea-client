@@ -175,7 +175,8 @@ pipeline {
             }
             discordSend description: "${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} deployed successfully",
                   title: "Success : Workinkorea-Client", 
-                  webhookURL: "${env.DISCORD_WEBHOOK_URL}"
+                  webhookURL: "${env.DISCORD_WEBHOOK_URL}",
+                  result: currentBuild.currentResult
             echo "old container : ${env.DOCKER_IMAGE_NAME}-${env.COLOR} stopped"
         }
         failure {
