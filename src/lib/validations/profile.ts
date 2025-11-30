@@ -6,19 +6,29 @@ export const basicProfileSchema = z.object({
     .min(2, '이름은 최소 2글자 이상이어야 합니다.')
     .max(50, '이름은 50글자를 초과할 수 없습니다.')
     .regex(/^[가-힣a-zA-Z\s]+$/, '이름은 한글, 영문, 공백만 사용할 수 있습니다.'),
-  
-  title: z.string()
-    .max(100, '직책은 100글자를 초과할 수 없습니다.')
+
+  profile_image_url: z.union([
+    z.string().url('올바른 URL 형식을 입력해주세요.'),
+    z.literal('')
+  ]).optional(),
+
+  position_id: z.string()
+    .min(1, '직책을 선택해주세요.')
     .optional()
     .or(z.literal('')),
-    
+
   location: z.string()
     .max(100, '위치는 100글자를 초과할 수 없습니다.')
     .optional()
     .or(z.literal('')),
-    
-  bio: z.string()
+
+  introduction: z.string()
     .max(500, '소개는 500글자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
+
+  job_status: z.string()
+    .min(1, '직업 상태를 선택해주세요.')
     .optional()
     .or(z.literal('')),
 });
@@ -29,20 +39,20 @@ export const contactInfoSchema = z.object({
     .email('올바른 이메일 형식을 입력해주세요.')
     .min(5, '이메일은 최소 5글자 이상이어야 합니다.')
     .max(100, '이메일은 100글자를 초과할 수 없습니다.'),
-    
-  githubUrl: z.string()
+
+  github_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
     .regex(/^https?:\/\/(www\.)?github\.com\/.*/, 'GitHub URL만 입력 가능합니다.')
     .optional()
     .or(z.literal('')),
-    
-  linkedinUrl: z.string()
+
+  linkedin_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
     .regex(/^https?:\/\/(www\.)?linkedin\.com\/.*/, 'LinkedIn URL만 입력 가능합니다.')
     .optional()
     .or(z.literal('')),
-    
-  portfolioUrl: z.string()
+
+  portfolio_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
     .optional()
     .or(z.literal('')),
@@ -50,20 +60,20 @@ export const contactInfoSchema = z.object({
 
 // 선호도 및 상태 검증 스키마
 export const preferencesSchema = z.object({
-  availability: z.enum(['available', 'busy', 'not-looking'], {
+  job_status: z.enum(['available', 'busy', 'not-looking'], {
     message: '구직 상태를 선택해주세요.'
   }),
-  
+
   experience: z.number()
     .min(0, '경력은 0년 이상이어야 합니다.')
     .max(50, '경력은 50년을 초과할 수 없습니다.')
     .int('경력은 정수로 입력해주세요.'),
-    
+
   completedProjects: z.number()
     .min(0, '완료 프로젝트 수는 0개 이상이어야 합니다.')
     .max(1000, '완료 프로젝트 수는 1000개를 초과할 수 없습니다.')
     .int('완료 프로젝트 수는 정수로 입력해주세요.'),
-    
+
   preferredSalary: z.object({
     min: z.number()
       .min(0, '최소 희망 연봉은 0 이상이어야 합니다.')
@@ -86,16 +96,16 @@ export const skillSchema = z.object({
   name: z.string()
     .min(1, '스킬 이름을 입력해주세요.')
     .max(50, '스킬 이름은 50글자를 초과할 수 없습니다.'),
-    
+
   level: z.number()
     .min(1, '스킬 레벨은 최소 1이어야 합니다.')
     .max(100, '스킬 레벨은 최대 100이어야 합니다.')
     .int('스킬 레벨은 정수로 입력해주세요.'),
-    
+
   category: z.enum(['technical', 'soft', 'language'], {
     message: '스킬 카테고리를 선택해주세요.'
   }),
-  
+
   description: z.string()
     .max(200, '스킬 설명은 200글자를 초과할 수 없습니다.')
     .optional()
@@ -107,23 +117,23 @@ export const educationSchema = z.object({
   institution: z.string()
     .min(2, '기관명은 최소 2글자 이상이어야 합니다.')
     .max(100, '기관명은 100글자를 초과할 수 없습니다.'),
-    
+
   degree: z.string()
     .min(2, '학위명은 최소 2글자 이상이어야 합니다.')
     .max(50, '학위명은 50글자를 초과할 수 없습니다.'),
-    
+
   field: z.string()
     .min(2, '전공명은 최소 2글자 이상이어야 합니다.')
     .max(100, '전공명은 100글자를 초과할 수 없습니다.'),
-    
+
   startDate: z.string()
     .regex(/^\d{4}-\d{2}$/, '시작일은 YYYY-MM 형식으로 입력해주세요.'),
-    
+
   endDate: z.string()
     .regex(/^\d{4}-\d{2}$/, '종료일은 YYYY-MM 형식으로 입력해주세요.')
     .optional()
     .or(z.literal('')),
-    
+
   current: z.boolean().optional(),
 }).refine((education) => {
   if (!education.endDate || education.current) return true;
@@ -138,7 +148,7 @@ export const languageSchema = z.object({
   name: z.string()
     .min(2, '언어명은 최소 2글자 이상이어야 합니다.')
     .max(30, '언어명은 30글자를 초과할 수 없습니다.'),
-    
+
   proficiency: z.enum(['beginner', 'intermediate', 'advanced', 'native'], {
     message: '언어 숙련도를 선택해주세요.'
   }),
@@ -148,13 +158,13 @@ export const languageSchema = z.object({
 export const passwordChangeSchema = z.object({
   currentPassword: z.string()
     .min(1, '현재 비밀번호를 입력해주세요.'),
-    
+
   newPassword: z.string()
     .min(8, '새 비밀번호는 최소 8자 이상이어야 합니다.')
     .max(50, '새 비밀번호는 50자를 초과할 수 없습니다.')
-    .regex(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
+    .regex(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
       '새 비밀번호는 영문, 숫자, 특수문자를 포함해야 합니다.'),
-      
+
   confirmPassword: z.string()
     .min(1, '새 비밀번호를 다시 입력해주세요.'),
 }).refine((data) => data.newPassword === data.confirmPassword, {

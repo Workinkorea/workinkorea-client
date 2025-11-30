@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Edit3 } from 'lucide-react';
+import { toast } from 'sonner';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import UserProfileHeader from '@/components/user/UserProfileHeader';
@@ -13,6 +14,9 @@ import SkillBarChart from '@/components/user/SkillBarChart';
 import RadarChart from '@/components/ui/RadarChart';
 import ResumeSection from '@/components/user/ResumeSection';
 import { UserProfile, ProfileStatistics, SkillStats, RadarChartData, Resume, ResumeStatistics } from '@/types/user';
+import { profileApi } from '@/lib/api/profile';
+import { resumeApi } from '@/lib/api/resume';
+import { useAuth } from '@/hooks/useAuth';
 
 // TODO: 실제 API 호출로 대체 (로그인된 사용자의 프로필)
 const mockMyProfile: UserProfile = {
@@ -20,13 +24,13 @@ const mockMyProfile: UserProfile = {
   name: '이지은',
   email: 'jieun.lee@example.com',
   profileImage: undefined,
-  title: 'UX/UI 디자이너 & 프론트엔드 개발자',
+  position: 'UX/UI 디자이너 & 프론트엔드 개발자',
   location: '서울, 한국',
-  bio: '사용자 경험에 중점을 둔 디자인과 개발을 동시에 하는 3년차 전문가입니다. 디자인과 코드 사이의 간극을 줄이는 것이 저의 목표입니다.',
+  introduction: '사용자 경험에 중점을 둔 디자인과 개발을 동시에 하는 3년차 전문가입니다. 디자인과 코드 사이의 간극을 줄이는 것이 저의 목표입니다.',
   experience: 3,
   completedProjects: 8,
   certifications: ['Adobe Certified Expert', 'Google UX Design'],
-  availability: 'available',
+  job_status: 'available',
   skills: [
     { id: '1', name: 'Figma', level: 95, average: 75, category: 'technical', description: 'UI/UX 디자인 툴의 고급 기능 활용' },
     { id: '2', name: 'React', level: 75, average: 70, category: 'technical' },
@@ -79,92 +83,6 @@ const mockMySkillStats: SkillStats = {
   industryRanking: 88
 };
 
-// TODO: 실제 API 호출로 대체 (사용자 이력서 목록)
-const mockResumes: Resume[] = [
-  {
-    id: 'resume-1',
-    title: '프론트엔드 개발자 이력서',
-    description: 'React 및 TypeScript 전문 프론트엔드 개발자로서의 경력을 정리한 이력서입니다.',
-    templateType: 'modern',
-    status: 'published',
-    isPublic: true,
-    userId: 'me',
-    content: {
-      personalInfo: {
-        name: '이지은',
-        email: 'jieun.lee@example.com',
-        phone: '010-1234-5678',
-        address: '서울시 강남구'
-      },
-      objective: '사용자 경험을 중시하는 프론트엔드 개발자로 성장하고 싶습니다.',
-      workExperience: [],
-      education: [],
-      skills: ['React', 'TypeScript', 'CSS', 'JavaScript'],
-      projects: [],
-      certifications: ['Adobe Certified Expert', 'Google UX Design'],
-      languages: [
-        { name: '한국어', proficiency: 'native' },
-        { name: '영어', proficiency: 'intermediate' }
-      ]
-    },
-    createdAt: '2024-01-15T00:00:00Z',
-    updatedAt: '2024-01-20T00:00:00Z',
-    lastViewedAt: '2024-01-22T10:30:00Z'
-  },
-  {
-    id: 'resume-2',
-    title: 'UX/UI 디자이너 포트폴리오',
-    description: '3년간의 디자인 경험과 주요 프로젝트를 담은 포트폴리오입니다.',
-    templateType: 'creative',
-    status: 'completed',
-    isPublic: false,
-    userId: 'me',
-    content: {
-      personalInfo: {
-        name: '이지은',
-        email: 'jieun.lee@example.com',
-        phone: '010-1234-5678',
-        address: '서울시 강남구'
-      },
-      workExperience: [],
-      education: [],
-      skills: ['Figma', 'Photoshop', 'Sketch', 'Prototyping'],
-      projects: [],
-      certifications: [],
-      languages: [
-        { name: '한국어', proficiency: 'native' },
-        { name: '영어', proficiency: 'intermediate' }
-      ]
-    },
-    createdAt: '2024-01-10T00:00:00Z',
-    updatedAt: '2024-01-18T00:00:00Z'
-  },
-  {
-    id: 'resume-3',
-    title: '신입 개발자 이력서 (작성중)',
-    templateType: 'professional',
-    status: 'draft',
-    isPublic: false,
-    userId: 'me',
-    content: {
-      personalInfo: {
-        name: '이지은',
-        email: 'jieun.lee@example.com',
-        phone: '010-1234-5678',
-        address: '서울시 강남구'
-      },
-      workExperience: [],
-      education: [],
-      skills: [],
-      projects: [],
-      certifications: [],
-      languages: []
-    },
-    createdAt: '2024-01-25T00:00:00Z',
-    updatedAt: '2024-01-25T00:00:00Z'
-  }
-];
-
 const mockResumeStatistics: { [resumeId: string]: ResumeStatistics } = {
   'resume-1': {
     totalViews: 245,
@@ -187,17 +105,113 @@ const mockResumeStatistics: { [resumeId: string]: ResumeStatistics } = {
 
 const MyProfileClient: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience' | 'resume'>('overview');
+  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
-  // TODO: 실제 API 쿼리로 대체
+  // 프로필 데이터 조회
+  const { data: profileData } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => profileApi.getProfile(),
+    enabled: isAuthenticated,
+  });
+
+  // 연락처 데이터 조회
+  const { data: contactData } = useQuery({
+    queryKey: ['contact'],
+    queryFn: () => profileApi.getContact(),
+    enabled: isAuthenticated,
+  });
+
+  // 프로필과 연락처 데이터 병합
   const { data: profile, isLoading, error } = useQuery({
-    queryKey: ['myProfile'],
+    queryKey: ['myProfile', profileData, contactData],
     queryFn: async () => {
-      await new Promise(resolve => setTimeout(resolve, 800));
-      return mockMyProfile;
+      try {
+        if (!profileData) return mockMyProfile;
+
+        // API 응답을 UserProfile 형태로 변환
+        const transformedProfile: UserProfile = {
+          ...mockMyProfile, // 기본값으로 mock 데이터 사용
+          id: String(profileData.user_id),
+          name: profileData.name,
+          profileImage: profileData.profile_image_url || undefined,
+          location: profileData.location,
+          introduction: profileData.introduction,
+          portfolioUrl: contactData?.website_url || profileData.portfolio_url,
+          githubUrl: contactData?.github_url,
+          linkedinUrl: contactData?.linkedin_url,
+          job_status: profileData.job_status as 'available' | 'busy' | 'not-looking' || 'available',
+        };
+
+        return transformedProfile;
+      } catch (err) {
+        console.error('프로필 로드 실패:', err);
+        // 에러 시 mock 데이터 반환 (개발 환경용)
+        return mockMyProfile;
+      }
+    },
+    enabled: !!profileData,
+  });
+
+  // 이력서 목록 조회
+  const { data: resumesData, isLoading: resumesLoading } = useQuery({
+    queryKey: ['resumes'],
+    queryFn: async () => {
+      try {
+        const response = await resumeApi.getMyResumes();
+
+        // API 응답이 없거나 resume_list가 없으면 빈 배열 반환
+        if (!response || !response.resume_list) {
+          return [];
+        }
+
+        // API 응답을 Resume 타입으로 변환
+        const resumes: Resume[] = response.resume_list.map(item => ({
+          id: String(item.id),
+          title: item.title,
+          templateType: 'modern',
+          status: 'completed',
+          isPublic: true,
+          userId: 'me',
+          content: {
+            personalInfo: {
+              name: '',
+              email: '',
+              phone: '',
+              address: ''
+            },
+            workExperience: [],
+            education: [],
+            skills: [],
+            projects: [],
+            certifications: [],
+            languages: []
+          },
+          createdAt: item.created_at,
+          updatedAt: item.updated_at
+        }));
+
+        return resumes;
+      } catch (err) {
+        console.error('이력서 목록 로드 실패:', err);
+        // 에러 시 빈 배열 반환
+        return [];
+      }
     }
   });
 
-  const router = useRouter();
+  // 인증 체크 및 리다이렉트
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, authLoading, router]);
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/');
+  };
 
   const handleEditClick = () => {
     // 편집 페이지로 이동
@@ -232,10 +246,15 @@ const MyProfileClient: React.FC = () => {
     leadership: 55
   });
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <Layout>
-      <Header type="homepage" />
+      <Header
+        type={userType === 'company' ? 'business' : 'homepage'}
+        isAuthenticated={isAuthenticated}
+        isLoading={authLoading}
+        onLogout={handleLogout}
+      />
         <div className="min-h-screen bg-background-alternative py-8">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="animate-pulse space-y-6">
@@ -254,7 +273,12 @@ const MyProfileClient: React.FC = () => {
   if (error || !profile) {
     return (
       <Layout>
-      <Header type="homepage" />
+      <Header
+        type={userType === 'company' ? 'business' : 'homepage'}
+        isAuthenticated={isAuthenticated}
+        isLoading={authLoading}
+        onLogout={handleLogout}
+      />
         <div className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-title-3 font-semibold text-label-700 mb-2">
@@ -274,7 +298,12 @@ const MyProfileClient: React.FC = () => {
 
   return (
     <Layout>
-      <Header type="homepage" />
+      <Header
+        type={userType === 'company' ? 'business' : 'homepage'}
+        isAuthenticated={isAuthenticated}
+        isLoading={authLoading}
+        onLogout={handleLogout}
+      />
       <div className="min-h-screen bg-background-alternative py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           {/* 페이지 헤더 */}
@@ -506,25 +535,52 @@ const MyProfileClient: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <ResumeSection
-                  resumes={mockResumes}
-                  resumeStatistics={mockResumeStatistics}
-                  onUploadResume={(file) => {
-                    // TODO: 실제 파일 업로드 API 구현
-                  }}
-                  onDeleteResume={(resumeId) => {
-                    
-                    // TODO: 삭제 확인 모달 및 API 호출
-                  }}
-                  onTogglePublic={(resumeId) => {
-                    
-                    // TODO: 공개/비공개 설정 API 호출
-                  }}
-                  onViewResume={(resumeId) => {
-                    
-                    // TODO: 이력서 미리보기 모달 또는 페이지로 이동
-                  }}
-                />
+                {resumesLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full"></div>
+                  </div>
+                ) : (
+                  <ResumeSection
+                    resumes={resumesData || []}
+                    resumeStatistics={mockResumeStatistics}
+                    onUploadResume={async (file) => {
+                      try {
+                        const response = await resumeApi.uploadResumeFile(file);
+                        // 쿼리 무효화하여 목록 갱신
+                        queryClient.invalidateQueries({ queryKey: ['resumes'] });
+                        toast.success(`이력서 파일이 업로드되었습니다. (ID: ${response.resume_id})`);
+                      } catch (err) {
+                        console.error('이력서 파일 업로드 실패:', err);
+                        throw err; // ResumeSection에서 에러 처리
+                      }
+                    }}
+                    onDeleteResume={async (resumeId) => {
+                      const resume = (resumesData || []).find(r => r.id === resumeId);
+                      const resumeTitle = resume?.title || '이력서';
+
+                      if (!window.confirm(`"${resumeTitle}" 이력서를 삭제하시겠습니까?`)) {
+                        return;
+                      }
+
+                      try {
+                        await resumeApi.deleteResume(Number(resumeId));
+                        // 쿼리 무효화하여 목록 갱신
+                        queryClient.invalidateQueries({ queryKey: ['resumes'] });
+                        toast.success('이력서가 삭제되었습니다.');
+                      } catch (err) {
+                        console.error('이력서 삭제 실패:', err);
+                        toast.error('이력서 삭제에 실패했습니다.');
+                      }
+                    }}
+                    onTogglePublic={() => {
+                      // TODO: 공개/비공개 설정 API 호출
+                    }}
+                    onViewResume={(resumeId) => {
+                      // 이력서 편집 페이지로 이동
+                      router.push(`/user/resume/edit/${resumeId}`);
+                    }}
+                  />
+                )}
               </motion.div>
             )}
           </div>

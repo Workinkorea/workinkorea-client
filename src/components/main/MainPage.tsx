@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks/useAuth';
 
 export default function MainPage() {
   const router = useRouter();
-  const { isAuthenticated, isLoading, logout } = useAuth();
+  const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: false });
 
   const handleLogout = async () => {
     await logout();
@@ -22,7 +22,7 @@ export default function MainPage() {
   return (
     <div className="min-h-screen bg-white">
       <Header
-        type="homepage"
+        type={userType === 'company' ? 'business' : 'homepage'}
         isAuthenticated={isAuthenticated}
         isLoading={isLoading}
         onLogout={handleLogout}

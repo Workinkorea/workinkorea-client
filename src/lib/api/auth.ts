@@ -5,7 +5,6 @@ import type {
   LoginResponse,
   LogoutResponse,
   RefreshTokenResponse,
-  GetUserInfoResponse,
   SignupRequest,
   CompanySignupRequest,
   CompanySignupResponse,
@@ -23,7 +22,10 @@ export const authApi = {
   },
 
   async login(data: LoginRequest): Promise<LoginResponse> {
-    return apiClient.post<LoginResponse>('/api/auth/login', data, { skipAuth: true });
+    return apiClient.post<LoginResponse>('/api/auth/login', data, {
+      skipAuth: true,
+      credentials: 'include'
+    });
   },
 
   async logout(): Promise<LogoutResponse> {
@@ -50,6 +52,7 @@ export const authApi = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
+      credentials: 'include',
       skipAuth: true,
     });
   },
@@ -60,9 +63,5 @@ export const authApi = {
       success: true,
       accessToken
     };
-  },
-
-  async getUserInfo(): Promise<GetUserInfoResponse> {
-    return apiClient.get<GetUserInfoResponse>('/api/auth/user');
   },
 };

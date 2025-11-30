@@ -86,10 +86,6 @@ export const tokenManager = {
     return !isTokenExpired(token);
   },
 
-  /**
-   * 토큰이 곧 만료될지 확인합니다 (기본: 5분 이내)
-   * @param bufferSeconds 만료 전 버퍼 시간 (초)
-   */
   isTokenExpiringSoon: (type: TokenType = 'user'): boolean => {
     const token = tokenManager.getToken(type);
     if (!token) return true;

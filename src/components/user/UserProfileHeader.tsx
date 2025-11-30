@@ -172,13 +172,17 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
             {/* 행동 버튼 */}
             <div className="flex flex-col gap-2">
-              {isOwnProfile && onEditClick && (
-                <button
-                  onClick={onEditClick}
-                  className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
-                >
-                  프로필 편집
-                </button>
+              {isOwnProfile && (
+                <>
+                  {onEditClick && (
+                    <button
+                      onClick={onEditClick}
+                      className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                    >
+                      프로필 편집
+                    </button>
+                  )}
+                </>
               )}
 
               {!isOwnProfile && (

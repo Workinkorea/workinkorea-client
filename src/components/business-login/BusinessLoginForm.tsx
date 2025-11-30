@@ -152,12 +152,7 @@ export default function BusinessLoginForm() {
           message: '이메일을 입력해주세요.'
         });
       }
-      // if (!businessNumber) {
-      //   setError('businessNumber', {
-      //     type: 'manual',
-      //     message: '사업자등록번호를 입력해주세요.'
-      //   });
-      // }
+  
       if (!password) {
         setError('password', {
           type: 'manual',
@@ -166,24 +161,6 @@ export default function BusinessLoginForm() {
       }
       return;
     }
-
-    // const cleanBusinessNumber = removeBusinessNumberHyphen(data.businessNumber);
-
-    // if (cleanBusinessNumber.length < 10) {
-    //   setError('businessNumber', {
-    //     type: 'manual',
-    //     message: '사업자등록번호 10자리를 입력해주세요.'
-    //   });
-    //   return;
-    // }
-
-    // if (cleanBusinessNumber === data.password) {
-    //   setError('password', {
-    //     type: 'manual',
-    //     message: '가입하지 않은 사업자번호에요. 아래 회원가입을 해 주세요.'
-    //   });
-    //   return;
-    // }
 
     if (formState.isLoading) {
       return;

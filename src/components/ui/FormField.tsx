@@ -23,7 +23,6 @@ export const FormField = <T extends FieldValues, N extends Path<T>>({
   control,
   label,
   render,
-  error,
   rules
 }: FormFieldProps<T, N>) => {
   const fieldId = `field-${name}`;
@@ -35,6 +34,7 @@ export const FormField = <T extends FieldValues, N extends Path<T>>({
         className="cursor-pointer text-label-400 text-caption-1 text-left self-start"
       >
         {label}
+        {rules?.required && <span className="text-red-500 ml-1">*</span>}
       </label>
       <Controller
         name={name}

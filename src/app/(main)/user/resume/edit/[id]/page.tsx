@@ -1,49 +1,148 @@
 'use client';
 
 import React from 'react';
+import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import ResumeEditor from '@/components/resume/ResumeEditor';
 import { Resume } from '@/types/user';
+import { resumeApi } from '@/lib/api/resume';
+import { profileApi } from '@/lib/api/profile';
 
-// TODO: 실제 API 호출로 대체
-const mockResumeData: Resume = {
-  id: 'resume-1',
-  title: '프론트엔드 개발자 이력서',
-  description: 'React 및 TypeScript 전문 프론트엔드 개발자로서의 경력을 정리한 이력서입니다.',
-  templateType: 'modern',
-  status: 'draft',
-  isPublic: false,
-  userId: 'me',
-  content: {
-    personalInfo: {
-      name: '이지은',
-      email: 'jieun.lee@example.com',
-      phone: '010-1234-5678',
-      address: '서울시 강남구'
-    },
-    objective: '사용자 경험을 중시하는 프론트엔드 개발자로 성장하고 싶습니다.',
-    workExperience: [],
-    education: [],
-    skills: ['React', 'TypeScript', 'CSS', 'JavaScript'],
-    projects: [],
-    certifications: ['Adobe Certified Expert', 'Google UX Design'],
-    languages: [
-      { name: '한국어', proficiency: 'native' },
-      { name: '영어', proficiency: 'intermediate' }
-    ]
-  },
-  createdAt: '2024-01-15T00:00:00Z',
-  updatedAt: '2024-01-20T00:00:00Z'
+// ISO 날짜 형식(2022-02-23T00:00:00)을 YYYY-MM-DD 형식으로 변환
+const formatDateForInput = (dateString: string | null | undefined): string => {
+  if (!dateString) return '';
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  } catch (error) {
+    console.error('날짜 변환 오류:', error);
+    return '';
+  }
 };
 
 const EditResumePage: React.FC = () => {
-  // TODO: 실제 API 호출에서 params.id를 사용하여 이력서 데이터를 가져올 예정
+  const params = useParams();
+  const resumeId = params?.id ? Number(params.id) : null;
+
+  // 프로필 정보 가져오기
+  const { data: profileData } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => profileApi.getProfile(),
+  });
+
+  // 연락처 정보 가져오기
+  const { data: contactData } = useQuery({
+    queryKey: ['contact'],
+    queryFn: () => profileApi.getContact(),
+  });
+
+  const { data: resumeData, isLoading, error } = useQuery({
+    queryKey: ['resume', resumeId, profileData, contactData],
+    queryFn: async () => {
+      if (!resumeId) throw new Error('Invalid resume ID');
+      const response = await resumeApi.getResumeById(resumeId);
+
+      // introduction 배열에서 첫 번째 항목의 content를 objective로 사용
+      const objective = response.resume.introduction && response.resume.introduction.length > 0
+        ? response.resume.introduction[0].content
+        : '';
+
+      // API 응답을 Resume 타입으로 변환
+      const resume: Resume = {
+        id: String(response.resume.id),
+        userId: String(response.resume.user_id),
+        title: response.resume.title,
+        templateType: 'modern',
+        status: 'draft',
+        isPublic: true,
+        content: {
+          personalInfo: {
+            name: profileData?.name || '',
+            email: '', // 프로필 API에 email이 없음
+            phone: contactData?.phone_number || '',
+            address: profileData?.address || '',
+            profileImage: response.resume.profile_url || profileData?.profile_image_url
+          },
+          objective: objective,
+          workExperience: response.resume.career_history.map(career => ({
+            id: `${career.company_name}-${career.start_date}`,
+            company: career.company_name,
+            position: career.position_title,
+            department: career.department,
+            achievements: [], // fix: add empty achievements array to satisfy WorkExperience type
+            startDate: formatDateForInput(career.start_date),
+            endDate: formatDateForInput(career.end_date),
+            current: career.is_working,
+            description: career.main_role
+          })),
+          education: response.resume.schools.map(school => ({
+            id: `${school.school_name}-${school.start_date}`,
+            institution: school.school_name,
+            degree: school.is_graduated ? '졸업' : '재학',
+            field: school.major_name,
+            startDate: formatDateForInput(school.start_date),
+            endDate: formatDateForInput(school.end_date)
+          })),
+          skills: [],
+          projects: [],
+          certifications: response.resume.licenses.map(license => license.license_name),
+          languages: response.resume.language_skills.map(lang => ({
+            name: lang.language_type,
+            proficiency: lang.level as 'native' | 'advanced' | 'intermediate' | 'beginner'
+          }))
+        },
+        // 자격증 상세 정보 저장 (ResumeEditor에서 사용)
+        licenses: response.resume.licenses.map(license => ({
+          license_name: license.license_name,
+          license_agency: license.license_agency,
+          license_date: formatDateForInput(license.license_date)
+        })),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      return resume;
+    },
+    enabled: !!resumeId
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-label-500">이력서를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !resumeData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-title-3 font-semibold text-label-900 mb-2">
+            이력서를 불러올 수 없습니다
+          </h2>
+          <p className="text-body-3 text-label-500">
+            잠시 후 다시 시도해주세요.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
       <ResumeEditor
-        templateType={mockResumeData.templateType}
-        initialData={mockResumeData}
+        templateType={resumeData.templateType}
+        initialData={resumeData}
         isEditMode={true}
+        resumeId={resumeId}
       />
     </div>
   );

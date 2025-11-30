@@ -1,0 +1,12 @@
+import { Metadata } from 'next';
+import { createMetadata } from '@/lib/metadata';
+import CompanyPostEditClient from '@/components/pages/CompanyPostEditClient';
+
+export const metadata: Metadata = createMetadata({
+  title: '채용 공고 수정 - WorkInKorea',
+  description: '채용 공고를 수정하세요.',
+});
+
+export default function CompanyPostEditPage({ params }: { params: { id: string } }) {
+  return <CompanyPostEditClient postId={params.id} />;
+}

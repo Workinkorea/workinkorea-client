@@ -59,7 +59,7 @@ export default function HeroSection() {
             {/* 버튼들 */}
             <div className='flex justify-center gap-4 mt-6'>
               <button
-                onClick={() => router.push('/self-diagnosis')}
+                onClick={() => router.push('/diagnosis')}
                 className="bg-white border border-line-200 hover:bg-gray-50 text-gray-700 px-6 py-3 rounded-lg font-medium transition-colors shadow-sm cursor-pointer"
               >
                 자가진단

@@ -1,8 +1,20 @@
 import { tokenManager } from '../utils/tokenManager';
-
+import { ApiErrorResponse } from './types';
 
 export interface ApiRequestOptions extends RequestInit {
   skipAuth?: boolean;
+  tokenType?: 'user' | 'company';
+}
+
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public data: ApiErrorResponse
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -10,66 +22,15 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
-const subscribeTokenRefresh = (cb: (token: string) => void) => {
-  refreshSubscribers.push(cb);
-};
-
-const onTokenRefreshed = (token: string) => {
-  refreshSubscribers.forEach((cb) => cb(token));
-  refreshSubscribers = [];
-};
-
-export const refreshAccessToken = async (): Promise<string> => {
-  const response = await fetch('/api/auth/refresh', {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-
-    if (data.message === 'Refresh token not found') {
-      tokenManager.removeAccessToken();
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
-      }
-    }
-
-    throw new Error('Failed to refresh token');
-  }
-
-  const data = await response.json();
-  const accessToken = data.accessToken || data.access_token || data.token;
-
-  if (!accessToken) {
-    throw new Error('No access token received');
-  }
-
-  return accessToken;
-};
-
 export const apiClient = {
   async request<T>(
     endpoint: string,
     options: ApiRequestOptions = {}
   ): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
-    const { skipAuth, ...fetchOptions } = options;
+    const { skipAuth, tokenType = 'user', ...fetchOptions } = options;
 
-    // skipAuth가 true가 아닐 때만 토큰 갱신 체크
-    if (!skipAuth && tokenManager.isTokenExpiringSoon()) {
-      try {
-        const newAccessToken = await refreshAccessToken();
-        tokenManager.setAccessToken(newAccessToken);
-      } catch {
-        tokenManager.removeAccessToken();
-      }
-    }
-
-    const accessToken = tokenManager.getAccessToken();
+    const accessToken = tokenManager.getToken(tokenType);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -164,7 +125,12 @@ export const apiClient = {
       }
 
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new ApiError(
+          errorData.error || `API Error: ${response.status}`,
+          response.status,
+          errorData
+        );
       }
 
       return response.json();
@@ -200,4 +166,41 @@ export const apiClient = {
   delete<T>(endpoint: string, options?: ApiRequestOptions): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   },
+};
+
+const subscribeTokenRefresh = (cb: (token: string) => void) => {
+  refreshSubscribers.push(cb);
+};
+
+const onTokenRefreshed = (token: string) => {
+  refreshSubscribers.forEach((cb) => cb(token));
+  refreshSubscribers = [];
+};
+
+interface RefreshTokenResponse {
+  accessToken?: string;
+  access_token?: string;
+  token?: string;
+  message?: string;
+}
+
+export const refreshAccessToken = async (tokenType: 'user' | 'company' = 'user'): Promise<string> => {
+  try {
+    const data = await apiClient.post<RefreshTokenResponse>('/api/auth/refresh');
+    const accessToken = data.accessToken || data.access_token || data.token;
+
+    if (!accessToken) {
+      throw new Error('No access token received');
+    }
+
+    return accessToken;
+  } catch (error) {
+    if (error instanceof ApiError && error.data?.error === 'Refresh token not found') {
+      tokenManager.removeToken(tokenType);
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+    }
+    throw error;
+  }
 };
