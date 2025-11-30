@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import { DiagnosisFormField } from '@/components/ui/DiagnosisFormField';
+import { FormField } from '@/components/ui/FormField';
 
 interface Session3Data {
   desiredSalary: string;
@@ -78,7 +78,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
       </div>
 
       {/* Q8. 희망 연봉 */}
-      <DiagnosisFormField
+      <FormField
+        variant="diagnosis"
         name="desiredSalary"
         control={control}
         label="Q8. 원하시는 연봉 수준은 어느 정도인가요? 💰"
@@ -109,7 +110,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
       />
 
       {/* Q9. 고용 형태 */}
-      <DiagnosisFormField
+      <FormField
+        variant="diagnosis"
         name="employmentType"
         control={control}
         label="Q9. 어떤 방식으로 일하고 싶으세요? 🏢"
@@ -140,7 +142,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
       />
 
       {/* Q10. 회사 규모 */}
-      <DiagnosisFormField
+      <FormField
+        variant="diagnosis"
         name="companySize"
         control={control}
         label="Q10. 어떤 회사가 마음에 드시나요? 🏭"
@@ -174,7 +177,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
       />
 
       {/* Q11. 시작 시기 */}
-      <DiagnosisFormField
+      <FormField
+        variant="diagnosis"
         name="startDate"
         control={control}
         label="Q11. 언제부터 일을 시작하고 싶으세요? 📅"

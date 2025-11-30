@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import { DiagnosisFormField } from '@/components/ui/DiagnosisFormField';
+import { FormField } from '@/components/ui/FormField';
 
 interface Session1Data {
   currentLocation: string;
@@ -68,11 +68,12 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
       </div>
 
       {/* Q1. 현재 위치 */}
-      <DiagnosisFormField
+      <FormField
         name="currentLocation"
         control={control}
         label="Q1. 지금 어디에 계신가요?"
         rules={{ required: '현재 위치를 선택해주세요.' }}
+        variant="diagnosis"
         render={(field) => (
           <div className="space-y-3">
             <label className="flex items-center gap-3 p-4 border-2 border-line-400 rounded-lg cursor-pointer hover:border-primary-300 hover:bg-primary-50 transition-all">
@@ -106,11 +107,12 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
         >
-          <DiagnosisFormField
+          <FormField
             name="otherCountry"
             control={control}
             label="어느 나라에 계신가요?"
             rules={{ required: '나라를 선택해주세요.' }}
+            variant="diagnosis"
             render={(field, fieldId) => (
               <select
                 {...field}
@@ -130,11 +132,12 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
       )}
 
       {/* Q2. 한국어 레벨 */}
-      <DiagnosisFormField
+      <FormField
         name="koreanLevel"
         control={control}
         label="Q2. 한국어는 얼마나 하실 수 있나요? 🗣️"
         rules={{ required: '한국어 레벨을 선택해주세요.' }}
+        variant="diagnosis"
         render={(field) => (
           <div className="space-y-3">
             {KOREAN_LEVELS.map((level) => (
@@ -161,11 +164,12 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
       />
 
       {/* Q3. 비자 상태 */}
-      <DiagnosisFormField
+      <FormField
         name="visaStatus"
         control={control}
         label="Q3. 한국에서 일할 수 있는 비자가 있으신가요? 📋"
         rules={{ required: '비자 상태를 선택해주세요.' }}
+        variant="diagnosis"
         render={(field) => (
           <div className="space-y-3">
             {VISA_STATUS.map((visa) => (
