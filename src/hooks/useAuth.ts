@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { tokenManager, TokenType } from '@/lib/utils/tokenManager';
 import { authApi } from '@/lib/api/auth';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api/client';
 
 // 인증이 필요 없는 페이지 경로 (로그인/회원가입)
@@ -17,6 +17,7 @@ interface UseAuthOptions {
 export const useAuth = (options: UseAuthOptions = {}) => {
   const { required } = options;
   const pathname = usePathname();
+  const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userType, setUserType] = useState<TokenType | null>(null);
@@ -186,8 +187,19 @@ export const useAuth = (options: UseAuthOptions = {}) => {
       clearTimeout(refreshTimerRef.current);
     }
 
-    tokenManager.removeAccessToken();
+    // 로그아웃 전 현재 사용자 유형 저장
+    const currentUserType = userType;
+
+    // 사용자 유형에 따라 토큰 제거
+    if (currentUserType) {
+      tokenManager.removeToken(currentUserType);
+    } else {
+      // userType이 없는 경우 모든 토큰 제거
+      tokenManager.clearAllTokens();
+    }
+
     setIsAuthenticated(false);
+    setUserType(null);
 
     if (typeof window !== 'undefined') {
       try {
@@ -195,6 +207,13 @@ export const useAuth = (options: UseAuthOptions = {}) => {
       } catch (err) {
         console.error('Logout failed:', err);
       }
+    }
+
+    // 사용자 유형에 따라 적절한 로그인 페이지로 리디렉션
+    if (currentUserType === 'company') {
+      router.push('/company-login');
+    } else {
+      router.push('/login');
     }
   };
 
