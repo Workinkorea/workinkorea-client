@@ -1,11 +1,26 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MapPin, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
+
+interface DaumPostcodeData {
+  roadAddress: string;
+  jibunAddress: string;
+  buildingName?: string;
+  [key: string]: string | undefined;
+}
+
+interface DaumPostcode {
+  new (options: { oncomplete: (data: DaumPostcodeData) => void; width: string; height: string }): {
+    open: () => void;
+  };
+}
 
 declare global {
   interface Window {
-    daum: any;
+    daum?: {
+      Postcode: DaumPostcode;
+    };
   }
 }
 
@@ -37,7 +52,7 @@ const DaumPostcodeSearch: React.FC<DaumPostcodeSearchProps> = ({
     }
 
     new window.daum.Postcode({
-      oncomplete: function (data: any) {
+      oncomplete: function (data: DaumPostcodeData) {
         // 도로명 주소 우선, 없으면 지번 주소 사용
         const fullAddress = data.roadAddress || data.jibunAddress;
 

@@ -39,7 +39,6 @@ import { cn } from '@/lib/utils/utils';
 import { profileApi } from '@/lib/api/profile';
 import { apiClient } from '@/lib/api/client';
 import { uploadFileToMinio } from '@/lib/api/minio';
-import { tokenManager } from '@/lib/utils/tokenManager';
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
