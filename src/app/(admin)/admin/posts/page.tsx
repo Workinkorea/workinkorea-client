@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { adminApi } from '@/lib/api/admin';
 import { CompanyPost } from '@/lib/api/types';
 import { toast } from 'sonner';
@@ -44,11 +44,7 @@ export default function AdminPostsPage() {
 
   const limit = 10;
 
-  useEffect(() => {
-    fetchPosts();
-  }, [page]);
-
-  async function fetchPosts() {
+  const fetchPosts = useCallback(async () => {
     try {
       setLoading(true);
       const data = await adminApi.getPosts(page, limit);
@@ -96,7 +92,11 @@ export default function AdminPostsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [page, limit]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   function openEditModal(post: CompanyPost) {
     setEditingPost(post);

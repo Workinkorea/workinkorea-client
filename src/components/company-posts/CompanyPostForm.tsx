@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Trash2, Briefcase, MapPin, Calendar, DollarSign, Clock, GraduationCap, Languages, FileText } from 'lucide-react';
+import { Save, Trash2, Briefcase, MapPin, Calendar, DollarSign, Clock, GraduationCap, Languages } from 'lucide-react';
 import { CreateCompanyPostRequest, UpdateCompanyPostRequest } from '@/lib/api/types';
 import DaumPostcodeSearch from '@/components/ui/DaumPostcodeSearch';
 import { POSITION_OPTIONS, WORK_EXPERIENCE_OPTIONS, EDUCATION_OPTIONS, LANGUAGE_OPTIONS } from '@/constants/jobOptions';
@@ -26,7 +26,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
     title: '',
     content: '',
     work_experience: '경력무관',
-    position_id: '1',
+    position_id: 1,
     education: '학력무관',
     language: '한국어 능통',
     employment_type: '정규직',
@@ -62,7 +62,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'working_hours' || name === 'salary' ? Number(value) : value,
+      [name]: name === 'working_hours' || name === 'salary' || name === 'position_id' ? Number(value) : value,
     }));
 
     if (errors[name]) {
@@ -106,9 +106,9 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
     onSubmit(submitData);
   };
 
-  const handleAddressComplete = (data: { address: string; zonecode: string }) => {
-    setBaseAddress(data.address);
-    setFormData((prev) => ({ ...prev, work_location: data.address }));
+  const handleAddressComplete = (address: string) => {
+    setBaseAddress(address);
+    setFormData((prev) => ({ ...prev, work_location: address }));
     if (errors.work_location) {
       setErrors((prev) => ({ ...prev, work_location: '' }));
     }
@@ -148,7 +148,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
             <select
               id="position_id"
               name="position_id"
-              value={formData.position_id}
+              value={String(formData.position_id)}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
@@ -286,7 +286,11 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
                   className={`flex-1 px-4 py-2 border ${errors.work_location ? 'border-status-error' : 'border-line-400'} rounded-lg bg-bg-100`}
                   placeholder="주소 검색 버튼을 클릭하세요"
                 />
-                <DaumPostcodeSearch onComplete={handleAddressComplete} />
+                <DaumPostcodeSearch
+                  value={baseAddress}
+                  onChange={handleAddressComplete}
+                  error={errors.work_location}
+                />
               </div>
               <input
                 type="text"

@@ -286,7 +286,7 @@ export interface CreateCompanyPostRequest {
   title: string;
   content: string;
   work_experience: string;
-  position_id: string;
+  position_id: number;
   education: string;
   language: string;
   employment_type: string;
