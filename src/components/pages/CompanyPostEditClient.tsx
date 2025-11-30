@@ -32,7 +32,7 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
     queryKey: ['companyPost', postId],
     queryFn: async () => {
       try {
-        return await postsApi.getCompanyPost(postId);
+        return await postsApi.getCompanyPostById(Number(postId));
       } catch (err) {
         console.error('공고 조회 API 실패, mock 데이터 사용:', err);
         return getMockPostById(Number(postId));
@@ -45,7 +45,7 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
   const updatePostMutation = useMutation({
     mutationFn: async (data: UpdateCompanyPostRequest) => {
       try {
-        return await postsApi.updateCompanyPost(postId, data);
+        return await postsApi.updateCompanyPost(Number(postId), data);
       } catch (err) {
         console.error('공고 수정 API 실패, mock 데이터 수정:', err);
         return updateMockPost(Number(postId), {
@@ -80,7 +80,7 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
   const deletePostMutation = useMutation({
     mutationFn: async () => {
       try {
-        await postsApi.deleteCompanyPost(postId);
+        await postsApi.deleteCompanyPost(Number(postId));
       } catch (err) {
         console.error('공고 삭제 API 실패, mock 데이터 삭제:', err);
         deleteMockPost(Number(postId));
@@ -132,7 +132,7 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
     title: post.title,
     content: post.content,
     work_experience: post.work_experience,
-    position_id: String(post.position_id),
+    position_id: post.position_id,
     education: post.education,
     language: post.language,
     employment_type: post.employment_type,

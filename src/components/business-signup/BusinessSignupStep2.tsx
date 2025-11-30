@@ -337,6 +337,33 @@ export default function BusinessSignupStep2({
 
             <div className='mb-1'>
               <FormField
+                name="email"
+                control={control}
+                label="대표자 이메일"
+                error={errors.email?.message}
+                render={(field, fieldId) => (
+                  <Input
+                    {...field}
+                    id={fieldId}
+                    type="email"
+                    placeholder="이메일 입력"
+                    onBlur={(e) => {
+                      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                      if (!emailRegex.test(e.target.value)) {
+                        setError('email', {
+                          type: 'manual',
+                          message: '이메일 형식이 올바르지 않습니다.'
+                        });
+                      } else {
+                        clearErrors('email');
+                      }
+                    }}
+                    error={!!errors.email}
+                  />
+                )}
+              />
+
+              <FormField
                 name="password"
                 control={control}
                 label="비밀번호"
@@ -453,33 +480,6 @@ export default function BusinessSignupStep2({
                       }}
                       maxLength={13}
                       error={!!errors.phoneNumber}
-                    />
-                  )}
-                />
-                
-                <FormField
-                  name="email"
-                  control={control}
-                  label="대표자 이메일"
-                  error={errors.email?.message}
-                  render={(field, fieldId) => (
-                    <Input
-                      {...field}
-                      id={fieldId}
-                      type="email"
-                      placeholder="이메일 입력"
-                      onBlur={(e) => {
-                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailRegex.test(e.target.value)) {
-                          setError('email', {
-                            type: 'manual',
-                            message: '이메일 형식이 올바르지 않습니다.'
-                          });
-                        } else {
-                          clearErrors('email');
-                        }
-                      }}
-                      error={!!errors.email}
                     />
                   )}
                 />

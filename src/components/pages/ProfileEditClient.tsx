@@ -39,6 +39,7 @@ import { cn } from '@/lib/utils/utils';
 import { profileApi } from '@/lib/api/profile';
 import { apiClient } from '@/lib/api/client';
 import { uploadFileToMinio } from '@/lib/api/minio';
+import type { ProfileUpdateRequest, ContactUpdateRequest, AccountConfigUpdateRequest } from '@/lib/api/types';
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
@@ -87,19 +88,8 @@ const ProfileEditClient: React.FC = () => {
 
   // 프로필 업데이트 뮤테이션
   const updateProfileMutation = useMutation({
-    mutationFn: async (updatedData: Partial<UserProfile>) => {
-      // UserProfile 데이터를 ProfileUpdateRequest 형식으로 변환
-      const requestData = {
-        name: updatedData.name,
-        profile_image_url: updatedData.profileImage,
-        location: updatedData.location,
-        introduction: updatedData.introduction,
-        portfolio_url: updatedData.portfolioUrl,
-        job_status: updatedData.job_status,
-        // position_id, country_id, birth_date는 나중에 추가
-      };
-
-      return profileApi.updateProfile(requestData);
+    mutationFn: async (updatedData: ProfileUpdateRequest) => {
+      return profileApi.updateProfile(updatedData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
@@ -280,15 +270,14 @@ const ProfileEditClient: React.FC = () => {
   ];
 
   const handleSave = async () => {
-    let isValid = false;
-    let formData = {};
-
     // 현재 섹션의 폼 검증 및 데이터 수집
     switch (activeSection) {
-      case 'basic':
-        isValid = await basicForm.trigger();
-        
+      case 'basic': {
+        const isValid = await basicForm.trigger();
+
         if (isValid || selectedImageFile) {
+          let profileData: ProfileUpdateRequest;
+
           if (selectedImageFile) {
             const imageUrl = await uploadFileToMinio({
               file: selectedImageFile,
@@ -297,44 +286,56 @@ const ProfileEditClient: React.FC = () => {
             });
             console.log('이미지 URL:', imageUrl);
             if (imageUrl) {
-              formData = { ...basicForm.getValues(), profile_image_url: imageUrl };
+              const formValues = basicForm.getValues();
+              profileData = {
+                profile_image_url: imageUrl,
+                location: formValues.location,
+                introduction: formValues.introduction,
+                job_status: formValues.job_status,
+                portfolio_url: formValues.portfolio_url,
+                position_id: formValues.position_id ? Number(formValues.position_id) : undefined,
+              };
+            } else {
+              return;
             }
           } else {
-            formData = basicForm.getValues();
+            const formValues = basicForm.getValues();
+            profileData = {
+              profile_image_url: formValues.profile_image_url,
+              location: formValues.location,
+              introduction: formValues.introduction,
+              job_status: formValues.job_status,
+              portfolio_url: formValues.portfolio_url,
+              position_id: formValues.position_id ? Number(formValues.position_id) : undefined,
+            };
           }
 
-          updateProfileMutation.mutate(formData);
+          updateProfileMutation.mutate(profileData);
         }
         break;
-      case 'contact':
-        isValid = await contactForm.trigger();
+      }
+      case 'contact': {
+        const isValid = await contactForm.trigger();
         if (isValid) {
-          formData = contactForm.getValues();
+          const contactData: ContactUpdateRequest = contactForm.getValues();
+          profileApi.updateContact(contactData);
         }
-        profileApi.updateContact(formData);
         break;
-      case 'account':
+      }
+      case 'account': {
         // 비밀번호 변경과 계정 설정을 구분하여 처리
-        const passwordValid = await passwordForm.trigger();
         const accountValid = await accountForm.trigger();
 
-        if (passwordValid) {
-          const passwordData = passwordForm.getValues();
-          // 비밀번호가 입력된 경우에만 변경 요청
-          if (passwordData.currentPassword && passwordData.newPassword) {
-            formData = { ...formData, password: passwordData };
-          }
-        }
-
         if (accountValid) {
-          const accountData = accountForm.getValues();
-          formData = { ...formData, settings: accountData };
+          const accountData: AccountConfigUpdateRequest = {
+            sns_message_notice: accountForm.getValues().notifications.contactRequestNotifications,
+            email_notice: accountForm.getValues().notifications.emailNotifications,
+          };
+          profileApi.updateAccountConfig(accountData);
         }
-
-        isValid = passwordValid && accountValid;
         break;
+      }
     }
-
   };
 
   const handleBack = () => {

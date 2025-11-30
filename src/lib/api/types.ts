@@ -88,7 +88,6 @@ export interface ProfileResponse {
 }
 
 export interface ProfileUpdateRequest {
-  user_id?: number;
   profile_image_url?: string;
   location?: string;
   introduction?: string;
@@ -108,7 +107,6 @@ export interface ContactResponse {
 }
 
 export interface ContactUpdateRequest {
-  user_id?: number;
   phone_number?: string;
   github_url?: string;
   linkedin_url?: string;
@@ -122,7 +120,6 @@ export interface AccountConfigResponse {
 }
 
 export interface AccountConfigUpdateRequest {
-  user_id?: number;
   sns_message_notice?: boolean;
   email_notice?: boolean;
 }
@@ -286,7 +283,7 @@ export interface CreateCompanyPostRequest {
   title: string;
   content: string;
   work_experience: string;
-  position_id: string;
+  position_id: number;
   education: string;
   language: string;
   employment_type: string;

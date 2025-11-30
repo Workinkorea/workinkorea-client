@@ -31,6 +31,11 @@ export const basicProfileSchema = z.object({
     .min(1, '직업 상태를 선택해주세요.')
     .optional()
     .or(z.literal('')),
+
+  portfolio_url: z.string()
+    .url('올바른 URL 형식을 입력해주세요.')
+    .optional()
+    .or(z.literal('')),
 });
 
 // 연락처 정보 검증 스키마

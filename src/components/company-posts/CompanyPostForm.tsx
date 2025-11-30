@@ -26,7 +26,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
     title: '',
     content: '',
     work_experience: '경력무관',
-    position_id: '1',
+    position_id: 1,
     education: '학력무관',
     language: '한국어 능통',
     employment_type: '정규직',
@@ -62,7 +62,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'working_hours' || name === 'salary' ? Number(value) : value,
+      [name]: name === 'working_hours' || name === 'salary' || name === 'position_id' ? Number(value) : value,
     }));
 
     if (errors[name]) {
@@ -106,9 +106,9 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
     onSubmit(submitData);
   };
 
-  const handleAddressComplete = (data: { address: string; zonecode: string }) => {
-    setBaseAddress(data.address);
-    setFormData((prev) => ({ ...prev, work_location: data.address }));
+  const handleAddressChange = (address: string) => {
+    setBaseAddress(address);
+    setFormData((prev) => ({ ...prev, work_location: address }));
     if (errors.work_location) {
       setErrors((prev) => ({ ...prev, work_location: '' }));
     }
@@ -278,16 +278,12 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
               근무 위치 *
             </label>
             <div className="space-y-2">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={baseAddress}
-                  readOnly
-                  className={`flex-1 px-4 py-2 border ${errors.work_location ? 'border-status-error' : 'border-line-400'} rounded-lg bg-bg-100`}
-                  placeholder="주소 검색 버튼을 클릭하세요"
-                />
-                <DaumPostcodeSearch onComplete={handleAddressComplete} />
-              </div>
+              <DaumPostcodeSearch
+                value={baseAddress}
+                onChange={handleAddressChange}
+                placeholder="주소 검색 버튼을 클릭하세요"
+                error={errors.work_location}
+              />
               <input
                 type="text"
                 value={detailAddress}
@@ -296,9 +292,6 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
                 placeholder="상세 주소 (선택)"
               />
             </div>
-            {errors.work_location && (
-              <p className="mt-1 text-caption-2 text-status-error">{errors.work_location}</p>
-            )}
           </div>
 
           <div>
