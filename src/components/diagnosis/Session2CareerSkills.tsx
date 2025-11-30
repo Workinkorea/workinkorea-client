@@ -62,7 +62,7 @@ const LANGUAGE_LEVELS = [
 ];
 
 export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Props) => {
-  const { control, handleSubmit, setValue, watch } = useForm<Session2Data>({
+  const { control, handleSubmit, setValue } = useForm<Session2Data>({
     defaultValues: {
       ...initialData,
       languages: initialData.languages || [],

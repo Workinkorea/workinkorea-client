@@ -8,6 +8,7 @@ import Header from '@/components/layout/Header';
 import { useAuth } from '@/hooks/useAuth';
 import { CheckCircle, AlertCircle, Briefcase, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { DiagnosisData } from '@/store/diagnosisStore';
 
 interface MatchingResult {
   score: number;
@@ -241,7 +242,7 @@ const DiagnosisResultClient = () => {
 };
 
 // TODO(human): Implement matching score calculation logic
-function calculateMatchingScore(data: any): MatchingResult {
+function calculateMatchingScore(data: Partial<DiagnosisData>): MatchingResult {
   // Placeholder implementation
   let score = 50;
   const strengths: string[] = [];

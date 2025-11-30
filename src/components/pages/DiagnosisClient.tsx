@@ -11,6 +11,7 @@ import { Session4Matching } from '@/components/diagnosis/Session4Matching';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import { useAuth } from '@/hooks/useAuth';
+import { DiagnosisData } from '@/store/diagnosisStore';
 
 const TOTAL_STEPS = 4;
 
@@ -24,22 +25,22 @@ const DiagnosisClient = () => {
     router.push('/');
   };
 
-  const handleSession1Next = (data: any) => {
+  const handleSession1Next = (data: Partial<DiagnosisData>) => {
     updateData(data);
     setStep(2);
   };
 
-  const handleSession2Next = (data: any) => {
+  const handleSession2Next = (data: Partial<DiagnosisData>) => {
     updateData(data);
     setStep(3);
   };
 
-  const handleSession3Next = (data: any) => {
+  const handleSession3Next = (data: Partial<DiagnosisData>) => {
     updateData(data);
     setStep(4);
   };
 
-  const handleSession4Next = (data: any) => {
+  const handleSession4Next = (data: Partial<DiagnosisData>) => {
     updateData(data);
     router.push('/diagnosis/result');
   };
