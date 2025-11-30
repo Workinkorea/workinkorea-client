@@ -181,30 +181,41 @@ pipeline {
         failure {
             echo "Deployment failed"
             script{
-                sh """
-                    docker stop ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} || true
-                    docker rm ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} || true
-                    docker rmi ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} || true
-                """
-                sleep 5
-                sh """
-                    docker run -d \
-                    --name ${env.DOCKER_IMAGE_NAME}-${env.COLOR} \
-                    --network core_network \
-                    --label 'traefik.enable=true' \
-                    --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.rule=Host(`wik.${env.BASE_URL}`)' \
-                    --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.entrypoints=websecure' \
-                    --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.tls.certresolver=le' \
-                    --label 'traefik.http.services.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.loadbalancer.server.port=${env.PORT}' \
-                    --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.middlewares=client-auth@docker' \
-                    --label 'traefik.http.middlewares.client-auth.basicauth.users=${env.TRAEFIK_BASIC_AUTH_USERS}' \
-                    ${env.DOCKER_IMAGE_NAME}-${env.COLOR}
-                """
+                try {
+                    sh """
+                        docker stop ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} || true
+                        docker rm ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} || true
+                        docker rmi ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} || true
+                    """
+                    sleep 5
+
+                    if (env.COLOR != "none") {
+                        sh """
+                            docker run -d \
+                            --name ${env.DOCKER_IMAGE_NAME}-${env.COLOR} \
+                            --network core_network \
+                            --label 'traefik.enable=true' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.rule=Host(`wik.${env.BASE_URL}`)' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.entrypoints=websecure' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.tls.certresolver=le' \
+                            --label 'traefik.http.services.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.loadbalancer.server.port=${env.PORT}' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.middlewares=client-auth@docker' \
+                            --label 'traefik.http.middlewares.client-auth.basicauth.users=${env.TRAEFIK_BASIC_AUTH_USERS}' \
+                            ${env.DOCKER_IMAGE_NAME}-${env.COLOR}
+                        """
+                        echo "Rollback ${env.DOCKER_IMAGE_NAME}-${env.COLOR} completed"
+                    } else {
+                        echo "No previous container to rollback"
+                    }
+                } catch (Exception e) {
+                    echo "Rollback failed: ${e.message}"
+                }
             }
-            discordSend description: "${env.DOCKER_IMAGE_NAME}-${env.COLOR} rolled back",
-                  title: "Failure : Workinkorea-Client", 
-                  webhookURL: "${env.DISCORD_WEBHOOK_URL}"
-            echo "Rollback ${env.DOCKER_IMAGE_NAME}-${env.COLOR} started"
+            // Discord 알림은 항상 전송
+            discordSend description: "Deployment failed. ${env.COLOR != 'none' ? 'Rollback attempted' : 'No rollback needed'}",
+                  title: "Failure : Workinkorea-Client",
+                  webhookURL: "${env.DISCORD_WEBHOOK_URL}",
+                  result: currentBuild.currentResult
         }
     }
 }
