@@ -20,36 +20,36 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
   className = ''
 }) => {
   // 가용성 상태에 따른 스타일
-  const getAvailabilityStyle = (availability: UserProfile['availability']) => {
-    switch (availability) {
-      case 'available':
-        return {
-          bg: 'bg-status-correct',
-          text: 'text-white',
-          label: '구직중'
-        };
-      case 'busy':
-        return {
-          bg: 'bg-status-caution',
-          text: 'text-white', 
-          label: '바쁨'
-        };
-      case 'not-looking':
-        return {
-          bg: 'bg-label-500',
-          text: 'text-white',
-          label: '구직안함'
-        };
-      default:
-        return {
-          bg: 'bg-component-alternative',
-          text: 'text-label-700',
-          label: '미정'
-        };
-    }
-  };
+  const getAvailabilityStyle = (jobStatus: UserProfile['job_status']) => {
+      switch (jobStatus) {
+        case 'available':
+          return {
+            bg: 'bg-status-correct',
+            text: 'text-white',
+            label: '구직중'
+          };
+        case 'busy':
+          return {
+            bg: 'bg-status-caution',
+            text: 'text-white', 
+            label: '바쁨'
+          };
+        case 'not-looking':
+          return {
+            bg: 'bg-label-500',
+            text: 'text-white',
+            label: '구직안함'
+          };
+        default:
+          return {
+            bg: 'bg-component-alternative',
+            text: 'text-label-700',
+            label: '미정'
+          };
+      }
+    };
 
-  const availabilityStyle = getAvailabilityStyle(profile.availability);
+  const availabilityStyle = getAvailabilityStyle(profile.job_status);
 
   // 언어 숙련도 라벨
   const getProficiencyLabel = (proficiency: string) => {
@@ -119,9 +119,9 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
                 </span>
               </div>
 
-              {profile.title && (
+              {profile.position && (
                 <p className="text-body-2 text-primary-600 font-medium mb-3">
-                  {profile.title}
+                  {profile.position}
                 </p>
               )}
 
@@ -146,9 +146,9 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
               </div>
 
               {/* 소개 */}
-              {profile.bio && (
+              {profile.introduction && (
                 <p className="text-body-3 text-label-700 mb-4 leading-relaxed">
-                  {profile.bio}
+                  {profile.introduction}
                 </p>
               )}
 
