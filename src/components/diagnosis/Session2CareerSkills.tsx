@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import { DiagnosisFormField } from '@/components/ui/DiagnosisFormField';
+import { FormField } from '@/components/ui/FormField';
 import { useState } from 'react';
 import { X } from 'lucide-react';
 
@@ -117,7 +117,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
       </div>
 
       {/* Q4. 경력 */}
-      <DiagnosisFormField
+      <FormField
+        variant="diagnosis"
         name="workExperience"
         control={control}
         label="Q4. 일한 경험은 얼마나 되시나요?"
@@ -148,7 +149,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
       />
 
       {/* Q5. 직무 분야 */}
-      <DiagnosisFormField
+      <FormField
+        variant="diagnosis"
         name="jobField"
         control={control}
         label="Q5. 어떤 일을 가장 잘하시나요? ⭐"
@@ -179,7 +181,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
       />
 
       {/* Q6. 학력 */}
-      <DiagnosisFormField
+      <FormField
+        variant="diagnosis"
         name="education"
         control={control}
         label="Q6. 최종 학력을 알려주세요 🎓"

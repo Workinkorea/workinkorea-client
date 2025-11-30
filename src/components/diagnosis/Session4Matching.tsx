@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import { DiagnosisFormField } from '@/components/ui/DiagnosisFormField';
+import { FormField } from '@/components/ui/FormField';
 import { useState } from 'react';
 
 interface Session4Data {
@@ -114,7 +114,8 @@ export const Session4Matching = ({ initialData, onNext, onBack }: Session4Props)
           당신에게 딱 맞는 채용 정보와 맞춤 진단 결과를 보내드릴게요!
         </p>
 
-        <DiagnosisFormField
+        <FormField
+        variant="diagnosis"
           name="email"
           control={control}
           label="이메일 주소"
