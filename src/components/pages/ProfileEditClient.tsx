@@ -73,6 +73,36 @@ const ProfileEditClient: React.FC = () => {
     }
   });
 
+  // 연락처 업데이트 뮤테이션
+  const updateContactMutation = useMutation({
+    mutationFn: async (updatedData: ContactUpdateRequest) => {
+      return profileApi.updateContact(updatedData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contact'] });
+      toast.success('연락처가 성공적으로 저장되었습니다.');
+      setHasUnsavedChanges(false);
+    },
+    onError: () => {
+      toast.error('연락처 저장에 실패했습니다. 다시 시도해주세요.');
+    }
+  });
+
+  // 계정 설정 업데이트 뮤테이션
+  const updateAccountConfigMutation = useMutation({
+    mutationFn: async (updatedData: AccountConfigUpdateRequest) => {
+      return profileApi.updateAccountConfig(updatedData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['accountConfig'] });
+      toast.success('계정 설정이 성공적으로 저장되었습니다.');
+      setHasUnsavedChanges(false);
+    },
+    onError: () => {
+      toast.error('계정 설정 저장에 실패했습니다. 다시 시도해주세요.');
+    }
+  });
+
   // 폼 설정
   const basicForm = useForm<BasicProfileForm>({
     resolver: zodResolver(basicProfileSchema),
@@ -266,7 +296,7 @@ const ProfileEditClient: React.FC = () => {
             ...formValues,
             user_id: userId,
           };
-          profileApi.updateContact(contactData);
+          updateContactMutation.mutate(contactData);
         }
         break;
       }
@@ -280,7 +310,7 @@ const ProfileEditClient: React.FC = () => {
             sns_message_notice: accountForm.getValues().notifications.contactRequestNotifications,
             email_notice: accountForm.getValues().notifications.emailNotifications,
           };
-          profileApi.updateAccountConfig(accountConfigData);
+          updateAccountConfigMutation.mutate(accountConfigData);
         }
         break;
       }
@@ -787,10 +817,10 @@ const ProfileEditClient: React.FC = () => {
 
               <button
                 onClick={handleSave}
-                disabled={updateProfileMutation.isPending}
+                disabled={updateProfileMutation.isPending || updateContactMutation.isPending || updateAccountConfigMutation.isPending}
                 className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 cursor-pointer"
               >
-                {updateProfileMutation.isPending ? (
+                {(updateProfileMutation.isPending || updateContactMutation.isPending || updateAccountConfigMutation.isPending) ? (
                   <>
                     <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
                     저장 중...
