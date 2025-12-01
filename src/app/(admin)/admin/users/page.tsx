@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { adminApi, AdminUser } from '@/lib/api/admin';
 import { toast } from 'sonner';
 
@@ -27,11 +27,7 @@ export default function AdminUsersPage() {
 
   const limit = 10;
 
-  useEffect(() => {
-    fetchUsers();
-  }, [page]);
-
-  async function fetchUsers() {
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       const data = await adminApi.getUsers(page, limit);
@@ -63,7 +59,11 @@ export default function AdminUsersPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [page, limit]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [page, fetchUsers]);
 
   function openCreateModal() {
     setEditingUser(null);

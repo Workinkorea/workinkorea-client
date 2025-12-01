@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Trash2, Briefcase, MapPin, Calendar, DollarSign, Clock, GraduationCap, Languages, FileText } from 'lucide-react';
+import { Save, Trash2, Briefcase, MapPin, Calendar, DollarSign, Clock, GraduationCap, Languages } from 'lucide-react';
 import { CreateCompanyPostRequest, UpdateCompanyPostRequest } from '@/lib/api/types';
 import DaumPostcodeSearch from '@/components/ui/DaumPostcodeSearch';
 import { POSITION_OPTIONS, WORK_EXPERIENCE_OPTIONS, EDUCATION_OPTIONS, LANGUAGE_OPTIONS } from '@/constants/jobOptions';
