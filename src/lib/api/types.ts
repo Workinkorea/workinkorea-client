@@ -74,6 +74,7 @@ export interface CompanyLoginResponse {
 }
 
 export interface ProfileResponse {
+  user_id: number;
   profile_image_url: string;
   location: string;
   introduction: string;
@@ -87,14 +88,15 @@ export interface ProfileResponse {
 }
 
 export interface ProfileUpdateRequest {
-  profile_image_url: string;
-  location: string;
-  introduction: string;
-  address: string;
-  position_id: number;
-  job_status: string;
-  portfolio_url: string;
-  country_id: number;
+  user_id?: number;
+  profile_image_url?: string;
+  location?: string;
+  introduction?: string;
+  address?: string;
+  position_id?: number;
+  job_status?: string;
+  portfolio_url?: string;
+  country_id?: number;
 }
 
 export interface ContactResponse {
@@ -120,9 +122,9 @@ export interface AccountConfigResponse {
 }
 
 export interface AccountConfigUpdateRequest {
-  user_id: number;
-  sns_message_notice: boolean;
-  email_notice: boolean;
+  user_id?: number;
+  sns_message_notice?: boolean;
+  email_notice?: boolean;
 }
 
 export interface CompanyProfileResponse {
