@@ -58,7 +58,6 @@ const CompanyPostCreateClient: React.FC = () => {
   });
 
   const handleSubmit = (data: CreateCompanyPostRequest | UpdateCompanyPostRequest) => {
-    // create 모드에서는 CreateCompanyPostRequest만 사용되므로 타입 단언 사용
     createPostMutation.mutate(data as CreateCompanyPostRequest);
   };
 

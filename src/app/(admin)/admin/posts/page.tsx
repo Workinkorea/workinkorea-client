@@ -96,7 +96,7 @@ export default function AdminPostsPage() {
 
   useEffect(() => {
     fetchPosts();
-  }, [fetchPosts]);
+  }, [page, fetchPosts]);
 
   function openEditModal(post: CompanyPost) {
     setEditingPost(post);

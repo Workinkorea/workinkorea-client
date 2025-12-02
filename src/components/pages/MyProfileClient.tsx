@@ -110,49 +110,35 @@ const MyProfileClient: React.FC = () => {
   const router = useRouter();
 
   // 프로필 데이터 조회
-  const { data: profileData } = useQuery({
+  const { data: profileData, isLoading: profileLoading, error: profileError } = useQuery({
     queryKey: ['profile'],
     queryFn: () => profileApi.getProfile(),
     enabled: isAuthenticated,
   });
 
   // 연락처 데이터 조회
-  const { data: contactData } = useQuery({
+  const { data: contactData, isLoading: contactLoading } = useQuery({
     queryKey: ['contact'],
     queryFn: () => profileApi.getContact(),
     enabled: isAuthenticated,
   });
 
   // 프로필과 연락처 데이터 병합
-  const { data: profile, isLoading, error } = useQuery({
-    queryKey: ['myProfile', profileData, contactData],
-    queryFn: async () => {
-      try {
-        if (!profileData) return mockMyProfile;
+  const profile: UserProfile | undefined = profileData ? {
+    ...mockMyProfile, // 기본값으로 mock 데이터 사용
+    id: 'me',
+    name: profileData.name,
+    profileImage: profileData.profile_image_url || undefined,
+    location: profileData.location,
+    introduction: profileData.introduction,
+    portfolioUrl: contactData?.website_url || profileData.portfolio_url,
+    githubUrl: contactData?.github_url,
+    linkedinUrl: contactData?.linkedin_url,
+    job_status: profileData.job_status as 'available' | 'busy' | 'not-looking' || 'available',
+  } : undefined;
 
-        // API 응답을 UserProfile 형태로 변환
-        const transformedProfile: UserProfile = {
-          ...mockMyProfile, // 기본값으로 mock 데이터 사용
-          id: String(profileData.user_id),
-          name: profileData.name,
-          profileImage: profileData.profile_image_url || undefined,
-          location: profileData.location,
-          introduction: profileData.introduction,
-          portfolioUrl: contactData?.website_url || profileData.portfolio_url,
-          githubUrl: contactData?.github_url,
-          linkedinUrl: contactData?.linkedin_url,
-          job_status: profileData.job_status as 'available' | 'busy' | 'not-looking' || 'available',
-        };
-
-        return transformedProfile;
-      } catch (err) {
-        console.error('프로필 로드 실패:', err);
-        // 에러 시 mock 데이터 반환 (개발 환경용)
-        return mockMyProfile;
-      }
-    },
-    enabled: !!profileData,
-  });
+  const isLoading = profileLoading || contactLoading;
+  const error = profileError;
 
   // 이력서 목록 조회
   const { data: resumesData, isLoading: resumesLoading } = useQuery({
@@ -270,7 +256,7 @@ const MyProfileClient: React.FC = () => {
     );
   }
 
-  if (error || !profile) {
+  if (error) {
     return (
       <Layout>
       <Header
@@ -287,6 +273,30 @@ const MyProfileClient: React.FC = () => {
             <p className="text-body-3 text-label-500">
               잠시 후 다시 시도해주세요.
             </p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <Layout>
+      <Header
+        type={userType === 'company' ? 'business' : 'homepage'}
+        isAuthenticated={isAuthenticated}
+        isLoading={authLoading}
+        onLogout={handleLogout}
+      />
+        <div className="min-h-screen bg-background-alternative py-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="animate-pulse space-y-6">
+              <div className="bg-white rounded-lg h-64"></div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg h-96"></div>
+                <div className="bg-white rounded-lg h-96"></div>
+              </div>
+            </div>
           </div>
         </div>
       </Layout>

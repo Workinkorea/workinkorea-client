@@ -63,7 +63,7 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]);
+  }, [page, fetchUsers]);
 
   function openCreateModal() {
     setEditingUser(null);
