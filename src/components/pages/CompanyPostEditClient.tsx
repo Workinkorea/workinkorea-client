@@ -52,7 +52,7 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
           title: data.title,
           content: data.content,
           work_experience: data.work_experience,
-          position_id: Number(data.position_id),
+          position_id: data.position_id,
           education: data.education,
           language: data.language,
           employment_type: data.employment_type,

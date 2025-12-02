@@ -148,7 +148,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
             <select
               id="position_id"
               name="position_id"
-              value={formData.position_id}
+              value={String(formData.position_id)}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
