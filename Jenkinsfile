@@ -167,7 +167,7 @@ pipeline {
             script {
                 // GitHub Checks 발행
                 def checkStatus = currentBuild.result ?: 'SUCCESS'
-                def checkConclusion = checkStatus == 'SUCCESS' ? 'success' : 'failure'
+                def checkConclusion = checkStatus == 'SUCCESS' ? 'SUCCESS' : 'FAILURE'
                 
                 publishChecks(
                     name: 'Workinkorea Client Deployment',
