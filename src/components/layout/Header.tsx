@@ -14,7 +14,6 @@ const Header = ({ type, isAuthenticated, isLoading, onLogout }: HeaderProps) => 
     if (type === 'homepage') {
       return [
         { name: '공고', href: '/jobs' },
-        { name: '기업 정보', href: '/company-info' }, 
       ];
     } else {
       return [
