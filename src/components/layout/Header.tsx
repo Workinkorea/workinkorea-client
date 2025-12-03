@@ -63,9 +63,7 @@ const Header = ({ type, isAuthenticated, isLoading, onLogout }: HeaderProps) => 
               <SearchIcon />
             </button>
 
-            {isLoading ? (
-              <div className="w-24 h-9 bg-component-alternative animate-pulse rounded"></div>
-            ) : isAuthenticated ? (
+            {isAuthenticated ? (
               <div className="flex items-center gap-3">
                 <Link
                   href={type === 'homepage' ? '/user/profile' : '/company'}
