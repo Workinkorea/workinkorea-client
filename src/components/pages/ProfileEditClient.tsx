@@ -720,44 +720,50 @@ const ProfileEditClient: React.FC = () => {
             name="notifications.contactRequestNotifications"
             control={accountForm.control}
             label=""
-            render={(field, fieldId) => (
-              <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
-                <div>
-                  <span className="text-body-3 font-medium">SNS 메시지 알림</span>
-                  <p className="text-caption-2 text-label-500">중요한 활동을 SNS 메시지로 알림 받습니다</p>
-                </div>
-                <input
-                  {...field}
-                  id={fieldId}
-                  type="checkbox"
-                  checked={field.value}
-                  value=""
-                  className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
-                />
-              </label>
-            )}
+            render={(field, fieldId) => {
+              const { value, ...fieldWithoutValue } = field;
+              return (
+                <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
+                  <div>
+                    <span className="text-body-3 font-medium">SNS 메시지 알림</span>
+                    <p className="text-caption-2 text-label-500">중요한 활동을 SNS 메시지로 알림 받습니다</p>
+                  </div>
+                  <input
+                    {...fieldWithoutValue}
+                    id={fieldId}
+                    type="checkbox"
+                    checked={value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                    className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
+                  />
+                </label>
+              );
+            }}
           />
 
           <FormField
             name="notifications.emailNotifications"
             control={accountForm.control}
             label=""
-            render={(field, fieldId) => (
-              <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
-                <div>
-                  <span className="text-body-3 font-medium">이메일 알림</span>
-                  <p className="text-caption-2 text-label-500">중요한 활동을 이메일로 알림 받습니다</p>
-                </div>
-                <input
-                  {...field}
-                  id={fieldId}
-                  type="checkbox"
-                  checked={field.value}
-                  value=""
-                  className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
-                />
-              </label>
-            )}
+            render={(field, fieldId) => {
+              const { value, ...fieldWithoutValue } = field;
+              return (
+                <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
+                  <div>
+                    <span className="text-body-3 font-medium">이메일 알림</span>
+                    <p className="text-caption-2 text-label-500">중요한 활동을 이메일로 알림 받습니다</p>
+                  </div>
+                  <input
+                    {...fieldWithoutValue}
+                    id={fieldId}
+                    type="checkbox"
+                    checked={value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                    className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
+                  />
+                </label>
+              );
+            }}
           />
         </div>
       </div>
