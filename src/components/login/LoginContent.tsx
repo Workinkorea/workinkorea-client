@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { validatePassword } from '@/lib/utils/authNumber';
 import { useState } from 'react';
 import { GoogleIcon } from '@/components/ui/AccessibleIcon';
+import { API_BASE_URL } from '@/lib/api/client';
 
 export default function LoginContent() {
 
@@ -55,7 +56,7 @@ export default function LoginContent() {
     !errors.password;
 
   const handleGoogleLogin = () => {
-    window.location.href = '/api/auth/login/google';
+    window.location.href = `${API_BASE_URL}/api/auth/login/google`;
   };
 
   return (
