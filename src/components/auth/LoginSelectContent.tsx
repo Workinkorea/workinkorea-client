@@ -11,7 +11,6 @@ export default function LoginSelectContent() {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   return (

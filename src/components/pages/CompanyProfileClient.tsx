@@ -27,7 +27,6 @@ const CompanyProfileClient: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   // 기업 프로필 조회 (API 실패 시 mock 데이터 사용)

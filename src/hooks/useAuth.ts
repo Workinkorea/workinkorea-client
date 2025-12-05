@@ -209,8 +209,12 @@ export const useAuth = (options: UseAuthOptions = {}) => {
       }
     }
 
-    // 로그인 선택 페이지로 리디렉션
-    router.push('/login-select');
+    // 사용자 유형에 따라 적절한 로그인 페이지로 리디렉션
+    if (currentUserType === 'company') {
+      router.push('/company-login');
+    } else {
+      router.push('/login');
+    }
   };
 
   return {

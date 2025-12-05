@@ -33,7 +33,6 @@ const CompanyProfileEditClient: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   // 기존 프로필 조회

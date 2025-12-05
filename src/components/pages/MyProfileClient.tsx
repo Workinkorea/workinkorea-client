@@ -126,7 +126,6 @@ const MyProfileClient: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   const handleEditClick = () => {

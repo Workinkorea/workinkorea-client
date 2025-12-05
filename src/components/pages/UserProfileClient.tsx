@@ -41,7 +41,6 @@ const UserProfileClient: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   // 이력서 삭제 mutation

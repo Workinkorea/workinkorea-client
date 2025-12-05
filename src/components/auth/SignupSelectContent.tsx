@@ -11,7 +11,6 @@ export default function SignupSelectContent() {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   return (

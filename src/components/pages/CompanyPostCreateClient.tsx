@@ -20,7 +20,6 @@ const CompanyPostCreateClient: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   const createPostMutation = useMutation({

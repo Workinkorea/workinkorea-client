@@ -16,7 +16,6 @@ export default function MainPage() {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   return (

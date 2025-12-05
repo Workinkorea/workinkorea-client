@@ -24,7 +24,6 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   // 공고 데이터 로드
