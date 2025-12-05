@@ -23,7 +23,11 @@ function CallbackContent() {
 
       // 로그인 성공
       if (status === 'success' && token) {
-        login(token);
+        // localStorage에서 rememberMe 값 읽기
+        const rememberMe = localStorage.getItem('googleLoginRememberMe') === 'true';
+        // 임시 저장된 rememberMe 값 삭제
+        localStorage.removeItem('googleLoginRememberMe');
+        login(token, rememberMe);
         router.push('/');
         return;
       }

@@ -9,7 +9,7 @@ interface HeaderProps {
   onLogout?: () => void;
 }
 
-const Header = ({ type, isAuthenticated, isLoading, onLogout }: HeaderProps) => {
+const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
   const getNavigationItems = () => {
     if (type === 'homepage') {
       return [

@@ -1,53 +1,108 @@
 import { z } from 'zod';
 
+// 언어 스킬 검증 스키마 (기본 프로필용)
+export const languageSkillSchema = z.object({
+  language_type: z.string()
+    .max(30, '언어는 30글자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
+
+  level: z.string()
+    .max(50, '언어 수준은 50글자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
+});
+
 // 기본 프로필 정보 검증 스키마
 export const basicProfileSchema = z.object({
   profile_image_url: z.string()
-    .url('올바른 URL 형식을 입력해주세요.'),
+    .url('올바른 URL 형식을 입력해주세요.')
+    .optional()
+    .or(z.literal('')),
 
   location: z.string()
-    .min(1, '위치를 입력해주세요.')
-    .max(100, '위치는 100글자를 초과할 수 없습니다.'),
+    .max(100, '위치는 100글자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
 
   introduction: z.string()
-    .min(1, '소개를 입력해주세요.')
-    .max(500, '소개는 500글자를 초과할 수 없습니다.'),
+    .max(500, '소개는 500글자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
 
   address: z.string()
-    .min(1, '주소를 입력해주세요.')
-    .max(200, '주소는 200글자를 초과할 수 없습니다.'),
+    .max(200, '주소는 200글자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
 
   position_id: z.number()
-    .min(1, '직책을 선택해주세요.'),
+    .min(0, '직책을 선택해주세요.')
+    .optional(),
+
+  career: z.enum([
+    'NEWCOMER',
+    'YEAR_1_LESS',
+    'YEAR_1',
+    'YEAR_2_LESS',
+    'YEAR_2',
+    'YEAR_3_LESS',
+    'YEAR_3',
+    'YEAR_5_LESS',
+    'YEAR_5',
+    'YEAR_7_LESS',
+    'YEAR_7',
+    'YEAR_10_LESS',
+    'YEAR_10',
+    'YEAR_10_MORE'
+  ]).optional()
+    .or(z.literal('')),
 
   job_status: z.string()
-    .min(1, '직업 상태를 선택해주세요.'),
+    .optional()
+    .or(z.literal('')),
 
   portfolio_url: z.string()
-    .url('올바른 URL 형식을 입력해주세요.'),
+    .url('올바른 URL 형식을 입력해주세요.')
+    .optional()
+    .or(z.literal('')),
+
+  language_skills: z.array(languageSkillSchema).optional(),
+
+  name: z.string()
+    .max(50, '이름은 50글자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
 
   country_id: z.number()
-    .min(1, '국가를 선택해주세요.'),
+    .min(0, '국가를 선택해주세요.')
+    .optional(),
 });
 
 // 연락처 정보 검증 스키마
 export const contactInfoSchema = z.object({
-  user_id: z.number(),
+  user_id: z.number().optional(),
 
   phone_number: z.string()
-    .min(1, '전화번호를 입력해주세요.')
-    .max(20, '전화번호는 20자를 초과할 수 없습니다.'),
+    .max(20, '전화번호는 20자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
 
   github_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
-    .regex(/^https?:\/\/(www\.)?github\.com\/.*/, 'GitHub URL만 입력 가능합니다.'),
+    .regex(/^https?:\/\/(www\.)?github\.com\/.*/, 'GitHub URL만 입력 가능합니다.')
+    .optional()
+    .or(z.literal('')),
 
   linkedin_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
-    .regex(/^https?:\/\/(www\.)?linkedin\.com\/.*/, 'LinkedIn URL만 입력 가능합니다.'),
+    .regex(/^https?:\/\/(www\.)?linkedin\.com\/.*/, 'LinkedIn URL만 입력 가능합니다.')
+    .optional()
+    .or(z.literal('')),
 
   website_url: z.string()
-    .url('올바른 URL 형식을 입력해주세요.'),
+    .url('올바른 URL 형식을 입력해주세요.')
+    .optional()
+    .or(z.literal('')),
 });
 
 // 선호도 및 상태 검증 스키마

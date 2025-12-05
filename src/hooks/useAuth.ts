@@ -175,8 +175,8 @@ export const useAuth = (options: UseAuthOptions = {}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshAccessToken, isAuthPath, isProtectedPath]);
 
-  const login = (accessToken: string) => {
-    tokenManager.setAccessToken(accessToken);
+  const login = (accessToken: string, rememberMe: boolean = false) => {
+    tokenManager.setAccessToken(accessToken, rememberMe);
     setIsAuthenticated(true);
     scheduleTokenRefresh(); // 로그인 후 갱신 스케줄링
   };
@@ -209,12 +209,8 @@ export const useAuth = (options: UseAuthOptions = {}) => {
       }
     }
 
-    // 사용자 유형에 따라 적절한 로그인 페이지로 리디렉션
-    if (currentUserType === 'company') {
-      router.push('/company-login');
-    } else {
-      router.push('/login');
-    }
+    // 로그인 선택 페이지로 리디렉션
+    router.push('/login-select');
   };
 
   return {

@@ -79,22 +79,28 @@ export interface ProfileResponse {
   introduction: string;
   address: string;
   position_id: number;
+  career: string;
   job_status: string;
   portfolio_url: string;
+  language_skills: LanguageSkill[];
   birth_date: string;
   name: string;
   country_id: number;
+  created_at: string;
 }
 
 export interface ProfileUpdateRequest {
-  profile_image_url: string;
-  location: string;
-  introduction: string;
-  address: string;
-  position_id: number;
-  job_status: string;
-  portfolio_url: string;
-  country_id: number;
+  profile_image_url?: string;
+  location?: string;
+  introduction?: string;
+  address?: string;
+  position_id?: number;
+  career?: string;
+  job_status?: string;
+  portfolio_url?: string;
+  language_skills?: LanguageSkill[];
+  name?: string;
+  country_id?: number;
 }
 
 export interface ContactResponse {
@@ -167,8 +173,8 @@ export interface ResumeListResponse {
 }
 
 export interface LanguageSkill {
-  language_type: string;
-  level: string;
+  language_type?: string;
+  level?: string;
 }
 
 export interface School {

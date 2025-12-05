@@ -116,6 +116,13 @@ export default function LoginContent() {
     !errors.password;
 
   const handleGoogleLogin = () => {
+    // rememberMe 값을 localStorage에 임시 저장
+    const rememberMe = watch('rememberMe');
+    if (rememberMe) {
+      localStorage.setItem('googleLoginRememberMe', 'true');
+    } else {
+      localStorage.removeItem('googleLoginRememberMe');
+    }
     window.location.href = '/api/auth/login/google';
   };
 
@@ -146,19 +153,13 @@ export default function LoginContent() {
 
     try {
       const response = await authApi.login({
-        username: data.email,
+        email: data.email,
         password: data.password
       });
 
-      if (response.url) {
-        // URL에서 token 파싱
-        const url = new URL(response.url);
-        const token = url.searchParams.get('token');
-
-        if (token) {
-          // 자동로그인 체크박스에 따라 localStorage 또는 sessionStorage에 저장
-          tokenManager.setAccessToken(token, data.rememberMe);
-        }
+      if (response.success && response.token) {
+        // 자동로그인 체크박스에 따라 localStorage 또는 sessionStorage에 저장
+        tokenManager.setAccessToken(response.token, data.rememberMe);
 
         if (data.rememberMe) {
           localStorage.setItem(SAVED_EMAIL_KEY, data.email);

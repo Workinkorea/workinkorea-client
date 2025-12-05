@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -14,7 +14,9 @@ import {
   Settings,
   Camera,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Plus,
+  X
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -39,6 +41,30 @@ import { uploadFileToMinio } from '@/lib/api/minio';
 import type { ProfileUpdateRequest, ContactUpdateRequest, AccountConfigUpdateRequest } from '@/lib/api/types';
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
+
+// 경력 옵션 (API 스펙에 맞춤)
+const CAREER_OPTIONS = [
+  { key: 'NEWCOMER', label: '신입' },
+  { key: 'YEAR_1_LESS', label: '1년 이하' },
+  { key: 'YEAR_1', label: '1년' },
+  { key: 'YEAR_2_LESS', label: '2년 이하' },
+  { key: 'YEAR_2', label: '2년' },
+  { key: 'YEAR_3_LESS', label: '3년 이하' },
+  { key: 'YEAR_3', label: '3년' },
+  { key: 'YEAR_5_LESS', label: '5년 이하' },
+  { key: 'YEAR_5', label: '5년' },
+  { key: 'YEAR_7_LESS', label: '7년 이하' },
+  { key: 'YEAR_7', label: '7년' },
+  { key: 'YEAR_10_LESS', label: '10년 이하' },
+  { key: 'YEAR_10', label: '10년' },
+  { key: 'YEAR_10_MORE', label: '10년 이상' },
+] as const;
+
+// API response의 value를 key로 변환하는 함수
+const getCareerKeyFromValue = (value: string): string => {
+  const option = CAREER_OPTIONS.find(opt => opt.label === value);
+  return option?.key || 'NEWCOMER';
+};
 
 const ProfileEditClient: React.FC = () => {
   const router = useRouter();
@@ -111,17 +137,26 @@ const ProfileEditClient: React.FC = () => {
       location: '',
       introduction: '',
       address: '',
-      position_id: 0,
+      position_id: undefined,
+      career: undefined,
       job_status: '',
       portfolio_url: '',
-      country_id: 0,
+      language_skills: [],
+      name: '',
+      country_id: undefined,
     }
+  });
+
+  // language_skills 배열 필드 관리
+  const { fields: languageFields, append: appendLanguage, remove: removeLanguage } = useFieldArray({
+    control: basicForm.control,
+    name: 'language_skills'
   });
 
   const contactForm = useForm<ContactInfoForm>({
     resolver: zodResolver(contactInfoSchema),
     defaultValues: {
-      user_id: 0,
+      user_id: undefined,
       phone_number: '',
       github_url: '',
       linkedin_url: '',
@@ -164,15 +199,21 @@ const ProfileEditClient: React.FC = () => {
       // ProfileResponse에는 user_id가 없으므로 임의의 값 사용
       setUserId(1);
 
+      // career 값을 API response의 value(한글)에서 key(영문)로 변환
+      const careerKey = profile.career ? (getCareerKeyFromValue(profile.career) as 'NEWCOMER' | 'YEAR_1_LESS' | 'YEAR_1' | 'YEAR_2_LESS' | 'YEAR_2' | 'YEAR_3_LESS' | 'YEAR_3' | 'YEAR_5_LESS' | 'YEAR_5' | 'YEAR_7_LESS' | 'YEAR_7' | 'YEAR_10_LESS' | 'YEAR_10' | 'YEAR_10_MORE') : undefined;
+
       basicForm.reset({
         profile_image_url: profile.profile_image_url || '',
         location: profile.location || '',
         introduction: profile.introduction || '',
         address: profile.address || '',
-        position_id: profile.position_id || 0,
+        position_id: profile.position_id || undefined,
+        career: careerKey,
         job_status: profile.job_status || '',
         portfolio_url: profile.portfolio_url || '',
-        country_id: profile.country_id || 0,
+        language_skills: profile.language_skills || [],
+        name: profile.name || '',
+        country_id: profile.country_id || undefined,
       });
     }
 
@@ -217,7 +258,7 @@ const ProfileEditClient: React.FC = () => {
         // API 호출 실패 시 빈 폼 유지 (placeholder만 표시)
         if (activeSection === 'contact') {
           contactForm.reset({
-            user_id: userId,
+            user_id: undefined,
             phone_number: '',
             github_url: '',
             linkedin_url: '',
@@ -294,7 +335,7 @@ const ProfileEditClient: React.FC = () => {
           const formValues = contactForm.getValues();
           const contactData: ContactUpdateRequest = {
             ...formValues,
-            user_id: userId,
+            user_id: userId || undefined,
           };
           updateContactMutation.mutate(contactData);
         }
@@ -436,9 +477,24 @@ const ProfileEditClient: React.FC = () => {
 
       <div className="grid grid-cols-1 gap-6">
         <FormField
+          name="name"
+          control={basicForm.control}
+          label="이름"
+          error={basicForm.formState.errors.name?.message}
+          render={(field, fieldId) => (
+            <Input
+              {...field}
+              id={fieldId}
+              placeholder="이름을 입력하세요"
+              error={!!basicForm.formState.errors.name}
+            />
+          )}
+        />
+
+        <FormField
           name="location"
           control={basicForm.control}
-          label="위치 *"
+          label="위치"
           error={basicForm.formState.errors.location?.message}
           render={(field, fieldId) => (
             <Input
@@ -453,7 +509,7 @@ const ProfileEditClient: React.FC = () => {
         <FormField
           name="address"
           control={basicForm.control}
-          label="주소 *"
+          label="주소"
           error={basicForm.formState.errors.address?.message}
           render={(field, fieldId) => (
             <Input
@@ -468,7 +524,7 @@ const ProfileEditClient: React.FC = () => {
         <FormField
           name="introduction"
           control={basicForm.control}
-          label="소개 *"
+          label="소개"
           error={basicForm.formState.errors.introduction?.message}
           render={(field, fieldId) => (
             <div className="relative">
@@ -494,7 +550,7 @@ const ProfileEditClient: React.FC = () => {
         <FormField
           name="job_status"
           control={basicForm.control}
-          label="구직 상태 *"
+          label="구직 상태"
           error={basicForm.formState.errors.job_status?.message}
           render={(field, fieldId) => (
             <select
@@ -515,9 +571,34 @@ const ProfileEditClient: React.FC = () => {
         />
 
         <FormField
+          name="career"
+          control={basicForm.control}
+          label="경력"
+          error={basicForm.formState.errors.career?.message}
+          render={(field, fieldId) => (
+            <select
+              {...field}
+              id={fieldId}
+              className={cn(
+                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary",
+                basicForm.formState.errors.career && "border-status-error focus:ring-status-error"
+              )}
+            >
+              <option value="">경력을 선택하세요</option>
+              {CAREER_OPTIONS.map((option) => (
+                <option key={option.key} value={option.key}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          )}
+        />
+
+        <FormField
           name="portfolio_url"
           control={basicForm.control}
-          label="포트폴리오 URL *"
+          label="포트폴리오 URL"
           error={basicForm.formState.errors.portfolio_url?.message}
           render={(field, fieldId) => (
             <Input
@@ -532,7 +613,7 @@ const ProfileEditClient: React.FC = () => {
         <FormField
           name="position_id"
           control={basicForm.control}
-          label="직책 ID *"
+          label="직책 ID"
           error={basicForm.formState.errors.position_id?.message}
           render={(field, fieldId) => (
             <Input
@@ -549,7 +630,7 @@ const ProfileEditClient: React.FC = () => {
         <FormField
           name="country_id"
           control={basicForm.control}
-          label="국가 ID *"
+          label="국가 ID"
           error={basicForm.formState.errors.country_id?.message}
           render={(field, fieldId) => (
             <Input
@@ -562,6 +643,72 @@ const ProfileEditClient: React.FC = () => {
             />
           )}
         />
+
+        {/* 언어 스킬 */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="text-caption-2 font-medium text-label-900">언어 스킬</label>
+            <button
+              type="button"
+              onClick={() => appendLanguage({ language_type: '', level: '' })}
+              className="flex items-center gap-1 text-primary-500 hover:text-primary-600 text-caption-2 cursor-pointer"
+            >
+              <Plus size={16} />
+              <span>추가</span>
+            </button>
+          </div>
+
+          {languageFields.length === 0 && (
+            <p className="text-caption-2 text-label-400">언어 스킬을 추가해주세요</p>
+          )}
+
+          <div className="space-y-3">
+            {languageFields.map((field, index) => (
+              <div key={field.id} className="border border-line-200 rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-caption-2 font-medium text-label-700">언어 {index + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeLanguage(index)}
+                    className="text-status-error hover:text-status-error/80 cursor-pointer"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <FormField
+                  name={`language_skills.${index}.language_type`}
+                  control={basicForm.control}
+                  label="언어"
+                  error={basicForm.formState.errors.language_skills?.[index]?.language_type?.message}
+                  render={(field, fieldId) => (
+                    <Input
+                      {...field}
+                      id={fieldId}
+                      placeholder="예: 영어, 한국어"
+                      error={!!basicForm.formState.errors.language_skills?.[index]?.language_type}
+                    />
+                  )}
+                />
+
+                <FormField
+                  name={`language_skills.${index}.level`}
+                  control={basicForm.control}
+                  label="수준"
+                  error={basicForm.formState.errors.language_skills?.[index]?.level?.message}
+                  render={(field, fieldId) => (
+                    <Input
+                      {...field}
+                      id={fieldId}
+                      placeholder="예: 원어민, 고급, 중급, 초급"
+                      error={!!basicForm.formState.errors.language_skills?.[index]?.level}
+                    />
+                  )}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -571,7 +718,7 @@ const ProfileEditClient: React.FC = () => {
       <FormField
         name="phone_number"
         control={contactForm.control}
-        label="전화번호 *"
+        label="전화번호"
         error={contactForm.formState.errors.phone_number?.message}
         render={(field, fieldId) => (
           <Input
@@ -587,7 +734,7 @@ const ProfileEditClient: React.FC = () => {
       <FormField
         name="github_url"
         control={contactForm.control}
-        label="GitHub URL *"
+        label="GitHub URL"
         error={contactForm.formState.errors.github_url?.message}
         render={(field, fieldId) => (
           <Input
@@ -602,7 +749,7 @@ const ProfileEditClient: React.FC = () => {
       <FormField
         name="linkedin_url"
         control={contactForm.control}
-        label="LinkedIn URL *"
+        label="LinkedIn URL"
         error={contactForm.formState.errors.linkedin_url?.message}
         render={(field, fieldId) => (
           <Input
@@ -617,7 +764,7 @@ const ProfileEditClient: React.FC = () => {
       <FormField
         name="website_url"
         control={contactForm.control}
-        label="웹사이트 URL *"
+        label="웹사이트 URL"
         error={contactForm.formState.errors.website_url?.message}
         render={(field, fieldId) => (
           <Input

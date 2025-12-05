@@ -146,14 +146,16 @@ const UserProfileClient: React.FC = () => {
       };
 
       // language_skills를 UserSkill 형태로 변환
-      const languageSkills: UserSkill[] = response.resume.language_skills.map((lang, index) => ({
-        id: `lang-${index}`,
-        name: lang.language_type,
-        level: proficiencyToLevel(lang.level),
-        average: 50, // 언어 스킬의 업계 평균 (기본값)
-        category: 'language' as const,
-        description: `${lang.language_type} - ${lang.level}`
-      }));
+      const languageSkills: UserSkill[] = response.resume.language_skills
+        .filter(lang => lang.language_type && lang.level)
+        .map((lang, index) => ({
+          id: `lang-${index}`,
+          name: lang.language_type || '',
+          level: proficiencyToLevel(lang.level || ''),
+          average: 50, // 언어 스킬의 업계 평균 (기본값)
+          category: 'language' as const,
+          description: `${lang.language_type} - ${lang.level}`
+        }));
 
       // Resume, Profile, Contact 데이터를 UserProfile 형태로 변환
       const profile: UserProfile = {
@@ -177,10 +179,12 @@ const UserProfileClient: React.FC = () => {
           startDate: school.start_date,
           endDate: school.end_date
         })),
-        languages: response.resume.language_skills.map(lang => ({
-          name: lang.language_type,
-          proficiency: lang.level as 'native' | 'advanced' | 'intermediate' | 'beginner'
-        })),
+        languages: response.resume.language_skills
+          .filter(lang => lang.language_type && lang.level)
+          .map(lang => ({
+            name: lang.language_type || '',
+            proficiency: (lang.level as 'native' | 'advanced' | 'intermediate' | 'beginner') || 'beginner'
+          })),
         githubUrl: contactData?.github_url,
         linkedinUrl: contactData?.linkedin_url,
         portfolioUrl: contactData?.website_url || profileData?.portfolio_url,
