@@ -9,14 +9,71 @@ import { toast } from 'sonner';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import UserProfileHeader from '@/components/user/UserProfileHeader';
-import ProfileStats from '@/components/user/ProfileStats';
 import SkillBarChart from '@/components/user/SkillBarChart';
 import RadarChart from '@/components/ui/RadarChart';
 import ResumeSection from '@/components/user/ResumeSection';
-import { UserProfile, ProfileStatistics, SkillStats, RadarChartData, Resume, ResumeStatistics } from '@/types/user';
+import { UserProfile, RadarChartData, Resume } from '@/types/user';
 import { profileApi } from '@/lib/api/profile';
 import { resumeApi } from '@/lib/api/resume';
 import { useAuth } from '@/hooks/useAuth';
+
+// Mock data for dashboard, skill management, and career management
+const mockMyProfile: UserProfile = {
+  id: 'me',
+  name: '이지은',
+  email: 'jieun.lee@example.com',
+  profileImage: undefined,
+  position: 'UX/UI 디자이너 & 프론트엔드 개발자',
+  location: '서울, 한국',
+  introduction: '사용자 경험에 중점을 둔 디자인과 개발을 동시에 하는 3년차 전문가입니다. 디자인과 코드 사이의 간극을 줄이는 것이 저의 목표입니다.',
+  experience: 3,
+  completedProjects: 8,
+  certifications: ['Adobe Certified Expert', 'Google UX Design'],
+  job_status: 'available',
+  skills: [
+    { id: '1', name: 'Figma', level: 95, average: 75, category: 'technical', description: 'UI/UX 디자인 툴의 고급 기능 활용' },
+    { id: '2', name: 'React', level: 75, average: 70, category: 'technical' },
+    { id: '3', name: 'CSS/SCSS', level: 90, average: 65, category: 'technical' },
+    { id: '4', name: 'JavaScript', level: 80, average: 70, category: 'technical' },
+    { id: '5', name: '사용자 연구', level: 85, average: 60, category: 'soft' },
+    { id: '6', name: '프로토타이핑', level: 90, average: 55, category: 'soft' },
+    { id: '7', name: '영어', level: 70, average: 55, category: 'language' },
+    { id: '8', name: '중국어', level: 50, average: 30, category: 'language' }
+  ],
+  education: [
+    {
+      id: '1',
+      institution: '홍익대학교',
+      degree: '학사',
+      field: '시각디자인학',
+      startDate: '2017-03',
+      endDate: '2021-02'
+    }
+  ],
+  languages: [
+    { name: '한국어', proficiency: 'native' },
+    { name: '영어', proficiency: 'intermediate' },
+    { name: '중국어', proficiency: 'beginner' }
+  ],
+  githubUrl: 'https://github.com/leejieun',
+  linkedinUrl: 'https://linkedin.com/in/leejieun',
+  portfolioUrl: 'https://leejieun.design',
+  preferredSalary: {
+    min: 4500,
+    max: 6000,
+    currency: '만원'
+  },
+  createdAt: '2023-06-15T00:00:00Z',
+  updatedAt: '2024-01-20T00:00:00Z'
+};
+
+const mockMySkillStats = {
+  totalSkills: 8,
+  aboveAverageSkills: 7,
+  topSkillCategory: 'technical',
+  overallScore: 78,
+  industryRanking: 88
+};
 
 const MyProfileClient: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience' | 'resume'>('overview');
@@ -38,31 +95,26 @@ const MyProfileClient: React.FC = () => {
     enabled: isAuthenticated,
   });
 
-  // 프로필과 연락처 데이터 병합
+  // 프로필과 연락처 데이터 병합 (API 데이터가 없으면 mock 데이터 사용)
   const profile: UserProfile | undefined = profileData ? {
+    ...mockMyProfile, // 기본값으로 mock 데이터 사용
     id: 'me',
-    name: profileData.name || '',
-    email: '', // 이메일은 별도 API나 auth에서 가져와야 함
+    name: profileData.name || mockMyProfile.name,
+    email: mockMyProfile.email, // 이메일은 별도 API나 auth에서 가져와야 함
     profileImage: profileData.profile_image_url || undefined,
-    position: '', // position은 position_id를 매핑해야 함
-    location: profileData.location || '',
-    introduction: profileData.introduction || '',
-    experience: 0, // career 필드에서 계산 가능
-    completedProjects: 0,
-    certifications: [],
+    position: mockMyProfile.position, // position은 position_id를 매핑해야 함
+    location: profileData.location || mockMyProfile.location,
+    introduction: profileData.introduction || mockMyProfile.introduction,
     job_status: (profileData.job_status as 'available' | 'busy' | 'not-looking') || 'available',
-    skills: [],
-    education: [],
     languages: profileData.language_skills
       ?.filter(skill => skill.language_type && skill.level)
       .map(skill => ({
         name: skill.language_type || '',
         proficiency: (skill.level as 'native' | 'advanced' | 'intermediate' | 'beginner') || 'beginner'
-      })) || [],
-    githubUrl: contactData?.github_url,
-    linkedinUrl: contactData?.linkedin_url,
-    portfolioUrl: contactData?.website_url || profileData.portfolio_url,
-    preferredSalary: undefined,
+      })) || mockMyProfile.languages,
+    githubUrl: contactData?.github_url || mockMyProfile.githubUrl,
+    linkedinUrl: contactData?.linkedin_url || mockMyProfile.linkedinUrl,
+    portfolioUrl: contactData?.website_url || profileData.portfolio_url || mockMyProfile.portfolioUrl,
     createdAt: profileData.created_at || new Date().toISOString(),
     updatedAt: profileData.created_at || new Date().toISOString()
   } : undefined;
@@ -141,25 +193,17 @@ const MyProfileClient: React.FC = () => {
     const softSkills = skills.filter(s => s.category === 'soft');
 
     return {
-      technical: technicalSkills.length > 0 
+      technical: technicalSkills.length > 0
         ? Math.round(technicalSkills.reduce((sum, s) => sum + s.level, 0) / technicalSkills.length)
         : 0,
-      communication: 75, // 소통 능력 (별도 측정 또는 계산)
-      problemSolving: 82,
-      teamwork: 78,
-      leadership: softSkills.length > 0 
+      communication: 0,
+      problemSolving: 0,
+      teamwork: 0,
+      leadership: softSkills.length > 0
         ? Math.round(softSkills.reduce((sum, s) => sum + s.level, 0) / softSkills.length)
-        : 65
+        : 0
     };
   };
-
-  const generateAverageRadarData = (): RadarChartData => ({
-    technical: 65,
-    communication: 60,
-    problemSolving: 65,
-    teamwork: 70,
-    leadership: 55
-  });
 
   if (authLoading || isLoading) {
     return (
@@ -233,25 +277,6 @@ const MyProfileClient: React.FC = () => {
   }
 
   const radarData = generateRadarData(profile.skills);
-  const averageRadarData = generateAverageRadarData();
-
-  // 빈 통계 데이터 (API가 제공될 때까지)
-  const statistics: ProfileStatistics = {
-    profileViews: 0,
-    contactRequests: 0,
-    skillEndorsements: 0,
-    averageRating: 0
-  };
-
-  const skillStats: SkillStats = {
-    totalSkills: profile.skills.length,
-    aboveAverageSkills: 0,
-    topSkillCategory: 'technical',
-    overallScore: 0,
-    industryRanking: 0
-  };
-
-  const resumeStatistics: { [resumeId: string]: ResumeStatistics } = {};
 
   return (
     <Layout>
@@ -335,36 +360,7 @@ const MyProfileClient: React.FC = () => {
           <div className="space-y-6">
             {activeTab === 'overview' && (
               <>
-                {/* 성과 요약 배너 - 데이터가 있을 때만 표시 */}
-                {skillStats.overallScore > 0 && (
-                  <motion.div
-                    className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg p-6 text-white"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-title-4 font-bold mb-2">
-                          축하합니다! 🎉
-                        </h3>
-                        <p className="text-body-3 opacity-90">
-                          동일 경력 대비 상위 {100 - skillStats.industryRanking}%에 위치하고 있습니다.
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-title-2 font-bold">
-                          {skillStats.overallScore}점
-                        </div>
-                        <div className="text-caption-2 opacity-75">
-                          종합 점수
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6">
                   {/* 레이더 차트 */}
                   <motion.div 
                     className="bg-white rounded-lg p-6 shadow-normal"
@@ -384,20 +380,12 @@ const MyProfileClient: React.FC = () => {
                       </button>
                     </div>
                     <div className="flex justify-center">
-                      <RadarChart 
+                      <RadarChart
                         data={radarData}
-                        averageData={averageRadarData}
                         size={350}
                       />
                     </div>
                   </motion.div>
-
-                  {/* 통계 */}
-                  <ProfileStats
-                    profile={profile}
-                    statistics={statistics}
-                    skillStats={skillStats}
-                  />
                 </div>
               </>
             )}
@@ -525,7 +513,7 @@ const MyProfileClient: React.FC = () => {
                 ) : (
                   <ResumeSection
                     resumes={resumesData || []}
-                    resumeStatistics={resumeStatistics}
+                    resumeStatistics={{}}
                     onUploadResume={async (file) => {
                       try {
                         const response = await resumeApi.uploadResumeFile(file);

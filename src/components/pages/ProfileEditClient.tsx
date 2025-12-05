@@ -203,17 +203,20 @@ const ProfileEditClient: React.FC = () => {
       const careerKey = profile.career ? (getCareerKeyFromValue(profile.career) as 'NEWCOMER' | 'YEAR_1_LESS' | 'YEAR_1' | 'YEAR_2_LESS' | 'YEAR_2' | 'YEAR_3_LESS' | 'YEAR_3' | 'YEAR_5_LESS' | 'YEAR_5' | 'YEAR_7_LESS' | 'YEAR_7' | 'YEAR_10_LESS' | 'YEAR_10' | 'YEAR_10_MORE') : undefined;
 
       basicForm.reset({
-        profile_image_url: profile.profile_image_url || '',
-        location: profile.location || '',
-        introduction: profile.introduction || '',
-        address: profile.address || '',
-        position_id: profile.position_id || undefined,
+        profile_image_url: profile.profile_image_url ?? '',
+        location: profile.location ?? '',
+        introduction: profile.introduction ?? '',
+        address: profile.address ?? '',
+        position_id: profile.position_id ?? undefined,
         career: careerKey,
-        job_status: profile.job_status || '',
-        portfolio_url: profile.portfolio_url || '',
-        language_skills: profile.language_skills || [],
-        name: profile.name || '',
-        country_id: profile.country_id || undefined,
+        job_status: profile.job_status ?? '',
+        portfolio_url: profile.portfolio_url ?? '',
+        language_skills: (profile.language_skills ?? []).map(skill => ({
+          language_type: skill.language_type ?? '',
+          level: skill.level ?? '',
+        })),
+        name: profile.name ?? '',
+        country_id: profile.country_id ?? undefined,
       });
     }
 
@@ -241,10 +244,16 @@ const ProfileEditClient: React.FC = () => {
     const fetchSectionData = async () => {
       try {
         if (activeSection === 'contact') {
-          const contactData = await apiClient.get('/api/contact');
+          const contactData = await apiClient.get('/api/contact') as ContactInfoForm;
           console.log('연락처 데이터:', contactData);
           if (contactData) {
-            contactForm.reset(contactData as ContactInfoForm);
+            contactForm.reset({
+              user_id: contactData.user_id ?? undefined,
+              phone_number: contactData.phone_number ?? '',
+              github_url: contactData.github_url ?? '',
+              linkedin_url: contactData.linkedin_url ?? '',
+              website_url: contactData.website_url ?? '',
+            });
           }
         } else if (activeSection === 'account') {
           const accountData = await apiClient.get('/api/account-config');
