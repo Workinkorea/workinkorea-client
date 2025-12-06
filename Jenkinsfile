@@ -41,6 +41,7 @@ pipeline {
                 echo "COLOR: ${env.COLOR}, NEW_COLOR: ${env.NEW_COLOR}"
             }
         }
+
         stage("Docker build") {
             // docker image build
             steps {
@@ -71,7 +72,7 @@ pipeline {
                     
                     sh """
                     docker build \
-                      --build-arg NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL}-${env.SERVER_COLOR}:8000 \
+                      --build-arg NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} \
                       -t ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} .
                     """
                 }
@@ -162,6 +163,36 @@ pipeline {
     }
 
     post {
+        always {
+            script {
+                // GitHub Checks 발행
+                def checkStatus = currentBuild.result ?: 'SUCCESS'
+                def checkConclusion = checkStatus == 'SUCCESS' ? 'SUCCESS' : 'FAILURE'
+                
+                publishChecks(
+                    name: 'Workinkorea Client Deployment',
+                    title: 'Docker Build & Deployment Check',
+                    summary: "Deployment ${checkConclusion} for ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}",
+                    text: """
+                        ## Deployment Details
+                        - **Container**: ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}
+                        - **Status**: ${checkConclusion}
+                        - **Build Number**: ${env.BUILD_NUMBER}
+                        - **Branch**: ${env.BRANCH_NAME ?: 'N/A'}
+                        
+                        ### Stages Completed
+                        - Docker Container Check
+                        - Docker Build
+                        - Docker Run
+                        - Health Check & Traefik Switch
+                        - Traefik Test
+                    """,
+                    conclusion: checkConclusion,
+                    detailsURL: "${env.BUILD_URL}"
+                )
+            }
+        }
+        
         success {
             echo "Deployment successful"
             script{
@@ -179,6 +210,7 @@ pipeline {
                   result: currentBuild.currentResult
             echo "old container : ${env.DOCKER_IMAGE_NAME}-${env.COLOR} stopped"
         }
+
         failure {
             echo "Deployment failed"
             script{

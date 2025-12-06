@@ -74,6 +74,7 @@ export interface CompanyLoginResponse {
 }
 
 export interface ProfileResponse {
+  user_id: number;
   profile_image_url: string;
   location: string;
   introduction: string;
@@ -126,9 +127,9 @@ export interface AccountConfigResponse {
 }
 
 export interface AccountConfigUpdateRequest {
-  user_id: number;
-  sns_message_notice: boolean;
-  email_notice: boolean;
+  user_id?: number;
+  sns_message_notice?: boolean;
+  email_notice?: boolean;
 }
 
 export interface CompanyProfileResponse {

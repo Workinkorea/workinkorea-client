@@ -83,14 +83,14 @@ const MyProfileClient: React.FC = () => {
   const router = useRouter();
 
   // 프로필 데이터 조회
-  const { data: profileData, isLoading: profileLoading, error: profileError } = useQuery({
+  const { data: profileData } = useQuery({
     queryKey: ['profile'],
     queryFn: () => profileApi.getProfile(),
     enabled: isAuthenticated,
   });
 
   // 연락처 데이터 조회
-  const { data: contactData, isLoading: contactLoading } = useQuery({
+  const { data: contactData } = useQuery({
     queryKey: ['contact'],
     queryFn: () => profileApi.getContact(),
     enabled: isAuthenticated,
@@ -230,7 +230,7 @@ const MyProfileClient: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (error || !profile) {
     return (
       <Layout>
       <Header
@@ -247,30 +247,6 @@ const MyProfileClient: React.FC = () => {
             <p className="text-body-3 text-label-500">
               잠시 후 다시 시도해주세요.
             </p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-        <div className="min-h-screen bg-background-alternative py-8">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="animate-pulse space-y-6">
-              <div className="bg-white rounded-lg h-64"></div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg h-96"></div>
-                <div className="bg-white rounded-lg h-96"></div>
-              </div>
-            </div>
           </div>
         </div>
       </Layout>

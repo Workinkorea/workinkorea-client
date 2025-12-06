@@ -67,7 +67,7 @@ export default function AdminCompaniesPage() {
 
   useEffect(() => {
     fetchCompanies();
-  }, [page, fetchCompanies]);
+  }, [fetchCompanies]);
 
   function openCreateModal() {
     setEditingCompany(null);
