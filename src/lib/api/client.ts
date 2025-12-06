@@ -4,7 +4,6 @@ import axios, {
   AxiosRequestConfig,
 } from "axios";
 import { tokenManager } from "../utils/tokenManager";
-import { ApiErrorResponse } from "./types";
 
 export interface ApiRequestOptions extends AxiosRequestConfig {
   // 커스텀 플래그: 이 옵션이 true면 Authorization 토큰을 붙이지 않음
@@ -121,7 +120,7 @@ async function refreshToken(): Promise<string> {
 api.interceptors.response.use(
   (res) => res,
   async (error: AxiosError) => {
-    const originalConfig = error.config as any;
+    const originalConfig = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
     // If refresh endpoint itself failed → don't retry, just fail
     // (refreshToken() already handles logout and redirect)

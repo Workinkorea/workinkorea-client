@@ -24,7 +24,7 @@ export const authApi = {
   async login(data: LoginRequest): Promise<LoginResponse> {
     return apiClient.post<LoginResponse>('/api/auth/login', data, {
       skipAuth: true,
-      credentials: 'include'
+      withCredentials: true
     });
   },
 
@@ -46,13 +46,11 @@ export const authApi = {
     formData.append('username', data.username);
     formData.append('password', data.password);
 
-    return apiClient.request<CompanyLoginResponse>('/api/auth/company/login', {
-      method: 'POST',
-      body: formData.toString(),
+    return apiClient.post<CompanyLoginResponse>('/api/auth/company/login', formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      credentials: 'include',
+      withCredentials: true,
       skipAuth: true,
     });
   },

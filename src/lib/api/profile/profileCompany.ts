@@ -3,20 +3,14 @@ import { CompanyProfileResponse, CompanyProfileRequest } from "../types";
 
 export const profileApi = {
   async getProfileCompany(): Promise<CompanyProfileResponse> {
-    return apiClient.get<CompanyProfileResponse>('/api/company-profile', {
-      tokenType: 'company',
-    });
+    return apiClient.get<CompanyProfileResponse>('/api/company-profile');
   },
 
   async createProfileCompany(data: CompanyProfileRequest): Promise<CompanyProfileResponse> {
-    return apiClient.post<CompanyProfileResponse>('/api/company-profile', data, {
-      tokenType: 'company',
-    });
+    return apiClient.post<CompanyProfileResponse>('/api/company-profile', data);
   },
 
   async updateProfileCompany(data: CompanyProfileRequest): Promise<CompanyProfileResponse> {
-    return apiClient.put<CompanyProfileResponse>('/api/company-profile', data, {
-      tokenType: 'company',
-    });
+    return apiClient.put<CompanyProfileResponse>('/api/company-profile', data);
   },
 };
