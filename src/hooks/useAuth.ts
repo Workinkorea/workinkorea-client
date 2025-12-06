@@ -45,25 +45,12 @@ export const useAuth = (options: UseAuthOptions = {}) => {
         return;
       }
 
-      // 어떤 타입의 토큰이 있는지 확인
-      const hasUserToken = tokenManager.getAccessToken();
-      const hasCompanyToken = tokenManager.getCompanyAccessToken();
+      // 토큰 확인 (단일 토큰)
+      const hasToken = tokenManager.hasToken();
+      const isValid = tokenManager.isTokenValid();
+      const currentTokenType = tokenManager.getUserType();
 
-      let currentTokenType: TokenType | null = null;
-      let hasValidToken = false;
-
-      // 개인 토큰 먼저 확인
-      if (hasUserToken && tokenManager.isTokenValid('user')) {
-        currentTokenType = 'user';
-        hasValidToken = true;
-      }
-      // 개인 토큰이 없거나 유효하지 않으면 기업 토큰 확인
-      else if (hasCompanyToken && tokenManager.isTokenValid('company')) {
-        currentTokenType = 'company';
-        hasValidToken = true;
-      }
-
-      if (hasValidToken && currentTokenType) {
+      if (hasToken && isValid && currentTokenType) {
         // 유효한 토큰이 있으면 인증 상태 설정
         setIsAuthenticated(true);
         setUserType(currentTokenType);
@@ -80,7 +67,7 @@ export const useAuth = (options: UseAuthOptions = {}) => {
     checkAuth();
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'accessToken' || e.key === 'companyAccessToken') {
+      if (e.key === 'accessToken') {
         checkAuth();
       }
     };
@@ -93,19 +80,25 @@ export const useAuth = (options: UseAuthOptions = {}) => {
   }, [pathname, isAuthPath, isProtectedPath]);
 
   const login = (accessToken: string, rememberMe: boolean = false) => {
-    tokenManager.setAccessToken(accessToken, rememberMe);
+    tokenManager.setToken(accessToken, rememberMe);
+    const userType = tokenManager.getUserType();
     setIsAuthenticated(true);
-    setUserType('user');
+    setUserType(userType);
   };
 
   const logout = async () => {
-    tokenManager.removeAccessToken();
+    const currentUserType = tokenManager.getUserType();
+    tokenManager.removeToken();
     setIsAuthenticated(false);
     setUserType(null);
 
     if (typeof window !== 'undefined') {
       try {
-        await apiClient.delete(`/api/auth/logout`);
+        // 사용자 타입에 따라 적절한 로그아웃 엔드포인트 호출
+        const endpoint = currentUserType === 'company'
+          ? '/api/auth/company/logout'
+          : '/api/auth/logout';
+        await apiClient.delete(endpoint);
       } catch (err) {
         console.error('Logout failed:', err);
       }

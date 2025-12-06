@@ -14,8 +14,6 @@ export interface ApiRequestOptions extends AxiosRequestConfig {
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-type TokenType = "user" | "company";
-
 let isRefreshing = false;
 let refreshQueue: {
   resolve: (token: string) => void;
@@ -39,17 +37,9 @@ const api = axios.create({
   timeout: 3000,
 });
 
-// Select valid token automatically
-function getValidToken(): { token: string | null; type: TokenType | null } {
-  const userToken = tokenManager.getToken("user");
-  const companyToken = tokenManager.getToken("company");
-
-  if (userToken && tokenManager.isTokenValid("user"))
-    return { token: userToken, type: "user" };
-  if (companyToken && tokenManager.isTokenValid("company"))
-    return { token: companyToken, type: "company" };
-
-  return { token: null, type: null };
+// Get token (단일 토큰 사용)
+function getToken(): string | null {
+  return tokenManager.getToken();
 }
 
 // Automatically attach token
@@ -57,7 +47,7 @@ api.interceptors.request.use(
   (config: InternalAxiosRequestConfig & { skipAuth?: boolean }) => {
     if (config.skipAuth) return config;
 
-    const { token } = getValidToken();
+    const token = getToken();
     if (token) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
@@ -67,27 +57,27 @@ api.interceptors.request.use(
 );
 
 // Refresh token
-async function refreshToken(): Promise<{ token: string; type: TokenType }> {
-  // 만료 여부와 상관없이 어떤 타입의 토큰이 저장되어 있는지 확인
-  const userToken = tokenManager.getToken("user");
-  const companyToken = tokenManager.getToken("company");
+async function refreshToken(): Promise<string> {
+  // 현재 토큰 가져오기
+  const currentToken = getToken();
 
-  // 우선순위: user > company
-  const type: TokenType | null = userToken
-    ? "user"
-    : companyToken
-    ? "company"
-    : null;
-
-  if (!type) {
+  if (!currentToken) {
     console.error("[apiClient] No token found for refresh");
-    throw new Error("No token type for refresh");
+    throw new Error("No token for refresh");
+  }
+
+  // JWT에서 사용자 타입 추출
+  const userType = tokenManager.getUserType();
+
+  if (!userType) {
+    console.error("[apiClient] Cannot determine user type from token");
+    throw new Error("Invalid token: cannot determine user type");
   }
 
   const endpoint =
-    type === "company" ? "/api/auth/company/refresh" : "/api/auth/refresh";
+    userType === "company" ? "/api/auth/company/refresh" : "/api/auth/refresh";
 
-  console.log(`[apiClient] Starting refresh for ${type} token`);
+  console.log(`[apiClient] Starting refresh for ${userType} token`);
 
   try {
     const response = await api.post(
@@ -106,20 +96,20 @@ async function refreshToken(): Promise<{ token: string; type: TokenType }> {
       throw new Error("Missing token during refresh");
     }
 
-    const rememberMe = tokenManager.isTokenInLocalStorage(type);
-    tokenManager.setToken(newToken, type, rememberMe);
+    const rememberMe = tokenManager.isTokenInLocalStorage();
+    tokenManager.setToken(newToken, rememberMe);
 
-    console.log(`[apiClient] Refresh successful for ${type} token`);
-    return { token: newToken, type };
+    console.log(`[apiClient] Refresh successful for ${userType} token`);
+    return newToken;
   } catch (err) {
-    console.error(`[apiClient] Refresh failed for ${type} token:`, err);
+    console.error(`[apiClient] Refresh failed for ${userType} token:`, err);
 
     // 토큰 제거
-    tokenManager.removeToken(type);
+    tokenManager.removeToken();
 
     // 로그인 페이지로 리다이렉트
     if (typeof window !== "undefined") {
-      const loginPath = type === "company" ? "/company-login" : "/login";
+      const loginPath = userType === "company" ? "/company-login" : "/login";
       console.log(`[apiClient] Redirecting to ${loginPath}`);
       window.location.href = loginPath;
     }
@@ -168,7 +158,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { token } = await refreshToken();
+        const token = await refreshToken();
         processQueue(null, token);
         isRefreshing = false;
 
