@@ -21,6 +21,7 @@ export const useAuth = (options: UseAuthOptions = {}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userType, setUserType] = useState<TokenType | null>(null);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isRefreshingRef = useRef<boolean>(false); // refresh 중복 방지
 
   // 현재 경로가 인증 페이지인지 확인
   const isAuthPath = AUTH_PATHS.some(path => pathname?.startsWith(path));
@@ -35,21 +36,38 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
   // 토큰 갱신 함수
   const refreshAccessToken = useCallback(async () => {
+    // 이미 refresh 중이면 중복 호출 방지
+    if (isRefreshingRef.current) {
+      console.log('[useAuth] Already refreshing, skipping');
+      return false;
+    }
+
+    isRefreshingRef.current = true;
+
     try {
+      console.log('[useAuth] Starting token refresh');
+      // 원래 토큰이 어디에 저장되어 있었는지 확인
+      const rememberMe = tokenManager.isTokenInLocalStorage('user');
+
       const response = await authApi.refreshToken();
       const accessToken = response.accessToken;
 
       if (accessToken) {
-        tokenManager.setAccessToken(accessToken);
+        console.log('[useAuth] Token refresh successful');
+        // 같은 저장소에 새 토큰 저장
+        tokenManager.setAccessToken(accessToken, rememberMe);
         setIsAuthenticated(true);
         scheduleTokenRefreshRef.current?.();
         return true;
       }
       return false;
-    } catch {
+    } catch (error) {
+      console.error('[useAuth] Token refresh failed:', error);
       tokenManager.removeAccessToken();
       setIsAuthenticated(false);
       return false;
+    } finally {
+      isRefreshingRef.current = false;
     }
   }, []);
 
