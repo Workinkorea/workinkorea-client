@@ -46,6 +46,13 @@ export const apiClient = {
     const { skipAuth, tokenType = 'user', ...fetchOptions } = options;
 
     const accessToken = tokenManager.getToken(tokenType);
+    console.log('[DEBUG] Request start:', {
+      endpoint,
+      hasToken: !!accessToken,
+      tokenPreview: accessToken ? `${accessToken.substring(0, 20)}...` : 'none',
+      skipAuth,
+      tokenType
+    });
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -153,10 +160,24 @@ export const apiClient = {
 
         refreshPromises[tokenType] = (async () => {
           try {
+            console.log('[DEBUG] Calling refreshAccessToken');
             const newAccessToken = await refreshAccessToken(tokenType);
+            console.log('[DEBUG] Got new access token:', {
+              tokenPreview: `${newAccessToken.substring(0, 20)}...`,
+              length: newAccessToken.length
+            });
             // 원래 토큰이 localStorage에 있었는지 확인하여 같은 곳에 저장
             const rememberMe = tokenManager.isTokenInLocalStorage(tokenType);
+            console.log('[DEBUG] Saving token:', { tokenType, rememberMe });
             tokenManager.setToken(newAccessToken, tokenType, rememberMe);
+
+            // 저장 확인
+            const savedToken = tokenManager.getToken(tokenType);
+            console.log('[DEBUG] Token saved successfully:', {
+              saved: savedToken === newAccessToken,
+              savedTokenPreview: savedToken ? `${savedToken.substring(0, 20)}...` : 'none'
+            });
+
             return newAccessToken;
           } catch (error) {
             console.error('[ERROR] refreshAccessToken failed:', error);
@@ -173,6 +194,11 @@ export const apiClient = {
 
         try {
           const newAccessToken = await refreshPromises[tokenType];
+
+          console.log('[DEBUG] Retrying request with new token:', {
+            endpoint,
+            newTokenPreview: `${newAccessToken.substring(0, 20)}...`
+          });
 
           // 재시도 플래그 설정
           isRetryingAfterRefresh[tokenType] = true;
@@ -191,6 +217,11 @@ export const apiClient = {
 
           const retryResponse = await fetch(url, retryConfig);
           clearTimeout(retryTimeoutId);
+
+          console.log('[DEBUG] Retry response:', {
+            endpoint,
+            status: retryResponse.status
+          });
 
           // 재시도 성공하면 플래그 해제
           isRetryingAfterRefresh[tokenType] = false;
