@@ -120,4 +120,13 @@ export const tokenManager = {
     tokenManager.removeAccessToken();
     tokenManager.removeCompanyAccessToken();
   },
+
+  /**
+   * 토큰이 localStorage에 저장되어 있는지 확인합니다 (자동 로그인 여부)
+   */
+  isTokenInLocalStorage: (type: TokenType = 'user'): boolean => {
+    if (typeof window === 'undefined') return false;
+    const key = type === 'company' ? TOKEN_KEYS.company : TOKEN_KEYS.user;
+    return !!localStorage.getItem(key);
+  },
 };

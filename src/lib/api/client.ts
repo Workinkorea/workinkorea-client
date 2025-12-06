@@ -67,8 +67,15 @@ export const apiClient = {
 
       if (response.status === 401) {
         // refresh 엔드포인트에서 401이 발생하면 무한 루프 방지를 위해 바로 에러 처리
-        if (endpoint === '/api/auth/refresh' || endpoint === '/api/auth/company/refresh') {
+        const isRefreshEndpoint = endpoint.includes('/api/auth/refresh') ||
+                                   endpoint.includes('/api/auth/company/refresh');
+        if (isRefreshEndpoint) {
           const errorData = await response.json().catch(() => ({ error: 'Unauthorized' }));
+          // refresh 실패 시 토큰 제거 및 로그인 페이지로 리다이렉트
+          tokenManager.removeToken(tokenType);
+          if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+          }
           throw new ApiError(
             errorData.error || 'Unauthorized',
             response.status,
@@ -115,7 +122,9 @@ export const apiClient = {
 
         try {
           const newAccessToken = await refreshAccessToken(tokenType);
-          tokenManager.setToken(newAccessToken, tokenType);
+          // 원래 토큰이 localStorage에 있었는지 확인하여 같은 곳에 저장
+          const rememberMe = tokenManager.isTokenInLocalStorage(tokenType);
+          tokenManager.setToken(newAccessToken, tokenType, rememberMe);
           isRefreshing[tokenType] = false;
           onTokenRefreshed(tokenType, newAccessToken);
 
