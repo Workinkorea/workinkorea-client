@@ -19,7 +19,7 @@ export class ApiError extends Error {
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-let isRefreshing = {
+const isRefreshing = {
   user: false,
   company: false,
 };
@@ -29,7 +29,7 @@ type RefreshSubscriber = {
   reject: (error: unknown) => void;
 };
 
-let refreshSubscribers: {
+const refreshSubscribers: {
   user: RefreshSubscriber[],
   company: RefreshSubscriber[],
 } = {
