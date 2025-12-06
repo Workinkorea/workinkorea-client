@@ -56,8 +56,19 @@ export const useAuth = (options: UseAuthOptions = {}) => {
         console.log('[useAuth] Token refresh successful');
         // 같은 저장소에 새 토큰 저장
         tokenManager.setAccessToken(accessToken, rememberMe);
+
+        // 새 토큰의 만료 시간 확인
+        const newTokenRemainingTime = tokenManager.getTokenRemainingTime();
+        console.log('[useAuth] New token remaining time:', newTokenRemainingTime, 'seconds');
+
         setIsAuthenticated(true);
-        scheduleTokenRefreshRef.current?.();
+
+        // 새 토큰이 유효한 경우에만 재스케줄링
+        if (newTokenRemainingTime && newTokenRemainingTime > 60) {
+          scheduleTokenRefreshRef.current?.();
+        } else {
+          console.error('[useAuth] New token is already expired or expires too soon!');
+        }
         return true;
       }
       return false;
@@ -81,8 +92,12 @@ export const useAuth = (options: UseAuthOptions = {}) => {
     const remainingTime = tokenManager.getTokenRemainingTime();
 
     if (!remainingTime || remainingTime <= 0) {
-      // 토큰이 이미 만료됨 - 즉시 갱신
-      refreshAccessToken();
+      // 토큰이 이미 만료됨
+      console.log('[useAuth] Token expired, clearing auth');
+      // 즉시 갱신하지 말고 인증 상태만 초기화
+      // (무한 루프 방지: refresh가 계속 실패하는 경우)
+      tokenManager.removeAccessToken();
+      setIsAuthenticated(false);
       return;
     }
 
@@ -96,6 +111,8 @@ export const useAuth = (options: UseAuthOptions = {}) => {
       // 만료 5분 전에 갱신
       refreshIn = remainingTime - bufferTime;
     }
+
+    console.log('[useAuth] Scheduling next refresh in', refreshIn, 'seconds');
 
     refreshTimerRef.current = setTimeout(() => {
       refreshAccessToken();
