@@ -133,11 +133,13 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
                     <span>{profile.location}</span>
                   </div>
                 )}
-                
-                <div className="flex items-center gap-1">
-                  <Briefcase size={16} />
-                  <span>{profile.experience}년 경력</span>
-                </div>
+
+                {profile.experience > 0 && (
+                  <div className="flex items-center gap-1">
+                    <Briefcase size={16} />
+                    <span>{profile.experience}년 경력</span>
+                  </div>
+                )}
 
                 <div className="flex items-center gap-1">
                   <Calendar size={16} />
@@ -209,13 +211,15 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
       >
         <div className="flex flex-wrap items-center gap-4">
           {/* 이메일 */}
-          <a 
-            href={`mailto:${profile.email}`}
-            className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-500 transition-colors"
-          >
-            <Mail size={16} />
-            <span>{profile.email}</span>
-          </a>
+          {profile.email && (
+            <a
+              href={`mailto:${profile.email}`}
+              className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-500 transition-colors"
+            >
+              <Mail size={16} />
+              <span>{profile.email}</span>
+            </a>
+          )}
 
           {/* GitHub */}
           {profile.githubUrl && (

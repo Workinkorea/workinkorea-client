@@ -51,6 +51,16 @@ export const apiClient = {
       clearTimeout(timeoutId);
 
       if (response.status === 401) {
+        // refresh 엔드포인트에서 401이 발생하면 무한 루프 방지를 위해 바로 에러 처리
+        if (endpoint === '/api/auth/refresh') {
+          const errorData = await response.json().catch(() => ({ error: 'Unauthorized' }));
+          throw new ApiError(
+            errorData.error || 'Unauthorized',
+            response.status,
+            errorData
+          );
+        }
+
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             subscribeTokenRefresh(async (newToken: string) => {
@@ -186,7 +196,11 @@ interface RefreshTokenResponse {
 
 export const refreshAccessToken = async (tokenType: 'user' | 'company' = 'user'): Promise<string> => {
   try {
-    const data = await apiClient.post<RefreshTokenResponse>('/api/auth/refresh');
+    // skipAuth: true로 무한 루프 방지, credentials: 'include'로 refresh token 쿠키 전송
+    const data = await apiClient.post<RefreshTokenResponse>('/api/auth/refresh', undefined, {
+      skipAuth: true,
+      credentials: 'include'
+    });
     const accessToken = data.accessToken || data.access_token || data.token;
 
     if (!accessToken) {

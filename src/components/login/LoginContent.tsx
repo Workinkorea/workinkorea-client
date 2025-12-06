@@ -7,23 +7,59 @@ import { useForm } from 'react-hook-form';
 import { validatePassword } from '@/lib/utils/authNumber';
 import { useState } from 'react';
 import { GoogleIcon } from '@/components/ui/AccessibleIcon';
-import { API_BASE_URL } from '@/lib/api/client';
+import { useRouter } from 'next/navigation';
+import { authApi } from '@/lib/api/auth';
+import { tokenManager } from '@/lib/utils/tokenManager';
+
+interface LoginFormData {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
+const SAVED_EMAIL_KEY = 'savedUserEmail';
+
+const getDefaultValues = (): LoginFormData => {
+  if (typeof window === 'undefined') {
+    return {
+      email: '',
+      password: '',
+      rememberMe: false,
+    };
+  }
+
+  try {
+    const savedEmail = localStorage.getItem(SAVED_EMAIL_KEY);
+    return {
+      email: savedEmail || '',
+      password: '',
+      rememberMe: !!savedEmail,
+    };
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('localStorage access failed:', error);
+    }
+    return {
+      email: '',
+      password: '',
+      rememberMe: false,
+    };
+  }
+};
 
 export default function LoginContent() {
+  const router = useRouter();
 
   const {
     control,
+    handleSubmit,
     watch,
     formState: { errors },
     setError,
     clearErrors,
-  } = useForm({
+  } = useForm<LoginFormData>({
     mode: 'onChange',
-    defaultValues: {
-      email: '',
-      password: '',
-      rememberMe: false,
-    }
+    defaultValues: getDefaultValues(),
   });
 
   const [formState, setFormState] = useState({
@@ -32,7 +68,28 @@ export default function LoginContent() {
     isGoogleLoading: false,
   });
 
+  const email = watch('email');
   const password = watch('password');
+
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailBlur = (email: string) => {
+    if (email) {
+      if (!isValidEmail(email)) {
+        setError('email', {
+          type: 'manual',
+          message: '올바른 이메일 형식을 입력해주세요.'
+        });
+      } else {
+        clearErrors('email');
+      }
+    } else {
+      clearErrors('email');
+    }
+  };
 
   const handlePasswordBlur = (password: string) => {
     if (password) {
@@ -51,12 +108,92 @@ export default function LoginContent() {
   };
 
   const isFormValid =
+    email &&
     password &&
+    isValidEmail(email) &&
     password.length >= 8 &&
+    !errors.email &&
     !errors.password;
 
   const handleGoogleLogin = () => {
-    window.location.href = `${API_BASE_URL}/api/auth/login/google`;
+    // rememberMe 값을 localStorage에 임시 저장
+    const rememberMe = watch('rememberMe');
+    if (rememberMe) {
+      localStorage.setItem('googleLoginRememberMe', 'true');
+    } else {
+      localStorage.removeItem('googleLoginRememberMe');
+    }
+    window.location.href = '/api/auth/login/google';
+  };
+
+  const onSubmit = async (data: LoginFormData) => {
+    if (!isFormValid) {
+      if (!email) {
+        setError('email', {
+          type: 'manual',
+          message: '이메일을 입력해주세요.'
+        });
+      }
+
+      if (!password) {
+        setError('password', {
+          type: 'manual',
+          message: '비밀번호를 입력해주세요.'
+        });
+      }
+      return;
+    }
+
+    if (formState.isLoading) {
+      return;
+    }
+
+    setFormState(prev => ({ ...prev, isLoading: true }));
+    clearErrors();
+
+    try {
+      const response = await authApi.login({
+        email: data.email,
+        password: data.password
+      });
+
+      if (response.success && response.token) {
+        // 자동로그인 체크박스에 따라 localStorage 또는 sessionStorage에 저장
+        tokenManager.setAccessToken(response.token, data.rememberMe);
+
+        if (data.rememberMe) {
+          localStorage.setItem(SAVED_EMAIL_KEY, data.email);
+        } else {
+          localStorage.removeItem(SAVED_EMAIL_KEY);
+        }
+
+        // 홈으로 리다이렉트
+        router.push('/');
+      } else {
+        setError('password', {
+          type: 'manual',
+          message: '로그인 응답이 올바르지 않습니다.'
+        });
+        setFormState(prev => ({ ...prev, isLoading: false }));
+      }
+
+    } catch (error: unknown) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Login error:', error);
+      }
+
+      const errorMessage = error instanceof Error
+        ? error.message.includes('401') || error.message.includes('unauthorized')
+          ? '이메일 또는 비밀번호가 일치하지 않습니다.'
+          : '로그인 중 오류가 발생했습니다.'
+        : '로그인 중 오류가 발생했습니다.';
+
+      setError('password', {
+        type: 'manual',
+        message: errorMessage
+      });
+      setFormState(prev => ({ ...prev, isLoading: false }));
+    }
   };
 
   return (
@@ -72,8 +209,9 @@ export default function LoginContent() {
           </h1>
         </motion.div>
 
-        <motion.form 
+        <motion.form
           className="space-y-6"
+          onSubmit={handleSubmit(onSubmit)}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -83,11 +221,19 @@ export default function LoginContent() {
               name="email"
               control={control}
               label="이메일"
+              error={errors.email?.message}
               render={(field, fieldId) => (
                 <Input
                   {...field}
                   id={fieldId}
-                  type="text"
+                  type="email"
+                  placeholder="example@email.com"
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    clearErrors('email');
+                  }}
+                  onBlur={(e) => handleEmailBlur(e.target.value)}
+                  error={!!errors.email}
                   maxLength={50}
                 />
               )}
@@ -99,6 +245,7 @@ export default function LoginContent() {
               name="password"
               control={control}
               label="비밀번호"
+              error={errors.password?.message}
               render={(field, fieldId) => (
                 <Input
                   {...field}
@@ -107,9 +254,9 @@ export default function LoginContent() {
                   placeholder="••••••••••"
                   error={!!errors.password}
                   showPassword={formState.showPassword}
-                  onTogglePassword={() => setFormState(prev => ({ 
-                    ...prev, 
-                    showPassword: !prev.showPassword 
+                  onTogglePassword={() => setFormState(prev => ({
+                    ...prev,
+                    showPassword: !prev.showPassword
                   }))}
                   onChange={(e) => {
                     field.onChange(e.target.value);

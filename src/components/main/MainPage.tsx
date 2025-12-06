@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import HeroSection from './sections/HeroSection';
 import JobCategoriesSection from './sections/JobCategoriesSection';
@@ -11,12 +10,10 @@ import Footer from './sections/Footer';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function MainPage() {
-  const router = useRouter();
   const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: false });
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   return (

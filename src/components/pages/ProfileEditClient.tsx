@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -14,7 +14,9 @@ import {
   Settings,
   Camera,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Plus,
+  X
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -41,6 +43,78 @@ import { apiClient } from '@/lib/api/client';
 import { uploadFileToMinio } from '@/lib/api/minio';
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
+
+// 경력 옵션 (API 스펙에 맞춤)
+const CAREER_OPTIONS = [
+  { key: 'NEWCOMER', label: '신입' },
+  { key: 'YEAR_1_LESS', label: '1년 이하' },
+  { key: 'YEAR_1', label: '1년' },
+  { key: 'YEAR_2_LESS', label: '2년 이하' },
+  { key: 'YEAR_2', label: '2년' },
+  { key: 'YEAR_3_LESS', label: '3년 이하' },
+  { key: 'YEAR_3', label: '3년' },
+  { key: 'YEAR_5_LESS', label: '5년 이하' },
+  { key: 'YEAR_5', label: '5년' },
+  { key: 'YEAR_7_LESS', label: '7년 이하' },
+  { key: 'YEAR_7', label: '7년' },
+  { key: 'YEAR_10_LESS', label: '10년 이하' },
+  { key: 'YEAR_10', label: '10년' },
+  { key: 'YEAR_10_MORE', label: '10년 이상' },
+] as const;
+
+// 국가 옵션
+const COUNTRY_OPTIONS = [
+  { id: 1, name: '한국' },
+  { id: 2, name: '미국' },
+  { id: 3, name: '일본' },
+  { id: 4, name: '중국' },
+  { id: 5, name: '베트남' },
+  { id: 6, name: '필리핀' },
+  { id: 7, name: '인도네시아' },
+  { id: 8, name: '태국' },
+  { id: 9, name: '인도' },
+  { id: 10, name: '파키스탄' },
+  { id: 11, name: '방글라데시' },
+  { id: 12, name: '네팔' },
+  { id: 13, name: '캐나다' },
+  { id: 14, name: '영국' },
+  { id: 15, name: '프랑스' },
+  { id: 16, name: '독일' },
+  { id: 17, name: '호주' },
+  { id: 18, name: '뉴질랜드' },
+  { id: 19, name: '기타' },
+] as const;
+
+// 직무 옵션
+const POSITION_OPTIONS = [
+  { id: 1, name: '프론트엔드 개발자' },
+  { id: 2, name: '백엔드 개발자' },
+  { id: 3, name: '풀스택 개발자' },
+  { id: 4, name: '데이터 엔지니어' },
+  { id: 5, name: 'DevOps 엔지니어' },
+  { id: 6, name: 'UI/UX 디자이너' },
+  { id: 7, name: '프로덕트 매니저' },
+  { id: 8, name: '프로젝트 매니저' },
+  { id: 9, name: 'QA 엔지니어' },
+  { id: 10, name: '데이터 분석가' },
+  { id: 11, name: '시스템 관리자' },
+  { id: 12, name: '보안 엔지니어' },
+  { id: 13, name: '기타' },
+] as const;
+
+// 언어 수준 옵션
+const LANGUAGE_LEVEL_OPTIONS = [
+  { value: 'native', label: '원어민' },
+  { value: 'advanced', label: '고급' },
+  { value: 'intermediate', label: '중급' },
+  { value: 'beginner', label: '초급' },
+] as const;
+
+// API response의 value를 key로 변환하는 함수
+const getCareerKeyFromValue = (value: string): string => {
+  const option = CAREER_OPTIONS.find(opt => opt.label === value);
+  return option?.key || 'NEWCOMER';
+};
 
 const ProfileEditClient: React.FC = () => {
   const router = useRouter();
@@ -105,9 +179,42 @@ const ProfileEditClient: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
       toast.success('프로필이 성공적으로 저장되었습니다.');
       setHasUnsavedChanges(false);
+      router.push('/user/profile');
     },
     onError: () => {
       toast.error('프로필 저장에 실패했습니다. 다시 시도해주세요.');
+    }
+  });
+
+  // 연락처 업데이트 뮤테이션
+  const updateContactMutation = useMutation({
+    mutationFn: async (updatedData: ContactUpdateRequest) => {
+      return profileApi.updateContact(updatedData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contact'] });
+      toast.success('연락처가 성공적으로 저장되었습니다.');
+      setHasUnsavedChanges(false);
+      router.push('/user/profile');
+    },
+    onError: () => {
+      toast.error('연락처 저장에 실패했습니다. 다시 시도해주세요.');
+    }
+  });
+
+  // 계정 설정 업데이트 뮤테이션
+  const updateAccountConfigMutation = useMutation({
+    mutationFn: async (updatedData: AccountConfigUpdateRequest) => {
+      return profileApi.updateAccountConfig(updatedData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['accountConfig'] });
+      toast.success('계정 설정이 성공적으로 저장되었습니다.');
+      setHasUnsavedChanges(false);
+      router.push('/user/profile');
+    },
+    onError: () => {
+      toast.error('계정 설정 저장에 실패했습니다. 다시 시도해주세요.');
     }
   });
 
@@ -120,14 +227,28 @@ const ProfileEditClient: React.FC = () => {
       position_id: '',
       location: '',
       introduction: '',
+      address: '',
+      position_id: undefined,
+      career: undefined,
       job_status: '',
+      portfolio_url: '',
+      language_skills: [],
+      name: '',
+      country_id: 1, // 기본값: 한국
     }
+  });
+
+  // language_skills 배열 필드 관리
+  const { fields: languageFields, append: appendLanguage, remove: removeLanguage } = useFieldArray({
+    control: basicForm.control,
+    name: 'language_skills'
   });
 
   const contactForm = useForm<ContactInfoForm>({
     resolver: zodResolver(contactInfoSchema),
     defaultValues: {
-      email: '',
+      user_id: undefined,
+      phone_number: '',
       github_url: '',
       linkedin_url: '',
       portfolio_url: '',
@@ -180,24 +301,27 @@ const ProfileEditClient: React.FC = () => {
   // 프로필 데이터가 로드되면 기본 정보 폼만 업데이트
   useEffect(() => {
     if (profile) {
-      basicForm.reset({
-        name: profile.name || '',
-        profile_image_url: profile.profileImage || '',
-        position_id: profile.position || '',
-        location: profile.location || '',
-        introduction: profile.introduction || '',
-        job_status: profile.job_status || '',
-      });
+      // ProfileResponse에는 user_id가 없으므로 임의의 값 사용
+      setUserId(1);
 
-      preferencesForm.reset({
-        job_status: profile.job_status || 'available',
-        experience: profile.experience || 0,
-        completedProjects: profile.completedProjects || 0,
-        preferredSalary: profile.preferredSalary || {
-          min: 0,
-          max: 0,
-          currency: '만원'
-        },
+      // career 값을 API response의 value(한글)에서 key(영문)로 변환
+      const careerKey = profile.career ? (getCareerKeyFromValue(profile.career) as 'NEWCOMER' | 'YEAR_1_LESS' | 'YEAR_1' | 'YEAR_2_LESS' | 'YEAR_2' | 'YEAR_3_LESS' | 'YEAR_3' | 'YEAR_5_LESS' | 'YEAR_5' | 'YEAR_7_LESS' | 'YEAR_7' | 'YEAR_10_LESS' | 'YEAR_10' | 'YEAR_10_MORE') : undefined;
+
+      basicForm.reset({
+        profile_image_url: profile.profile_image_url ?? '',
+        location: profile.location ?? '',
+        introduction: profile.introduction ?? '',
+        address: profile.address ?? '',
+        position_id: profile.position_id ?? undefined,
+        career: careerKey,
+        job_status: profile.job_status ?? '',
+        portfolio_url: profile.portfolio_url ?? '',
+        language_skills: (profile.language_skills ?? []).map(skill => ({
+          language_type: skill.language_type ?? '',
+          level: skill.level ?? '',
+        })),
+        name: profile.name ?? '',
+        country_id: profile.country_id ?? 1, // 기본값: 한국
       });
     }
 
@@ -225,10 +349,16 @@ const ProfileEditClient: React.FC = () => {
     const fetchSectionData = async () => {
       try {
         if (activeSection === 'contact') {
-          const contactData = await apiClient.get('/api/contact');
+          const contactData = await apiClient.get('/api/contact') as ContactInfoForm;
           console.log('연락처 데이터:', contactData);
           if (contactData) {
-            contactForm.reset(contactData as ContactInfoForm);
+            contactForm.reset({
+              user_id: contactData.user_id ?? undefined,
+              phone_number: contactData.phone_number ?? '',
+              github_url: contactData.github_url ?? '',
+              linkedin_url: contactData.linkedin_url ?? '',
+              website_url: contactData.website_url ?? '',
+            });
           }
         } else if (activeSection === 'account') {
           const accountData = await apiClient.get('/api/account-config');
@@ -242,7 +372,8 @@ const ProfileEditClient: React.FC = () => {
         // API 호출 실패 시 빈 폼 유지 (placeholder만 표시)
         if (activeSection === 'contact') {
           contactForm.reset({
-            email: '',
+            user_id: undefined,
+            phone_number: '',
             github_url: '',
             linkedin_url: '',
             portfolio_url: '',
@@ -309,7 +440,12 @@ const ProfileEditClient: React.FC = () => {
       case 'contact':
         isValid = await contactForm.trigger();
         if (isValid) {
-          formData = contactForm.getValues();
+          const formValues = contactForm.getValues();
+          const contactData: ContactUpdateRequest = {
+            ...formValues,
+            user_id: userId || undefined,
+          };
+          updateContactMutation.mutate(contactData);
         }
         profileApi.updateContact(formData);
         break;
@@ -457,8 +593,23 @@ const ProfileEditClient: React.FC = () => {
         <FormField
           name="name"
           control={basicForm.control}
-          label="이름 *"
+          label="이름"
           error={basicForm.formState.errors.name?.message}
+          render={(field, fieldId) => (
+            <Input
+              {...field}
+              id={fieldId}
+              placeholder="이름을 입력하세요"
+              error={!!basicForm.formState.errors.name}
+            />
+          )}
+        />
+
+        <FormField
+          name="location"
+          control={basicForm.control}
+          label="위치"
+          error={basicForm.formState.errors.location?.message}
           render={(field, fieldId) => (
             <Input
               {...field}
@@ -472,52 +623,14 @@ const ProfileEditClient: React.FC = () => {
         <FormField
           name="position_id"
           control={basicForm.control}
-          label="직책/포지션"
-          error={basicForm.formState.errors.position_id?.message}
+          label="주소"
+          error={basicForm.formState.errors.address?.message}
           render={(field, fieldId) => (
             <Input
               {...field}
               id={fieldId}
               placeholder="예: 프론트엔드 개발자"
               error={!!basicForm.formState.errors.position_id}
-            />
-          )}
-        />
-
-        <FormField
-          name="job_status"
-          control={preferencesForm.control}
-          label="구직 상태 *"
-          error={preferencesForm.formState.errors.job_status?.message}
-          render={(field, fieldId) => (
-            <select
-              {...field}
-              id={fieldId}
-              className={cn(
-                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                "border-line-400 focus:ring-primary",
-                preferencesForm.formState.errors.job_status && "border-status-error focus:ring-status-error"
-              )}
-            >
-              <option value="">상태를 선택하세요</option>
-              <option value="available">구직중</option>
-              <option value="busy">바쁨</option>
-              <option value="not-looking">구직안함</option>
-            </select>
-          )}
-        />
-
-        <FormField
-          name="location"
-          control={basicForm.control}
-          label="위치"
-          error={basicForm.formState.errors.location?.message}
-          render={(field, fieldId) => (
-            <Input
-              {...field}
-              id={fieldId}
-              placeholder="예: 서울, 한국"
-              error={!!basicForm.formState.errors.location}
             />
           )}
         />
@@ -547,6 +660,198 @@ const ProfileEditClient: React.FC = () => {
             </div>
           )}
         />
+
+        <FormField
+          name="job_status"
+          control={basicForm.control}
+          label="구직 상태"
+          error={basicForm.formState.errors.job_status?.message}
+          render={(field, fieldId) => (
+            <select
+              {...field}
+              id={fieldId}
+              className={cn(
+                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary",
+                preferencesForm.formState.errors.job_status && "border-status-error focus:ring-status-error"
+              )}
+            >
+              <option value="">상태를 선택하세요</option>
+              <option value="available">구직중</option>
+              <option value="busy">바쁨</option>
+              <option value="not-looking">구직안함</option>
+            </select>
+          )}
+        />
+
+        <FormField
+          name="career"
+          control={basicForm.control}
+          label="경력"
+          error={basicForm.formState.errors.career?.message}
+          render={(field, fieldId) => (
+            <select
+              {...field}
+              id={fieldId}
+              className={cn(
+                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary",
+                basicForm.formState.errors.career && "border-status-error focus:ring-status-error"
+              )}
+            >
+              <option value="">경력을 선택하세요</option>
+              {CAREER_OPTIONS.map((option) => (
+                <option key={option.key} value={option.key}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          )}
+        />
+
+        <FormField
+          name="portfolio_url"
+          control={basicForm.control}
+          label="포트폴리오 URL"
+          error={basicForm.formState.errors.portfolio_url?.message}
+          render={(field, fieldId) => (
+            <Input
+              {...field}
+              id={fieldId}
+              placeholder="https://yourportfolio.com"
+              error={!!basicForm.formState.errors.portfolio_url}
+            />
+          )}
+        />
+
+        <FormField
+          name="position_id"
+          control={basicForm.control}
+          label="직무 선택"
+          error={basicForm.formState.errors.position_id?.message}
+          render={(field, fieldId) => (
+            <select
+              {...field}
+              id={fieldId}
+              value={field.value ?? ''}
+              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+              className={cn(
+                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary",
+                basicForm.formState.errors.position_id && "border-status-error focus:ring-status-error"
+              )}
+            >
+              <option value="">직무를 선택하세요</option>
+              {POSITION_OPTIONS.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          )}
+        />
+
+        <FormField
+          name="introduction"
+          control={basicForm.control}
+          label="국적"
+          error={basicForm.formState.errors.country_id?.message}
+          render={(field, fieldId) => (
+            <select
+              {...field}
+              id={fieldId}
+              value={field.value ?? 1}
+              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 1)}
+              className={cn(
+                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary",
+                basicForm.formState.errors.country_id && "border-status-error focus:ring-status-error"
+              )}
+            >
+              {COUNTRY_OPTIONS.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          )}
+        />
+
+        {/* 언어 스킬 */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="text-caption-2 font-medium text-label-900">언어 스킬</label>
+            <button
+              type="button"
+              onClick={() => appendLanguage({ language_type: '', level: '' })}
+              className="flex items-center gap-1 text-primary-500 hover:text-primary-600 text-caption-2 cursor-pointer"
+            >
+              <Plus size={16} />
+              <span>추가</span>
+            </button>
+          </div>
+
+          {languageFields.length === 0 && (
+            <p className="text-caption-2 text-label-400">언어 스킬을 추가해주세요</p>
+          )}
+
+          <div className="space-y-3">
+            {languageFields.map((field, index) => (
+              <div key={field.id} className="border border-line-200 rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-caption-2 font-medium text-label-700">언어 {index + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeLanguage(index)}
+                    className="text-status-error hover:text-status-error/80 cursor-pointer"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <FormField
+                  name={`language_skills.${index}.language_type`}
+                  control={basicForm.control}
+                  label="언어"
+                  error={basicForm.formState.errors.language_skills?.[index]?.language_type?.message}
+                  render={(field, fieldId) => (
+                    <Input
+                      {...field}
+                      id={fieldId}
+                      placeholder="예: 영어, 한국어"
+                      error={!!basicForm.formState.errors.language_skills?.[index]?.language_type}
+                    />
+                  )}
+                />
+
+                <FormField
+                  name={`language_skills.${index}.level`}
+                  control={basicForm.control}
+                  label="수준"
+                  error={basicForm.formState.errors.language_skills?.[index]?.level?.message}
+                  render={(field, fieldId) => (
+                    <select
+                      {...field}
+                      id={fieldId}
+                      className={cn(
+                        "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                        "border-line-400 focus:ring-primary",
+                        basicForm.formState.errors.language_skills?.[index]?.level && "border-status-error focus:ring-status-error"
+                      )}
+                    >
+                      <option value="">수준을 선택하세요</option>
+                      {LANGUAGE_LEVEL_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -556,8 +861,8 @@ const ProfileEditClient: React.FC = () => {
       <FormField
         name="email"
         control={contactForm.control}
-        label="이메일 *"
-        error={contactForm.formState.errors.email?.message}
+        label="전화번호"
+        error={contactForm.formState.errors.phone_number?.message}
         render={(field, fieldId) => (
           <Input
             {...field}
@@ -602,8 +907,8 @@ const ProfileEditClient: React.FC = () => {
       <FormField
         name="portfolio_url"
         control={contactForm.control}
-        label="포트폴리오 URL"
-        error={contactForm.formState.errors.portfolio_url?.message}
+        label="웹사이트 URL"
+        error={contactForm.formState.errors.website_url?.message}
         render={(field, fieldId) => (
           <Input
             {...field}
@@ -705,44 +1010,50 @@ const ProfileEditClient: React.FC = () => {
             name="notifications.contactRequestNotifications"
             control={accountForm.control}
             label=""
-            render={(field, fieldId) => (
-              <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
-                <div>
-                  <span className="text-body-3 font-medium">SNS 메시지 알림</span>
-                  <p className="text-caption-2 text-label-500">중요한 활동을 SNS 메시지로 알림 받습니다</p>
-                </div>
-                <input
-                  {...field}
-                  id={fieldId}
-                  type="checkbox"
-                  checked={field.value}
-                  value=""
-                  className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
-                />
-              </label>
-            )}
+            render={(field, fieldId) => {
+              const { value, ...fieldWithoutValue } = field;
+              return (
+                <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
+                  <div>
+                    <span className="text-body-3 font-medium">SNS 메시지 알림</span>
+                    <p className="text-caption-2 text-label-500">중요한 활동을 SNS 메시지로 알림 받습니다</p>
+                  </div>
+                  <input
+                    {...fieldWithoutValue}
+                    id={fieldId}
+                    type="checkbox"
+                    checked={value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                    className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
+                  />
+                </label>
+              );
+            }}
           />
 
           <FormField
             name="notifications.emailNotifications"
             control={accountForm.control}
             label=""
-            render={(field, fieldId) => (
-              <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
-                <div>
-                  <span className="text-body-3 font-medium">이메일 알림</span>
-                  <p className="text-caption-2 text-label-500">중요한 활동을 이메일로 알림 받습니다</p>
-                </div>
-                <input
-                  {...field}
-                  id={fieldId}
-                  type="checkbox"
-                  checked={field.value}
-                  value=""
-                  className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
-                />
-              </label>
-            )}
+            render={(field, fieldId) => {
+              const { value, ...fieldWithoutValue } = field;
+              return (
+                <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
+                  <div>
+                    <span className="text-body-3 font-medium">이메일 알림</span>
+                    <p className="text-caption-2 text-label-500">중요한 활동을 이메일로 알림 받습니다</p>
+                  </div>
+                  <input
+                    {...fieldWithoutValue}
+                    id={fieldId}
+                    type="checkbox"
+                    checked={value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                    className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
+                  />
+                </label>
+              );
+            }}
           />
         </div>
       </div>

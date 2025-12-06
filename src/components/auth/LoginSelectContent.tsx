@@ -1,17 +1,14 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function LoginSelectContent() {
-  const router = useRouter();
   const { isAuthenticated, isLoading, logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   return (

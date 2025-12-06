@@ -9,15 +9,20 @@ const TOKEN_KEYS = {
 
 export const tokenManager = {
   // 개인 로그인용 (기본)
-  setAccessToken: (token: string) => {
+  setAccessToken: (token: string, rememberMe: boolean = false) => {
     if (typeof window !== 'undefined') {
-      sessionStorage.setItem(TOKEN_KEYS.user, token);
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem(TOKEN_KEYS.user, token);
+      // 반대 스토리지에서는 제거 (중복 방지)
+      const oppositeStorage = rememberMe ? sessionStorage : localStorage;
+      oppositeStorage.removeItem(TOKEN_KEYS.user);
     }
   },
 
   getAccessToken: (): string | null => {
     if (typeof window !== 'undefined') {
-      return sessionStorage.getItem(TOKEN_KEYS.user);
+      // localStorage를 먼저 확인 (자동 로그인), 없으면 sessionStorage 확인
+      return localStorage.getItem(TOKEN_KEYS.user) || sessionStorage.getItem(TOKEN_KEYS.user);
     }
     return null;
   },
@@ -25,19 +30,25 @@ export const tokenManager = {
   removeAccessToken: () => {
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem(TOKEN_KEYS.user);
+      localStorage.removeItem(TOKEN_KEYS.user);
     }
   },
 
   // 기업 로그인용
-  setCompanyAccessToken: (token: string) => {
+  setCompanyAccessToken: (token: string, rememberMe: boolean = false) => {
     if (typeof window !== 'undefined') {
-      sessionStorage.setItem(TOKEN_KEYS.company, token);
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem(TOKEN_KEYS.company, token);
+      // 반대 스토리지에서는 제거 (중복 방지)
+      const oppositeStorage = rememberMe ? sessionStorage : localStorage;
+      oppositeStorage.removeItem(TOKEN_KEYS.company);
     }
   },
 
   getCompanyAccessToken: (): string | null => {
     if (typeof window !== 'undefined') {
-      return sessionStorage.getItem(TOKEN_KEYS.company);
+      // localStorage를 먼저 확인 (자동 로그인), 없으면 sessionStorage 확인
+      return localStorage.getItem(TOKEN_KEYS.company) || sessionStorage.getItem(TOKEN_KEYS.company);
     }
     return null;
   },
@@ -45,15 +56,16 @@ export const tokenManager = {
   removeCompanyAccessToken: () => {
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem(TOKEN_KEYS.company);
+      localStorage.removeItem(TOKEN_KEYS.company);
     }
   },
 
   // 공통 메서드 (타입 지정 가능)
-  setToken: (token: string, type: TokenType = 'user') => {
+  setToken: (token: string, type: TokenType = 'user', rememberMe: boolean = false) => {
     if (type === 'company') {
-      tokenManager.setCompanyAccessToken(token);
+      tokenManager.setCompanyAccessToken(token, rememberMe);
     } else {
-      tokenManager.setAccessToken(token);
+      tokenManager.setAccessToken(token, rememberMe);
     }
   },
 

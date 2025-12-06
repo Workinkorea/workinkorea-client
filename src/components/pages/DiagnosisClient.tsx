@@ -22,7 +22,6 @@ const DiagnosisClient = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   const handleSession1Next = (data: Partial<DiagnosisData>) => {

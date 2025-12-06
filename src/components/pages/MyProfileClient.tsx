@@ -9,16 +9,15 @@ import { toast } from 'sonner';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import UserProfileHeader from '@/components/user/UserProfileHeader';
-import ProfileStats from '@/components/user/ProfileStats';
 import SkillBarChart from '@/components/user/SkillBarChart';
 import RadarChart from '@/components/ui/RadarChart';
 import ResumeSection from '@/components/user/ResumeSection';
-import { UserProfile, ProfileStatistics, SkillStats, RadarChartData, Resume, ResumeStatistics } from '@/types/user';
+import { UserProfile, RadarChartData, Resume } from '@/types/user';
 import { profileApi } from '@/lib/api/profile';
 import { resumeApi } from '@/lib/api/resume';
 import { useAuth } from '@/hooks/useAuth';
 
-// TODO: 실제 API 호출로 대체 (로그인된 사용자의 프로필)
+// Mock data for dashboard, skill management, and career management
 const mockMyProfile: UserProfile = {
   id: 'me',
   name: '이지은',
@@ -68,39 +67,13 @@ const mockMyProfile: UserProfile = {
   updatedAt: '2024-01-20T00:00:00Z'
 };
 
-const mockMyStatistics: ProfileStatistics = {
-  profileViews: 856,
-  contactRequests: 12,
-  skillEndorsements: 28,
-  averageRating: 4.5
-};
-
-const mockMySkillStats: SkillStats = {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const mockMySkillStats = {
   totalSkills: 8,
   aboveAverageSkills: 7,
   topSkillCategory: 'technical',
   overallScore: 78,
   industryRanking: 88
-};
-
-const mockResumeStatistics: { [resumeId: string]: ResumeStatistics } = {
-  'resume-1': {
-    totalViews: 245,
-    weeklyViews: 32,
-    downloadCount: 18,
-    lastViewedAt: '2024-01-22T10:30:00Z'
-  },
-  'resume-2': {
-    totalViews: 89,
-    weeklyViews: 12,
-    downloadCount: 5,
-    lastViewedAt: '2024-01-20T14:15:00Z'
-  },
-  'resume-3': {
-    totalViews: 0,
-    weeklyViews: 0,
-    downloadCount: 0
-  }
 };
 
 const MyProfileClient: React.FC = () => {
@@ -123,36 +96,32 @@ const MyProfileClient: React.FC = () => {
     enabled: isAuthenticated,
   });
 
-  // 프로필과 연락처 데이터 병합
-  const { data: profile, isLoading, error } = useQuery({
-    queryKey: ['myProfile', profileData, contactData],
-    queryFn: async () => {
-      try {
-        if (!profileData) return mockMyProfile;
+  // 프로필과 연락처 데이터 병합 (API 데이터가 없으면 mock 데이터 사용)
+  const profile: UserProfile | undefined = profileData ? {
+    ...mockMyProfile, // 기본값으로 mock 데이터 사용
+    id: 'me',
+    name: profileData.name || mockMyProfile.name,
+    email: mockMyProfile.email, // 이메일은 별도 API나 auth에서 가져와야 함
+    profileImage: profileData.profile_image_url || undefined,
+    position: mockMyProfile.position, // position은 position_id를 매핑해야 함
+    location: profileData.location || mockMyProfile.location,
+    introduction: profileData.introduction || mockMyProfile.introduction,
+    job_status: (profileData.job_status as 'available' | 'busy' | 'not-looking') || 'available',
+    languages: profileData.language_skills
+      ?.filter(skill => skill.language_type && skill.level)
+      .map(skill => ({
+        name: skill.language_type || '',
+        proficiency: (skill.level as 'native' | 'advanced' | 'intermediate' | 'beginner') || 'beginner'
+      })) || mockMyProfile.languages,
+    githubUrl: contactData?.github_url || mockMyProfile.githubUrl,
+    linkedinUrl: contactData?.linkedin_url || mockMyProfile.linkedinUrl,
+    portfolioUrl: contactData?.website_url || profileData.portfolio_url || mockMyProfile.portfolioUrl,
+    createdAt: profileData.created_at || new Date().toISOString(),
+    updatedAt: profileData.created_at || new Date().toISOString()
+  } : undefined;
 
-        // API 응답을 UserProfile 형태로 변환
-        const transformedProfile: UserProfile = {
-          ...mockMyProfile, // 기본값으로 mock 데이터 사용
-          id: String(profileData.user_id),
-          name: profileData.name,
-          profileImage: profileData.profile_image_url || undefined,
-          location: profileData.location,
-          introduction: profileData.introduction,
-          portfolioUrl: contactData?.website_url || profileData.portfolio_url,
-          githubUrl: contactData?.github_url,
-          linkedinUrl: contactData?.linkedin_url,
-          job_status: profileData.job_status as 'available' | 'busy' | 'not-looking' || 'available',
-        };
-
-        return transformedProfile;
-      } catch (err) {
-        console.error('프로필 로드 실패:', err);
-        // 에러 시 mock 데이터 반환 (개발 환경용)
-        return mockMyProfile;
-      }
-    },
-    enabled: !!profileData,
-  });
+  const isLoading = profileLoading || contactLoading;
+  const error = profileError;
 
   // 이력서 목록 조회
   const { data: resumesData, isLoading: resumesLoading } = useQuery({
@@ -210,7 +179,6 @@ const MyProfileClient: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   const handleEditClick = () => {
@@ -226,25 +194,17 @@ const MyProfileClient: React.FC = () => {
     const softSkills = skills.filter(s => s.category === 'soft');
 
     return {
-      technical: technicalSkills.length > 0 
+      technical: technicalSkills.length > 0
         ? Math.round(technicalSkills.reduce((sum, s) => sum + s.level, 0) / technicalSkills.length)
         : 0,
-      communication: 75, // 소통 능력 (별도 측정 또는 계산)
-      problemSolving: 82,
-      teamwork: 78,
-      leadership: softSkills.length > 0 
+      communication: 0,
+      problemSolving: 0,
+      teamwork: 0,
+      leadership: softSkills.length > 0
         ? Math.round(softSkills.reduce((sum, s) => sum + s.level, 0) / softSkills.length)
-        : 65
+        : 0
     };
   };
-
-  const generateAverageRadarData = (): RadarChartData => ({
-    technical: 65,
-    communication: 60,
-    problemSolving: 65,
-    teamwork: 70,
-    leadership: 55
-  });
 
   if (authLoading || isLoading) {
     return (
@@ -294,7 +254,6 @@ const MyProfileClient: React.FC = () => {
   }
 
   const radarData = generateRadarData(profile.skills);
-  const averageRadarData = generateAverageRadarData();
 
   return (
     <Layout>
@@ -378,34 +337,7 @@ const MyProfileClient: React.FC = () => {
           <div className="space-y-6">
             {activeTab === 'overview' && (
               <>
-                {/* 성과 요약 배너 */}
-                <motion.div 
-                  className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg p-6 text-white"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-title-4 font-bold mb-2">
-                        축하합니다! 🎉
-                      </h3>
-                      <p className="text-body-3 opacity-90">
-                        동일 경력 대비 상위 {100 - mockMySkillStats.industryRanking}%에 위치하고 있습니다.
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-title-2 font-bold">
-                        {mockMySkillStats.overallScore}점
-                      </div>
-                      <div className="text-caption-2 opacity-75">
-                        종합 점수
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6">
                   {/* 레이더 차트 */}
                   <motion.div 
                     className="bg-white rounded-lg p-6 shadow-normal"
@@ -425,20 +357,12 @@ const MyProfileClient: React.FC = () => {
                       </button>
                     </div>
                     <div className="flex justify-center">
-                      <RadarChart 
+                      <RadarChart
                         data={radarData}
-                        averageData={averageRadarData}
                         size={350}
                       />
                     </div>
                   </motion.div>
-
-                  {/* 통계 */}
-                  <ProfileStats 
-                    profile={profile}
-                    statistics={mockMyStatistics}
-                    skillStats={mockMySkillStats}
-                  />
                 </div>
               </>
             )}
@@ -453,13 +377,21 @@ const MyProfileClient: React.FC = () => {
                     스킬 추가
                   </button>
                 </div>
-                
-                <SkillBarChart 
-                  skills={profile.skills}
-                  title="내 스킬 분석"
-                  maxItems={15}
-                  showCategory={true}
-                />
+
+                {profile.skills.length > 0 ? (
+                  <SkillBarChart
+                    skills={profile.skills}
+                    title="내 스킬 분석"
+                    maxItems={15}
+                    showCategory={true}
+                  />
+                ) : (
+                  <div className="bg-white rounded-lg p-12 shadow-normal text-center">
+                    <p className="text-body-3 text-label-500">
+                      등록된 스킬이 없습니다. 스킬을 추가해보세요.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -488,34 +420,44 @@ const MyProfileClient: React.FC = () => {
                   {/* 교육 이력 */}
                   <div className="space-y-4 mb-8">
                     <h4 className="text-body-2 font-semibold text-label-700">교육 이력</h4>
-                    {profile.education.map((edu) => (
-                      <div key={edu.id} className="flex items-start justify-between border-l-4 border-primary-200 pl-4 py-2">
-                        <div>
-                          <h5 className="text-body-3 font-semibold text-label-900">{edu.institution}</h5>
-                          <p className="text-body-3 text-label-600">{edu.degree} - {edu.field}</p>
-                          <p className="text-caption-2 text-label-500">
-                            {edu.startDate} ~ {edu.endDate || '현재'}
-                          </p>
+                    {profile.education.length > 0 ? (
+                      profile.education.map((edu) => (
+                        <div key={edu.id} className="flex items-start justify-between border-l-4 border-primary-200 pl-4 py-2">
+                          <div>
+                            <h5 className="text-body-3 font-semibold text-label-900">{edu.institution}</h5>
+                            <p className="text-body-3 text-label-600">{edu.degree} - {edu.field}</p>
+                            <p className="text-caption-2 text-label-500">
+                              {edu.startDate} ~ {edu.endDate || '현재'}
+                            </p>
+                          </div>
+                          <button className="text-label-400 hover:text-label-600 transition-colors cursor-pointer">
+                            <Edit3 size={16} />
+                          </button>
                         </div>
-                        <button className="text-label-400 hover:text-label-600 transition-colors cursor-pointer">
-                          <Edit3 size={16} />
-                        </button>
+                      ))
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-body-3 text-label-400">
+                          등록된 교육 이력이 없습니다.
+                        </p>
                       </div>
-                    ))}
+                    )}
                   </div>
 
                   {/* 자격증 */}
-                  {profile.certifications.length > 0 && (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-body-2 font-semibold text-label-700">자격증</h4>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-body-2 font-semibold text-label-700">자격증</h4>
+                      {profile.certifications.length > 0 && (
                         <button className="text-primary-500 hover:text-primary-600 text-caption-2 font-medium transition-colors cursor-pointer">
                           관리
                         </button>
-                      </div>
+                      )}
+                    </div>
+                    {profile.certifications.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {profile.certifications.map((cert, index) => (
-                          <span 
+                          <span
                             key={index}
                             className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-caption-2 border border-primary-200 cursor-pointer hover:bg-primary-100 transition-colors"
                           >
@@ -523,8 +465,14 @@ const MyProfileClient: React.FC = () => {
                           </span>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-body-3 text-label-400">
+                          등록된 자격증이 없습니다.
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -542,7 +490,7 @@ const MyProfileClient: React.FC = () => {
                 ) : (
                   <ResumeSection
                     resumes={resumesData || []}
-                    resumeStatistics={mockResumeStatistics}
+                    resumeStatistics={{}}
                     onUploadResume={async (file) => {
                       try {
                         const response = await resumeApi.uploadResumeFile(file);

@@ -174,8 +174,8 @@ export const useAuth = (options: UseAuthOptions = {}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshAccessToken, isAuthPath, isProtectedPath]);
 
-  const login = (accessToken: string) => {
-    tokenManager.setAccessToken(accessToken);
+  const login = (accessToken: string, rememberMe: boolean = false) => {
+    tokenManager.setAccessToken(accessToken, rememberMe);
     setIsAuthenticated(true);
     scheduleTokenRefresh(); // 로그인 후 갱신 스케줄링
   };
