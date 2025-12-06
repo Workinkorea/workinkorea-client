@@ -58,15 +58,7 @@ const CompanyProfileEditClient: React.FC = () => {
   }, [profile]);
 
   const updateProfileMutation = useMutation({
-    mutationFn: async (data: CompanyProfileRequest) => {
-      try {
-        return await profileApi.updateProfileCompany(data);
-      } catch (err) {
-        console.error('프로필 수정 API 실패, mock 데이터 업데이트:', err);
-        // API 실패 시에도 성공으로 처리 (mock)
-        return { ...mockCompanyProfile, ...data };
-      }
-    },
+    mutationFn: (data: CompanyProfileRequest) => profileApi.updateProfileCompany(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyProfile'] });
       alert('프로필이 수정되었습니다.');

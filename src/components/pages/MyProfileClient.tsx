@@ -67,6 +67,7 @@ const mockMyProfile: UserProfile = {
   updatedAt: '2024-01-20T00:00:00Z'
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockMySkillStats = {
   totalSkills: 8,
   aboveAverageSkills: 7,

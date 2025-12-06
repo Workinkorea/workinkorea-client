@@ -10,7 +10,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { postsApi } from '@/lib/api/posts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UpdateCompanyPostRequest } from '@/lib/api/types';
-import { getMockPostById, updateMockPost, deleteMockPost } from '@/lib/mock/companyPosts';
 import { CompanyPostForm } from '@/components/company-posts/CompanyPostForm';
 
 interface CompanyPostEditClientProps {
@@ -29,40 +28,13 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
   // 공고 데이터 로드
   const { data: post, isLoading: postLoading } = useQuery({
     queryKey: ['companyPost', postId],
-    queryFn: async () => {
-      try {
-        return await postsApi.getCompanyPostById(Number(postId));
-      } catch (err) {
-        console.error('공고 조회 API 실패, mock 데이터 사용:', err);
-        return getMockPostById(Number(postId));
-      }
-    },
+    queryFn: () => postsApi.getCompanyPostById(Number(postId)),
     enabled: !!postId && isAuthenticated,
   });
 
   // 수정 mutation
   const updatePostMutation = useMutation({
-    mutationFn: async (data: UpdateCompanyPostRequest) => {
-      try {
-        return await postsApi.updateCompanyPost(Number(postId), data);
-      } catch (err) {
-        console.error('공고 수정 API 실패, mock 데이터 수정:', err);
-        return updateMockPost(Number(postId), {
-          title: data.title,
-          content: data.content,
-          work_experience: data.work_experience,
-          position_id: data.position_id,
-          education: data.education,
-          language: data.language,
-          employment_type: data.employment_type,
-          work_location: data.work_location,
-          working_hours: data.working_hours,
-          salary: data.salary,
-          start_date: data.start_date,
-          end_date: data.end_date,
-        });
-      }
-    },
+    mutationFn: (data: UpdateCompanyPostRequest) => postsApi.updateCompanyPost(Number(postId), data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyPosts'] });
       queryClient.invalidateQueries({ queryKey: ['companyPost', postId] });
@@ -77,14 +49,7 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
 
   // 삭제 mutation
   const deletePostMutation = useMutation({
-    mutationFn: async () => {
-      try {
-        await postsApi.deleteCompanyPost(Number(postId));
-      } catch (err) {
-        console.error('공고 삭제 API 실패, mock 데이터 삭제:', err);
-        deleteMockPost(Number(postId));
-      }
-    },
+    mutationFn: () => postsApi.deleteCompanyPost(Number(postId)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyPosts'] });
       alert('공고가 삭제되었습니다.');

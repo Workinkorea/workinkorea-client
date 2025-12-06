@@ -7,10 +7,9 @@ import { useRouter } from 'next/navigation';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import UserProfileHeader from '@/components/user/UserProfileHeader';
-import ProfileStats from '@/components/user/ProfileStats';
 import SkillBarChart from '@/components/user/SkillBarChart';
 import RadarChart from '@/components/ui/RadarChart';
-import { UserProfile, ProfileStatistics, SkillStats, RadarChartData, UserSkill } from '@/types/user';
+import { UserProfile, RadarChartData, UserSkill } from '@/types/user';
 import { useAuth } from '@/hooks/useAuth';
 import { resumeApi } from '@/lib/api/resume';
 import { profileApi } from '@/lib/api/profile';
@@ -373,11 +372,6 @@ const UserProfileClient: React.FC = () => {
                       />
                     </div>
                   </motion.div>
-
-                  {/* 통계 */}
-                  <ProfileStats
-                    profile={resumeData}
-                  />
                 </div>
               </>
             )}

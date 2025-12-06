@@ -10,7 +10,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { postsApi } from '@/lib/api/posts';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CreateCompanyPostRequest, UpdateCompanyPostRequest } from '@/lib/api/types';
-import { addMockPost } from '@/lib/mock/companyPosts';
 import { CompanyPostForm } from '@/components/company-posts/CompanyPostForm';
 
 const CompanyPostCreateClient: React.FC = () => {
@@ -23,28 +22,7 @@ const CompanyPostCreateClient: React.FC = () => {
   };
 
   const createPostMutation = useMutation({
-    mutationFn: async (data: CreateCompanyPostRequest) => {
-      try {
-        return await postsApi.createCompanyPost(data);
-      } catch (err) {
-        console.error('공고 등록 API 실패, mock 데이터 추가:', err);
-        const newPost = addMockPost({
-          title: data.title,
-          content: data.content,
-          work_experience: data.work_experience,
-          position_id: Number(data.position_id),
-          education: data.education,
-          language: data.language,
-          employment_type: data.employment_type,
-          work_location: data.work_location,
-          working_hours: data.working_hours,
-          salary: data.salary,
-          start_date: data.start_date,
-          end_date: data.end_date,
-        });
-        return newPost;
-      }
-    },
+    mutationFn: (data: CreateCompanyPostRequest) => postsApi.createCompanyPost(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyPosts'] });
       alert('공고가 등록되었습니다.');

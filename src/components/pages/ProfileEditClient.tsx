@@ -60,6 +60,54 @@ const CAREER_OPTIONS = [
   { key: 'YEAR_10_MORE', label: '10년 이상' },
 ] as const;
 
+// 국가 옵션
+const COUNTRY_OPTIONS = [
+  { id: 1, name: '한국' },
+  { id: 2, name: '미국' },
+  { id: 3, name: '일본' },
+  { id: 4, name: '중국' },
+  { id: 5, name: '베트남' },
+  { id: 6, name: '필리핀' },
+  { id: 7, name: '인도네시아' },
+  { id: 8, name: '태국' },
+  { id: 9, name: '인도' },
+  { id: 10, name: '파키스탄' },
+  { id: 11, name: '방글라데시' },
+  { id: 12, name: '네팔' },
+  { id: 13, name: '캐나다' },
+  { id: 14, name: '영국' },
+  { id: 15, name: '프랑스' },
+  { id: 16, name: '독일' },
+  { id: 17, name: '호주' },
+  { id: 18, name: '뉴질랜드' },
+  { id: 19, name: '기타' },
+] as const;
+
+// 직무 옵션
+const POSITION_OPTIONS = [
+  { id: 1, name: '프론트엔드 개발자' },
+  { id: 2, name: '백엔드 개발자' },
+  { id: 3, name: '풀스택 개발자' },
+  { id: 4, name: '데이터 엔지니어' },
+  { id: 5, name: 'DevOps 엔지니어' },
+  { id: 6, name: 'UI/UX 디자이너' },
+  { id: 7, name: '프로덕트 매니저' },
+  { id: 8, name: '프로젝트 매니저' },
+  { id: 9, name: 'QA 엔지니어' },
+  { id: 10, name: '데이터 분석가' },
+  { id: 11, name: '시스템 관리자' },
+  { id: 12, name: '보안 엔지니어' },
+  { id: 13, name: '기타' },
+] as const;
+
+// 언어 수준 옵션
+const LANGUAGE_LEVEL_OPTIONS = [
+  { value: 'native', label: '원어민' },
+  { value: 'advanced', label: '고급' },
+  { value: 'intermediate', label: '중급' },
+  { value: 'beginner', label: '초급' },
+] as const;
+
 // API response의 value를 key로 변환하는 함수
 const getCareerKeyFromValue = (value: string): string => {
   const option = CAREER_OPTIONS.find(opt => opt.label === value);
@@ -146,7 +194,7 @@ const ProfileEditClient: React.FC = () => {
       portfolio_url: '',
       language_skills: [],
       name: '',
-      country_id: undefined,
+      country_id: 1, // 기본값: 한국
     }
   });
 
@@ -219,7 +267,7 @@ const ProfileEditClient: React.FC = () => {
           level: skill.level ?? '',
         })),
         name: profile.name ?? '',
-        country_id: profile.country_id ?? undefined,
+        country_id: profile.country_id ?? 1, // 기본값: 한국
       });
     }
 
@@ -625,34 +673,53 @@ const ProfileEditClient: React.FC = () => {
         <FormField
           name="position_id"
           control={basicForm.control}
-          label="직책 ID"
+          label="직무 선택"
           error={basicForm.formState.errors.position_id?.message}
           render={(field, fieldId) => (
-            <Input
+            <select
               {...field}
               id={fieldId}
-              type="number"
-              placeholder="직책 ID를 입력하세요"
-              error={!!basicForm.formState.errors.position_id}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-            />
+              value={field.value ?? ''}
+              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+              className={cn(
+                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary",
+                basicForm.formState.errors.position_id && "border-status-error focus:ring-status-error"
+              )}
+            >
+              <option value="">직무를 선택하세요</option>
+              {POSITION_OPTIONS.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
           )}
         />
 
         <FormField
           name="country_id"
           control={basicForm.control}
-          label="국가 ID"
+          label="국적"
           error={basicForm.formState.errors.country_id?.message}
           render={(field, fieldId) => (
-            <Input
+            <select
               {...field}
               id={fieldId}
-              type="number"
-              placeholder="국가 ID를 입력하세요"
-              error={!!basicForm.formState.errors.country_id}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-            />
+              value={field.value ?? 1}
+              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 1)}
+              className={cn(
+                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary",
+                basicForm.formState.errors.country_id && "border-status-error focus:ring-status-error"
+              )}
+            >
+              {COUNTRY_OPTIONS.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
           )}
         />
 
@@ -709,12 +776,22 @@ const ProfileEditClient: React.FC = () => {
                   label="수준"
                   error={basicForm.formState.errors.language_skills?.[index]?.level?.message}
                   render={(field, fieldId) => (
-                    <Input
+                    <select
                       {...field}
                       id={fieldId}
-                      placeholder="예: 원어민, 고급, 중급, 초급"
-                      error={!!basicForm.formState.errors.language_skills?.[index]?.level}
-                    />
+                      className={cn(
+                        "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                        "border-line-400 focus:ring-primary",
+                        basicForm.formState.errors.language_skills?.[index]?.level && "border-status-error focus:ring-status-error"
+                      )}
+                    >
+                      <option value="">수준을 선택하세요</option>
+                      {LANGUAGE_LEVEL_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
                   )}
                 />
               </div>
