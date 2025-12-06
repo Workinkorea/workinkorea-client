@@ -10,7 +10,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { profileApi } from '@/lib/api/profile/profileCompany';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CompanyProfileRequest } from '@/lib/api/types';
-import { mockCompanyProfile } from '@/lib/mock/companyProfile';
 
 const CompanyProfileEditClient: React.FC = () => {
   const router = useRouter();
@@ -33,20 +32,12 @@ const CompanyProfileEditClient: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   // 기존 프로필 조회
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['companyProfile'],
-    queryFn: async () => {
-      try {
-        return await profileApi.getProfileCompany();
-      } catch (err) {
-        console.error('기업 프로필 로드 실패, mock 데이터 사용:', err);
-        return mockCompanyProfile;
-      }
-    }
+    queryFn: () => profileApi.getProfileCompany()
   });
 
   // 프로필 데이터가 로드되면 폼에 설정
@@ -67,15 +58,7 @@ const CompanyProfileEditClient: React.FC = () => {
   }, [profile]);
 
   const updateProfileMutation = useMutation({
-    mutationFn: async (data: CompanyProfileRequest) => {
-      try {
-        return await profileApi.updateProfileCompany(data);
-      } catch (err) {
-        console.error('프로필 수정 API 실패, mock 데이터 업데이트:', err);
-        // API 실패 시에도 성공으로 처리 (mock)
-        return { ...mockCompanyProfile, ...data };
-      }
-    },
+    mutationFn: (data: CompanyProfileRequest) => profileApi.updateProfileCompany(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyProfile'] });
       alert('프로필이 수정되었습니다.');

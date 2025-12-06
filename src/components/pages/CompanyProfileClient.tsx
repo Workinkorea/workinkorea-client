@@ -10,8 +10,6 @@ import Header from '@/components/layout/Header';
 import { profileApi } from '@/lib/api/profile/profileCompany';
 import { postsApi } from '@/lib/api/posts';
 import { useAuth } from '@/hooks/useAuth';
-import { mockCompanyPosts } from '@/lib/mock/companyPosts';
-import { mockCompanyProfile } from '@/lib/mock/companyProfile';
 
 const CompanyProfileClient: React.FC = () => {
   const router = useRouter();
@@ -27,36 +25,20 @@ const CompanyProfileClient: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
-  // 기업 프로필 조회 (API 실패 시 mock 데이터 사용)
+  // 기업 프로필 조회
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['companyProfile'],
-    queryFn: async () => {
-      try {
-        return await profileApi.getProfileCompany();
-      } catch (err) {
-        console.error('기업 프로필 로드 실패, mock 데이터 사용:', err);
-        // API 호출 실패 시 mock 데이터 반환
-        return mockCompanyProfile;
-      }
-    }
+    queryFn: () => profileApi.getProfileCompany()
   });
 
-  // 기업 공고 목록 조회 (API 실패 시 mock 데이터 사용)
+  // 기업 공고 목록 조회
   const { data: posts, isLoading: postsLoading } = useQuery({
     queryKey: ['myCompanyPosts'],
     queryFn: async () => {
-      try {
-        // 새 엔드포인트 사용 시도
-        const response = await postsApi.getMyCompanyPosts();
-        return response.company_posts;
-      } catch (err) {
-        console.error('내 회사 공고 목록 로드 실패, mock 데이터 사용:', err);
-        // API 호출 실패 시 mock 데이터 반환
-        return mockCompanyPosts;
-      }
+      const response = await postsApi.getMyCompanyPosts();
+      return response.company_posts;
     }
   });
 

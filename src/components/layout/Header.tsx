@@ -9,12 +9,11 @@ interface HeaderProps {
   onLogout?: () => void;
 }
 
-const Header = ({ type, isAuthenticated, isLoading, onLogout }: HeaderProps) => {
+const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
   const getNavigationItems = () => {
     if (type === 'homepage') {
       return [
         { name: '공고', href: '/jobs' },
-        { name: '기업 정보', href: '/company-info' }, 
       ];
     } else {
       return [
@@ -64,9 +63,7 @@ const Header = ({ type, isAuthenticated, isLoading, onLogout }: HeaderProps) => 
               <SearchIcon />
             </button>
 
-            {isLoading ? (
-              <div className="w-24 h-9 bg-component-alternative animate-pulse rounded"></div>
-            ) : isAuthenticated ? (
+            {isAuthenticated ? (
               <div className="flex items-center gap-3">
                 <Link
                   href={type === 'homepage' ? '/user/profile' : '/company'}

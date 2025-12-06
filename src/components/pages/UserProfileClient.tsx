@@ -7,30 +7,13 @@ import { useRouter } from 'next/navigation';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import UserProfileHeader from '@/components/user/UserProfileHeader';
-import ProfileStats from '@/components/user/ProfileStats';
 import SkillBarChart from '@/components/user/SkillBarChart';
 import RadarChart from '@/components/ui/RadarChart';
-import { UserProfile, ProfileStatistics, SkillStats, RadarChartData, UserSkill } from '@/types/user';
+import { UserProfile, RadarChartData, UserSkill } from '@/types/user';
 import { useAuth } from '@/hooks/useAuth';
 import { resumeApi } from '@/lib/api/resume';
 import { profileApi } from '@/lib/api/profile';
 import type { CareerHistory } from '@/lib/api/types';
-
-// TODO: 실제 API 호출로 대체
-const mockStatistics: ProfileStatistics = {
-  profileViews: 1234,
-  contactRequests: 23,
-  skillEndorsements: 45,
-  averageRating: 4.7
-};
-
-const mockSkillStats: SkillStats = {
-  totalSkills: 8,
-  aboveAverageSkills: 6,
-  topSkillCategory: 'technical',
-  overallScore: 76,
-  industryRanking: 85
-};
 
 const UserProfileClient: React.FC = () => {
   const router = useRouter();
@@ -41,7 +24,6 @@ const UserProfileClient: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   // 이력서 삭제 mutation
@@ -146,14 +128,16 @@ const UserProfileClient: React.FC = () => {
       };
 
       // language_skills를 UserSkill 형태로 변환
-      const languageSkills: UserSkill[] = response.resume.language_skills.map((lang, index) => ({
-        id: `lang-${index}`,
-        name: lang.language_type,
-        level: proficiencyToLevel(lang.level),
-        average: 50, // 언어 스킬의 업계 평균 (기본값)
-        category: 'language' as const,
-        description: `${lang.language_type} - ${lang.level}`
-      }));
+      const languageSkills: UserSkill[] = response.resume.language_skills
+        .filter(lang => lang.language_type && lang.level)
+        .map((lang, index) => ({
+          id: `lang-${index}`,
+          name: lang.language_type || '',
+          level: proficiencyToLevel(lang.level || ''),
+          average: 50, // 언어 스킬의 업계 평균 (기본값)
+          category: 'language' as const,
+          description: `${lang.language_type} - ${lang.level}`
+        }));
 
       // Resume, Profile, Contact 데이터를 UserProfile 형태로 변환
       const profile: UserProfile = {
@@ -177,10 +161,12 @@ const UserProfileClient: React.FC = () => {
           startDate: school.start_date,
           endDate: school.end_date
         })),
-        languages: response.resume.language_skills.map(lang => ({
-          name: lang.language_type,
-          proficiency: lang.level as 'native' | 'advanced' | 'intermediate' | 'beginner'
-        })),
+        languages: response.resume.language_skills
+          .filter(lang => lang.language_type && lang.level)
+          .map(lang => ({
+            name: lang.language_type || '',
+            proficiency: (lang.level as 'native' | 'advanced' | 'intermediate' | 'beginner') || 'beginner'
+          })),
         githubUrl: contactData?.github_url,
         linkedinUrl: contactData?.linkedin_url,
         portfolioUrl: contactData?.website_url || profileData?.portfolio_url,
@@ -386,13 +372,6 @@ const UserProfileClient: React.FC = () => {
                       />
                     </div>
                   </motion.div>
-
-                  {/* 통계 */}
-                  <ProfileStats
-                    profile={resumeData}
-                    statistics={mockStatistics}
-                    skillStats={mockSkillStats}
-                  />
                 </div>
               </>
             )}

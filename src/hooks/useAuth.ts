@@ -10,6 +10,10 @@ const AUTH_PATHS = ['/login', '/signup', '/company-login', '/company-signup'];
 // 로그인이 필수인 페이지 경로
 const PROTECTED_PATHS = ['/gg'];
 //'/user', '/company'
+
+// 전역 refresh 중복 방지 플래그 (모든 useAuth 인스턴스가 공유)
+let isGloballyRefreshing = false;
+
 interface UseAuthOptions {
   required?: boolean; // true: 토큰 없으면 refresh 시도, false: 토큰 체크만
 }
@@ -32,24 +36,48 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
   // 토큰 갱신 스케줄링 (전방 선언을 위한 ref)
   const scheduleTokenRefreshRef = useRef<(() => void) | null>(null);
+  const didScheduleRef = useRef(false);
 
   // 토큰 갱신 함수
   const refreshAccessToken = useCallback(async () => {
+    // 이미 refresh 중이면 중복 호출 방지 (전역 플래그 사용)
+    if (isGloballyRefreshing) {
+      console.log('[useAuth] Already refreshing globally, skipping');
+      return false;
+    }
+
+    isGloballyRefreshing = true;
+
     try {
+      console.log('[useAuth] Starting token refresh');
+      // 원래 토큰이 어디에 저장되어 있었는지 확인
+      const rememberMe = tokenManager.isTokenInLocalStorage('user');
+
       const response = await authApi.refreshToken();
       const accessToken = response.accessToken;
 
       if (accessToken) {
-        tokenManager.setAccessToken(accessToken);
+        console.log('[useAuth] Token refresh successful');
+        // 같은 저장소에 새 토큰 저장
+        tokenManager.setAccessToken(accessToken, rememberMe);
+
+        // 새 토큰의 만료 시간 확인
+        const newTokenRemainingTime = tokenManager.getTokenRemainingTime();
+        console.log('[useAuth] New token remaining time:', newTokenRemainingTime, 'seconds');
+
         setIsAuthenticated(true);
-        scheduleTokenRefreshRef.current?.();
+
+        // Do NOT auto‑schedule inside refresh — prevents infinite refresh loops
         return true;
       }
       return false;
-    } catch {
+    } catch (error) {
+      console.error('[useAuth] Token refresh failed:', error);
       tokenManager.removeAccessToken();
       setIsAuthenticated(false);
       return false;
+    } finally {
+      isGloballyRefreshing = false;
     }
   }, []);
 
@@ -63,8 +91,12 @@ export const useAuth = (options: UseAuthOptions = {}) => {
     const remainingTime = tokenManager.getTokenRemainingTime();
 
     if (!remainingTime || remainingTime <= 0) {
-      // 토큰이 이미 만료됨 - 즉시 갱신
-      refreshAccessToken();
+      // 토큰이 이미 만료됨
+      console.log('[useAuth] Token expired, clearing auth');
+      // 즉시 갱신하지 말고 인증 상태만 초기화
+      // (무한 루프 방지: refresh가 계속 실패하는 경우)
+      tokenManager.removeAccessToken();
+      setIsAuthenticated(false);
       return;
     }
 
@@ -79,6 +111,8 @@ export const useAuth = (options: UseAuthOptions = {}) => {
       refreshIn = remainingTime - bufferTime;
     }
 
+    console.log('[useAuth] Scheduling next refresh in', refreshIn, 'seconds');
+
     refreshTimerRef.current = setTimeout(() => {
       refreshAccessToken();
     }, refreshIn * 1000);
@@ -89,6 +123,12 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      // Avoid running auth logic on refresh API routes
+      if (pathname?.includes('/api/auth')) {
+        setIsLoading(false);
+        return;
+      }
+
       // 인증 페이지에서는 토큰 체크를 하지 않음
       if (isAuthPath) {
         setIsAuthenticated(false);
@@ -123,7 +163,8 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
         // protected path에서만 토큰 갱신 스케줄링
         // 메인 페이지 등 선택적 로그인 페이지에서는 자동 갱신하지 않음
-        if (isProtectedPath) {
+        if (isProtectedPath && !didScheduleRef.current) {
+          didScheduleRef.current = true;
           scheduleTokenRefresh();
         }
         return;
@@ -174,8 +215,8 @@ export const useAuth = (options: UseAuthOptions = {}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshAccessToken, isAuthPath, isProtectedPath]);
 
-  const login = (accessToken: string) => {
-    tokenManager.setAccessToken(accessToken);
+  const login = (accessToken: string, rememberMe: boolean = false) => {
+    tokenManager.setAccessToken(accessToken, rememberMe);
     setIsAuthenticated(true);
     scheduleTokenRefresh(); // 로그인 후 갱신 스케줄링
   };

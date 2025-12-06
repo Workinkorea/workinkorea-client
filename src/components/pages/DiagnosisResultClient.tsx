@@ -31,7 +31,6 @@ const DiagnosisResultClient = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   const handleRestart = () => {

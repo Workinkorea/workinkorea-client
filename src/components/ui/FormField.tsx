@@ -16,6 +16,7 @@ interface FormFieldProps<T extends FieldValues, N extends Path<T>> {
   render: (field: ControllerRenderProps<T, N>, fieldId: string) => ReactElement;
   error?: string;
   rules?: RegisterOptions<T, N>;
+  variant?: 'default' | 'diagnosis';
 }
 
 export const FormField = <T extends FieldValues, N extends Path<T>>({
@@ -23,15 +24,20 @@ export const FormField = <T extends FieldValues, N extends Path<T>>({
   control,
   label,
   render,
-  rules
+  rules,
+  variant = 'default'
 }: FormFieldProps<T, N>) => {
   const fieldId = `field-${name}`;
+
+  const labelClassName = variant === 'diagnosis'
+    ? "cursor-pointer text-label-900 text-title-3 font-semibold text-left self-start"
+    : "cursor-pointer text-label-400 text-caption-1 text-left self-start";
 
   return (
     <div className="relative flex flex-col gap-2 w-full">
       <label
         htmlFor={fieldId}
-        className="cursor-pointer text-label-400 text-caption-1 text-left self-start"
+        className={labelClassName}
       >
         {label}
         {rules?.required && <span className="text-red-500 ml-1">*</span>}

@@ -21,14 +21,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     showPassword,
     onTogglePassword,
     rightElement,
+    value,
     ...props
   }, ref) => {
-    const inputType = variant === 'password' 
+    const inputType = variant === 'password'
       ? (showPassword ? 'text' : 'password')
       : type;
 
     const baseClasses = "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent";
-    
+
     const variantClasses = {
       default: "border-line-400 focus:ring-primary",
       password: "border-line-400 focus:ring-primary pr-10"
@@ -46,12 +47,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       className
     );
 
+    // null 값을 빈 문자열로 변환하여 controlled input 오류 방지
+    const safeValue = value === null ? '' : value;
+
     return (
       <div className="relative">
         <input
           type={inputType}
           className={inputClasses}
           ref={ref}
+          value={safeValue}
           {...props}
         />
         

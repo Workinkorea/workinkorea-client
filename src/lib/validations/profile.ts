@@ -1,19 +1,22 @@
 import { z } from 'zod';
 
+// 언어 스킬 검증 스키마 (기본 프로필용)
+export const languageSkillSchema = z.object({
+  language_type: z.string()
+    .max(30, '언어는 30글자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
+
+  level: z.string()
+    .max(50, '언어 수준은 50글자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
+});
+
 // 기본 프로필 정보 검증 스키마
 export const basicProfileSchema = z.object({
-  name: z.string()
-    .min(2, '이름은 최소 2글자 이상이어야 합니다.')
-    .max(50, '이름은 50글자를 초과할 수 없습니다.')
-    .regex(/^[가-힣a-zA-Z\s]+$/, '이름은 한글, 영문, 공백만 사용할 수 있습니다.'),
-
-  profile_image_url: z.union([
-    z.string().url('올바른 URL 형식을 입력해주세요.'),
-    z.literal('')
-  ]).optional(),
-
-  position_id: z.string()
-    .min(1, '직책을 선택해주세요.')
+  profile_image_url: z.string()
+    .url('올바른 URL 형식을 입력해주세요.')
     .optional()
     .or(z.literal('')),
 
@@ -27,18 +30,62 @@ export const basicProfileSchema = z.object({
     .optional()
     .or(z.literal('')),
 
-  job_status: z.string()
-    .min(1, '직업 상태를 선택해주세요.')
+  address: z.string()
+    .max(200, '주소는 200글자를 초과할 수 없습니다.')
     .optional()
     .or(z.literal('')),
+
+  position_id: z.number()
+    .min(0, '직책을 선택해주세요.')
+    .optional(),
+
+  career: z.enum([
+    'NEWCOMER',
+    'YEAR_1_LESS',
+    'YEAR_1',
+    'YEAR_2_LESS',
+    'YEAR_2',
+    'YEAR_3_LESS',
+    'YEAR_3',
+    'YEAR_5_LESS',
+    'YEAR_5',
+    'YEAR_7_LESS',
+    'YEAR_7',
+    'YEAR_10_LESS',
+    'YEAR_10',
+    'YEAR_10_MORE'
+  ]).optional()
+    .or(z.literal('')),
+
+  job_status: z.string()
+    .optional()
+    .or(z.literal('')),
+
+  portfolio_url: z.string()
+    .url('올바른 URL 형식을 입력해주세요.')
+    .optional()
+    .or(z.literal('')),
+
+  language_skills: z.array(languageSkillSchema).optional(),
+
+  name: z.string()
+    .max(50, '이름은 50글자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
+
+  country_id: z.number()
+    .min(0, '국가를 선택해주세요.')
+    .optional(),
 });
 
 // 연락처 정보 검증 스키마
 export const contactInfoSchema = z.object({
-  email: z.string()
-    .email('올바른 이메일 형식을 입력해주세요.')
-    .min(5, '이메일은 최소 5글자 이상이어야 합니다.')
-    .max(100, '이메일은 100글자를 초과할 수 없습니다.'),
+  user_id: z.number().optional(),
+
+  phone_number: z.string()
+    .max(20, '전화번호는 20자를 초과할 수 없습니다.')
+    .optional()
+    .or(z.literal('')),
 
   github_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
@@ -52,7 +99,7 @@ export const contactInfoSchema = z.object({
     .optional()
     .or(z.literal('')),
 
-  portfolio_url: z.string()
+  website_url: z.string()
     .url('올바른 URL 형식을 입력해주세요.')
     .optional()
     .or(z.literal('')),

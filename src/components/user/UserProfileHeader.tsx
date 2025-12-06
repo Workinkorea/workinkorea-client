@@ -20,36 +20,36 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
   className = ''
 }) => {
   // 가용성 상태에 따른 스타일
-  const getAvailabilityStyle = (availability: UserProfile['availability']) => {
-    switch (availability) {
-      case 'available':
-        return {
-          bg: 'bg-status-correct',
-          text: 'text-white',
-          label: '구직중'
-        };
-      case 'busy':
-        return {
-          bg: 'bg-status-caution',
-          text: 'text-white', 
-          label: '바쁨'
-        };
-      case 'not-looking':
-        return {
-          bg: 'bg-label-500',
-          text: 'text-white',
-          label: '구직안함'
-        };
-      default:
-        return {
-          bg: 'bg-component-alternative',
-          text: 'text-label-700',
-          label: '미정'
-        };
-    }
-  };
+  const getAvailabilityStyle = (jobStatus: UserProfile['job_status']) => {
+      switch (jobStatus) {
+        case 'available':
+          return {
+            bg: 'bg-status-correct',
+            text: 'text-white',
+            label: '구직중'
+          };
+        case 'busy':
+          return {
+            bg: 'bg-status-caution',
+            text: 'text-white', 
+            label: '바쁨'
+          };
+        case 'not-looking':
+          return {
+            bg: 'bg-label-500',
+            text: 'text-white',
+            label: '구직안함'
+          };
+        default:
+          return {
+            bg: 'bg-component-alternative',
+            text: 'text-label-700',
+            label: '미정'
+          };
+      }
+    };
 
-  const availabilityStyle = getAvailabilityStyle(profile.availability);
+  const availabilityStyle = getAvailabilityStyle(profile.job_status);
 
   // 언어 숙련도 라벨
   const getProficiencyLabel = (proficiency: string) => {
@@ -119,9 +119,9 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
                 </span>
               </div>
 
-              {profile.title && (
+              {profile.position && (
                 <p className="text-body-2 text-primary-600 font-medium mb-3">
-                  {profile.title}
+                  {profile.position}
                 </p>
               )}
 
@@ -133,11 +133,13 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
                     <span>{profile.location}</span>
                   </div>
                 )}
-                
-                <div className="flex items-center gap-1">
-                  <Briefcase size={16} />
-                  <span>{profile.experience}년 경력</span>
-                </div>
+
+                {profile.experience > 0 && (
+                  <div className="flex items-center gap-1">
+                    <Briefcase size={16} />
+                    <span>{profile.experience}년 경력</span>
+                  </div>
+                )}
 
                 <div className="flex items-center gap-1">
                   <Calendar size={16} />
@@ -146,9 +148,9 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
               </div>
 
               {/* 소개 */}
-              {profile.bio && (
+              {profile.introduction && (
                 <p className="text-body-3 text-label-700 mb-4 leading-relaxed">
-                  {profile.bio}
+                  {profile.introduction}
                 </p>
               )}
 
@@ -209,13 +211,15 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
       >
         <div className="flex flex-wrap items-center gap-4">
           {/* 이메일 */}
-          <a 
-            href={`mailto:${profile.email}`}
-            className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-500 transition-colors"
-          >
-            <Mail size={16} />
-            <span>{profile.email}</span>
-          </a>
+          {profile.email && (
+            <a
+              href={`mailto:${profile.email}`}
+              className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-500 transition-colors"
+            >
+              <Mail size={16} />
+              <span>{profile.email}</span>
+            </a>
+          )}
 
           {/* GitHub */}
           {profile.githubUrl && (

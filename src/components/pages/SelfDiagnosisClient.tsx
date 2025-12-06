@@ -34,7 +34,6 @@ const SelfDiagnosisClient = () => {
 
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { adminApi, AdminCompany } from '@/lib/api/admin';
 import { toast } from 'sonner';
 
@@ -29,11 +29,7 @@ export default function AdminCompaniesPage() {
 
   const limit = 10;
 
-  useEffect(() => {
-    fetchCompanies();
-  }, [page]);
-
-  async function fetchCompanies() {
+  const fetchCompanies = useCallback(async () => {
     try {
       setLoading(true);
       const data = await adminApi.getCompanies(page, limit);
@@ -67,7 +63,11 @@ export default function AdminCompaniesPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [page, limit]);
+
+  useEffect(() => {
+    fetchCompanies();
+  }, [fetchCompanies]);
 
   function openCreateModal() {
     setEditingCompany(null);

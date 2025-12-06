@@ -181,8 +181,8 @@ export default function BusinessLoginForm() {
         const token = url.searchParams.get('token');
 
         if (token) {
-          // 기업 로그인 토큰을 세션 스토리지에 별도로 저장
-          tokenManager.setCompanyAccessToken(token);
+          // 자동로그인 체크박스에 따라 localStorage 또는 sessionStorage에 저장
+          tokenManager.setCompanyAccessToken(token, data.rememberMe);
         }
 
         if (data.rememberMe) {

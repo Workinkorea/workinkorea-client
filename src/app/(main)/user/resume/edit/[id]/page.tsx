@@ -90,10 +90,12 @@ const EditResumePage: React.FC = () => {
           skills: [],
           projects: [],
           certifications: response.resume.licenses.map(license => license.license_name),
-          languages: response.resume.language_skills.map(lang => ({
-            name: lang.language_type,
-            proficiency: lang.level as 'native' | 'advanced' | 'intermediate' | 'beginner'
-          }))
+          languages: response.resume.language_skills
+            .filter(lang => lang.language_type && lang.level)
+            .map(lang => ({
+              name: lang.language_type || '',
+              proficiency: (lang.level as 'native' | 'advanced' | 'intermediate' | 'beginner') || 'beginner'
+            }))
         },
         // 자격증 상세 정보 저장 (ResumeEditor에서 사용)
         licenses: response.resume.licenses.map(license => ({
