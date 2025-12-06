@@ -19,22 +19,13 @@ export class ApiError extends Error {
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-const isRefreshing = {
-  user: false,
-  company: false,
-};
-
-type RefreshSubscriber = {
-  resolve: (token: string) => void;
-  reject: (error: unknown) => void;
-};
-
-const refreshSubscribers: {
-  user: RefreshSubscriber[],
-  company: RefreshSubscriber[],
+// refresh Promise 캐싱 (race condition으로 인한 무한 루프 방지)
+const refreshPromises: {
+  user: Promise<string> | null,
+  company: Promise<string> | null,
 } = {
-  user: [],
-  company: [],
+  user: null,
+  company: null,
 };
 
 export const apiClient = {
@@ -84,50 +75,58 @@ export const apiClient = {
           );
         }
 
-        if (isRefreshing[tokenType]) {
-          return new Promise<T>((resolve, reject) => {
-            subscribeTokenRefresh(tokenType, {
-              resolve: async (newToken: string) => {
-                try {
-                  const retryController = new AbortController();
-                  const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
+        // 이미 refresh 중이면 같은 Promise를 재사용 (무한 루프 방지)
+        if (refreshPromises[tokenType]) {
+          try {
+            const newToken = await refreshPromises[tokenType];
 
-                  const retryConfig: RequestInit = {
-                    ...config,
-                    headers: {
-                      ...config.headers,
-                      Authorization: `Bearer ${newToken}`,
-                    },
-                    signal: retryController.signal,
-                  };
+            const retryController = new AbortController();
+            const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
 
-                  const retryResponse = await fetch(url, retryConfig);
-                  clearTimeout(retryTimeoutId);
-
-                  if (!retryResponse.ok) {
-                    throw new Error(`API Error: ${retryResponse.status}`);
-                  }
-
-                  const data = await retryResponse.json();
-                  resolve(data);
-                } catch (error) {
-                  reject(error);
-                }
+            const retryConfig: RequestInit = {
+              ...config,
+              headers: {
+                ...config.headers,
+                Authorization: `Bearer ${newToken}`,
               },
-              reject,
-            });
-          });
+              signal: retryController.signal,
+            };
+
+            const retryResponse = await fetch(url, retryConfig);
+            clearTimeout(retryTimeoutId);
+
+            if (!retryResponse.ok) {
+              throw new Error(`API Error: ${retryResponse.status}`);
+            }
+
+            return retryResponse.json();
+          } catch (error) {
+            throw error;
+          }
         }
 
-        isRefreshing[tokenType] = true;
+        // 새로운 refresh Promise 생성 및 캐싱
+        refreshPromises[tokenType] = (async () => {
+          try {
+            const newAccessToken = await refreshAccessToken(tokenType);
+            // 원래 토큰이 localStorage에 있었는지 확인하여 같은 곳에 저장
+            const rememberMe = tokenManager.isTokenInLocalStorage(tokenType);
+            tokenManager.setToken(newAccessToken, tokenType, rememberMe);
+            return newAccessToken;
+          } catch (error) {
+            tokenManager.removeToken(tokenType);
+            if (typeof window !== 'undefined') {
+              window.location.href = '/login';
+            }
+            throw error;
+          } finally {
+            // refresh 완료 후 Promise 캐시 초기화
+            refreshPromises[tokenType] = null;
+          }
+        })();
 
         try {
-          const newAccessToken = await refreshAccessToken(tokenType);
-          // 원래 토큰이 localStorage에 있었는지 확인하여 같은 곳에 저장
-          const rememberMe = tokenManager.isTokenInLocalStorage(tokenType);
-          tokenManager.setToken(newAccessToken, tokenType, rememberMe);
-          isRefreshing[tokenType] = false;
-          onTokenRefreshed(tokenType, newAccessToken);
+          const newAccessToken = await refreshPromises[tokenType];
 
           const retryController = new AbortController();
           const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
@@ -150,15 +149,6 @@ export const apiClient = {
 
           return retryResponse.json();
         } catch (error) {
-          isRefreshing[tokenType] = false;
-          onTokenRefreshFailed(tokenType, error);
-          refreshSubscribers[tokenType] = [];
-          tokenManager.removeToken(tokenType);
-
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login';
-          }
-
           throw error;
         }
       }
@@ -205,20 +195,6 @@ export const apiClient = {
   delete<T>(endpoint: string, options?: ApiRequestOptions): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   },
-};
-
-const subscribeTokenRefresh = (tokenType: 'user' | 'company', subscriber: RefreshSubscriber) => {
-  refreshSubscribers[tokenType].push(subscriber);
-};
-
-const onTokenRefreshed = (tokenType: 'user' | 'company', token: string) => {
-  refreshSubscribers[tokenType].forEach((subscriber) => subscriber.resolve(token));
-  refreshSubscribers[tokenType] = [];
-};
-
-const onTokenRefreshFailed = (tokenType: 'user' | 'company', error: unknown) => {
-  refreshSubscribers[tokenType].forEach((subscriber) => subscriber.reject(error));
-  refreshSubscribers[tokenType] = [];
 };
 
 interface RefreshTokenResponse {
