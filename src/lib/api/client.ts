@@ -19,22 +19,22 @@ export class ApiError extends Error {
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-// refresh Promise 캐싱 (race condition으로 인한 무한 루프 방지)
-const refreshPromises: {
-  user: Promise<string> | null,
-  company: Promise<string> | null,
-} = {
-  user: null,
-  company: null,
-};
-
-// refresh 후 재시도 중 플래그 (무한 루프 방지)
-const isRetryingAfterRefresh: {
-  user: boolean,
-  company: boolean,
-} = {
+const isRefreshing = {
   user: false,
   company: false,
+};
+
+type RefreshSubscriber = {
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+};
+
+const refreshSubscribers: {
+  user: RefreshSubscriber[],
+  company: RefreshSubscriber[],
+} = {
+  user: [],
+  company: [],
 };
 
 export const apiClient = {
@@ -46,13 +46,6 @@ export const apiClient = {
     const { skipAuth, tokenType = 'user', ...fetchOptions } = options;
 
     const accessToken = tokenManager.getToken(tokenType);
-    console.log('[DEBUG] Request start:', {
-      endpoint,
-      hasToken: !!accessToken,
-      tokenPreview: accessToken ? `${accessToken.substring(0, 20)}...` : 'none',
-      skipAuth,
-      tokenType
-    });
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -63,10 +56,9 @@ export const apiClient = {
         ...(accessToken && !skipAuth && { Authorization: `Bearer ${accessToken}` }),
         ...fetchOptions.headers,
       },
+      credentials: skipAuth ? 'omit' : 'include',
       signal: controller.signal,
       ...fetchOptions,
-      // credentials는 명시적으로 전달된 값을 우선 사용
-      credentials: fetchOptions.credentials || (skipAuth ? 'omit' : 'include'),
     };
 
     try {
@@ -77,23 +69,10 @@ export const apiClient = {
         // refresh 엔드포인트에서 401이 발생하면 무한 루프 방지를 위해 바로 에러 처리
         const isRefreshEndpoint = endpoint.includes('/api/auth/refresh') ||
                                    endpoint.includes('/api/auth/company/refresh');
-
-        console.log('[DEBUG] 401 Error:', {
-          endpoint,
-          isRefreshEndpoint,
-          hasRefreshPromise: !!refreshPromises[tokenType],
-          isRetryingAfterRefresh: isRetryingAfterRefresh[tokenType],
-          skipAuth,
-          tokenType
-        });
-
         if (isRefreshEndpoint) {
-          console.error('[ERROR] Refresh API failed (401) - logging out');
           const errorData = await response.json().catch(() => ({ error: 'Unauthorized' }));
           // refresh 실패 시 토큰 제거 및 로그인 페이지로 리다이렉트
           tokenManager.removeToken(tokenType);
-          refreshPromises[tokenType] = null; // Promise 캐시도 초기화
-          isRetryingAfterRefresh[tokenType] = false;
           if (typeof window !== 'undefined') {
             window.location.href = '/login';
           }
@@ -104,104 +83,50 @@ export const apiClient = {
           );
         }
 
-        // refresh 후 재시도 중인데 또 401이 발생하면 무한 루프 방지
-        if (isRetryingAfterRefresh[tokenType]) {
-          console.error('[ERROR] Retry after refresh failed (401) - logging out');
-          tokenManager.removeToken(tokenType);
-          refreshPromises[tokenType] = null;
-          isRetryingAfterRefresh[tokenType] = false;
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login';
-          }
-          throw new ApiError(
-            'Session expired after token refresh',
-            response.status,
-            { error: 'Session expired' }
-          );
-        }
+        if (isRefreshing[tokenType]) {
+          return new Promise<T>((resolve, reject) => {
+            subscribeTokenRefresh(tokenType, {
+              resolve: async (newToken: string) => {
+                try {
+                  const retryController = new AbortController();
+                  const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
 
-        // 이미 refresh 중이면 같은 Promise를 재사용 (무한 루프 방지)
-        if (refreshPromises[tokenType]) {
-          console.log('[DEBUG] Waiting for existing refresh promise');
-          try {
-            const newToken = await refreshPromises[tokenType];
+                  const retryConfig: RequestInit = {
+                    ...config,
+                    headers: {
+                      ...config.headers,
+                      Authorization: `Bearer ${newToken}`,
+                    },
+                    signal: retryController.signal,
+                  };
 
-            // 재시도 플래그 설정
-            isRetryingAfterRefresh[tokenType] = true;
+                  const retryResponse = await fetch(url, retryConfig);
+                  clearTimeout(retryTimeoutId);
 
-            const retryController = new AbortController();
-            const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
+                  if (!retryResponse.ok) {
+                    throw new Error(`API Error: ${retryResponse.status}`);
+                  }
 
-            const retryConfig: RequestInit = {
-              ...config,
-              headers: {
-                ...config.headers,
-                Authorization: `Bearer ${newToken}`,
+                  const data = await retryResponse.json();
+                  resolve(data);
+                } catch (error) {
+                  reject(error);
+                }
               },
-              signal: retryController.signal,
-            };
-
-            const retryResponse = await fetch(url, retryConfig);
-            clearTimeout(retryTimeoutId);
-
-            // 재시도 성공하면 플래그 해제
-            isRetryingAfterRefresh[tokenType] = false;
-
-            if (!retryResponse.ok) {
-              throw new Error(`API Error: ${retryResponse.status}`);
-            }
-
-            return retryResponse.json();
-          } catch (error) {
-            isRetryingAfterRefresh[tokenType] = false;
-            throw error;
-          }
+              reject,
+            });
+          });
         }
 
-        refreshPromises[tokenType] = (async () => {
-          try {
-            console.log('[DEBUG] Calling refreshAccessToken');
-            const newAccessToken = await refreshAccessToken(tokenType);
-            console.log('[DEBUG] Got new access token:', {
-              tokenPreview: `${newAccessToken.substring(0, 20)}...`,
-              length: newAccessToken.length
-            });
-            // 원래 토큰이 localStorage에 있었는지 확인하여 같은 곳에 저장
-            const rememberMe = tokenManager.isTokenInLocalStorage(tokenType);
-            console.log('[DEBUG] Saving token:', { tokenType, rememberMe });
-            tokenManager.setToken(newAccessToken, tokenType, rememberMe);
-
-            // 저장 확인
-            const savedToken = tokenManager.getToken(tokenType);
-            console.log('[DEBUG] Token saved successfully:', {
-              saved: savedToken === newAccessToken,
-              savedTokenPreview: savedToken ? `${savedToken.substring(0, 20)}...` : 'none'
-            });
-
-            return newAccessToken;
-          } catch (error) {
-            console.error('[ERROR] refreshAccessToken failed:', error);
-            tokenManager.removeToken(tokenType);
-            if (typeof window !== 'undefined') {
-              window.location.href = '/login';
-            }
-            throw error;
-          } finally {
-            // refresh 완료 후 Promise 캐시 초기화
-            refreshPromises[tokenType] = null;
-          }
-        })();
+        isRefreshing[tokenType] = true;
 
         try {
-          const newAccessToken = await refreshPromises[tokenType];
-
-          console.log('[DEBUG] Retrying request with new token:', {
-            endpoint,
-            newTokenPreview: `${newAccessToken.substring(0, 20)}...`
-          });
-
-          // 재시도 플래그 설정
-          isRetryingAfterRefresh[tokenType] = true;
+          const newAccessToken = await refreshAccessToken(tokenType);
+          // 원래 토큰이 localStorage에 있었는지 확인하여 같은 곳에 저장
+          const rememberMe = tokenManager.isTokenInLocalStorage(tokenType);
+          tokenManager.setToken(newAccessToken, tokenType, rememberMe);
+          isRefreshing[tokenType] = false;
+          onTokenRefreshed(tokenType, newAccessToken);
 
           const retryController = new AbortController();
           const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
@@ -218,21 +143,21 @@ export const apiClient = {
           const retryResponse = await fetch(url, retryConfig);
           clearTimeout(retryTimeoutId);
 
-          console.log('[DEBUG] Retry response:', {
-            endpoint,
-            status: retryResponse.status
-          });
-
-          // 재시도 성공하면 플래그 해제
-          isRetryingAfterRefresh[tokenType] = false;
-
           if (!retryResponse.ok) {
             throw new Error(`API Error: ${retryResponse.status}`);
           }
 
           return retryResponse.json();
         } catch (error) {
-          isRetryingAfterRefresh[tokenType] = false;
+          isRefreshing[tokenType] = false;
+          onTokenRefreshFailed(tokenType, error);
+          refreshSubscribers[tokenType] = [];
+          tokenManager.removeToken(tokenType);
+
+          if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+          }
+
           throw error;
         }
       }
@@ -279,6 +204,20 @@ export const apiClient = {
   delete<T>(endpoint: string, options?: ApiRequestOptions): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   },
+};
+
+const subscribeTokenRefresh = (tokenType: 'user' | 'company', subscriber: RefreshSubscriber) => {
+  refreshSubscribers[tokenType].push(subscriber);
+};
+
+const onTokenRefreshed = (tokenType: 'user' | 'company', token: string) => {
+  refreshSubscribers[tokenType].forEach((subscriber) => subscriber.resolve(token));
+  refreshSubscribers[tokenType] = [];
+};
+
+const onTokenRefreshFailed = (tokenType: 'user' | 'company', error: unknown) => {
+  refreshSubscribers[tokenType].forEach((subscriber) => subscriber.reject(error));
+  refreshSubscribers[tokenType] = [];
 };
 
 interface RefreshTokenResponse {

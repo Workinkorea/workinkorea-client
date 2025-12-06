@@ -36,6 +36,7 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
   // 토큰 갱신 스케줄링 (전방 선언을 위한 ref)
   const scheduleTokenRefreshRef = useRef<(() => void) | null>(null);
+  const didScheduleRef = useRef(false);
 
   // 토큰 갱신 함수
   const refreshAccessToken = useCallback(async () => {
@@ -66,12 +67,7 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
         setIsAuthenticated(true);
 
-        // 새 토큰이 유효한 경우에만 재스케줄링
-        if (newTokenRemainingTime && newTokenRemainingTime > 60) {
-          scheduleTokenRefreshRef.current?.();
-        } else {
-          console.error('[useAuth] New token is already expired or expires too soon!');
-        }
+        // Do NOT auto‑schedule inside refresh — prevents infinite refresh loops
         return true;
       }
       return false;
@@ -127,6 +123,12 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      // Avoid running auth logic on refresh API routes
+      if (pathname?.includes('/api/auth')) {
+        setIsLoading(false);
+        return;
+      }
+
       // 인증 페이지에서는 토큰 체크를 하지 않음
       if (isAuthPath) {
         setIsAuthenticated(false);
@@ -161,7 +163,8 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
         // protected path에서만 토큰 갱신 스케줄링
         // 메인 페이지 등 선택적 로그인 페이지에서는 자동 갱신하지 않음
-        if (isProtectedPath) {
+        if (isProtectedPath && !didScheduleRef.current) {
+          didScheduleRef.current = true;
           scheduleTokenRefresh();
         }
         return;

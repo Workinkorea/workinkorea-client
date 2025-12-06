@@ -12,17 +12,40 @@ export const tokenManager = {
   setAccessToken: (token: string, rememberMe: boolean = false) => {
     if (typeof window !== 'undefined') {
       const storage = rememberMe ? localStorage : sessionStorage;
+      console.log('[TokenManager] setAccessToken:', {
+        rememberMe,
+        storageType: rememberMe ? 'localStorage' : 'sessionStorage',
+        tokenPreview: `${token.substring(0, 20)}...`
+      });
       storage.setItem(TOKEN_KEYS.user, token);
       // 반대 스토리지에서는 제거 (중복 방지)
       const oppositeStorage = rememberMe ? sessionStorage : localStorage;
       oppositeStorage.removeItem(TOKEN_KEYS.user);
+
+      // 저장 후 확인
+      const savedInLocal = localStorage.getItem(TOKEN_KEYS.user);
+      const savedInSession = sessionStorage.getItem(TOKEN_KEYS.user);
+      console.log('[TokenManager] After save:', {
+        inLocalStorage: !!savedInLocal,
+        inSessionStorage: !!savedInSession
+      });
     }
   },
 
   getAccessToken: (): string | null => {
     if (typeof window !== 'undefined') {
       // localStorage를 먼저 확인 (자동 로그인), 없으면 sessionStorage 확인
-      return localStorage.getItem(TOKEN_KEYS.user) || sessionStorage.getItem(TOKEN_KEYS.user);
+      const fromLocal = localStorage.getItem(TOKEN_KEYS.user);
+      const fromSession = sessionStorage.getItem(TOKEN_KEYS.user);
+      const result = fromLocal || fromSession;
+
+      console.log('[TokenManager] getAccessToken:', {
+        fromLocalStorage: !!fromLocal,
+        fromSessionStorage: !!fromSession,
+        returning: result ? `${result.substring(0, 20)}...` : 'null'
+      });
+
+      return result;
     }
     return null;
   },
