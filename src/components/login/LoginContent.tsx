@@ -10,6 +10,7 @@ import { GoogleIcon } from '@/components/ui/AccessibleIcon';
 import { useRouter } from 'next/navigation';
 import { authApi } from '@/lib/api/auth';
 import { tokenManager } from '@/lib/utils/tokenManager';
+import { API_BASE_URL } from '@/lib/api/client';
 
 interface LoginFormData {
   email: string;
@@ -123,7 +124,7 @@ export default function LoginContent() {
     } else {
       localStorage.removeItem('googleLoginRememberMe');
     }
-    window.location.href = '/api/auth/login/google';
+    window.location.href = `${API_BASE_URL}/api/auth/login/google`;
   };
 
   const onSubmit = async (data: LoginFormData) => {
