@@ -19,8 +19,23 @@ export class ApiError extends Error {
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-let isRefreshing = false;
-let refreshSubscribers: ((token: string) => void)[] = [];
+let isRefreshing = {
+  user: false,
+  company: false,
+};
+
+type RefreshSubscriber = {
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+};
+
+let refreshSubscribers: {
+  user: RefreshSubscriber[],
+  company: RefreshSubscriber[],
+} = {
+  user: [],
+  company: [],
+};
 
 export const apiClient = {
   async request<T>(
@@ -52,7 +67,7 @@ export const apiClient = {
 
       if (response.status === 401) {
         // refresh 엔드포인트에서 401이 발생하면 무한 루프 방지를 위해 바로 에러 처리
-        if (endpoint === '/api/auth/refresh') {
+        if (endpoint === '/api/auth/refresh' || endpoint === '/api/auth/company/refresh') {
           const errorData = await response.json().catch(() => ({ error: 'Unauthorized' }));
           throw new ApiError(
             errorData.error || 'Unauthorized',
@@ -61,45 +76,48 @@ export const apiClient = {
           );
         }
 
-        if (isRefreshing) {
-          return new Promise((resolve, reject) => {
-            subscribeTokenRefresh(async (newToken: string) => {
-              try {
-                const retryController = new AbortController();
-                const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
+        if (isRefreshing[tokenType]) {
+          return new Promise<T>((resolve, reject) => {
+            subscribeTokenRefresh(tokenType, {
+              resolve: async (newToken: string) => {
+                try {
+                  const retryController = new AbortController();
+                  const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
 
-                const retryConfig: RequestInit = {
-                  ...config,
-                  headers: {
-                    ...config.headers,
-                    Authorization: `Bearer ${newToken}`,
-                  },
-                  signal: retryController.signal,
-                };
+                  const retryConfig: RequestInit = {
+                    ...config,
+                    headers: {
+                      ...config.headers,
+                      Authorization: `Bearer ${newToken}`,
+                    },
+                    signal: retryController.signal,
+                  };
 
-                const retryResponse = await fetch(url, retryConfig);
-                clearTimeout(retryTimeoutId);
+                  const retryResponse = await fetch(url, retryConfig);
+                  clearTimeout(retryTimeoutId);
 
-                if (!retryResponse.ok) {
-                  throw new Error(`API Error: ${retryResponse.status}`);
+                  if (!retryResponse.ok) {
+                    throw new Error(`API Error: ${retryResponse.status}`);
+                  }
+
+                  const data = await retryResponse.json();
+                  resolve(data);
+                } catch (error) {
+                  reject(error);
                 }
-
-                const data = await retryResponse.json();
-                resolve(data);
-              } catch (error) {
-                reject(error);
-              }
+              },
+              reject,
             });
           });
         }
 
-        isRefreshing = true;
+        isRefreshing[tokenType] = true;
 
         try {
           const newAccessToken = await refreshAccessToken(tokenType);
           tokenManager.setToken(newAccessToken, tokenType);
-          isRefreshing = false;
-          onTokenRefreshed(newAccessToken);
+          isRefreshing[tokenType] = false;
+          onTokenRefreshed(tokenType, newAccessToken);
 
           const retryController = new AbortController();
           const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
@@ -122,8 +140,9 @@ export const apiClient = {
 
           return retryResponse.json();
         } catch (error) {
-          isRefreshing = false;
-          refreshSubscribers = [];
+          isRefreshing[tokenType] = false;
+          onTokenRefreshFailed(tokenType, error);
+          refreshSubscribers[tokenType] = [];
           tokenManager.removeToken(tokenType);
 
           if (typeof window !== 'undefined') {
@@ -178,13 +197,18 @@ export const apiClient = {
   },
 };
 
-const subscribeTokenRefresh = (cb: (token: string) => void) => {
-  refreshSubscribers.push(cb);
+const subscribeTokenRefresh = (tokenType: 'user' | 'company', subscriber: RefreshSubscriber) => {
+  refreshSubscribers[tokenType].push(subscriber);
 };
 
-const onTokenRefreshed = (token: string) => {
-  refreshSubscribers.forEach((cb) => cb(token));
-  refreshSubscribers = [];
+const onTokenRefreshed = (tokenType: 'user' | 'company', token: string) => {
+  refreshSubscribers[tokenType].forEach((subscriber) => subscriber.resolve(token));
+  refreshSubscribers[tokenType] = [];
+};
+
+const onTokenRefreshFailed = (tokenType: 'user' | 'company', error: unknown) => {
+  refreshSubscribers[tokenType].forEach((subscriber) => subscriber.reject(error));
+  refreshSubscribers[tokenType] = [];
 };
 
 interface RefreshTokenResponse {
@@ -196,8 +220,13 @@ interface RefreshTokenResponse {
 
 export const refreshAccessToken = async (tokenType: 'user' | 'company' = 'user'): Promise<string> => {
   try {
+    // tokenType에 따라 다른 엔드포인트 사용
+    const endpoint = tokenType === 'company'
+      ? '/api/auth/company/refresh'
+      : '/api/auth/refresh';
+
     // skipAuth: true로 무한 루프 방지, credentials: 'include'로 refresh token 쿠키 전송
-    const data = await apiClient.post<RefreshTokenResponse>('/api/auth/refresh', undefined, {
+    const data = await apiClient.post<RefreshTokenResponse>(endpoint, undefined, {
       skipAuth: true,
       credentials: 'include'
     });
