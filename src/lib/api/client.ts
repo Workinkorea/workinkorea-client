@@ -61,10 +61,21 @@ export const apiClient = {
         // refresh 엔드포인트에서 401이 발생하면 무한 루프 방지를 위해 바로 에러 처리
         const isRefreshEndpoint = endpoint.includes('/api/auth/refresh') ||
                                    endpoint.includes('/api/auth/company/refresh');
+
+        console.log('[DEBUG] 401 Error:', {
+          endpoint,
+          isRefreshEndpoint,
+          hasRefreshPromise: !!refreshPromises[tokenType],
+          skipAuth,
+          tokenType
+        });
+
         if (isRefreshEndpoint) {
+          console.error('[ERROR] Refresh API failed (401) - logging out');
           const errorData = await response.json().catch(() => ({ error: 'Unauthorized' }));
           // refresh 실패 시 토큰 제거 및 로그인 페이지로 리다이렉트
           tokenManager.removeToken(tokenType);
+          refreshPromises[tokenType] = null; // Promise 캐시도 초기화
           if (typeof window !== 'undefined') {
             window.location.href = '/login';
           }
@@ -77,6 +88,7 @@ export const apiClient = {
 
         // 이미 refresh 중이면 같은 Promise를 재사용 (무한 루프 방지)
         if (refreshPromises[tokenType]) {
+          console.log('[DEBUG] Waiting for existing refresh promise');
           try {
             const newToken = await refreshPromises[tokenType];
 
@@ -106,14 +118,18 @@ export const apiClient = {
         }
 
         // 새로운 refresh Promise 생성 및 캐싱
+        console.log('[DEBUG] Creating new refresh promise');
         refreshPromises[tokenType] = (async () => {
           try {
+            console.log('[DEBUG] Calling refreshAccessToken');
             const newAccessToken = await refreshAccessToken(tokenType);
+            console.log('[DEBUG] Got new access token');
             // 원래 토큰이 localStorage에 있었는지 확인하여 같은 곳에 저장
             const rememberMe = tokenManager.isTokenInLocalStorage(tokenType);
             tokenManager.setToken(newAccessToken, tokenType, rememberMe);
             return newAccessToken;
           } catch (error) {
+            console.error('[ERROR] refreshAccessToken failed:', error);
             tokenManager.removeToken(tokenType);
             if (typeof window !== 'undefined') {
               window.location.href = '/login';
@@ -121,6 +137,7 @@ export const apiClient = {
             throw error;
           } finally {
             // refresh 완료 후 Promise 캐시 초기화
+            console.log('[DEBUG] Clearing refresh promise cache');
             refreshPromises[tokenType] = null;
           }
         })();
