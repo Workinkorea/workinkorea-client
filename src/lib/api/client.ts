@@ -96,8 +96,8 @@ export const apiClient = {
         isRefreshing = true;
 
         try {
-          const newAccessToken = await refreshAccessToken();
-          tokenManager.setAccessToken(newAccessToken);
+          const newAccessToken = await refreshAccessToken(tokenType);
+          tokenManager.setToken(newAccessToken, tokenType);
           isRefreshing = false;
           onTokenRefreshed(newAccessToken);
 
@@ -124,7 +124,7 @@ export const apiClient = {
         } catch (error) {
           isRefreshing = false;
           refreshSubscribers = [];
-          tokenManager.removeAccessToken();
+          tokenManager.removeToken(tokenType);
 
           if (typeof window !== 'undefined') {
             window.location.href = '/login';
