@@ -83,14 +83,14 @@ const MyProfileClient: React.FC = () => {
   const router = useRouter();
 
   // 프로필 데이터 조회
-  const { data: profileData } = useQuery({
+  const { data: profileData, isLoading: profileLoading, error: profileError } = useQuery({
     queryKey: ['profile'],
     queryFn: () => profileApi.getProfile(),
     enabled: isAuthenticated,
   });
 
   // 연락처 데이터 조회
-  const { data: contactData } = useQuery({
+  const { data: contactData, isLoading: contactLoading } = useQuery({
     queryKey: ['contact'],
     queryFn: () => profileApi.getContact(),
     enabled: isAuthenticated,

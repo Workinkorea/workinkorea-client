@@ -41,6 +41,7 @@ import { cn } from '@/lib/utils/utils';
 import { profileApi } from '@/lib/api/profile';
 import { apiClient } from '@/lib/api/client';
 import { uploadFileToMinio } from '@/lib/api/minio';
+import type { ContactUpdateRequest } from '@/lib/api/types';
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
@@ -129,33 +130,7 @@ const ProfileEditClient: React.FC = () => {
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ['myProfile'],
     queryFn: async () => {
-      const apiProfile = await profileApi.getProfile();
-
-      // API 응답을 UserProfile 형태로 변환
-      const transformedProfile: UserProfile = {
-        id: apiProfile.user_id?.toString() || 'me',
-        name: apiProfile.name || '',
-        email: '', // ProfileResponse에 email 필드 없음
-        profileImage: apiProfile.profile_image_url || undefined,
-        position: '', // ProfileResponse에 title 필드 없음
-        location: apiProfile.location || '',
-        introduction: apiProfile.introduction || '',
-        experience: 0, // ProfileResponse에 experience 필드 없음
-        completedProjects: 0, // ProfileResponse에 completedProjects 필드 없음
-        certifications: [], // ProfileResponse에 certifications 필드 없음
-        job_status: (apiProfile.job_status as 'available' | 'busy' | 'not-looking') || 'available',
-        skills: [], // ProfileResponse에 skills 필드 없음
-        education: [], // ProfileResponse에 education 필드 없음
-        languages: [], // ProfileResponse에 languages 필드 없음
-        githubUrl: '', // ProfileResponse에 github_url 필드 없음
-        linkedinUrl: '', // ProfileResponse에 linkedin_url 필드 없음
-        portfolioUrl: apiProfile.portfolio_url || '',
-        preferredSalary: undefined, // ProfileResponse에 preferredSalary 필드 없음
-        createdAt: '', // ProfileResponse에 created_at 필드 없음
-        updatedAt: '' // ProfileResponse에 updated_at 필드 없음
-      };
-
-      return transformedProfile;
+      return await profileApi.getProfile();
     }
   });
 
@@ -202,21 +177,6 @@ const ProfileEditClient: React.FC = () => {
     }
   });
 
-  // 계정 설정 업데이트 뮤테이션
-  const updateAccountConfigMutation = useMutation({
-    mutationFn: async (updatedData: AccountConfigUpdateRequest) => {
-      return profileApi.updateAccountConfig(updatedData);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['accountConfig'] });
-      toast.success('계정 설정이 성공적으로 저장되었습니다.');
-      setHasUnsavedChanges(false);
-      router.push('/user/profile');
-    },
-    onError: () => {
-      toast.error('계정 설정 저장에 실패했습니다. 다시 시도해주세요.');
-    }
-  });
 
   // 폼 설정
   const basicForm = useForm<BasicProfileForm>({
@@ -224,16 +184,14 @@ const ProfileEditClient: React.FC = () => {
     defaultValues: {
       name: '',
       profile_image_url: '',
-      position_id: '',
+      position_id: undefined,
       location: '',
       introduction: '',
       address: '',
-      position_id: undefined,
       career: undefined,
       job_status: '',
       portfolio_url: '',
       language_skills: [],
-      name: '',
       country_id: 1, // 기본값: 한국
     }
   });
@@ -251,7 +209,7 @@ const ProfileEditClient: React.FC = () => {
       phone_number: '',
       github_url: '',
       linkedin_url: '',
-      portfolio_url: '',
+      website_url: '',
     }
   });
 
@@ -301,9 +259,6 @@ const ProfileEditClient: React.FC = () => {
   // 프로필 데이터가 로드되면 기본 정보 폼만 업데이트
   useEffect(() => {
     if (profile) {
-      // ProfileResponse에는 user_id가 없으므로 임의의 값 사용
-      setUserId(1);
-
       // career 값을 API response의 value(한글)에서 key(영문)로 변환
       const careerKey = profile.career ? (getCareerKeyFromValue(profile.career) as 'NEWCOMER' | 'YEAR_1_LESS' | 'YEAR_1' | 'YEAR_2_LESS' | 'YEAR_2' | 'YEAR_3_LESS' | 'YEAR_3' | 'YEAR_5_LESS' | 'YEAR_5' | 'YEAR_7_LESS' | 'YEAR_7' | 'YEAR_10_LESS' | 'YEAR_10' | 'YEAR_10_MORE') : undefined;
 
@@ -376,7 +331,7 @@ const ProfileEditClient: React.FC = () => {
             phone_number: '',
             github_url: '',
             linkedin_url: '',
-            portfolio_url: '',
+            website_url: '',
           });
         } else if (activeSection === 'account') {
           accountForm.reset({
@@ -443,7 +398,7 @@ const ProfileEditClient: React.FC = () => {
           const formValues = contactForm.getValues();
           const contactData: ContactUpdateRequest = {
             ...formValues,
-            user_id: userId || undefined,
+            user_id: profile?.user_id || undefined,
           };
           updateContactMutation.mutate(contactData);
         }
@@ -556,10 +511,10 @@ const ProfileEditClient: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <div className="relative">
-          {imagePreview || profile.profileImage ? (
+          {imagePreview || profile.profile_image_url ? (
             <div
               className="w-20 h-20 rounded-full bg-cover bg-center border-4 border-primary-100"
-              style={{ backgroundImage: `url(${imagePreview || profile.profileImage})` }}
+              style={{ backgroundImage: `url(${imagePreview || profile.profile_image_url})` }}
             />
           ) : (
             <div className="w-20 h-20 rounded-full bg-component-alternative border-4 border-primary-100 flex items-center justify-center">
@@ -859,7 +814,7 @@ const ProfileEditClient: React.FC = () => {
   const renderContactSection = () => (
     <div className="space-y-6">
       <FormField
-        name="email"
+        name="phone_number"
         control={contactForm.control}
         label="전화번호"
         error={contactForm.formState.errors.phone_number?.message}
@@ -867,9 +822,9 @@ const ProfileEditClient: React.FC = () => {
           <Input
             {...field}
             id={fieldId}
-            type="email"
-            placeholder="이메일을 입력하세요"
-            error={!!contactForm.formState.errors.email}
+            type="tel"
+            placeholder="전화번호를 입력하세요"
+            error={!!contactForm.formState.errors.phone_number}
           />
         )}
       />
@@ -905,7 +860,7 @@ const ProfileEditClient: React.FC = () => {
       />
 
       <FormField
-        name="portfolio_url"
+        name="website_url"
         control={contactForm.control}
         label="웹사이트 URL"
         error={contactForm.formState.errors.website_url?.message}
@@ -914,7 +869,7 @@ const ProfileEditClient: React.FC = () => {
             {...field}
             id={fieldId}
             placeholder="https://yourportfolio.com"
-            error={!!contactForm.formState.errors.portfolio_url}
+            error={!!contactForm.formState.errors.website_url}
           />
         )}
       />
