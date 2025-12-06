@@ -10,6 +10,10 @@ const AUTH_PATHS = ['/login', '/signup', '/company-login', '/company-signup'];
 // 로그인이 필수인 페이지 경로
 const PROTECTED_PATHS = ['/gg'];
 //'/user', '/company'
+
+// 전역 refresh 중복 방지 플래그 (모든 useAuth 인스턴스가 공유)
+let isGloballyRefreshing = false;
+
 interface UseAuthOptions {
   required?: boolean; // true: 토큰 없으면 refresh 시도, false: 토큰 체크만
 }
@@ -21,7 +25,6 @@ export const useAuth = (options: UseAuthOptions = {}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userType, setUserType] = useState<TokenType | null>(null);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const isRefreshingRef = useRef<boolean>(false); // refresh 중복 방지
 
   // 현재 경로가 인증 페이지인지 확인
   const isAuthPath = AUTH_PATHS.some(path => pathname?.startsWith(path));
@@ -36,13 +39,13 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
   // 토큰 갱신 함수
   const refreshAccessToken = useCallback(async () => {
-    // 이미 refresh 중이면 중복 호출 방지
-    if (isRefreshingRef.current) {
-      console.log('[useAuth] Already refreshing, skipping');
+    // 이미 refresh 중이면 중복 호출 방지 (전역 플래그 사용)
+    if (isGloballyRefreshing) {
+      console.log('[useAuth] Already refreshing globally, skipping');
       return false;
     }
 
-    isRefreshingRef.current = true;
+    isGloballyRefreshing = true;
 
     try {
       console.log('[useAuth] Starting token refresh');
@@ -78,7 +81,7 @@ export const useAuth = (options: UseAuthOptions = {}) => {
       setIsAuthenticated(false);
       return false;
     } finally {
-      isRefreshingRef.current = false;
+      isGloballyRefreshing = false;
     }
   }, []);
 
