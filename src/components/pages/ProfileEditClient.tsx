@@ -93,6 +93,7 @@ const ProfileEditClient: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
       toast.success('프로필이 성공적으로 저장되었습니다.');
       setHasUnsavedChanges(false);
+      router.push('/user/profile');
     },
     onError: () => {
       toast.error('프로필 저장에 실패했습니다. 다시 시도해주세요.');
@@ -108,6 +109,7 @@ const ProfileEditClient: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['contact'] });
       toast.success('연락처가 성공적으로 저장되었습니다.');
       setHasUnsavedChanges(false);
+      router.push('/user/profile');
     },
     onError: () => {
       toast.error('연락처 저장에 실패했습니다. 다시 시도해주세요.');
@@ -123,6 +125,7 @@ const ProfileEditClient: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['accountConfig'] });
       toast.success('계정 설정이 성공적으로 저장되었습니다.');
       setHasUnsavedChanges(false);
+      router.push('/user/profile');
     },
     onError: () => {
       toast.error('계정 설정 저장에 실패했습니다. 다시 시도해주세요.');

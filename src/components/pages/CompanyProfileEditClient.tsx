@@ -10,7 +10,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { profileApi } from '@/lib/api/profile/profileCompany';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CompanyProfileRequest } from '@/lib/api/types';
-import { mockCompanyProfile } from '@/lib/mock/companyProfile';
 
 const CompanyProfileEditClient: React.FC = () => {
   const router = useRouter();
@@ -38,14 +37,7 @@ const CompanyProfileEditClient: React.FC = () => {
   // 기존 프로필 조회
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['companyProfile'],
-    queryFn: async () => {
-      try {
-        return await profileApi.getProfileCompany();
-      } catch (err) {
-        console.error('기업 프로필 로드 실패, mock 데이터 사용:', err);
-        return mockCompanyProfile;
-      }
-    }
+    queryFn: () => profileApi.getProfileCompany()
   });
 
   // 프로필 데이터가 로드되면 폼에 설정

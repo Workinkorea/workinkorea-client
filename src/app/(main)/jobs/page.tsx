@@ -7,20 +7,13 @@ import Link from 'next/link';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import { postsApi } from '@/lib/api/posts';
-import { mockCompanyPosts } from '@/lib/mock/companyPosts';
 
 export default function JobsPage() {
   const { data: postsData, isLoading } = useQuery({
     queryKey: ['publicCompanyPosts'],
     queryFn: async () => {
-      try {
-        const response = await postsApi.getPublicCompanyPosts();
-        return response.company_posts;
-      } catch (err) {
-        console.error('공고 목록 로드 실패, mock 데이터 사용:', err);
-        // API 호출 실패 시 mock 데이터 반환
-        return mockCompanyPosts;
-      }
+      const response = await postsApi.getPublicCompanyPosts();
+      return response.company_posts;
     }
   });
 

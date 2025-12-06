@@ -16,22 +16,6 @@ import { resumeApi } from '@/lib/api/resume';
 import { profileApi } from '@/lib/api/profile';
 import type { CareerHistory } from '@/lib/api/types';
 
-// TODO: 실제 API 호출로 대체
-const mockStatistics: ProfileStatistics = {
-  profileViews: 1234,
-  contactRequests: 23,
-  skillEndorsements: 45,
-  averageRating: 4.7
-};
-
-const mockSkillStats: SkillStats = {
-  totalSkills: 8,
-  aboveAverageSkills: 6,
-  topSkillCategory: 'technical',
-  overallScore: 76,
-  industryRanking: 85
-};
-
 const UserProfileClient: React.FC = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -393,8 +377,6 @@ const UserProfileClient: React.FC = () => {
                   {/* 통계 */}
                   <ProfileStats
                     profile={resumeData}
-                    statistics={mockStatistics}
-                    skillStats={mockSkillStats}
                   />
                 </div>
               </>
