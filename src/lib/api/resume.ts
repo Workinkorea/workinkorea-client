@@ -42,7 +42,7 @@ export const resumeApi = {
   },
 
   async uploadResumeFile(file: File): Promise<UploadResumeFileResponse> {
-    const token = tokenManager.getToken('user');
+    const token = tokenManager.getToken();
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
     // 1단계: 백엔드에서 presigned POST URL 받기
@@ -92,7 +92,7 @@ export const resumeApi = {
   },
 
   async uploadResumeImage(file: File): Promise<UploadResumeImageResponse> {
-    const token = tokenManager.getToken('user');
+    const token = tokenManager.getToken();
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
     // 1단계: 백엔드에서 presigned POST URL 받기
@@ -140,7 +140,7 @@ export const resumeApi = {
   },
 
   async uploadUserImage(file: File): Promise<UploadUserImageResponse> {
-    const token = tokenManager.getToken('user');
+    const token = tokenManager.getToken();
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
     // 1단계: 백엔드에서 presigned POST URL 받기

@@ -1,258 +1,196 @@
-import { tokenManager } from '../utils/tokenManager';
-import { ApiErrorResponse } from './types';
+import axios, {
+  AxiosError,
+  InternalAxiosRequestConfig,
+  AxiosRequestConfig,
+} from "axios";
+import { tokenManager } from "../utils/tokenManager";
 
-export interface ApiRequestOptions extends RequestInit {
+export interface ApiRequestOptions extends AxiosRequestConfig {
+  // 커스텀 플래그: 이 옵션이 true면 Authorization 토큰을 붙이지 않음
   skipAuth?: boolean;
-  tokenType?: 'user' | 'company';
 }
 
-export class ApiError extends Error {
-  constructor(
-    message: string,
-    public status: number,
-    public data: ApiErrorResponse
-  ) {
-    super(message);
-    this.name = 'ApiError';
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+let isRefreshing = false;
+let refreshQueue: {
+  resolve: (token: string) => void;
+  reject: (err: unknown) => void;
+}[] = [];
+
+const processQueue = (error: unknown, token: string | null) => {
+  refreshQueue.forEach((p) => {
+    if (error) {
+      p.reject(error);
+    } else if (token) {
+      p.resolve(token);
+    }
+  });
+  refreshQueue = [];
+};
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+  timeout: 3000,
+});
+
+// Get token (단일 토큰 사용)
+function getToken(): string | null {
+  return tokenManager.getToken();
+}
+
+// Automatically attach token
+api.interceptors.request.use(
+  (config: InternalAxiosRequestConfig & { skipAuth?: boolean }) => {
+    if (config.skipAuth) return config;
+
+    const token = getToken();
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  }
+);
+
+// Refresh token
+async function refreshToken(): Promise<string> {
+  // 현재 토큰 가져오기
+  const currentToken = getToken();
+
+  if (!currentToken) {
+    console.error("[apiClient] No token found for refresh");
+    throw new Error("No token for refresh");
+  }
+
+  // JWT에서 사용자 타입 추출
+  const userType = tokenManager.getUserType();
+
+  if (!userType) {
+    console.error("[apiClient] Cannot determine user type from token");
+    throw new Error("Invalid token: cannot determine user type");
+  }
+
+  const endpoint =
+    userType === "company" ? "/api/auth/company/refresh" : "/api/auth/refresh";
+
+  console.log(`[apiClient] Starting refresh for ${userType} token`);
+
+  try {
+    const response = await api.post(
+      endpoint,
+      {},
+      { skipAuth: true, withCredentials: true } as ApiRequestOptions
+    );
+
+    const newToken =
+      response.data.accessToken ||
+      response.data.access_token ||
+      response.data.token;
+
+    if (!newToken) {
+      console.error("[apiClient] Refresh response missing token");
+      throw new Error("Missing token during refresh");
+    }
+
+    const rememberMe = tokenManager.isTokenInLocalStorage();
+    tokenManager.setToken(newToken, rememberMe);
+
+    console.log(`[apiClient] Refresh successful for ${userType} token`);
+    return newToken;
+  } catch (err) {
+    console.error(`[apiClient] Refresh failed for ${userType} token:`, err);
+
+    // 토큰 제거
+    tokenManager.removeToken();
+
+    // 로그인 페이지로 리다이렉트
+    if (typeof window !== "undefined") {
+      const loginPath = userType === "company" ? "/company-login" : "/login";
+      console.log(`[apiClient] Redirecting to ${loginPath}`);
+      window.location.href = loginPath;
+    }
+    throw err;
   }
 }
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+// Intercept 401
+api.interceptors.response.use(
+  (res) => res,
+  async (error: AxiosError) => {
+    const originalConfig = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-const isRefreshing = {
-  user: false,
-  company: false,
-};
+    // If refresh endpoint itself failed → don't retry, just fail
+    // (refreshToken() already handles logout and redirect)
+    if (
+      originalConfig?.url?.includes("/auth/refresh") ||
+      originalConfig?.url?.includes("/auth/company/refresh")
+    ) {
+      console.error("[apiClient] Refresh endpoint failed, not retrying");
+      return Promise.reject(error);
+    }
 
-type RefreshSubscriber = {
-  resolve: (token: string) => void;
-  reject: (error: unknown) => void;
-};
+    // Handle 401 errors with automatic token refresh
+    if (error.response?.status === 401 && !originalConfig._retry) {
+      console.log(
+        `[apiClient] 401 error on ${originalConfig?.url}, attempting refresh`
+      );
+      originalConfig._retry = true;
 
-const refreshSubscribers: {
-  user: RefreshSubscriber[],
-  company: RefreshSubscriber[],
-} = {
-  user: [],
-  company: [],
-};
+      // If already refreshing, queue this request
+      if (isRefreshing) {
+        console.log("[apiClient] Refresh in progress, queueing request");
+        return new Promise((resolve, reject) => {
+          refreshQueue.push({
+            resolve: (token: string) => {
+              originalConfig.headers.Authorization = `Bearer ${token}`;
+              resolve(api(originalConfig));
+            },
+            reject,
+          });
+        });
+      }
+
+      // Start refresh process
+      isRefreshing = true;
+
+      try {
+        const token = await refreshToken();
+        processQueue(null, token);
+        isRefreshing = false;
+
+        // Retry original request with new token
+        originalConfig.headers.Authorization = `Bearer ${token}`;
+        console.log(`[apiClient] Retrying ${originalConfig?.url} with new token`);
+        return api(originalConfig);
+      } catch (err) {
+        processQueue(err, null);
+        isRefreshing = false;
+
+        return Promise.reject(err);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export const apiClient = {
-  async request<T>(
-    endpoint: string,
-    options: ApiRequestOptions = {}
-  ): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
-    const { skipAuth, tokenType = 'user', ...fetchOptions } = options;
-
-    const accessToken = tokenManager.getToken(tokenType);
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-    const config: RequestInit = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(accessToken && !skipAuth && { Authorization: `Bearer ${accessToken}` }),
-        ...fetchOptions.headers,
-      },
-      credentials: skipAuth ? 'omit' : 'include',
-      signal: controller.signal,
-      ...fetchOptions,
-    };
-
-    try {
-      const response = await fetch(url, config);
-      clearTimeout(timeoutId);
-
-      if (response.status === 401) {
-        // refresh 엔드포인트에서 401이 발생하면 무한 루프 방지를 위해 바로 에러 처리
-        const isRefreshEndpoint = endpoint.includes('/api/auth/refresh') ||
-                                   endpoint.includes('/api/auth/company/refresh');
-        if (isRefreshEndpoint) {
-          const errorData = await response.json().catch(() => ({ error: 'Unauthorized' }));
-          // refresh 실패 시 토큰 제거 및 로그인 페이지로 리다이렉트
-          tokenManager.removeToken(tokenType);
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login';
-          }
-          throw new ApiError(
-            errorData.error || 'Unauthorized',
-            response.status,
-            errorData
-          );
-        }
-
-        if (isRefreshing[tokenType]) {
-          return new Promise<T>((resolve, reject) => {
-            subscribeTokenRefresh(tokenType, {
-              resolve: async (newToken: string) => {
-                try {
-                  const retryController = new AbortController();
-                  const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
-
-                  const retryConfig: RequestInit = {
-                    ...config,
-                    headers: {
-                      ...config.headers,
-                      Authorization: `Bearer ${newToken}`,
-                    },
-                    signal: retryController.signal,
-                  };
-
-                  const retryResponse = await fetch(url, retryConfig);
-                  clearTimeout(retryTimeoutId);
-
-                  if (!retryResponse.ok) {
-                    throw new Error(`API Error: ${retryResponse.status}`);
-                  }
-
-                  const data = await retryResponse.json();
-                  resolve(data);
-                } catch (error) {
-                  reject(error);
-                }
-              },
-              reject,
-            });
-          });
-        }
-
-        isRefreshing[tokenType] = true;
-
-        try {
-          const newAccessToken = await refreshAccessToken(tokenType);
-          // 원래 토큰이 localStorage에 있었는지 확인하여 같은 곳에 저장
-          const rememberMe = tokenManager.isTokenInLocalStorage(tokenType);
-          tokenManager.setToken(newAccessToken, tokenType, rememberMe);
-          isRefreshing[tokenType] = false;
-          onTokenRefreshed(tokenType, newAccessToken);
-
-          const retryController = new AbortController();
-          const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
-
-          const retryConfig: RequestInit = {
-            ...config,
-            headers: {
-              ...config.headers,
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-            signal: retryController.signal,
-          };
-
-          const retryResponse = await fetch(url, retryConfig);
-          clearTimeout(retryTimeoutId);
-
-          if (!retryResponse.ok) {
-            throw new Error(`API Error: ${retryResponse.status}`);
-          }
-
-          return retryResponse.json();
-        } catch (error) {
-          isRefreshing[tokenType] = false;
-          onTokenRefreshFailed(tokenType, error);
-          refreshSubscribers[tokenType] = [];
-          tokenManager.removeToken(tokenType);
-
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login';
-          }
-
-          throw error;
-        }
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        throw new ApiError(
-          errorData.error || `API Error: ${response.status}`,
-          response.status,
-          errorData
-        );
-      }
-
-      return response.json();
-    } catch (error) {
-      clearTimeout(timeoutId);
-      if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error('Request timeout: API call took longer than 3 seconds');
-      }
-      throw error;
-    }
+  get<T>(endpoint: string, options?: ApiRequestOptions) {
+    return api.get<T>(endpoint, options).then((res) => res.data);
   },
-
-  get<T>(endpoint: string, options?: ApiRequestOptions): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: 'GET' });
+  post<T>(endpoint: string, data?: unknown, options?: ApiRequestOptions) {
+    return api.post<T>(endpoint, data, options).then((res) => res.data);
   },
-
-  post<T>(endpoint: string, data?: unknown, options?: ApiRequestOptions): Promise<T> {
-    return this.request<T>(endpoint, {
-      ...options,
-      method: 'POST',
-      body: data ? JSON.stringify(data) : undefined,
-    });
+  put<T>(endpoint: string, data?: unknown, options?: ApiRequestOptions) {
+    return api.put<T>(endpoint, data, options).then((res) => res.data);
   },
-
-  put<T>(endpoint: string, data?: unknown, options?: ApiRequestOptions): Promise<T> {
-    return this.request<T>(endpoint, {
-      ...options,
-      method: 'PUT',
-      body: data ? JSON.stringify(data) : undefined,
-    });
-  },
-
-  delete<T>(endpoint: string, options?: ApiRequestOptions): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: 'DELETE' });
+  delete<T>(endpoint: string, options?: ApiRequestOptions) {
+    return api.delete<T>(endpoint, options).then((res) => res.data);
   },
 };
 
-const subscribeTokenRefresh = (tokenType: 'user' | 'company', subscriber: RefreshSubscriber) => {
-  refreshSubscribers[tokenType].push(subscriber);
-};
-
-const onTokenRefreshed = (tokenType: 'user' | 'company', token: string) => {
-  refreshSubscribers[tokenType].forEach((subscriber) => subscriber.resolve(token));
-  refreshSubscribers[tokenType] = [];
-};
-
-const onTokenRefreshFailed = (tokenType: 'user' | 'company', error: unknown) => {
-  refreshSubscribers[tokenType].forEach((subscriber) => subscriber.reject(error));
-  refreshSubscribers[tokenType] = [];
-};
-
-interface RefreshTokenResponse {
-  accessToken?: string;
-  access_token?: string;
-  token?: string;
-  message?: string;
-}
-
-export const refreshAccessToken = async (tokenType: 'user' | 'company' = 'user'): Promise<string> => {
-  try {
-    // tokenType에 따라 다른 엔드포인트 사용
-    const endpoint = tokenType === 'company'
-      ? '/api/auth/company/refresh'
-      : '/api/auth/refresh';
-
-    // skipAuth: true로 무한 루프 방지, credentials: 'include'로 refresh token 쿠키 전송
-    const data = await apiClient.post<RefreshTokenResponse>(endpoint, undefined, {
-      skipAuth: true,
-      credentials: 'include'
-    });
-    const accessToken = data.accessToken || data.access_token || data.token;
-
-    if (!accessToken) {
-      throw new Error('No access token received');
-    }
-
-    return accessToken;
-  } catch (error) {
-    if (error instanceof ApiError && error.data?.error === 'Refresh token not found') {
-      tokenManager.removeToken(tokenType);
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
-      }
-    }
-    throw error;
-  }
-};
+// 디버깅용: 현재 refresh 중인지 확인
+export const isRefreshingToken = () => isRefreshing;

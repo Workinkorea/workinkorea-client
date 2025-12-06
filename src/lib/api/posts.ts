@@ -19,24 +19,17 @@ export const postsApi = {
 
   // 인증 필요: 내 회사의 공고 목록만 조회 (기업 전용)
   async getMyCompanyPosts(): Promise<CompanyPostsResponse> {
-    return apiClient.get<CompanyPostsResponse>('/api/company/posts/my', {
-      tokenType: 'company',
-    });
+    return apiClient.get<CompanyPostsResponse>('/api/company/posts/my');
   },
 
   // 인증 필요: 기업 회원 전용 공고 목록 조회 (deprecated - getMyCompanyPosts 사용 권장)
   async getCompanyPosts(): Promise<CompanyPostsResponse> {
-    return apiClient.get<CompanyPostsResponse>('/api/posts/company', {
-      tokenType: 'company',
-    });
+    return apiClient.get<CompanyPostsResponse>('/api/posts/company');
   },
 
   async getCompanyPostById(companyPostId: number): Promise<CompanyPostDetailResponse> {
     return apiClient.get<CompanyPostDetailResponse>(
-      `/api/posts/company/${companyPostId}`,
-      {
-        tokenType: 'company',
-      }
+      `/api/posts/company/${companyPostId}`
     );
   },
 
@@ -45,10 +38,7 @@ export const postsApi = {
   ): Promise<CreateCompanyPostResponse> {
     return apiClient.post<CreateCompanyPostResponse>(
       '/api/posts/company',
-      data,
-      {
-        tokenType: 'company',
-      }
+      data
     );
   },
 
@@ -58,19 +48,13 @@ export const postsApi = {
   ): Promise<UpdateCompanyPostResponse> {
     return apiClient.put<UpdateCompanyPostResponse>(
       `/api/posts/company/${companyPostId}`,
-      data,
-      {
-        tokenType: 'company',
-      }
+      data
     );
   },
 
   async deleteCompanyPost(companyPostId: number): Promise<DeleteCompanyPostResponse> {
     return apiClient.delete<DeleteCompanyPostResponse>(
-      `/api/posts/company/${companyPostId}`,
-      {
-        tokenType: 'company',
-      }
+      `/api/posts/company/${companyPostId}`
     );
   },
 };

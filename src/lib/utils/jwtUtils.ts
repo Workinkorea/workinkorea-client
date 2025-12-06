@@ -1,6 +1,11 @@
+export type UserType = 'user' | 'company';
+
 interface JWTPayload {
   exp?: number;
   iat?: number;
+  sub?: string; // 사용자 ID
+  user_type?: string; // 'user' 또는 'company'
+  role?: string; // 역할 정보
   [key: string]: unknown;
 }
 
@@ -74,4 +79,39 @@ export const getTokenRemainingTime = (token: string): number | null => {
   const now = Math.floor(Date.now() / 1000);
   const remaining = exp - now;
   return remaining > 0 ? remaining : 0;
+};
+
+/**
+ * JWT 토큰에서 사용자 타입을 추출합니다.
+ * @param token JWT 토큰
+ * @returns 'user' | 'company' | null
+ */
+export const getUserTypeFromToken = (token: string): UserType | null => {
+  const payload = decodeJWT(token);
+  if (!payload) return null;
+
+  // 여러 가능한 필드명 확인
+  // 1. user_type 필드
+  if (payload.user_type === 'company' || payload.user_type === 'COMPANY') {
+    return 'company';
+  }
+  if (payload.user_type === 'user' || payload.user_type === 'USER') {
+    return 'user';
+  }
+
+  // 2. role 필드
+  if (payload.role === 'company' || payload.role === 'COMPANY') {
+    return 'company';
+  }
+  if (payload.role === 'user' || payload.role === 'USER') {
+    return 'user';
+  }
+
+  // 3. sub 필드에 company 포함 여부로 추론
+  if (typeof payload.sub === 'string' && payload.sub.includes('company')) {
+    return 'company';
+  }
+
+  // 기본값: user
+  return 'user';
 };

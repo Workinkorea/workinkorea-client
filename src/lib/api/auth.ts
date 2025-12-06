@@ -1,4 +1,4 @@
-import { apiClient, refreshAccessToken } from './client';
+import { apiClient } from './client';
 import type {
   EmailVerificationResponse,
   LoginRequest,
@@ -24,7 +24,7 @@ export const authApi = {
   async login(data: LoginRequest): Promise<LoginResponse> {
     return apiClient.post<LoginResponse>('/api/auth/login', data, {
       skipAuth: true,
-      credentials: 'include'
+      withCredentials: true
     });
   },
 
@@ -46,22 +46,19 @@ export const authApi = {
     formData.append('username', data.username);
     formData.append('password', data.password);
 
-    return apiClient.request<CompanyLoginResponse>('/api/auth/company/login', {
-      method: 'POST',
-      body: formData.toString(),
+    return apiClient.post<CompanyLoginResponse>('/api/auth/company/login', formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      credentials: 'include',
+      withCredentials: true,
       skipAuth: true,
     });
   },
 
   async refreshToken(): Promise<RefreshTokenResponse> {
-    const accessToken = await refreshAccessToken();
-    return {
-      success: true,
-      accessToken
-    };
+    return apiClient.post<RefreshTokenResponse>('/api/auth/refresh', {}, {
+      skipAuth: true,
+      withCredentials: true
+    });
   },
 };

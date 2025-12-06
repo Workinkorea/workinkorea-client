@@ -103,6 +103,20 @@ const POSITION_OPTIONS = [
   { id: 13, name: '기타' },
 ] as const;
 
+// 언어 옵션
+const LANGUAGE_OPTIONS = [
+  { value: 'korean', label: '한국어' },
+  { value: 'english', label: '영어' },
+  { value: 'japanese', label: '일본어' },
+  { value: 'chinese', label: '중국어' },
+  { value: 'spanish', label: '스페인어' },
+  { value: 'french', label: '프랑스어' },
+  { value: 'german', label: '독일어' },
+  { value: 'vietnamese', label: '베트남어' },
+  { value: 'thai', label: '태국어' },
+  { value: 'other', label: '기타' },
+] as const;
+
 // 언어 수준 옵션
 const LANGUAGE_LEVEL_OPTIONS = [
   { value: 'native', label: '원어민' },
@@ -123,8 +137,11 @@ const ProfileEditClient: React.FC = () => {
   const [activeSection, setActiveSection] = useState<SectionType>('basic');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const portfolioFileInputRef = React.useRef<HTMLInputElement>(null);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedPortfolioFile, setSelectedPortfolioFile] = useState<File | null>(null);
+  const [portfolioFileName, setPortfolioFileName] = useState<string>('');
 
   // 프로필 데이터 가져오기
   const { data: profile, isLoading, error } = useQuery({
@@ -278,6 +295,12 @@ const ProfileEditClient: React.FC = () => {
         name: profile.name ?? '',
         country_id: profile.country_id ?? 1, // 기본값: 한국
       });
+
+      // 기존 포트폴리오 URL에서 파일명 추출
+      if (profile.portfolio_url) {
+        const fileName = profile.portfolio_url.split('/').pop() || profile.portfolio_url;
+        setPortfolioFileName(fileName);
+      }
     }
 
     setHasUnsavedChanges(false);
@@ -305,7 +328,6 @@ const ProfileEditClient: React.FC = () => {
       try {
         if (activeSection === 'contact') {
           const contactData = await apiClient.get('/api/contact') as ContactInfoForm;
-          console.log('연락처 데이터:', contactData);
           if (contactData) {
             contactForm.reset({
               user_id: contactData.user_id ?? undefined,
@@ -317,7 +339,6 @@ const ProfileEditClient: React.FC = () => {
           }
         } else if (activeSection === 'account') {
           const accountData = await apiClient.get('/api/account-config');
-          console.log('계정 설정 데이터:', accountData);
           if (accountData) {
             accountForm.reset(accountData as AccountSettingsForm);
           }
@@ -373,20 +394,32 @@ const ProfileEditClient: React.FC = () => {
     switch (activeSection) {
       case 'basic':
         isValid = await basicForm.trigger();
-        
-        if (isValid || selectedImageFile) {
+
+        if (isValid || selectedImageFile || selectedPortfolioFile) {
+          formData = basicForm.getValues();
+
+          // 프로필 이미지 업로드
           if (selectedImageFile) {
             const imageUrl = await uploadFileToMinio({
               file: selectedImageFile,
               file_type: 'profile_image',
               endpoint: '/api/minio/user/file',
             });
-            console.log('이미지 URL:', imageUrl);
             if (imageUrl) {
-              formData = { ...basicForm.getValues(), profile_image_url: imageUrl };
+              formData = { ...formData, profile_image_url: imageUrl };
             }
-          } else {
-            formData = basicForm.getValues();
+          }
+
+          // 포트폴리오 파일 업로드
+          if (selectedPortfolioFile) {
+            const portfolioUrl = await uploadFileToMinio({
+              file: selectedPortfolioFile,
+              file_type: 'portfolio',
+              endpoint: '/api/minio/user/file',
+            });
+            if (portfolioUrl) {
+              formData = { ...formData, portfolio_url: portfolioUrl };
+            }
           }
 
           updateProfileMutation.mutate(formData);
@@ -466,6 +499,51 @@ const ProfileEditClient: React.FC = () => {
 
   const handleImageButtonClick = () => {
     fileInputRef.current?.click();
+  };
+
+  // 포트폴리오 파일 업로드 핸들러
+  const handlePortfolioUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // 파일 크기 검증 (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('파일 크기는 10MB를 초과할 수 없습니다.');
+      return;
+    }
+
+    // 허용된 파일 타입 검증 (PDF, DOCX, etc.)
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'image/jpeg',
+      'image/png',
+      'image/jpg'
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('PDF, DOCX, 이미지 파일만 업로드 가능합니다.');
+      return;
+    }
+
+    // 파일을 state에 저장
+    setSelectedPortfolioFile(file);
+    setPortfolioFileName(file.name);
+    setHasUnsavedChanges(true);
+  };
+
+  const handlePortfolioButtonClick = () => {
+    portfolioFileInputRef.current?.click();
+  };
+
+  const handleRemovePortfolio = () => {
+    setSelectedPortfolioFile(null);
+    setPortfolioFileName('');
+    if (portfolioFileInputRef.current) {
+      portfolioFileInputRef.current.value = '';
+    }
+    setHasUnsavedChanges(true);
   };
 
   if (isLoading) {
@@ -664,20 +742,46 @@ const ProfileEditClient: React.FC = () => {
           )}
         />
 
-        <FormField
-          name="portfolio_url"
-          control={basicForm.control}
-          label="포트폴리오 URL"
-          error={basicForm.formState.errors.portfolio_url?.message}
-          render={(field, fieldId) => (
-            <Input
-              {...field}
-              id={fieldId}
-              placeholder="https://yourportfolio.com"
-              error={!!basicForm.formState.errors.portfolio_url}
+        {/* 포트폴리오 파일 업로드 */}
+        <div className="space-y-2">
+          <label className="text-caption-2 font-medium text-label-900">
+            포트폴리오
+          </label>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handlePortfolioButtonClick}
+              className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-caption-2 text-label-700 hover:bg-component-alternative transition-colors"
+            >
+              <Camera size={16} />
+              파일 선택
+            </button>
+            <input
+              ref={portfolioFileInputRef}
+              type="file"
+              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+              onChange={handlePortfolioUpload}
+              className="hidden"
             />
-          )}
-        />
+            {(portfolioFileName || profile.portfolio_url) && (
+              <div className="flex items-center gap-2 flex-1">
+                <span className="text-caption-2 text-label-600 truncate">
+                  {portfolioFileName || profile.portfolio_url}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleRemovePortfolio}
+                  className="text-status-error hover:text-status-error/80"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            )}
+          </div>
+          <p className="text-caption-2 text-label-500">
+            PDF, DOCX, 이미지 파일 업로드 가능 (최대 10MB)
+          </p>
+        </div>
 
         <FormField
           name="position_id"
@@ -770,12 +874,22 @@ const ProfileEditClient: React.FC = () => {
                   label="언어"
                   error={basicForm.formState.errors.language_skills?.[index]?.language_type?.message}
                   render={(field, fieldId) => (
-                    <Input
+                    <select
                       {...field}
                       id={fieldId}
-                      placeholder="예: 영어, 한국어"
-                      error={!!basicForm.formState.errors.language_skills?.[index]?.language_type}
-                    />
+                      className={cn(
+                        "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                        "border-line-400 focus:ring-primary",
+                        basicForm.formState.errors.language_skills?.[index]?.language_type && "border-status-error focus:ring-status-error"
+                      )}
+                    >
+                      <option value="">언어를 선택하세요</option>
+                      {LANGUAGE_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
                   )}
                 />
 
