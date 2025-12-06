@@ -56,9 +56,10 @@ export const apiClient = {
         ...(accessToken && !skipAuth && { Authorization: `Bearer ${accessToken}` }),
         ...fetchOptions.headers,
       },
-      credentials: skipAuth ? 'omit' : 'include',
       signal: controller.signal,
       ...fetchOptions,
+      // credentials는 명시적으로 전달된 값을 우선 사용
+      credentials: fetchOptions.credentials || (skipAuth ? 'omit' : 'include'),
     };
 
     try {
