@@ -305,7 +305,6 @@ const ProfileEditClient: React.FC = () => {
       try {
         if (activeSection === 'contact') {
           const contactData = await apiClient.get('/api/contact') as ContactInfoForm;
-          console.log('연락처 데이터:', contactData);
           if (contactData) {
             contactForm.reset({
               user_id: contactData.user_id ?? undefined,
@@ -317,7 +316,6 @@ const ProfileEditClient: React.FC = () => {
           }
         } else if (activeSection === 'account') {
           const accountData = await apiClient.get('/api/account-config');
-          console.log('계정 설정 데이터:', accountData);
           if (accountData) {
             accountForm.reset(accountData as AccountSettingsForm);
           }
@@ -381,7 +379,6 @@ const ProfileEditClient: React.FC = () => {
               file_type: 'profile_image',
               endpoint: '/api/minio/user/file',
             });
-            console.log('이미지 URL:', imageUrl);
             if (imageUrl) {
               formData = { ...basicForm.getValues(), profile_image_url: imageUrl };
             }

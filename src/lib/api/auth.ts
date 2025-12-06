@@ -1,4 +1,4 @@
-import { apiClient, refreshAccessToken } from './client';
+import { apiClient } from './client';
 import type {
   EmailVerificationResponse,
   LoginRequest,
@@ -58,10 +58,9 @@ export const authApi = {
   },
 
   async refreshToken(): Promise<RefreshTokenResponse> {
-    const accessToken = await refreshAccessToken();
-    return {
-      success: true,
-      accessToken
-    };
+    return apiClient.post<RefreshTokenResponse>('/api/auth/refresh', {}, {
+      skipAuth: true,
+      withCredentials: true
+    });
   },
 };

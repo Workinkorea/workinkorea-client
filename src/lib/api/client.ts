@@ -68,12 +68,26 @@ api.interceptors.request.use(
 
 // Refresh token
 async function refreshToken(): Promise<{ token: string; type: TokenType }> {
-  const { type } = getValidToken();
+  // 만료 여부와 상관없이 어떤 타입의 토큰이 저장되어 있는지 확인
+  const userToken = tokenManager.getToken("user");
+  const companyToken = tokenManager.getToken("company");
 
-  if (!type) throw new Error("No valid token type for refresh");
+  // 우선순위: user > company
+  const type: TokenType | null = userToken
+    ? "user"
+    : companyToken
+    ? "company"
+    : null;
+
+  if (!type) {
+    console.error("[apiClient] No token found for refresh");
+    throw new Error("No token type for refresh");
+  }
 
   const endpoint =
     type === "company" ? "/api/auth/company/refresh" : "/api/auth/refresh";
+
+  console.log(`[apiClient] Starting refresh for ${type} token`);
 
   try {
     const response = await api.post(
@@ -87,19 +101,27 @@ async function refreshToken(): Promise<{ token: string; type: TokenType }> {
       response.data.access_token ||
       response.data.token;
 
-    if (!newToken) throw new Error("Missing token during refresh");
+    if (!newToken) {
+      console.error("[apiClient] Refresh response missing token");
+      throw new Error("Missing token during refresh");
+    }
 
     const rememberMe = tokenManager.isTokenInLocalStorage(type);
     tokenManager.setToken(newToken, type, rememberMe);
 
+    console.log(`[apiClient] Refresh successful for ${type} token`);
     return { token: newToken, type };
   } catch (err) {
-    const { type } = getValidToken();
-    if (type) tokenManager.removeToken(type);
+    console.error(`[apiClient] Refresh failed for ${type} token:`, err);
 
+    // 토큰 제거
+    tokenManager.removeToken(type);
+
+    // 로그인 페이지로 리다이렉트
     if (typeof window !== "undefined") {
-      window.location.href =
-        type === "company" ? "/company-login" : "/login";
+      const loginPath = type === "company" ? "/company-login" : "/login";
+      console.log(`[apiClient] Redirecting to ${loginPath}`);
+      window.location.href = loginPath;
     }
     throw err;
   }
@@ -111,25 +133,26 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalConfig = error.config as any;
 
-    // If refresh endpoint failed → forced logout
+    // If refresh endpoint itself failed → don't retry, just fail
+    // (refreshToken() already handles logout and redirect)
     if (
       originalConfig?.url?.includes("/auth/refresh") ||
       originalConfig?.url?.includes("/auth/company/refresh")
     ) {
-      const { type } = getValidToken();
-      if (type) tokenManager.removeToken(type);
-
-      if (typeof window !== "undefined") {
-        window.location.href =
-          type === "company" ? "/company-login" : "/login";
-      }
+      console.error("[apiClient] Refresh endpoint failed, not retrying");
       return Promise.reject(error);
     }
 
+    // Handle 401 errors with automatic token refresh
     if (error.response?.status === 401 && !originalConfig._retry) {
+      console.log(
+        `[apiClient] 401 error on ${originalConfig?.url}, attempting refresh`
+      );
       originalConfig._retry = true;
 
+      // If already refreshing, queue this request
       if (isRefreshing) {
+        console.log("[apiClient] Refresh in progress, queueing request");
         return new Promise((resolve, reject) => {
           refreshQueue.push({
             resolve: (token: string) => {
@@ -141,6 +164,7 @@ api.interceptors.response.use(
         });
       }
 
+      // Start refresh process
       isRefreshing = true;
 
       try {
@@ -148,7 +172,9 @@ api.interceptors.response.use(
         processQueue(null, token);
         isRefreshing = false;
 
+        // Retry original request with new token
         originalConfig.headers.Authorization = `Bearer ${token}`;
+        console.log(`[apiClient] Retrying ${originalConfig?.url} with new token`);
         return api(originalConfig);
       } catch (err) {
         processQueue(err, null);
@@ -176,3 +202,6 @@ export const apiClient = {
     return api.delete<T>(endpoint, options).then((res) => res.data);
   },
 };
+
+// 디버깅용: 현재 refresh 중인지 확인
+export const isRefreshingToken = () => isRefreshing;
