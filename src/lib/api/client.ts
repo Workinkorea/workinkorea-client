@@ -28,6 +28,15 @@ const refreshPromises: {
   company: null,
 };
 
+// refresh 후 재시도 중 플래그 (무한 루프 방지)
+const isRetryingAfterRefresh: {
+  user: boolean,
+  company: boolean,
+} = {
+  user: false,
+  company: false,
+};
+
 export const apiClient = {
   async request<T>(
     endpoint: string,
@@ -66,6 +75,7 @@ export const apiClient = {
           endpoint,
           isRefreshEndpoint,
           hasRefreshPromise: !!refreshPromises[tokenType],
+          isRetryingAfterRefresh: isRetryingAfterRefresh[tokenType],
           skipAuth,
           tokenType
         });
@@ -76,6 +86,7 @@ export const apiClient = {
           // refresh 실패 시 토큰 제거 및 로그인 페이지로 리다이렉트
           tokenManager.removeToken(tokenType);
           refreshPromises[tokenType] = null; // Promise 캐시도 초기화
+          isRetryingAfterRefresh[tokenType] = false;
           if (typeof window !== 'undefined') {
             window.location.href = '/login';
           }
@@ -86,11 +97,30 @@ export const apiClient = {
           );
         }
 
+        // refresh 후 재시도 중인데 또 401이 발생하면 무한 루프 방지
+        if (isRetryingAfterRefresh[tokenType]) {
+          console.error('[ERROR] Retry after refresh failed (401) - logging out');
+          tokenManager.removeToken(tokenType);
+          refreshPromises[tokenType] = null;
+          isRetryingAfterRefresh[tokenType] = false;
+          if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+          }
+          throw new ApiError(
+            'Session expired after token refresh',
+            response.status,
+            { error: 'Session expired' }
+          );
+        }
+
         // 이미 refresh 중이면 같은 Promise를 재사용 (무한 루프 방지)
         if (refreshPromises[tokenType]) {
           console.log('[DEBUG] Waiting for existing refresh promise');
           try {
             const newToken = await refreshPromises[tokenType];
+
+            // 재시도 플래그 설정
+            isRetryingAfterRefresh[tokenType] = true;
 
             const retryController = new AbortController();
             const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
@@ -107,23 +137,23 @@ export const apiClient = {
             const retryResponse = await fetch(url, retryConfig);
             clearTimeout(retryTimeoutId);
 
+            // 재시도 성공하면 플래그 해제
+            isRetryingAfterRefresh[tokenType] = false;
+
             if (!retryResponse.ok) {
               throw new Error(`API Error: ${retryResponse.status}`);
             }
 
             return retryResponse.json();
           } catch (error) {
+            isRetryingAfterRefresh[tokenType] = false;
             throw error;
           }
         }
 
-        // 새로운 refresh Promise 생성 및 캐싱
-        console.log('[DEBUG] Creating new refresh promise');
         refreshPromises[tokenType] = (async () => {
           try {
-            console.log('[DEBUG] Calling refreshAccessToken');
             const newAccessToken = await refreshAccessToken(tokenType);
-            console.log('[DEBUG] Got new access token');
             // 원래 토큰이 localStorage에 있었는지 확인하여 같은 곳에 저장
             const rememberMe = tokenManager.isTokenInLocalStorage(tokenType);
             tokenManager.setToken(newAccessToken, tokenType, rememberMe);
@@ -137,13 +167,15 @@ export const apiClient = {
             throw error;
           } finally {
             // refresh 완료 후 Promise 캐시 초기화
-            console.log('[DEBUG] Clearing refresh promise cache');
             refreshPromises[tokenType] = null;
           }
         })();
 
         try {
           const newAccessToken = await refreshPromises[tokenType];
+
+          // 재시도 플래그 설정
+          isRetryingAfterRefresh[tokenType] = true;
 
           const retryController = new AbortController();
           const retryTimeoutId = setTimeout(() => retryController.abort(), 3000);
@@ -160,12 +192,16 @@ export const apiClient = {
           const retryResponse = await fetch(url, retryConfig);
           clearTimeout(retryTimeoutId);
 
+          // 재시도 성공하면 플래그 해제
+          isRetryingAfterRefresh[tokenType] = false;
+
           if (!retryResponse.ok) {
             throw new Error(`API Error: ${retryResponse.status}`);
           }
 
           return retryResponse.json();
         } catch (error) {
+          isRetryingAfterRefresh[tokenType] = false;
           throw error;
         }
       }
