@@ -1,13 +1,8 @@
 import { apiClient } from './client';
 import { tokenManager } from '../utils/tokenManager';
 import type {
-  ResumeListResponse,
-  ResumeDetailResponse,
   CreateResumeRequest,
-  CreateResumeResponse,
   UpdateResumeRequest,
-  UpdateResumeResponse,
-  DeleteResumeResponse,
   UploadResumeFileResponse,
   UploadResumeImageResponse,
   UploadUserImageResponse,
@@ -15,30 +10,30 @@ import type {
 } from './types';
 
 export const resumeApi = {
-  async getMyResumes(): Promise<ResumeListResponse> {
-    return apiClient.get<ResumeListResponse>('/api/posts/resume/list/me');
+  async getMyResumes(): Promise<string> {
+    return apiClient.get<string>('/api/posts/resume/list/me');
   },
 
-  async getResumeById(resumeId: number): Promise<ResumeDetailResponse> {
-    return apiClient.get<ResumeDetailResponse>(`/api/posts/resume/${resumeId}`);
+  async getResumeById(resumeId: number): Promise<string> {
+    return apiClient.get<string>(`/api/posts/resume/${resumeId}`);
   },
 
-  async createResume(data: CreateResumeRequest): Promise<CreateResumeResponse> {
-    return apiClient.post<CreateResumeResponse>('/api/posts/resume', data);
+  async createResume(data: CreateResumeRequest): Promise<string> {
+    return apiClient.post<string>('/api/posts/resume', data);
   },
 
   async updateResume(
     resumeId: number,
     data: UpdateResumeRequest
-  ): Promise<UpdateResumeResponse> {
-    return apiClient.put<UpdateResumeResponse>(
+  ): Promise<string> {
+    return apiClient.put<string>(
       `/api/posts/resume/${resumeId}`,
       data
     );
   },
 
-  async deleteResume(resumeId: number): Promise<DeleteResumeResponse> {
-    return apiClient.delete<DeleteResumeResponse>(`/api/posts/resume/${resumeId}`);
+  async deleteResume(resumeId: number): Promise<string> {
+    return apiClient.delete<string>(`/api/posts/resume/${resumeId}`);
   },
 
   async uploadResumeFile(file: File): Promise<UploadResumeFileResponse> {

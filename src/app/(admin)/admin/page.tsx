@@ -22,23 +22,23 @@ export default function AdminDashboard() {
       try {
         // Fetch stats from API
         const [usersData, companiesData, postsData] = await Promise.all([
-          adminApi.getUsers(1, 1),
-          adminApi.getCompanies(1, 1),
-          adminApi.getPosts(1, 1),
+          adminApi.getUsers(),
+          adminApi.getCompanies(0, 1000),
+          adminApi.getPosts(0, 1000),
         ]);
 
         setStats({
-          totalUsers: usersData.total,
-          totalCompanies: companiesData.total,
-          totalPosts: postsData.total,
+          totalUsers: usersData.length,
+          totalCompanies: companiesData.length,
+          totalPosts: postsData.length,
         });
       } catch (error) {
         console.error('Failed to fetch dashboard stats:', error);
         // Use mock data if API fails
         setStats({
-          totalUsers: 150,
-          totalCompanies: 45,
-          totalPosts: 89,
+          totalUsers: 0,
+          totalCompanies: 0,
+          totalPosts: 0,
         });
       } finally {
         setLoading(false);

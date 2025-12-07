@@ -7,6 +7,7 @@ import ResumeEditor from '@/components/resume/ResumeEditor';
 import { Resume } from '@/types/user';
 import { resumeApi } from '@/lib/api/resume';
 import { profileApi } from '@/lib/api/profile';
+import { ResumeDetail } from '@/lib/api/types';
 
 // ISO 날짜 형식(2022-02-23T00:00:00)을 YYYY-MM-DD 형식으로 변환
 const formatDateForInput = (dateString: string | null | undefined): string => {
@@ -44,18 +45,19 @@ const EditResumePage: React.FC = () => {
     queryKey: ['resume', resumeId, profileData, contactData],
     queryFn: async () => {
       if (!resumeId) throw new Error('Invalid resume ID');
-      const response = await resumeApi.getResumeById(resumeId);
+      const responseString = await resumeApi.getResumeById(resumeId);
+      const response: ResumeDetail = JSON.parse(responseString);
 
       // introduction 배열에서 첫 번째 항목의 content를 objective로 사용
-      const objective = response.resume.introduction && response.resume.introduction.length > 0
-        ? response.resume.introduction[0].content
+      const objective = response.introduction && response.introduction.length > 0
+        ? response.introduction[0].content
         : '';
 
       // API 응답을 Resume 타입으로 변환
       const resume: Resume = {
-        id: String(response.resume.id),
-        userId: String(response.resume.user_id),
-        title: response.resume.title,
+        id: String(response.id),
+        userId: String(response.user_id),
+        title: response.title,
         templateType: 'modern',
         status: 'draft',
         isPublic: true,
@@ -65,10 +67,10 @@ const EditResumePage: React.FC = () => {
             email: '', // 프로필 API에 email이 없음
             phone: contactData?.phone_number || '',
             address: profileData?.address || '',
-            profileImage: response.resume.profile_url || profileData?.profile_image_url
+            profileImage: response.profile_url || profileData?.profile_image_url
           },
           objective: objective,
-          workExperience: response.resume.career_history.map(career => ({
+          workExperience: response.career_history.map(career => ({
             id: `${career.company_name}-${career.start_date}`,
             company: career.company_name,
             position: career.position_title,
@@ -79,7 +81,7 @@ const EditResumePage: React.FC = () => {
             current: career.is_working,
             description: career.main_role
           })),
-          education: response.resume.schools.map(school => ({
+          education: response.schools.map(school => ({
             id: `${school.school_name}-${school.start_date}`,
             institution: school.school_name,
             degree: school.is_graduated ? '졸업' : '재학',
@@ -89,8 +91,8 @@ const EditResumePage: React.FC = () => {
           })),
           skills: [],
           projects: [],
-          certifications: response.resume.licenses.map(license => license.license_name),
-          languages: response.resume.language_skills
+          certifications: response.licenses.map(license => license.license_name),
+          languages: response.language_skills
             .filter(lang => lang.language_type && lang.level)
             .map(lang => ({
               name: lang.language_type || '',
@@ -98,7 +100,7 @@ const EditResumePage: React.FC = () => {
             }))
         },
         // 자격증 상세 정보 저장 (ResumeEditor에서 사용)
-        licenses: response.resume.licenses.map(license => ({
+        licenses: response.licenses.map(license => ({
           license_name: license.license_name,
           license_agency: license.license_agency,
           license_date: formatDateForInput(license.license_date)

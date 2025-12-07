@@ -13,7 +13,7 @@ import { UserProfile, RadarChartData, UserSkill } from '@/types/user';
 import { useAuth } from '@/hooks/useAuth';
 import { resumeApi } from '@/lib/api/resume';
 import { profileApi } from '@/lib/api/profile';
-import type { CareerHistory } from '@/lib/api/types';
+import type { CareerHistory, ResumeListItem, ResumeDetail } from '@/lib/api/types';
 
 const UserProfileClient: React.FC = () => {
   const router = useRouter();
@@ -97,19 +97,24 @@ const UserProfileClient: React.FC = () => {
   });
 
   // 이력서 목록 가져오기
-  const { data: resumeList, isLoading: resumeListLoading } = useQuery({
+  const { data: resumeList, isLoading: resumeListLoading } = useQuery<ResumeListItem[]>({
     queryKey: ['resumeList'],
-    queryFn: () => resumeApi.getMyResumes(),
+    queryFn: async () => {
+      const responseString = await resumeApi.getMyResumes();
+      const list = JSON.parse(responseString);
+      return Array.isArray(list) ? list : [];
+    },
     enabled: isAuthenticated,
   });
 
   // 첫 번째 이력서 상세 정보 가져오기
-  const firstResumeId = resumeList?.resume_list?.[0]?.id;
+  const firstResumeId = resumeList?.[0]?.id;
   const { data: resumeData, isLoading: resumeDetailLoading, error } = useQuery({
     queryKey: ['resume', firstResumeId],
     queryFn: async () => {
       if (!firstResumeId) return null;
-      const response = await resumeApi.getResumeById(firstResumeId);
+      const responseString = await resumeApi.getResumeById(firstResumeId);
+      const response: ResumeDetail = JSON.parse(responseString);
 
       // 언어 숙련도를 숫자로 변환하는 함수
       const proficiencyToLevel = (level: string): number => {
@@ -128,7 +133,7 @@ const UserProfileClient: React.FC = () => {
       };
 
       // language_skills를 UserSkill 형태로 변환
-      const languageSkills: UserSkill[] = response.resume.language_skills
+      const languageSkills: UserSkill[] = response.language_skills
         .filter(lang => lang.language_type && lang.level)
         .map((lang, index) => ({
           id: `lang-${index}`,
@@ -141,19 +146,19 @@ const UserProfileClient: React.FC = () => {
 
       // Resume, Profile, Contact 데이터를 UserProfile 형태로 변환
       const profile: UserProfile = {
-        id: String(response.resume.user_id),
+        id: String(response.user_id),
         name: profileData?.name || '',
         email: contactData?.phone_number || '', // phone_number를 임시로 email로 사용
-        profileImage: response.resume.profile_url || profileData?.profile_image_url,
+        profileImage: response.profile_url || profileData?.profile_image_url,
         position_id: profileData?.position_id || undefined,
         location: profileData?.location || '',
-        introduction: response.resume.introduction?.[0]?.content || profileData?.introduction || '',
-        experience: calculateExperience(response.resume.career_history),
+        introduction: response.introduction?.[0]?.content || profileData?.introduction || '',
+        experience: calculateExperience(response.career_history),
         completedProjects: 0, // API에서 제공하지 않음
-        certifications: response.resume.licenses.map(l => l.license_name),
+        certifications: response.licenses.map(l => l.license_name),
         job_status: 'available',
         skills: languageSkills, // language_skills를 UserSkill 형태로 변환하여 추가
-        education: response.resume.schools.map(school => ({
+        education: response.schools.map(school => ({
           id: `${school.school_name}-${school.start_date}`,
           institution: school.school_name,
           degree: school.is_graduated ? '졸업' : '재학',
@@ -161,7 +166,7 @@ const UserProfileClient: React.FC = () => {
           startDate: school.start_date,
           endDate: school.end_date
         })),
-        languages: response.resume.language_skills
+        languages: response.language_skills
           .filter(lang => lang.language_type && lang.level)
           .map(lang => ({
             name: lang.language_type || '',
@@ -262,11 +267,11 @@ const UserProfileClient: React.FC = () => {
               프로필을 불러올 수 없습니다
             </h2>
             <p className="text-body-3 text-label-500">
-              {!resumeList?.resume_list?.length
+              {!resumeList?.length
                 ? '먼저 이력서를 작성해주세요.'
                 : '잠시 후 다시 시도해주세요.'}
             </p>
-            {!resumeList?.resume_list?.length && (
+            {!resumeList?.length && (
               <button
                 onClick={() => router.push('/user/resume/create')}
                 className="mt-4 px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600"
@@ -294,10 +299,10 @@ const UserProfileClient: React.FC = () => {
       <div className="min-h-screen bg-background-alternative py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           {/* 상단 액션 버튼 */}
-          {resumeList?.resume_list && resumeList.resume_list.length > 0 ? (
+          {resumeList && resumeList.length > 0 ? (
             <div className="flex justify-end">
               <button
-                onClick={() => router.push(`/user/resume/edit/${resumeList.resume_list[0].id}`)}
+                onClick={() => router.push(`/user/resume/edit/${resumeList[0].id}`)}
                 className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
               >
                 이력서 수정하기
@@ -412,9 +417,9 @@ const UserProfileClient: React.FC = () => {
                   )}
                 </div>
 
-                {resumeList?.resume_list && resumeList.resume_list.length > 0 ? (
+                {resumeList && resumeList.length > 0 ? (
                   <div className="space-y-4">
-                    {resumeList.resume_list.map((resume) => (
+                    {resumeList.map((resume) => (
                       <div
                         key={resume.id}
                         className="border border-line-200 rounded-lg p-4 hover:border-primary-300 transition-colors cursor-pointer flex justify-between items-center"
