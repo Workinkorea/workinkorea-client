@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import { FormField } from '@/components/ui/FormField';
 import { SelectSearchInput } from '@/components/ui/SelectSearchInput';
 import { COUNTRIES } from '@/constants/countries';
@@ -36,6 +37,7 @@ interface TermsAgreement {
 }
 
 export default function SignupComponent({ userEmail }: { userEmail?: string }) {
+  const router = useRouter();
   const [formState, setFormState] = useState({
     isEmailSent: !!userEmail,
     isEmailVerified: !!userEmail,
@@ -191,6 +193,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
       await authApi.signup(signupData);
 
       toast.success('회원가입이 완료되었습니다. 로그인 해주세요.');
+      router.push('/login');
     } catch (error: unknown) {
       const errorMessage =
         error && typeof error === 'object' && 'response' in error

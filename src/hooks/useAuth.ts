@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { tokenManager, TokenType } from '@/lib/utils/tokenManager';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api/client';
 
 // 인증이 필요 없는 페이지 경로 (로그인/회원가입)
@@ -17,6 +17,7 @@ interface UseAuthOptions {
 export const useAuth = (options: UseAuthOptions = {}) => {
   const { required } = options;
   const pathname = usePathname();
+  const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userType, setUserType] = useState<TokenType | null>(null);
@@ -122,6 +123,9 @@ export const useAuth = (options: UseAuthOptions = {}) => {
       } catch (err) {
         console.error('Logout failed:', err);
       }
+
+      // 로그인 페이지로 리다이렉트
+      router.push('/login');
     }
   };
 
