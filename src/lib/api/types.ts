@@ -15,6 +15,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   success: boolean;
   token?: string;
+  token_type?: 'access' | 'access_company' | 'admin_access';
   user?: {
     id: string;
     email: string;
@@ -29,6 +30,7 @@ export interface LogoutResponse {
 export interface RefreshTokenResponse {
   success: boolean;
   accessToken: string;
+  token_type?: 'access' | 'access_company' | 'admin_access';
 }
 
 export interface UserInfo {
@@ -71,6 +73,8 @@ export interface CompanyLoginRequest {
 
 export interface CompanyLoginResponse {
   url: string;
+  access_token?: string;
+  token_type?: 'access' | 'access_company' | 'admin_access';
 }
 
 export interface ProfileResponse {
