@@ -65,16 +65,25 @@ async function refreshToken(): Promise<string> {
     throw new Error("No token for refresh");
   }
 
-  // JWT에서 사용자 타입 추출
-  const userType = tokenManager.getUserType();
+  // 저장된 token_type에서 사용자 타입 추출 (우선)
+  // fallback으로 JWT에서 파싱
+  let userType = tokenManager.getUserTypeFromTokenType();
 
   if (!userType) {
-    console.error("[apiClient] Cannot determine user type from token");
+    console.warn("[apiClient] No stored token_type, falling back to JWT parsing");
+    const jwtUserType = tokenManager.getUserType();
+    userType = jwtUserType === 'company' ? 'company' : jwtUserType === 'user' ? 'user' : null;
+  }
+
+  if (!userType || (userType !== 'user' && userType !== 'company' && userType !== 'admin')) {
+    console.error("[apiClient] Cannot determine user type from stored token_type or JWT");
     throw new Error("Invalid token: cannot determine user type");
   }
 
   const endpoint =
-    userType === "company" ? "/api/auth/company/refresh" : "/api/auth/refresh";
+    userType === "company" ? "/api/auth/company/refresh" :
+    userType === "admin" ? "/api/auth/admin/refresh" :
+    "/api/auth/refresh";
 
   console.log(`[apiClient] Starting refresh for ${userType} token`);
 
@@ -96,7 +105,10 @@ async function refreshToken(): Promise<string> {
     }
 
     const rememberMe = tokenManager.isTokenInLocalStorage();
-    tokenManager.setToken(newToken, rememberMe);
+    const newTokenType = response.data.token_type;
+
+    // 새 토큰과 token_type 저장
+    tokenManager.setToken(newToken, rememberMe, newTokenType);
 
     console.log(`[apiClient] Refresh successful for ${userType} token`);
     return newToken;
@@ -108,7 +120,10 @@ async function refreshToken(): Promise<string> {
 
     // 로그인 페이지로 리다이렉트
     if (typeof window !== "undefined") {
-      const loginPath = userType === "company" ? "/company-login" : "/login";
+      const loginPath =
+        userType === "company" ? "/company-login" :
+        userType === "admin" ? "/admin/login" :
+        "/login";
       console.log(`[apiClient] Redirecting to ${loginPath}`);
       window.location.href = loginPath;
     }

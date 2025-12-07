@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { adminApi } from '@/lib/api/admin';
-import { CompanyPost } from '@/lib/api/types';
+import { AdminPost } from '@/lib/api/types';
 import { toast } from 'sonner';
 
 interface PostFormData {
@@ -21,12 +21,11 @@ interface PostFormData {
 }
 
 export default function AdminPostsPage() {
-  const [posts, setPosts] = useState<CompanyPost[]>([]);
+  const [posts, setPosts] = useState<AdminPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [editingPost, setEditingPost] = useState<CompanyPost | null>(null);
+  const [editingPost, setEditingPost] = useState<AdminPost | null>(null);
   const [formData, setFormData] = useState<PostFormData>({
     title: '',
     content: '',
@@ -47,48 +46,12 @@ export default function AdminPostsPage() {
   const fetchPosts = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await adminApi.getPosts(page, limit);
-      setPosts(data.posts);
-      setTotal(data.total);
+      const skip = (page - 1) * limit;
+      const data = await adminApi.getPosts(skip, limit);
+      setPosts(data);
     } catch (error) {
       console.error('Failed to fetch posts:', error);
       toast.error('공고 목록을 불러오는데 실패했습니다.');
-      // Mock data for development
-      setPosts([
-        {
-          id: 1,
-          company_id: 1,
-          title: '프론트엔드 개발자 모집',
-          content: 'React, TypeScript 경력자 우대',
-          work_experience: '3년 이상',
-          position_id: 1,
-          education: '대졸 이상',
-          language: '한국어, 영어',
-          employment_type: '정규직',
-          work_location: '서울 강남구',
-          working_hours: 40,
-          salary: 50000000,
-          start_date: '2024-01-01',
-          end_date: '2024-12-31',
-        },
-        {
-          id: 2,
-          company_id: 2,
-          title: '백엔드 개발자 채용',
-          content: 'Node.js, Python 경력자 모집',
-          work_experience: '2년 이상',
-          position_id: 2,
-          education: '대졸 이상',
-          language: '한국어',
-          employment_type: '정규직',
-          work_location: '서울 판교',
-          working_hours: 40,
-          salary: 45000000,
-          start_date: '2024-02-01',
-          end_date: '2024-12-31',
-        },
-      ]);
-      setTotal(2);
     } finally {
       setLoading(false);
     }
@@ -98,7 +61,7 @@ export default function AdminPostsPage() {
     fetchPosts();
   }, [fetchPosts]);
 
-  function openEditModal(post: CompanyPost) {
+  function openEditModal(post: AdminPost) {
     setEditingPost(post);
     setFormData({
       title: post.title,
@@ -242,8 +205,7 @@ export default function AdminPostsPage() {
       {/* Pagination */}
       <div className="flex items-center justify-between mt-6">
         <div className="text-sm text-gray-700">
-          전체 {total}개 중 {(page - 1) * limit + 1}-
-          {Math.min(page * limit, total)}개 표시
+          페이지 {page} (현재 {posts.length}개 표시)
         </div>
         <div className="flex gap-2">
           <button
@@ -255,7 +217,7 @@ export default function AdminPostsPage() {
           </button>
           <button
             onClick={() => setPage((p) => p + 1)}
-            disabled={page * limit >= total}
+            disabled={posts.length < limit}
             className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             다음

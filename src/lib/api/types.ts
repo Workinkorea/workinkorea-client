@@ -15,6 +15,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   success: boolean;
   token?: string;
+  token_type?: 'access' | 'access_company' | 'admin_access';
   user?: {
     id: string;
     email: string;
@@ -29,6 +30,7 @@ export interface LogoutResponse {
 export interface RefreshTokenResponse {
   success: boolean;
   accessToken: string;
+  token_type?: 'access' | 'access_company' | 'admin_access';
 }
 
 export interface UserInfo {
@@ -71,6 +73,8 @@ export interface CompanyLoginRequest {
 
 export interface CompanyLoginResponse {
   url: string;
+  access_token?: string;
+  token_type?: 'access' | 'access_company' | 'admin_access';
 }
 
 export interface ProfileResponse {
@@ -162,15 +166,23 @@ export interface ApiErrorResponse {
 }
 
 // Resume API types
+export interface ResumeDetail {
+  id: number;
+  user_id: number;
+  title: string;
+  profile_url: string;
+  language_skills: LanguageSkill[];
+  schools: School[];
+  career_history: CareerHistory[];
+  introduction: Introduction[];
+  licenses: License[];
+}
+
 export interface ResumeListItem {
   id: number;
   title: string;
   created_at: string;
   updated_at: string;
-}
-
-export interface ResumeListResponse {
-  resume_list: ResumeListItem[];
 }
 
 export interface LanguageSkill {
@@ -207,22 +219,6 @@ export interface License {
   license_date: string;
 }
 
-export interface ResumeDetail {
-  id: number;
-  user_id: number;
-  title: string;
-  profile_url: string;
-  language_skills: LanguageSkill[];
-  schools: School[];
-  career_history: CareerHistory[];
-  introduction: Introduction[];
-  licenses: License[];
-}
-
-export interface ResumeDetailResponse {
-  resume: ResumeDetail;
-}
-
 export interface CreateResumeRequest {
   title: string;
   profile_url?: string;
@@ -233,10 +229,6 @@ export interface CreateResumeRequest {
   licenses?: License[];
 }
 
-export interface CreateResumeResponse {
-  resume_id: number;
-}
-
 export interface UpdateResumeRequest {
   title?: string;
   profile_url?: string;
@@ -245,14 +237,6 @@ export interface UpdateResumeRequest {
   career_history?: CareerHistory[];
   introduction?: Introduction[];
   licenses?: License[];
-}
-
-export interface UpdateResumeResponse {
-  resume_id: number;
-}
-
-export interface DeleteResumeResponse {
-  message: string;
 }
 
 export interface UploadResumeFileResponse {
@@ -388,4 +372,57 @@ export interface UploadUserImageResponse {
   success: boolean;
   message?: string;
   image_url?: string;
+}
+
+// Admin API types
+export interface AdminUser {
+  id: number;
+  email: string;
+  passport_certi: boolean;
+}
+
+export interface AdminCompany {
+  id: number;
+  company_number: string;
+  company_name: string;
+}
+
+export interface AdminPost {
+  id: number;
+  company_id: number;
+  title: string;
+  content: string;
+  work_experience: string;
+  position_id: number;
+  education: string;
+  language: string;
+  employment_type: string;
+  work_location: string;
+  working_hours: number;
+  salary: number;
+  start_date: string;
+  end_date: string;
+}
+
+export interface UpdateAdminUserRequest {
+  passport_certi: boolean;
+}
+
+export interface UpdateAdminCompanyRequest {
+  company_name: string;
+}
+
+export interface UpdateAdminPostRequest {
+  title?: string;
+  content?: string;
+  work_experience?: string;
+  position_id?: number;
+  education?: string;
+  language?: string;
+  employment_type?: string;
+  work_location?: string;
+  working_hours?: number;
+  salary?: number;
+  start_date?: string;
+  end_date?: string;
 }

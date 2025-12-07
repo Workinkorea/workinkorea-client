@@ -16,6 +16,7 @@ import { UserProfile, RadarChartData, Resume } from '@/types/user';
 import { profileApi } from '@/lib/api/profile';
 import { resumeApi } from '@/lib/api/resume';
 import { useAuth } from '@/hooks/useAuth';
+import { ResumeListItem } from '@/lib/api/types';
 
 // Mock data for dashboard, skill management, and career management
 const mockMyProfile: UserProfile = {
@@ -128,15 +129,16 @@ const MyProfileClient: React.FC = () => {
     queryKey: ['resumes'],
     queryFn: async () => {
       try {
-        const response = await resumeApi.getMyResumes();
+        const responseString = await resumeApi.getMyResumes();
+        const resumeList = JSON.parse(responseString);
 
-        // API 응답이 없거나 resume_list가 없으면 빈 배열 반환
-        if (!response || !response.resume_list) {
+        // API 응답이 없으면 빈 배열 반환
+        if (!resumeList || !Array.isArray(resumeList)) {
           return [];
         }
 
         // API 응답을 Resume 타입으로 변환
-        const resumes: Resume[] = response.resume_list.map(item => ({
+        const resumes: Resume[] = resumeList.map((item: ResumeListItem) => ({
           id: String(item.id),
           title: item.title,
           templateType: 'modern',

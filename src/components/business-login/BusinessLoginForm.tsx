@@ -175,14 +175,29 @@ export default function BusinessLoginForm() {
         password: data.password
       });
 
-      if (response.url) {
-        // URL에서 token 파싱
+      // 새로운 방식: access_token과 token_type을 직접 받음
+      if (response.access_token) {
+        const tokenType = response.token_type || 'access_company';
+        tokenManager.setCompanyAccessToken(response.access_token, data.rememberMe, tokenType);
+
+        if (data.rememberMe) {
+          localStorage.setItem(SAVED_EMAIL_KEY, data.email);
+        } else {
+          localStorage.removeItem(SAVED_EMAIL_KEY);
+        }
+
+        // 홈으로 리다이렉트
+        router.push('/');
+      }
+      // 기존 방식 (하위 호환성): URL에서 token 파싱
+      else if (response.url) {
         const url = new URL(response.url);
         const token = url.searchParams.get('token');
 
         if (token) {
           // 자동로그인 체크박스에 따라 localStorage 또는 sessionStorage에 저장
-          tokenManager.setCompanyAccessToken(token, data.rememberMe);
+          const tokenType = response.token_type || 'access_company';
+          tokenManager.setCompanyAccessToken(token, data.rememberMe, tokenType);
         }
 
         if (data.rememberMe) {

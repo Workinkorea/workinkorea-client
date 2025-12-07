@@ -48,12 +48,18 @@ export const useAuth = (options: UseAuthOptions = {}) => {
       // 토큰 확인 (단일 토큰)
       const hasToken = tokenManager.hasToken();
       const isValid = tokenManager.isTokenValid();
-      const currentTokenType = tokenManager.getUserType();
+
+      // 저장된 token_type에서 사용자 타입 추출 (우선)
+      // fallback으로 JWT에서 파싱
+      let currentTokenType = tokenManager.getUserTypeFromTokenType();
+      if (!currentTokenType) {
+        currentTokenType = tokenManager.getUserType();
+      }
 
       if (hasToken && isValid && currentTokenType) {
         // 유효한 토큰이 있으면 인증 상태 설정
         setIsAuthenticated(true);
-        setUserType(currentTokenType);
+        setUserType(currentTokenType === 'admin' ? 'company' : currentTokenType);
       } else {
         // 유효한 토큰이 없으면 인증 해제
         // Axios 인터셉터가 401 발생 시 자동으로 refresh 처리함
@@ -81,13 +87,26 @@ export const useAuth = (options: UseAuthOptions = {}) => {
 
   const login = (accessToken: string, rememberMe: boolean = false) => {
     tokenManager.setToken(accessToken, rememberMe);
-    const userType = tokenManager.getUserType();
+
+    // 저장된 token_type에서 사용자 타입 추출 (우선)
+    // fallback으로 JWT에서 파싱
+    let userType = tokenManager.getUserTypeFromTokenType();
+    if (!userType) {
+      userType = tokenManager.getUserType();
+    }
+
     setIsAuthenticated(true);
-    setUserType(userType);
+    setUserType(userType === 'admin' ? 'company' : userType);
   };
 
   const logout = async () => {
-    const currentUserType = tokenManager.getUserType();
+    // 저장된 token_type에서 사용자 타입 추출 (우선)
+    // fallback으로 JWT에서 파싱
+    let currentUserType = tokenManager.getUserTypeFromTokenType();
+    if (!currentUserType) {
+      currentUserType = tokenManager.getUserType();
+    }
+
     tokenManager.removeToken();
     setIsAuthenticated(false);
     setUserType(null);
@@ -95,9 +114,10 @@ export const useAuth = (options: UseAuthOptions = {}) => {
     if (typeof window !== 'undefined') {
       try {
         // 사용자 타입에 따라 적절한 로그아웃 엔드포인트 호출
-        const endpoint = currentUserType === 'company'
-          ? '/api/auth/company/logout'
-          : '/api/auth/logout';
+        const endpoint =
+          currentUserType === 'company' ? '/api/auth/company/logout' :
+          currentUserType === 'admin' ? '/api/auth/admin/logout' :
+          '/api/auth/logout';
         await apiClient.delete(endpoint);
       } catch (err) {
         console.error('Logout failed:', err);
