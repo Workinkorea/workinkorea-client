@@ -43,13 +43,13 @@ type ResumeFormData = {
     school_name: string;
     major_name: string;
     start_date: string;
-    end_date: string;
+    end_date: string | null;
     is_graduated: boolean;
   }>;
   career_history: Array<{
     company_name: string;
     start_date: string;
-    end_date: string;
+    end_date: string | null;
     is_working: boolean;
     department: string;
     position_title: string;
@@ -91,19 +91,19 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
         school_name: edu.institution,
         major_name: edu.field,
         start_date: edu.startDate,
-        end_date: edu.endDate || '',
+        end_date: edu.endDate || null,
         is_graduated: edu.degree === '졸업'
       })) || [{
         school_name: '',
         major_name: '',
         start_date: '',
-        end_date: '',
+        end_date: null,
         is_graduated: false
       }],
       career_history: initialData?.content?.workExperience?.map(work => ({
         company_name: work.company,
         start_date: work.startDate,
-        end_date: work.endDate || '',
+        end_date: work.endDate || null,
         is_working: work.current || false,
         department: '',
         position_title: work.position,
@@ -111,7 +111,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
       })) || [{
         company_name: '',
         start_date: '',
-        end_date: '',
+        end_date: null,
         is_working: false,
         department: '',
         position_title: '',
@@ -194,12 +194,28 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
 
   const onSubmit = async (data: ResumeFormData) => {
     try {
+      // 재직중일 때 또는 선택 안 했을 때 end_date를 null로 설정
+      const processedCareerHistory = data.career_history.length > 0
+        ? data.career_history.map(career => ({
+            ...career,
+            end_date: career.is_working || !career.end_date ? null : career.end_date
+          }))
+        : undefined;
+
+      // 학력사항의 end_date도 선택 안 했을 때 null로 설정
+      const processedSchools = data.schools.length > 0
+        ? data.schools.map(school => ({
+            ...school,
+            end_date: school.end_date ? school.end_date : null
+          }))
+        : undefined;
+
       const requestData: CreateResumeRequest | UpdateResumeRequest = {
         title: data.title,
         profile_url: data.profile_url || undefined,
         language_skills: data.language_skills.length > 0 ? data.language_skills : undefined,
-        schools: data.schools.length > 0 ? data.schools : undefined,
-        career_history: data.career_history.length > 0 ? data.career_history : undefined,
+        schools: processedSchools,
+        career_history: processedCareerHistory,
         introduction: data.introduction.length > 0 ? data.introduction : undefined,
         licenses: data.licenses.length > 0 ? data.licenses : undefined,
       };
@@ -445,7 +461,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
               onClick={() => appendCareer({
                 company_name: '',
                 start_date: '',
-                end_date: '',
+                end_date: null,
                 is_working: false,
                 department: '',
                 position_title: '',
@@ -592,7 +608,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 school_name: '',
                 major_name: '',
                 start_date: '',
-                end_date: '',
+                end_date: null,
                 is_graduated: false
               })}
               className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
