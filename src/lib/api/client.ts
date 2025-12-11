@@ -82,8 +82,8 @@ async function refreshToken(): Promise<string> {
 
   const endpoint =
     userType === "company" ? "/api/auth/company/refresh" :
-    userType === "admin" ? "/api/auth/admin/refresh" :
-    "/api/auth/refresh";
+      userType === "admin" ? "/api/auth/admin/refresh" :
+        "/api/auth/refresh";
 
   console.log(`[apiClient] Starting refresh for ${userType} token`);
 
@@ -122,10 +122,10 @@ async function refreshToken(): Promise<string> {
     if (typeof window !== "undefined") {
       const loginPath =
         userType === "company" ? "/company-login" :
-        userType === "admin" ? "/admin/login" :
-        "/login";
+          userType === "admin" ? "/admin/login" :
+            "/login";
       console.log(`[apiClient] Redirecting to ${loginPath}`);
-      window.location.href = loginPath;
+      window.location.replace(loginPath);
     }
     throw err;
   }
@@ -137,11 +137,16 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalConfig = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
+    // If request was canceled or no config, just reject
+    if (!originalConfig) {
+      return Promise.reject(error);
+    }
+
     // If refresh endpoint itself failed → don't retry, just fail
     // (refreshToken() already handles logout and redirect)
     if (
-      originalConfig?.url?.includes("/auth/refresh") ||
-      originalConfig?.url?.includes("/auth/company/refresh")
+      originalConfig.url?.includes("/auth/refresh") ||
+      originalConfig.url?.includes("/auth/company/refresh")
     ) {
       console.error("[apiClient] Refresh endpoint failed, not retrying");
       return Promise.reject(error);

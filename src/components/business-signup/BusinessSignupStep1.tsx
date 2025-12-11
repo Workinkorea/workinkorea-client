@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { SignupStep1Data } from '@/types/signup.type';
+import { toast } from 'sonner';
 
 interface BusinessSignupStep1Props {
   initialData?: SignupStep1Data;
@@ -11,10 +12,10 @@ interface BusinessSignupStep1Props {
   onViewTermsAction: (termType: string) => void;
 }
 
-export default function BusinessSignupStep1({ 
-  initialData, 
-  onNextAction, 
-  onViewTermsAction 
+export default function BusinessSignupStep1({
+  initialData,
+  onNextAction,
+  onViewTermsAction
 }: BusinessSignupStep1Props) {
   const [agreements, setAgreements] = useState(
     initialData?.agreements || {
@@ -60,9 +61,9 @@ export default function BusinessSignupStep1({
     });
   };
 
-  const isRequiredAgreementsChecked = 
-    agreements.termsOfService && 
-    agreements.privacyPolicy && 
+  const isRequiredAgreementsChecked =
+    agreements.termsOfService &&
+    agreements.privacyPolicy &&
     agreements.personalInfo &&
     agreements.thirdParty;
 
@@ -80,12 +81,12 @@ export default function BusinessSignupStep1({
     if (checkedCount === 3) return 65;
     return 100;
   };
-  
+
   const progressPercentage = getProgressPercentage();
 
   const handleNext = () => {
     if (!isRequiredAgreementsChecked) {
-      alert('필수 약관에 모두 동의해주세요.');
+      toast.error('필수 약관에 모두 동의해주세요.');
       return;
     }
     onNextAction({ agreements });
@@ -99,7 +100,7 @@ export default function BusinessSignupStep1({
     <div className="h-full">
       <div className="px-4 py-8">
 
-        <motion.div 
+        <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -119,7 +120,7 @@ export default function BusinessSignupStep1({
           </div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="pb-4 border-b border-line-400"
           whileTap={{ scale: 0.98 }}
         >
@@ -152,7 +153,7 @@ export default function BusinessSignupStep1({
         </motion.div>
 
         <div className="space-y-4">
-          <motion.div 
+          <motion.div
             className="flex items-center justify-between pt-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -186,7 +187,7 @@ export default function BusinessSignupStep1({
                 서비스 이용약관 동의 (필수)
               </span>
             </label>
-            <button 
+            <button
               onClick={() => handleViewTerms('서비스 이용약관')}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
             >
@@ -194,7 +195,7 @@ export default function BusinessSignupStep1({
             </button>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="flex items-center justify-between"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -228,7 +229,7 @@ export default function BusinessSignupStep1({
                 개인(신용)정보 수집 및 이용동의 (필수)
               </span>
             </label>
-            <button 
+            <button
               onClick={() => handleViewTerms('개인정보 수집 및 이용')}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
             >
@@ -236,7 +237,7 @@ export default function BusinessSignupStep1({
             </button>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="flex items-center justify-between"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -270,7 +271,7 @@ export default function BusinessSignupStep1({
                 개인(신용)정보 제공 및 위탁동의 (필수)
               </span>
             </label>
-            <button 
+            <button
               onClick={() => handleViewTerms('개인정보 제공 및 위탁')}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
             >
@@ -278,7 +279,7 @@ export default function BusinessSignupStep1({
             </button>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="flex items-center justify-between"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -312,7 +313,7 @@ export default function BusinessSignupStep1({
                 개인(신용)정보 조회 동의 (필수)
               </span>
             </label>
-            <button 
+            <button
               onClick={() => handleViewTerms('개인정보 조회')}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
             >
@@ -320,7 +321,7 @@ export default function BusinessSignupStep1({
             </button>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="flex items-center justify-between mt-6"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -357,7 +358,7 @@ export default function BusinessSignupStep1({
           </motion.div>
         </div>
 
-        <motion.div 
+        <motion.div
           className="mt-8 flex gap-3"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -366,11 +367,10 @@ export default function BusinessSignupStep1({
           <motion.button
             onClick={handleNext}
             disabled={!isRequiredAgreementsChecked}
-            className={`flex-1 py-4 rounded-xl font-semibold text-white transition-all duration-300 ${
-              isRequiredAgreementsChecked
-                ? 'bg-primary-300 hover:bg-primary-400 shadow-lg cursor-pointer' 
-                : 'bg-gray-300 cursor-not-allowed'
-            }`}
+            className={`flex-1 py-4 rounded-xl font-semibold text-white transition-all duration-300 ${isRequiredAgreementsChecked
+              ? 'bg-primary-300 hover:bg-primary-400 shadow-lg cursor-pointer'
+              : 'bg-gray-300 cursor-not-allowed'
+              }`}
             whileTap={{ scale: isRequiredAgreementsChecked ? 0.98 : 1 }}
             whileHover={{ scale: isRequiredAgreementsChecked ? 1.02 : 1 }}
           >

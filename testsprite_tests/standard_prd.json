@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "project": "WorkInKorea Client",
+    "date": "2025-12-10",
+    "prepared_by": "Software Development Manager"
+  },
+  "product_overview": "WorkInKorea is a comprehensive recruitment platform designed to connect foreign job seekers with Korean companies. It facilitates job searching, resume management, company job postings, and career diagnostics, supporting multiple user roles including individuals, companies, and administrators.",
+  "core_goals": [
+    "Provide a seamless job search experience for foreign job seekers in Korea.",
+    "Enable companies to efficiently post and manage job vacancies.",
+    "Offer a robust authentication system supporting individual, company, and admin users.",
+    "Deliver personalized career diagnosis tools to assist users in their job search.",
+    "Support managing and editing resumes with multiple templates and dynamic sections.",
+    "Provide administrative capabilities for managing users, companies, and job posts.",
+    "Ensure secure and scalable file uploads and data handling with image integration.",
+    "Maintain modern, responsive UI with multilingual support and accessibility."
+  ],
+  "key_features": [
+    "Dual authentication system supporting individuals and companies with email and Google OAuth login.",
+    "Resume management with dynamic sections including career, education, languages, and certifications.",
+    "Company profile and job posting management with detailed job criteria and location search integration.",
+    "Career diagnosis tool with multi-step survey and progress tracking using Zustand.",
+    "Admin dashboard for comprehensive user, company, and job post CRUD operations and statistics.",
+    "Secure token management with automatic refresh, storage in local/session storage, and role-based access control.",
+    "Integration with MinIO for image storage via presigned URLs.",
+    "Responsive front-end built with Next.js, TypeScript, and Tailwind CSS, with strong state management using React Query and React Hook Form."
+  ],
+  "user_flow_summary": [
+    "Individual user signup with email verification, terms agreement, and profile setup leading to login.",
+    "Company signup with two-step process: terms agreement and detailed company/contact information, followed by company login.",
+    "Standard and company login flows with optional 'remember me' and Google OAuth integration.",
+    "Resume creation and editing with selectable templates and fully dynamic, addable/removable sections including image upload.",
+    "Job posting creation and management by companies with detailed position, requirements, and employment information.",
+    "Career diagnosis multi-step survey capturing user information, preferences, and matching details with progress bar and final result display.",
+    "User and company profile editing workflows with data fetching, form filling, validation, and submission.",
+    "Admin workflows for managing users, companies, and job posts with table views, pagination, and CRUD actions."
+  ],
+  "validation_criteria": [
+    "Authentication endpoints successfully respond with tokens and handle refresh logic without failures.",
+    "All forms validate inputs rigorously using Zod schemas and React Hook Form integration, preventing invalid submissions.",
+    "Job posts and resumes can be created, edited, deleted, and retrieved with correct API interactions.",
+    "Career diagnosis flow updates Zustand store correctly and progresses through all steps without errors.",
+    "Image uploads to MinIO succeed using presigned URLs, and uploaded images are correctly linked to user profiles or resumes.",
+    "Authorized users access their permitted routes and unauthorized access is properly restricted.",
+    "Admin actions such as user and company modifications and deletions reflect accurately in backend and front-end.",
+    "UI components respond correctly on various screen sizes and all user interactions (e.g., modals, dropdowns) behave as expected.",
+    "Token storage respects 'remember me' settings correctly storing tokens in localStorage or sessionStorage.",
+    "Errors from API calls trigger appropriate toast notifications and display user-friendly messages."
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "TypeScript",
+      "Next.js",
+      "TailwindCSS",
+      "Zustand",
+      "React Query",
+      "React Hook Form",
+      "Zod"
+    ],
+    "features": [
+      {
+        "name": "Auth",
+        "description": "Authentication features including login and signup for users and companies.",
+        "files": [
+          "src/app/(auth)/login/page.tsx",
+          "src/app/(auth)/signup/page.tsx",
+          "src/app/(auth)/company-login/page.tsx",
+          "src/app/(auth)/company-signup/page.tsx"
+        ]
+      },
+      {
+        "name": "Company",
+        "description": "Company profile and job posting management.",
+        "files": [
+          "src/app/(main)/company/profile/page.tsx",
+          "src/app/(main)/company/posts/page.tsx"
+        ]
+      },
+      {
+        "name": "Jobs",
+        "description": "Public job listings.",
+        "files": [
+          "src/app/(main)/jobs/page.tsx"
+        ]
+      }
+    ]
+  }
+}
