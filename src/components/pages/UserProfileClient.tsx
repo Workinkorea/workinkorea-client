@@ -100,9 +100,8 @@ const UserProfileClient: React.FC = () => {
   const { data: resumeList, isLoading: resumeListLoading } = useQuery<ResumeListItem[]>({
     queryKey: ['resumeList'],
     queryFn: async () => {
-      const responseString = await resumeApi.getMyResumes();
-      const list = JSON.parse(responseString);
-      return Array.isArray(list) ? list : [];
+      const response = await resumeApi.getMyResumes();
+      return response.resume_list || [];
     },
     enabled: isAuthenticated,
   });

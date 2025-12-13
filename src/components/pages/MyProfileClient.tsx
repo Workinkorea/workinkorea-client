@@ -129,16 +129,15 @@ const MyProfileClient: React.FC = () => {
     queryKey: ['resumes'],
     queryFn: async () => {
       try {
-        const responseString = await resumeApi.getMyResumes();
-        const resumeList = JSON.parse(responseString);
+        const response = await resumeApi.getMyResumes();
 
         // API 응답이 없으면 빈 배열 반환
-        if (!resumeList || !Array.isArray(resumeList)) {
+        if (!response || !response.resume_list || !Array.isArray(response.resume_list)) {
           return [];
         }
 
         // API 응답을 Resume 타입으로 변환
-        const resumes: Resume[] = resumeList.map((item: ResumeListItem) => ({
+        const resumes: Resume[] = response.resume_list.map((item: ResumeListItem) => ({
           id: String(item.id),
           title: item.title,
           templateType: 'modern',

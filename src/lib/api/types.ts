@@ -185,6 +185,10 @@ export interface ResumeListItem {
   updated_at: string;
 }
 
+export interface ResumeListResponse {
+  resume_list: ResumeListItem[];
+}
+
 export interface LanguageSkill {
   language_type?: string;
   level?: string;

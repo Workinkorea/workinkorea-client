@@ -7,11 +7,12 @@ import type {
   UploadResumeImageResponse,
   UploadUserImageResponse,
   PresignedPostResponse,
+  ResumeListResponse,
 } from './types';
 
 export const resumeApi = {
-  async getMyResumes(): Promise<string> {
-    return apiClient.get<string>('/api/posts/resume/list/me');
+  async getMyResumes(): Promise<ResumeListResponse> {
+    return apiClient.get<ResumeListResponse>('/api/posts/resume/list/me');
   },
 
   async getResumeById(resumeId: number): Promise<string> {
