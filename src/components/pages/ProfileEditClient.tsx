@@ -153,16 +153,20 @@ const ProfileEditClient: React.FC = () => {
 
   // 프로필 업데이트 뮤테이션
   const updateProfileMutation = useMutation({
-    mutationFn: async (updatedData: Partial<UserProfile>) => {
+    mutationFn: async (updatedData: BasicProfileForm) => {
       // UserProfile 데이터를 ProfileUpdateRequest 형식으로 변환
       const requestData = {
         name: updatedData.name,
-        profile_image_url: updatedData.profileImage,
+        profile_image_url: updatedData.profile_image_url,
         location: updatedData.location,
         introduction: updatedData.introduction,
-        portfolio_url: updatedData.portfolioUrl,
+        portfolio_url: updatedData.portfolio_url,
         job_status: updatedData.job_status,
-        // position_id, country_id, birth_date는 나중에 추가
+        address: updatedData.address,
+        position_id: updatedData.position_id,
+        career: updatedData.career,
+        country_id: updatedData.country_id,
+        language_skills: updatedData.language_skills,
       };
 
       return profileApi.updateProfile(requestData);
@@ -419,7 +423,7 @@ const ProfileEditClient: React.FC = () => {
 
   const handleSave = async () => {
     let isValid = false;
-    let formData = {};
+    let formData: BasicProfileForm | object = {};
 
     // 현재 섹션의 폼 검증 및 데이터 수집
     switch (activeSection) {
@@ -453,7 +457,7 @@ const ProfileEditClient: React.FC = () => {
             }
           }
 
-          updateProfileMutation.mutate(formData);
+          updateProfileMutation.mutate(formData as BasicProfileForm);
         }
         break;
       case 'contact':
@@ -466,7 +470,6 @@ const ProfileEditClient: React.FC = () => {
           };
           updateContactMutation.mutate(contactData);
         }
-        profileApi.updateContact(formData);
         break;
       case 'account':
         // 비밀번호 변경과 계정 설정을 구분하여 처리
@@ -692,7 +695,7 @@ const ProfileEditClient: React.FC = () => {
         />
 
         <FormField
-          name="position_id"
+          name="address"
           control={basicForm.control}
           label="주소"
           error={basicForm.formState.errors.address?.message}
@@ -700,8 +703,8 @@ const ProfileEditClient: React.FC = () => {
             <Input
               {...field}
               id={fieldId}
-              placeholder="예: 프론트엔드 개발자"
-              error={!!basicForm.formState.errors.position_id}
+              placeholder="예: 서울특별시 강남구"
+              error={!!basicForm.formState.errors.address}
             />
           )}
         />
@@ -849,7 +852,7 @@ const ProfileEditClient: React.FC = () => {
         />
 
         <FormField
-          name="introduction"
+          name="country_id"
           control={basicForm.control}
           label="국적"
           error={basicForm.formState.errors.country_id?.message}

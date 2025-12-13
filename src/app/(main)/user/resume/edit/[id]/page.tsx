@@ -45,8 +45,9 @@ const EditResumePage: React.FC = () => {
     queryKey: ['resume', resumeId, profileData, contactData],
     queryFn: async () => {
       if (!resumeId) throw new Error('Invalid resume ID');
-      const responseString = await resumeApi.getResumeById(resumeId);
-      const response: ResumeDetail = JSON.parse(responseString);
+      const apiResponse = await resumeApi.getResumeById(resumeId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response: ResumeDetail = (apiResponse as any).resume || apiResponse;
 
       // introduction 배열에서 첫 번째 항목의 content를 objective로 사용
       const objective = response.introduction && response.introduction.length > 0
