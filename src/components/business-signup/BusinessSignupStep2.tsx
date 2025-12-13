@@ -346,55 +346,6 @@ export default function BusinessSignupStep2({
               )}
             </div>
 
-            <div className='mb-1'>
-              <FormField
-                name="password"
-                control={control}
-                label="비밀번호"
-                error={errors.password?.message}
-                render={(field, fieldId) => (
-                  <Input
-                    {...field}
-                    id={fieldId}
-                    variant="password"
-                    placeholder="8~15자리/영문, 숫자, 특수문자 조합 입력"
-                    error={!!errors.password}
-                    showPassword={formState.showPassword}
-                    onTogglePassword={() => setFormState(prev => ({ 
-                      ...prev, 
-                      showPassword: !prev.showPassword 
-                    }))}
-                    onBlur={(e) => handlePasswordBlur(e.target.value)}
-                    maxLength={15}
-                  />
-                )}
-              />
-            </div>
-
-            <div className='mb-6'>
-              <FormField
-                name="confirmPassword"
-                control={control}
-                error={errors.confirmPassword?.message}
-                render={(field, fieldId) => (
-                  <Input
-                    {...field}
-                    id={fieldId}
-                    variant="password"
-                    placeholder="8~15자리/영문, 숫자, 특수문자 조합 재입력"
-                    error={!!errors.confirmPassword}
-                    showPassword={formState.showConfirmPassword}
-                    onTogglePassword={() => setFormState(prev => ({ 
-                      ...prev, 
-                      showConfirmPassword: !prev.showConfirmPassword 
-                    }))}
-                    onBlur={(e) => handleConfirmPasswordBlur(e.target.value)}
-                    maxLength={15}
-                  />
-                )}
-              />
-            </div>
-
             <div className='mb-6 space-y-4'>
               <FormField
                 name="company"
@@ -406,11 +357,6 @@ export default function BusinessSignupStep2({
                     id={fieldId}
                     placeholder="기업명 입력"
                     error={!!errors.company}
-                    readOnly={!!formState.companyInfo?.company}
-                    className={formState.companyInfo?.company
-                      ? "bg-gray-100 text-gray-600 cursor-not-allowed"
-                      : ""
-                    }
                   />
                 )}
               />
@@ -489,6 +435,55 @@ export default function BusinessSignupStep2({
                       }
                     }}
                     error={!!errors.email}
+                  />
+                )}
+              />
+            </div>
+
+            <div className='mb-1'>
+              <FormField
+                name="password"
+                control={control}
+                label="비밀번호"
+                error={errors.password?.message}
+                render={(field, fieldId) => (
+                  <Input
+                    {...field}
+                    id={fieldId}
+                    variant="password"
+                    placeholder="8~15자리/영문, 숫자, 특수문자 조합 입력"
+                    error={!!errors.password}
+                    showPassword={formState.showPassword}
+                    onTogglePassword={() => setFormState(prev => ({
+                      ...prev,
+                      showPassword: !prev.showPassword
+                    }))}
+                    onBlur={(e) => handlePasswordBlur(e.target.value)}
+                    maxLength={15}
+                  />
+                )}
+              />
+            </div>
+
+            <div className='mb-6'>
+              <FormField
+                name="confirmPassword"
+                control={control}
+                error={errors.confirmPassword?.message}
+                render={(field, fieldId) => (
+                  <Input
+                    {...field}
+                    id={fieldId}
+                    variant="password"
+                    placeholder="8~15자리/영문, 숫자, 특수문자 조합 재입력"
+                    error={!!errors.confirmPassword}
+                    showPassword={formState.showConfirmPassword}
+                    onTogglePassword={() => setFormState(prev => ({
+                      ...prev,
+                      showConfirmPassword: !prev.showConfirmPassword
+                    }))}
+                    onBlur={(e) => handleConfirmPasswordBlur(e.target.value)}
+                    maxLength={15}
                   />
                 )}
               />
