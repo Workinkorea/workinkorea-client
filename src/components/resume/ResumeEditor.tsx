@@ -548,7 +548,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   label="종료일"
                   render={(field) => (
                     <DatePicker
-                      value={field.value}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       placeholder="종료일을 선택하세요"
                       disabled={watch(`career_history.${index}.is_working`)}
@@ -678,7 +678,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   label="졸업일"
                   render={(field) => (
                     <DatePicker
-                      value={field.value}
+                      value={field.value ?? undefined}
                       onChange={field.onChange}
                       placeholder="졸업일을 선택하세요"
                     />
