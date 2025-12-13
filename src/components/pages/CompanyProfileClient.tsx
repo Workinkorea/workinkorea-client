@@ -21,7 +21,7 @@ const CompanyProfileClient: React.FC = () => {
   const { data: profile, isLoading: profileLoading, error, isError } = useQuery({
     queryKey: ['companyProfile'],
     queryFn: () => profileApi.getProfileCompany(),
-    retry: false, // 404 에러 발생 시 재시도 하지 않음
+    retry: false, // 에러 발생 시 재시도 하지 않음
   });
 
   // 인증 체크 및 리다이렉트
@@ -31,11 +31,14 @@ const CompanyProfileClient: React.FC = () => {
     }
   }, [isAuthenticated, authLoading, router]);
 
-  // 프로필 404 에러 시 프로필 작성 페이지로 리다이렉트
+  // 프로필 조회 실패 시(404 Not Found 또는 500 Server Error) 프로필 작성 페이지로 리다이렉트
   useEffect(() => {
-    if (isError && error instanceof AxiosError && error.response?.status === 404) {
-      // 프로필이 없는 경우 작성 페이지로 리다이렉트 (replace 사용 권장)
-      router.replace('/company/profile/edit');
+    if (isError && error instanceof AxiosError) {
+      const status = error.response?.status;
+      // 404: 프로필 없음, 500: 서버 오류 (기존 데이터 로드 실패 시 작성 페이지로 이동)
+      if (status === 404 || status === 500) {
+        router.replace('/company/profile/edit');
+      }
     }
   }, [isError, error, router]);
 
