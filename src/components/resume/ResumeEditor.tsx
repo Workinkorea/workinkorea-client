@@ -43,13 +43,13 @@ type ResumeFormData = {
     school_name: string;
     major_name: string;
     start_date: string;
-    end_date: string | null;
+    end_date?: string;
     is_graduated: boolean;
   }>;
   career_history: Array<{
     company_name: string;
     start_date: string;
-    end_date: string | null;
+    end_date?: string;
     is_working: boolean;
     department: string;
     position_title: string;
@@ -91,19 +91,19 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
         school_name: edu.institution,
         major_name: edu.field,
         start_date: edu.startDate,
-        end_date: edu.endDate || null,
+        end_date: edu.endDate,
         is_graduated: edu.degree === '졸업'
       })) || [{
         school_name: '',
         major_name: '',
         start_date: '',
-        end_date: null,
+        end_date: undefined,
         is_graduated: false
       }],
       career_history: initialData?.content?.workExperience?.map(work => ({
         company_name: work.company,
         start_date: work.startDate,
-        end_date: work.endDate || null,
+        end_date: work.endDate,
         is_working: work.current || false,
         department: '',
         position_title: work.position,
@@ -111,7 +111,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
       })) || [{
         company_name: '',
         start_date: '',
-        end_date: null,
+        end_date: undefined,
         is_working: false,
         department: '',
         position_title: '',
@@ -194,20 +194,28 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
 
   const onSubmit = async (data: ResumeFormData) => {
     try {
-      // 재직중일 때 또는 선택 안 했을 때 end_date를 null로 설정
+      // 재직중일 때 또는 선택 안 했을 때 end_date를 제거
       const processedCareerHistory = data.career_history.length > 0
-        ? data.career_history.map(career => ({
-            ...career,
-            end_date: career.is_working || !career.end_date ? null : career.end_date
-          }))
+        ? data.career_history.map(career => {
+            const { end_date, ...rest } = career;
+            // end_date가 있고 재직중이 아닐 때만 포함
+            if (end_date && !career.is_working) {
+              return { ...rest, end_date };
+            }
+            return rest;
+          })
         : undefined;
 
-      // 학력사항의 end_date도 선택 안 했을 때 null로 설정
+      // 학력사항의 end_date도 선택 안 했을 때 제거
       const processedSchools = data.schools.length > 0
-        ? data.schools.map(school => ({
-            ...school,
-            end_date: school.end_date ? school.end_date : null
-          }))
+        ? data.schools.map(school => {
+            const { end_date, ...rest } = school;
+            // end_date가 있을 때만 포함
+            if (end_date) {
+              return { ...rest, end_date };
+            }
+            return rest;
+          })
         : undefined;
 
       const requestData: CreateResumeRequest | UpdateResumeRequest = {
@@ -461,7 +469,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
               onClick={() => appendCareer({
                 company_name: '',
                 start_date: '',
-                end_date: null,
+                end_date: undefined,
                 is_working: false,
                 department: '',
                 position_title: '',
@@ -548,7 +556,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   label="종료일"
                   render={(field) => (
                     <DatePicker
-                      value={field.value ?? undefined}
+                      value={field.value}
                       onChange={field.onChange}
                       placeholder="종료일을 선택하세요"
                       disabled={watch(`career_history.${index}.is_working`)}
@@ -608,7 +616,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 school_name: '',
                 major_name: '',
                 start_date: '',
-                end_date: null,
+                end_date: undefined,
                 is_graduated: false
               })}
               className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
@@ -678,7 +686,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   label="졸업일"
                   render={(field) => (
                     <DatePicker
-                      value={field.value ?? undefined}
+                      value={field.value}
                       onChange={field.onChange}
                       placeholder="졸업일을 선택하세요"
                     />

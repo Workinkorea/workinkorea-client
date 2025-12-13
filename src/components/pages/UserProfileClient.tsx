@@ -164,7 +164,7 @@ const UserProfileClient: React.FC = () => {
           degree: school.is_graduated ? '졸업' : '재학',
           field: school.major_name,
           startDate: school.start_date,
-          endDate: school.end_date ?? undefined
+          endDate: school.end_date
         })),
         languages: response.language_skills
           .filter(lang => lang.language_type && lang.level)
@@ -192,7 +192,7 @@ const UserProfileClient: React.FC = () => {
     let totalMonths = 0;
     careerHistory.forEach(career => {
       const start = new Date(career.start_date);
-      const end = career.is_working || !career.end_date ? new Date() : new Date(career.end_date);
+      const end = career.end_date ? new Date(career.end_date) : new Date();
       const months = (end.getFullYear() - start.getFullYear()) * 12 +
                      (end.getMonth() - start.getMonth());
       totalMonths += months;

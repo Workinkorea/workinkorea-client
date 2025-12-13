@@ -194,14 +194,14 @@ export interface School {
   school_name: string;
   major_name: string;
   start_date: string;
-  end_date: string | null;
+  end_date?: string;
   is_graduated: boolean;
 }
 
 export interface CareerHistory {
   company_name: string;
   start_date: string;
-  end_date: string | null;
+  end_date?: string;
   is_working: boolean;
   department: string;
   position_title: string;
