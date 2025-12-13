@@ -41,7 +41,7 @@ import { cn } from '@/lib/utils/utils';
 import { profileApi } from '@/lib/api/profile';
 import { apiClient } from '@/lib/api/client';
 import { uploadFileToMinio } from '@/lib/api/minio';
-import type { ContactUpdateRequest } from '@/lib/api/types';
+import type { ContactUpdateRequest, AccountConfigUpdateRequest } from '@/lib/api/types';
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
@@ -194,6 +194,21 @@ const ProfileEditClient: React.FC = () => {
     }
   });
 
+  // 계정 설정 업데이트 뮤테이션
+  const updateAccountConfigMutation = useMutation({
+    mutationFn: async (updatedData: AccountConfigUpdateRequest) => {
+      return profileApi.updateAccountConfig(updatedData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['accountConfig'] });
+      toast.success('계정 설정이 성공적으로 저장되었습니다.');
+      setHasUnsavedChanges(false);
+    },
+    onError: () => {
+      toast.error('계정 설정 저장에 실패했습니다. 다시 시도해주세요.');
+    }
+  });
+
 
   // 폼 설정
   const basicForm = useForm<BasicProfileForm>({
@@ -338,9 +353,25 @@ const ProfileEditClient: React.FC = () => {
             });
           }
         } else if (activeSection === 'account') {
-          const accountData = await apiClient.get('/api/account-config');
+          const accountData = await profileApi.getAccountConfig();
           if (accountData) {
-            accountForm.reset(accountData as AccountSettingsForm);
+            // API response를 form 형식으로 변환
+            accountForm.reset({
+              notifications: {
+                contactRequestNotifications: accountData.sns_message_notice,
+                skillEndorsementNotifications: accountData.sns_message_notice,
+                emailNotifications: accountData.email_notice,
+                pushNotifications: false,
+                weeklyDigest: accountData.email_notice,
+                marketingEmails: false,
+              },
+              privacy: {
+                profileVisibility: 'public' as const,
+                searchable: true,
+                showEmail: false,
+                showLocation: true,
+              }
+            });
           }
         }
       } catch (error) {
@@ -446,13 +477,20 @@ const ProfileEditClient: React.FC = () => {
           const passwordData = passwordForm.getValues();
           // 비밀번호가 입력된 경우에만 변경 요청
           if (passwordData.currentPassword && passwordData.newPassword) {
-            formData = { ...formData, password: passwordData };
+            // TODO: 비밀번호 변경 API 구현 필요
+            console.log('Password change:', passwordData);
+            toast.info('비밀번호 변경 기능은 준비 중입니다.');
           }
         }
 
         if (accountValid) {
           const accountData = accountForm.getValues();
-          formData = { ...formData, settings: accountData };
+          // Form 데이터를 API request 형식으로 변환
+          const accountConfigData: AccountConfigUpdateRequest = {
+            sns_message_notice: accountData.notifications.contactRequestNotifications || accountData.notifications.skillEndorsementNotifications,
+            email_notice: accountData.notifications.emailNotifications || accountData.notifications.weeklyDigest,
+          };
+          updateAccountConfigMutation.mutate(accountConfigData);
         }
 
         isValid = passwordValid && accountValid;

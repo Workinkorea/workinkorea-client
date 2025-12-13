@@ -124,8 +124,12 @@ export const useAuth = (options: UseAuthOptions = {}) => {
         console.error('Logout failed:', err);
       }
 
-      // 로그인 페이지로 리다이렉트
-      router.push('/login');
+      // 사용자 타입에 따라 적절한 로그인 페이지로 리다이렉트
+      const loginPath =
+        currentUserType === 'company' ? '/company-login' :
+        currentUserType === 'admin' ? '/admin/login' :
+        '/login';
+      router.push(loginPath);
     }
   };
 

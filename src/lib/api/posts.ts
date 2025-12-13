@@ -22,14 +22,19 @@ export const postsApi = {
     return apiClient.get<CompanyPostsResponse>('/api/company/posts/my');
   },
 
-  // 인증 필요: 기업 회원 전용 공고 목록 조회 (deprecated - getMyCompanyPosts 사용 권장)
+  // 공개 API: 공고 목록 조회 (deprecated - getPublicCompanyPosts 사용 권장)
   async getCompanyPosts(): Promise<CompanyPostsResponse> {
-    return apiClient.get<CompanyPostsResponse>('/api/posts/company');
+    return apiClient.get<CompanyPostsResponse>('/api/posts/company', {
+      skipAuth: true,
+    });
   },
 
   async getCompanyPostById(companyPostId: number): Promise<CompanyPostDetailResponse> {
     return apiClient.get<CompanyPostDetailResponse>(
-      `/api/posts/company/${companyPostId}`
+      `/api/posts/company/${companyPostId}`,
+      {
+        skipAuth: true,
+      }
     );
   },
 

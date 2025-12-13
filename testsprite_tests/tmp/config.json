@@ -1,0 +1,18 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "loginUser": "test77@test.com",
+  "loginPassword": "qwer1234!",
+  "executionArgs": {
+    "projectName": "workinkorea-client",
+    "projectPath": "/Users/apple/Documents/GitHub/workinkorea-client-1",
+    "testIds": [],
+    "additionalInstruction": "Focus on validating Company Sign Up, Login, Job Posting, and Profile functionality. Report any validation errors, missing fields, or functional issues.",
+    "envs": {
+      "API_KEY": "sk-user-kKczNagbDcCxTnTcQFOOdVzR97-TvZokoPWmYDi3lR876dWyTnNhWlgL10gZPREnkcj0UKKD8Kp--HJWIdDqrZrrakRDIm7YeAqE2nau-2f55R-j7Tpe1P_Rbvjxzqg96co"
+    }
+  },
+  "proxy": "http://84c1b982-2110-45f1-aa22-ed623de0730a:wQ7OTw6Yh3hDYXkxjwRuLV6ng4tom1KS@tun.testsprite.com:8080"
+}

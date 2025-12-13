@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Edit3, Plus, MapPin, Users, Calendar, Building } from 'lucide-react';
+import { AxiosError } from 'axios';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import { profileApi } from '@/lib/api/profile/profileCompany';
@@ -16,6 +17,13 @@ const CompanyProfileClient: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'settings'>('overview');
   const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
 
+  // 기업 프로필 조회
+  const { data: profile, isLoading: profileLoading, error, isError } = useQuery({
+    queryKey: ['companyProfile'],
+    queryFn: () => profileApi.getProfileCompany(),
+    retry: false
+  });
+
   // 인증 체크 및 리다이렉트
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -23,15 +31,16 @@ const CompanyProfileClient: React.FC = () => {
     }
   }, [isAuthenticated, authLoading, router]);
 
+  // 프로필 404 에러 시 프로필 작성 페이지로 리다이렉트
+  useEffect(() => {
+    if (isError && error instanceof AxiosError && error.response?.status === 404) {
+      router.push('/company/profile/edit');
+    }
+  }, [isError, error, router]);
+
   const handleLogout = async () => {
     await logout();
   };
-
-  // 기업 프로필 조회
-  const { data: profile, isLoading: profileLoading } = useQuery({
-    queryKey: ['companyProfile'],
-    queryFn: () => profileApi.getProfileCompany()
-  });
 
   // 기업 공고 목록 조회
   const { data: posts, isLoading: postsLoading } = useQuery({

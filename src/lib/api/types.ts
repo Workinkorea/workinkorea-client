@@ -185,6 +185,10 @@ export interface ResumeListItem {
   updated_at: string;
 }
 
+export interface ResumeListResponse {
+  resume_list: ResumeListItem[];
+}
+
 export interface LanguageSkill {
   language_type?: string;
   level?: string;
@@ -194,14 +198,14 @@ export interface School {
   school_name: string;
   major_name: string;
   start_date: string;
-  end_date: string;
+  end_date?: string;
   is_graduated: boolean;
 }
 
 export interface CareerHistory {
   company_name: string;
   start_date: string;
-  end_date: string;
+  end_date?: string;
   is_working: boolean;
   department: string;
   position_title: string;

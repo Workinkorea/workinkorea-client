@@ -33,7 +33,7 @@ export default function BusinessSignupStep2({
       businessNumber: '',
       password: '',
       confirmPassword: '',
-      company: 'workinkorea',
+      company: '',
       name: '',
       phoneNumber: '',
       email: '',
@@ -110,6 +110,8 @@ export default function BusinessSignupStep2({
     toast.success('사업자등록번호 인증이 완료되었습니다.');
   };
 
+  const company = watch('company');
+
   const isFormValid =
     businessNumber &&
     password &&
@@ -120,6 +122,7 @@ export default function BusinessSignupStep2({
     !errors.password &&
     !errors.confirmPassword &&
     formState.isBusinessNumberVerified &&
+    company &&
     name &&
     phoneNumber &&
     phoneNumber.length >= 12 &&
@@ -138,7 +141,7 @@ export default function BusinessSignupStep2({
 
     const companySignupData = {
       company_number: data.businessNumber.replace(/[^0-9]/g, ''),
-      company_name: 'workinkorea', // data.company,
+      company_name: data.company,
       email: data.email,
       password: data.password,
       name: data.name,
@@ -171,15 +174,23 @@ export default function BusinessSignupStep2({
     let progress = 0;
 
     if (formState.isBusinessNumberVerified) {
-      progress += 30;
+      progress += 20;
     }
 
     if (password && password.length >= 8 && !errors.password) {
-      progress += 20;
+      progress += 15;
     }
 
     if (confirmPassword && confirmPassword === password && !errors.confirmPassword) {
-      progress += 20;
+      progress += 15;
+    }
+
+    if (company && !errors.company) {
+      progress += 15;
+    }
+
+    if (name && !errors.name) {
+      progress += 10;
     }
 
     if (phoneNumber && phoneNumber.length >= 12 && !errors.phoneNumber) {
@@ -187,11 +198,11 @@ export default function BusinessSignupStep2({
     }
 
     if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && !errors.email) {
-      progress += 15;
+      progress += 10;
     }
 
     return Math.min(progress, 100);
-  }, [formState.isBusinessNumberVerified, password, confirmPassword, phoneNumber, email, errors]);
+  }, [formState.isBusinessNumberVerified, password, confirmPassword, company, name, phoneNumber, email, errors]);
 
   const currentProgress = useMemo(() => calculateProgress(), [calculateProgress]);
 
@@ -382,109 +393,105 @@ export default function BusinessSignupStep2({
                   />
                 )}
               />
+            </div>
 
-            {formState.isBusinessNumberVerified && formState.companyInfo && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="mt-4 space-y-4"
-              >
-                <FormField
-                  name="company"
-                  control={control}
-                  label="기업명"
-                  render={(field, fieldId) => (
-                    <Input
-                      {...field}
-                      id={fieldId}
-                      readOnly={!!formState.companyInfo?.company}
-                      className={formState.companyInfo?.company 
-                        ? "bg-gray-100 text-gray-600 cursor-not-allowed" 
-                        : ""
+            <div className='mb-6 space-y-4'>
+              <FormField
+                name="company"
+                control={control}
+                label="기업명"
+                render={(field, fieldId) => (
+                  <Input
+                    {...field}
+                    id={fieldId}
+                    placeholder="기업명 입력"
+                    error={!!errors.company}
+                    readOnly={!!formState.companyInfo?.company}
+                    className={formState.companyInfo?.company
+                      ? "bg-gray-100 text-gray-600 cursor-not-allowed"
+                      : ""
+                    }
+                  />
+                )}
+              />
+
+              <FormField
+                name="name"
+                control={control}
+                label="대표자명"
+                render={(field, fieldId) => (
+                  <Input
+                    {...field}
+                    id={fieldId}
+                    placeholder="대표자명 입력"
+                    error={!!errors.name}
+                  />
+                )}
+              />
+
+              <FormField
+                name="phoneNumber"
+                control={control}
+                label="대표자 휴대폰 번호"
+                error={errors.phoneNumber?.message}
+                render={(field, fieldId) => (
+                  <Input
+                    {...field}
+                    id={fieldId}
+                    type="tel"
+                    placeholder="010-0000-0000"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '');
+                      const formatted = value.length > 3
+                        ? value.length > 7
+                          ? `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`
+                          : `${value.slice(0, 3)}-${value.slice(3, 7)}`
+                        : value;
+                      field.onChange(formatted);
+                    }}
+                    onBlur={(e) => {
+                      const phoneError = validatePhoneNumber(e.target.value);
+                      if (phoneError) {
+                        setError('phoneNumber', {
+                          type: 'manual',
+                          message: phoneError
+                        });
+                      } else {
+                        clearErrors('phoneNumber');
                       }
-                    />
-                  )}
-                />
+                    }}
+                    maxLength={13}
+                    error={!!errors.phoneNumber}
+                  />
+                )}
+              />
 
-                <FormField
-                  name="name"
-                  control={control}
-                  label="대표자"
-                  render={(field, fieldId) => (
-                    <Input
-                      {...field}
-                      id={fieldId}
-                      placeholder="사용자등록증에 기재된 대표자명 입력"
-                      error={!!errors.name}
-                    />
-                  )}
-                />
-
-                <FormField
-                  name="phoneNumber"
-                  control={control}
-                  label="대표자 휴대폰 번호"
-                  error={errors.phoneNumber?.message}
-                  render={(field, fieldId) => (
-                    <Input
-                      {...field}
-                      id={fieldId}
-                      type="tel"
-                      placeholder="계약서 송부를 위해 꼭 본인정보 입력"
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, '');
-                        const formatted = value.length > 3 
-                          ? value.length > 7 
-                            ? `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`
-                            : `${value.slice(0, 3)}-${value.slice(3, 7)}`
-                          : value;
-                        field.onChange(formatted);
-                      }}
-                      onBlur={(e) => {
-                        const phoneError = validatePhoneNumber(e.target.value);
-                        if (phoneError) {
-                          setError('phoneNumber', {
-                            type: 'manual',
-                            message: phoneError
-                          });
-                        } else {
-                          clearErrors('phoneNumber');
-                        }
-                      }}
-                      maxLength={13}
-                      error={!!errors.phoneNumber}
-                    />
-                  )}
-                />
-                
-                <FormField
-                  name="email"
-                  control={control}
-                  label="대표자 이메일"
-                  error={errors.email?.message}
-                  render={(field, fieldId) => (
-                    <Input
-                      {...field}
-                      id={fieldId}
-                      type="email"
-                      placeholder="이메일 입력"
-                      onBlur={(e) => {
-                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailRegex.test(e.target.value)) {
-                          setError('email', {
-                            type: 'manual',
-                            message: '이메일 형식이 올바르지 않습니다.'
-                          });
-                        } else {
-                          clearErrors('email');
-                        }
-                      }}
-                      error={!!errors.email}
-                    />
-                  )}
-                />
-              </motion.div>
-            )}
+              <FormField
+                name="email"
+                control={control}
+                label="대표자 이메일"
+                error={errors.email?.message}
+                render={(field, fieldId) => (
+                  <Input
+                    {...field}
+                    id={fieldId}
+                    type="email"
+                    placeholder="이메일 입력"
+                    onBlur={(e) => {
+                      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                      if (!emailRegex.test(e.target.value)) {
+                        setError('email', {
+                          type: 'manual',
+                          message: '이메일 형식이 올바르지 않습니다.'
+                        });
+                      } else {
+                        clearErrors('email');
+                      }
+                    }}
+                    error={!!errors.email}
+                  />
+                )}
+              />
             </div>
 
             <motion.div 

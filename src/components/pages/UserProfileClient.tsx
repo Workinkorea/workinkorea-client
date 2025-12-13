@@ -100,9 +100,8 @@ const UserProfileClient: React.FC = () => {
   const { data: resumeList, isLoading: resumeListLoading } = useQuery<ResumeListItem[]>({
     queryKey: ['resumeList'],
     queryFn: async () => {
-      const responseString = await resumeApi.getMyResumes();
-      const list = JSON.parse(responseString);
-      return Array.isArray(list) ? list : [];
+      const response = await resumeApi.getMyResumes();
+      return response.resume_list || [];
     },
     enabled: isAuthenticated,
   });
@@ -192,7 +191,7 @@ const UserProfileClient: React.FC = () => {
     let totalMonths = 0;
     careerHistory.forEach(career => {
       const start = new Date(career.start_date);
-      const end = career.is_working ? new Date() : new Date(career.end_date);
+      const end = career.end_date ? new Date(career.end_date) : new Date();
       const months = (end.getFullYear() - start.getFullYear()) * 12 +
                      (end.getMonth() - start.getMonth());
       totalMonths += months;
