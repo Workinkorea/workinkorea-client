@@ -22,7 +22,6 @@ export default function SignupStep2Page() {
 
   const handleNext = async (data: SignupStep2Data) => {
     setFormData(data);
-    // TODO: 회원가입 API 호출
     router.push('/company-login?signup=success');
   };
 
