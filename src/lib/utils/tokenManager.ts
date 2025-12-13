@@ -20,13 +20,6 @@ export const tokenManager = {
   setToken: (token: string, rememberMe: boolean = false, tokenType?: ApiTokenType) => {
     if (typeof window !== 'undefined') {
       const storage = rememberMe ? localStorage : sessionStorage;
-      console.log('[TokenManager] setToken:', {
-        rememberMe,
-        storageType: rememberMe ? 'localStorage' : 'sessionStorage',
-        tokenPreview: `${token.substring(0, 20)}...`,
-        tokenType: tokenType || 'not provided',
-        userType: getUserTypeFromToken(token)
-      });
       storage.setItem(TOKEN_KEY, token);
 
       // token_type 저장 (제공된 경우)
@@ -38,14 +31,6 @@ export const tokenManager = {
       const oppositeStorage = rememberMe ? sessionStorage : localStorage;
       oppositeStorage.removeItem(TOKEN_KEY);
       oppositeStorage.removeItem(TOKEN_TYPE_KEY);
-
-      // 저장 후 확인
-      const savedInLocal = localStorage.getItem(TOKEN_KEY);
-      const savedInSession = sessionStorage.getItem(TOKEN_KEY);
-      console.log('[TokenManager] After save:', {
-        inLocalStorage: !!savedInLocal,
-        inSessionStorage: !!savedInSession
-      });
     }
   },
 
@@ -57,16 +42,7 @@ export const tokenManager = {
       // localStorage를 먼저 확인 (자동 로그인), 없으면 sessionStorage 확인
       const fromLocal = localStorage.getItem(TOKEN_KEY);
       const fromSession = sessionStorage.getItem(TOKEN_KEY);
-      const result = fromLocal || fromSession;
-
-      console.log('[TokenManager] getToken:', {
-        fromLocalStorage: !!fromLocal,
-        fromSessionStorage: !!fromSession,
-        returning: result ? `${result.substring(0, 20)}...` : 'null',
-        userType: result ? getUserTypeFromToken(result) : null
-      });
-
-      return result;
+      return fromLocal || fromSession;
     }
     return null;
   },
@@ -76,7 +52,6 @@ export const tokenManager = {
    */
   removeToken: () => {
     if (typeof window !== 'undefined') {
-      console.log('[TokenManager] removeToken');
       sessionStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(TOKEN_KEY);
       sessionStorage.removeItem(TOKEN_TYPE_KEY);
