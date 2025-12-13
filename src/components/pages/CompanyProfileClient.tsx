@@ -21,7 +21,7 @@ const CompanyProfileClient: React.FC = () => {
   const { data: profile, isLoading: profileLoading, error, isError } = useQuery({
     queryKey: ['companyProfile'],
     queryFn: () => profileApi.getProfileCompany(),
-    retry: false
+    retry: false, // 404 에러 발생 시 재시도 하지 않음
   });
 
   // 인증 체크 및 리다이렉트
@@ -34,7 +34,8 @@ const CompanyProfileClient: React.FC = () => {
   // 프로필 404 에러 시 프로필 작성 페이지로 리다이렉트
   useEffect(() => {
     if (isError && error instanceof AxiosError && error.response?.status === 404) {
-      router.push('/company/profile/edit');
+      // 프로필이 없는 경우 작성 페이지로 리다이렉트 (replace 사용 권장)
+      router.replace('/company/profile/edit');
     }
   }, [isError, error, router]);
 
@@ -51,7 +52,7 @@ const CompanyProfileClient: React.FC = () => {
     }
   });
 
-  // 로딩 상태 처리
+  // 로딩 상태 처리 (프로필이 없거나 로딩 중일 때)
   if (authLoading || profileLoading || !profile) {
     return (
       <Layout>

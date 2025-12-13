@@ -222,7 +222,7 @@ const CompanyProfileEditClient: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="employee_count" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+                    <label htmlFor="employee_count" className="block text-body-3 font-medium text-label-700 mb-2 items-center gap-2">
                       <Users size={16} />
                       직원 수 *
                     </label>
@@ -241,7 +241,7 @@ const CompanyProfileEditClient: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="establishment_date" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+                    <label htmlFor="establishment_date" className="block text-body-3 font-medium text-label-700 mb-2 items-center gap-2">
                       <Calendar size={16} />
                       설립일 *
                     </label>
@@ -260,7 +260,7 @@ const CompanyProfileEditClient: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="insurance" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+                  <label htmlFor="insurance" className="block text-body-3 font-medium text-label-700 mb-2 items-center gap-2">
                     <FileText size={16} />
                     보험
                   </label>
@@ -285,7 +285,7 @@ const CompanyProfileEditClient: React.FC = () => {
               </h2>
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="email" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+                  <label htmlFor="email" className="block text-body-3 font-medium text-label-700 mb-2 items-center gap-2">
                     <Mail size={16} />
                     이메일 *
                   </label>
@@ -304,7 +304,7 @@ const CompanyProfileEditClient: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="phone_number" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+                  <label htmlFor="phone_number" className="block text-body-3 font-medium text-label-700 mb-2 items-center gap-2">
                     <Phone size={16} />
                     전화번호 *
                   </label>
@@ -323,7 +323,7 @@ const CompanyProfileEditClient: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="website_url" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+                  <label htmlFor="website_url" className="block text-body-3 font-medium text-label-700 mb-2 items-center gap-2">
                     <Globe size={16} />
                     웹사이트
                   </label>
@@ -339,7 +339,7 @@ const CompanyProfileEditClient: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="address" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+                  <label htmlFor="address" className="block text-body-3 font-medium text-label-700 mb-2 items-center gap-2">
                     <MapPin size={16} />
                     주소 *
                   </label>
