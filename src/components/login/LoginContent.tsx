@@ -185,13 +185,30 @@ export default function LoginContent() {
         console.error('Login error:', error);
       }
 
-      const errorMessage = error instanceof Error
-        ? error.message.includes('401') || error.message.includes('unauthorized')
-          ? '이메일 또는 비밀번호가 일치하지 않습니다.'
-          : '로그인 중 오류가 발생했습니다.'
-        : '로그인 중 오류가 발생했습니다.';
+      let errorMessage = '로그인 중 오류가 발생했습니다.';
+      let errorField: 'email' | 'password' = 'password';
 
-      setError('password', {
+      if (error instanceof Error) {
+        const errorMsg = error.message.toLowerCase();
+
+        // 404: 사용자를 찾을 수 없음 (이메일이 틀림)
+        if (errorMsg.includes('404') || errorMsg.includes('not found') || errorMsg.includes('user not found')) {
+          errorMessage = '등록되지 않은 이메일입니다.';
+          errorField = 'email';
+        }
+        // 401: 인증 실패 (비밀번호가 틀림)
+        else if (errorMsg.includes('401') || errorMsg.includes('unauthorized') || errorMsg.includes('invalid password')) {
+          errorMessage = '비밀번호가 일치하지 않습니다.';
+          errorField = 'password';
+        }
+        // 403: 권한 없음 (계정 비활성화 등)
+        else if (errorMsg.includes('403') || errorMsg.includes('forbidden')) {
+          errorMessage = '계정이 비활성화되었거나 접근 권한이 없습니다.';
+          errorField = 'email';
+        }
+      }
+
+      setError(errorField, {
         type: 'manual',
         message: errorMessage
       });
