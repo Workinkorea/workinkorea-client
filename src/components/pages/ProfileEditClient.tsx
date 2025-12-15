@@ -173,6 +173,7 @@ const ProfileEditClient: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
       toast.success('프로필이 성공적으로 저장되었습니다.');
       setHasUnsavedChanges(false);
       router.push('/user/profile');
