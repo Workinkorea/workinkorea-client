@@ -185,13 +185,48 @@ export default function LoginContent() {
         console.error('Login error:', error);
       }
 
-      const errorMessage = error instanceof Error
-        ? error.message.includes('401') || error.message.includes('unauthorized')
-          ? '이메일 또는 비밀번호가 일치하지 않습니다.'
-          : '로그인 중 오류가 발생했습니다.'
-        : '로그인 중 오류가 발생했습니다.';
+      let errorMessage = '로그인 중 오류가 발생했습니다.';
+      let errorField: 'email' | 'password' = 'password';
 
-      setError('password', {
+      // Axios 에러 응답 처리
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { error?: string } } };
+        const serverError = axiosError.response?.data?.error;
+
+        if (serverError) {
+          const errorMsg = serverError.toLowerCase();
+
+          // 서버에서 반환하는 에러 메시지를 한글로 변환
+          if (errorMsg.includes('password is incorrect') || errorMsg.includes('invalid password')) {
+            errorMessage = '비밀번호가 일치하지 않습니다.';
+            errorField = 'password';
+          } else if (errorMsg.includes('user not found') || errorMsg.includes('not found')) {
+            errorMessage = '등록되지 않은 이메일입니다.';
+            errorField = 'email';
+          } else if (errorMsg.includes('account disabled') || errorMsg.includes('forbidden')) {
+            errorMessage = '계정이 비활성화되었거나 접근 권한이 없습니다.';
+            errorField = 'email';
+          } else {
+            errorMessage = serverError;
+          }
+        }
+      } else if (error instanceof Error) {
+        const errorMsg = error.message.toLowerCase();
+
+        // HTTP 상태 코드 기반 에러 처리 (fallback)
+        if (errorMsg.includes('404') || errorMsg.includes('not found') || errorMsg.includes('user not found')) {
+          errorMessage = '등록되지 않은 이메일입니다.';
+          errorField = 'email';
+        } else if (errorMsg.includes('401') || errorMsg.includes('unauthorized') || errorMsg.includes('invalid password')) {
+          errorMessage = '비밀번호가 일치하지 않습니다.';
+          errorField = 'password';
+        } else if (errorMsg.includes('403') || errorMsg.includes('forbidden')) {
+          errorMessage = '계정이 비활성화되었거나 접근 권한이 없습니다.';
+          errorField = 'email';
+        }
+      }
+
+      setError(errorField, {
         type: 'manual',
         message: errorMessage
       });

@@ -88,6 +88,8 @@ const MyProfileClient: React.FC = () => {
     queryKey: ['profile'],
     queryFn: () => profileApi.getProfile(),
     enabled: isAuthenticated,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
 
   // 연락처 데이터 조회
@@ -95,6 +97,8 @@ const MyProfileClient: React.FC = () => {
     queryKey: ['contact'],
     queryFn: () => profileApi.getContact(),
     enabled: isAuthenticated,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
 
   // 프로필과 연락처 데이터 병합 (API 데이터가 없으면 mock 데이터 사용)
