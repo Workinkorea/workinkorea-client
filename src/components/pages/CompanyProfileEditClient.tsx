@@ -1,20 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, Building, MapPin, Phone, Mail, Globe, Users, Calendar, FileText, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, Save, Building, MapPin, Phone, Mail, Globe, Users, Calendar, FileText } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import { useAuth } from '@/hooks/useAuth';
 import { profileApi } from '@/lib/api/profile/profileCompany';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CompanyProfileRequest } from '@/lib/api/types';
-
-interface ToastMessage {
-  type: 'success' | 'error';
-  message: string;
-}
+import toast from 'react-hot-toast';
 
 const CompanyProfileEditClient: React.FC = () => {
   const router = useRouter();
@@ -27,7 +23,7 @@ const CompanyProfileEditClient: React.FC = () => {
     establishment_date: '',
     company_type: '',
     insurance: '',
-    phone_number: 0,
+    phone_number: '',
     address: '',
     website_url: '',
     email: '',
@@ -35,17 +31,10 @@ const CompanyProfileEditClient: React.FC = () => {
 
   const [originalData, setOriginalData] = useState<CompanyProfileRequest | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [toast, setToast] = useState<ToastMessage | null>(null);
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
   const handleLogout = async () => {
     await logout();
-  };
-
-  // Toast 표시 함수
-  const showToast = (type: 'success' | 'error', message: string) => {
-    setToast({ type, message });
-    setTimeout(() => setToast(null), 3000);
   };
 
   // 기존 프로필 조회
@@ -57,30 +46,70 @@ const CompanyProfileEditClient: React.FC = () => {
   // 프로필 데이터가 로드되면 폼에 설정
   useEffect(() => {
     if (profile) {
+      console.log('=== API 응답 (profile) ===');
+      console.log('원본 데이터:', profile);
+      console.log('phone_number 타입:', typeof profile.phone_number);
+      console.log('phone_number 값:', profile.phone_number);
+
       const data = {
-        industry_type: profile.industry_type,
-        employee_count: profile.employee_count,
-        establishment_date: profile.establishment_date,
-        company_type: profile.company_type,
-        insurance: profile.insurance,
-        phone_number: profile.phone_number,
-        address: profile.address,
-        website_url: profile.website_url,
-        email: profile.email,
+        industry_type: profile.industry_type || '',
+        employee_count: profile.employee_count || 0,
+        establishment_date: profile.establishment_date || '',
+        company_type: profile.company_type || '',
+        insurance: profile.insurance || '',
+        phone_number: String(profile.phone_number || ''),
+        address: profile.address || '',
+        website_url: profile.website_url || '',
+        email: profile.email || '',
       };
+
+      console.log('변환된 데이터:', data);
       setFormData(data);
       setOriginalData(data);
     }
   }, [profile]);
 
   // 변경사항 확인
-  const hasChanges = originalData ? JSON.stringify(formData) !== JSON.stringify(originalData) : false;
+  const hasChanges = React.useMemo(() => {
+    if (!originalData) {
+      // originalData가 없으면 기본값과 비교
+      const defaultData = {
+        industry_type: '',
+        employee_count: 0,
+        establishment_date: '',
+        company_type: '',
+        insurance: '',
+        phone_number: '',
+        address: '',
+        website_url: '',
+        email: '',
+      };
+      return JSON.stringify(formData) !== JSON.stringify(defaultData);
+    }
+    return JSON.stringify(formData) !== JSON.stringify(originalData);
+  }, [formData, originalData]);
+
+  // 디버깅: hasChanges 상태 확인
+  useEffect(() => {
+    console.log('=== 변경사항 확인 ===');
+    console.log('formData:', formData);
+    console.log('originalData:', originalData);
+    console.log('hasChanges:', hasChanges);
+  }, [formData, originalData, hasChanges]);
 
   const updateProfileMutation = useMutation({
-    mutationFn: (data: CompanyProfileRequest) => profileApi.updateProfileCompany(data),
+    mutationFn: (data: CompanyProfileRequest) => {
+      // 기존 프로필 데이터가 있으면 PUT, 없으면 POST 요청
+      if (profile) {
+        return profileApi.updateProfileCompany(data);
+      } else {
+        return profileApi.createProfileCompany(data);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyProfile'] });
-      showToast('success', '프로필이 성공적으로 수정되었습니다.');
+      const message = profile ? '프로필이 성공적으로 수정되었습니다.' : '프로필이 성공적으로 생성되었습니다.';
+      toast.success(message);
       setTimeout(() => {
         router.push('/company');
       }, 1000);
@@ -98,7 +127,7 @@ const CompanyProfileEditClient: React.FC = () => {
         }
       }
 
-      showToast('error', errorMessage);
+      toast.error(errorMessage);
     },
   });
 
@@ -123,8 +152,10 @@ const CompanyProfileEditClient: React.FC = () => {
         return '';
 
       case 'phone_number':
-        if (!value || Number(value) <= 0) return '전화번호를 입력해주세요.';
-        if (String(value).length < 7) return '올바른 전화번호를 입력해주세요.';
+        if (!value || !String(value).trim()) return '전화번호를 입력해주세요.';
+        const phoneNumbers = String(value).replace(/[^0-9]/g, '');
+        if (phoneNumbers.length < 9) return '올바른 전화번호를 입력해주세요. (최소 9자리)';
+        if (phoneNumbers.length > 11) return '전화번호는 최대 11자리입니다.';
         return '';
 
       case 'employee_count':
@@ -155,14 +186,28 @@ const CompanyProfileEditClient: React.FC = () => {
     }
   };
 
+  // 전화번호 포맷팅 함수 (010-1234-5678)
+  const formatPhoneNumber = (value: string): string => {
+    const numbers = value.replace(/[^0-9]/g, '');
+
+    if (numbers.length <= 3) {
+      return numbers;
+    } else if (numbers.length <= 7) {
+      return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+    } else if (numbers.length <= 11) {
+      return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7)}`;
+    }
+
+    return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     let processedValue: string | number = value;
 
-    // 전화번호는 숫자만 허용
+    // 전화번호는 자동으로 하이픈 포맷팅
     if (name === 'phone_number') {
-      processedValue = value.replace(/[^0-9]/g, '');
-      processedValue = processedValue ? Number(processedValue) : 0;
+      processedValue = formatPhoneNumber(value);
     } else if (name === 'employee_count') {
       processedValue = value ? Number(value) : 0;
     }
@@ -214,12 +259,12 @@ const CompanyProfileEditClient: React.FC = () => {
     e.preventDefault();
 
     if (!validateForm()) {
-      showToast('error', '입력 항목을 확인해주세요.');
+      toast.error('입력 항목을 확인해주세요.');
       return;
     }
 
     if (!hasChanges) {
-      showToast('error', '변경된 내용이 없습니다.');
+      toast.error('변경된 내용이 없습니다.');
       return;
     }
 
@@ -253,29 +298,6 @@ const CompanyProfileEditClient: React.FC = () => {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            className="fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg max-w-md"
-            style={{
-              backgroundColor: toast.type === 'success' ? '#10B981' : '#EF4444',
-              color: 'white',
-            }}
-          >
-            {toast.type === 'success' ? (
-              <CheckCircle size={20} />
-            ) : (
-              <XCircle size={20} />
-            )}
-            <span className="text-body-3 font-medium">{toast.message}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <div className="min-h-screen bg-background-alternative py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -313,8 +335,8 @@ const CompanyProfileEditClient: React.FC = () => {
               </h2>
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="industry_type" className="block text-body-3 font-medium text-label-700 mb-2">
-                    업종 *
+                  <label htmlFor="industry_type" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center">
+                    업종 <span className="text-status-error text-lg ml-1">*</span>
                   </label>
                   <input
                     type="text"
@@ -323,17 +345,22 @@ const CompanyProfileEditClient: React.FC = () => {
                     value={formData.industry_type}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.industry_type ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors`}
+                    className={`w-full px-4 py-2 border ${errors.industry_type ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.industry_type && touchedFields.industry_type && formData.industry_type ? 'border-status-success' : ''}`}
                     placeholder="예: IT/소프트웨어, 제조, 유통 등"
                   />
                   {errors.industry_type && (
                     <p className="mt-1 text-caption-2 text-status-error">{errors.industry_type}</p>
                   )}
+                  {!errors.industry_type && touchedFields.industry_type && formData.industry_type && (
+                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
+                      <span className="text-status-success">✓</span> 입력 완료
+                    </p>
+                  )}
                 </div>
 
                 <div>
-                  <label htmlFor="company_type" className="block text-body-3 font-medium text-label-700 mb-2">
-                    기업 형태 *
+                  <label htmlFor="company_type" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center">
+                    기업 형태 <span className="text-status-error text-lg ml-1">*</span>
                   </label>
                   <select
                     id="company_type"
@@ -341,7 +368,7 @@ const CompanyProfileEditClient: React.FC = () => {
                     value={formData.company_type}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.company_type ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors cursor-pointer`}
+                    className={`w-full px-4 py-2 border ${errors.company_type ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors cursor-pointer ${!errors.company_type && touchedFields.company_type && formData.company_type ? 'border-status-success' : ''}`}
                   >
                     <option value="">선택하세요</option>
                     <option value="주식회사">주식회사</option>
@@ -352,34 +379,49 @@ const CompanyProfileEditClient: React.FC = () => {
                   {errors.company_type && (
                     <p className="mt-1 text-caption-2 text-status-error">{errors.company_type}</p>
                   )}
+                  {!errors.company_type && touchedFields.company_type && formData.company_type && (
+                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
+                      <span className="text-status-success">✓</span> 입력 완료
+                    </p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="employee_count" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
                       <Users size={16} />
-                      직원 수 *
+                      직원 수 <span className="text-status-error text-lg ml-1">*</span>
                     </label>
-                    <input
-                      type="number"
+                    <select
                       id="employee_count"
                       name="employee_count"
                       value={formData.employee_count || ''}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      min="1"
-                      className={`w-full px-4 py-2 border ${errors.employee_count ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors`}
-                      placeholder="10"
-                    />
+                      className={`w-full px-4 py-2 border ${errors.employee_count ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors cursor-pointer ${!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 ? 'border-status-success' : ''}`}
+                    >
+                      <option value="">선택하세요</option>
+                      <option value="10">1-10명</option>
+                      <option value="50">11-50명</option>
+                      <option value="100">51-100명</option>
+                      <option value="200">101-200명</option>
+                      <option value="500">201-500명</option>
+                      <option value="1000">500명 이상</option>
+                    </select>
                     {errors.employee_count && (
                       <p className="mt-1 text-caption-2 text-status-error">{errors.employee_count}</p>
+                    )}
+                    {!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 && (
+                      <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
+                        <span className="text-status-success">✓</span> 입력 완료
+                      </p>
                     )}
                   </div>
 
                   <div>
                     <label htmlFor="establishment_date" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
                       <Calendar size={16} />
-                      설립일 *
+                      설립일 <span className="text-status-error text-lg ml-1">*</span>
                     </label>
                     <input
                       type="date"
@@ -389,10 +431,15 @@ const CompanyProfileEditClient: React.FC = () => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       max={today}
-                      className={`w-full px-4 py-2 border ${errors.establishment_date ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors`}
+                      className={`w-full px-4 py-2 border ${errors.establishment_date ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date ? 'border-status-success' : ''}`}
                     />
                     {errors.establishment_date && (
                       <p className="mt-1 text-caption-2 text-status-error">{errors.establishment_date}</p>
+                    )}
+                    {!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date && (
+                      <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
+                        <span className="text-status-success">✓</span> 입력 완료
+                      </p>
                     )}
                   </div>
                 </div>
@@ -400,7 +447,7 @@ const CompanyProfileEditClient: React.FC = () => {
                 <div>
                   <label htmlFor="insurance" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
                     <FileText size={16} />
-                    보험 <span className="text-caption-2 text-label-500">(선택)</span>
+                    보험 <span className="text-caption-2 px-2 py-0.5 bg-gray-200 text-label-600 rounded ml-2">선택</span>
                   </label>
                   <input
                     type="text"
@@ -408,10 +455,17 @@ const CompanyProfileEditClient: React.FC = () => {
                     name="insurance"
                     value={formData.insurance}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
+                    className={`w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${formData.insurance ? 'border-status-success' : ''}`}
                     placeholder="예: 4대보험 완비, 산재보험 등"
                   />
-                  <p className="mt-1 text-caption-2 text-label-500">제공하는 보험 정보를 입력해주세요.</p>
+                  {formData.insurance && (
+                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
+                      <span className="text-status-success">✓</span> 입력 완료
+                    </p>
+                  )}
+                  {!formData.insurance && (
+                    <p className="mt-1 text-caption-2 text-label-500">제공하는 보험 정보를 입력해주세요.</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -426,7 +480,7 @@ const CompanyProfileEditClient: React.FC = () => {
                 <div>
                   <label htmlFor="email" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
                     <Mail size={16} />
-                    이메일 *
+                    이메일 <span className="text-status-error text-lg ml-1">*</span>
                   </label>
                   <input
                     type="email"
@@ -435,19 +489,26 @@ const CompanyProfileEditClient: React.FC = () => {
                     value={formData.email}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.email ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors`}
+                    className={`w-full px-4 py-2 border ${errors.email ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.email && touchedFields.email && formData.email ? 'border-status-success' : ''}`}
                     placeholder="hr@example.com"
                   />
                   {errors.email && (
                     <p className="mt-1 text-caption-2 text-status-error">{errors.email}</p>
                   )}
-                  <p className="mt-1 text-caption-2 text-label-500">채용 담당자 이메일을 입력해주세요.</p>
+                  {!errors.email && touchedFields.email && formData.email && (
+                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
+                      <span className="text-status-success">✓</span> 입력 완료
+                    </p>
+                  )}
+                  {!touchedFields.email && (
+                    <p className="mt-1 text-caption-2 text-label-500">채용 담당자 이메일을 입력해주세요.</p>
+                  )}
                 </div>
 
                 <div>
                   <label htmlFor="phone_number" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
                     <Phone size={16} />
-                    전화번호 *
+                    전화번호 <span className="text-status-error text-lg ml-1">*</span>
                   </label>
                   <input
                     type="text"
@@ -456,19 +517,26 @@ const CompanyProfileEditClient: React.FC = () => {
                     value={formData.phone_number || ''}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.phone_number ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors`}
-                    placeholder="0212345678"
+                    className={`w-full px-4 py-2 border ${errors.phone_number ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.phone_number && touchedFields.phone_number && formData.phone_number ? 'border-status-success' : ''}`}
+                    placeholder="010-1234-5678"
                   />
                   {errors.phone_number && (
                     <p className="mt-1 text-caption-2 text-status-error">{errors.phone_number}</p>
                   )}
-                  <p className="mt-1 text-caption-2 text-label-500">하이픈(-) 없이 숫자만 입력해주세요.</p>
+                  {!errors.phone_number && touchedFields.phone_number && formData.phone_number && (
+                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
+                      <span className="text-status-success">✓</span> 입력 완료
+                    </p>
+                  )}
+                  {!touchedFields.phone_number && (
+                    <p className="mt-1 text-caption-2 text-label-500">숫자를 입력하면 자동으로 포맷팅됩니다. (예: 010-1234-5678)</p>
+                  )}
                 </div>
 
                 <div>
                   <label htmlFor="website_url" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
                     <Globe size={16} />
-                    웹사이트 <span className="text-caption-2 text-label-500">(선택)</span>
+                    웹사이트 <span className="text-caption-2 px-2 py-0.5 bg-gray-200 text-label-600 rounded ml-2">선택</span>
                   </label>
                   <input
                     type="url"
@@ -477,19 +545,26 @@ const CompanyProfileEditClient: React.FC = () => {
                     value={formData.website_url}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.website_url ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors`}
+                    className={`w-full px-4 py-2 border ${errors.website_url ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.website_url && formData.website_url ? 'border-status-success' : ''}`}
                     placeholder="https://example.com"
                   />
                   {errors.website_url && (
                     <p className="mt-1 text-caption-2 text-status-error">{errors.website_url}</p>
                   )}
-                  <p className="mt-1 text-caption-2 text-label-500">회사 홈페이지 주소를 입력해주세요. (http:// 또는 https:// 포함)</p>
+                  {!errors.website_url && formData.website_url && (
+                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
+                      <span className="text-status-success">✓</span> 입력 완료
+                    </p>
+                  )}
+                  {!formData.website_url && (
+                    <p className="mt-1 text-caption-2 text-label-500">회사 홈페이지 주소를 입력해주세요. (http:// 또는 https:// 포함)</p>
+                  )}
                 </div>
 
                 <div>
                   <label htmlFor="address" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
                     <MapPin size={16} />
-                    주소 *
+                    주소 <span className="text-status-error text-lg ml-1">*</span>
                   </label>
                   <input
                     type="text"
@@ -498,13 +573,20 @@ const CompanyProfileEditClient: React.FC = () => {
                     value={formData.address}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.address ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors`}
+                    className={`w-full px-4 py-2 border ${errors.address ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.address && touchedFields.address && formData.address ? 'border-status-success' : ''}`}
                     placeholder="서울특별시 강남구 테헤란로 427"
                   />
                   {errors.address && (
                     <p className="mt-1 text-caption-2 text-status-error">{errors.address}</p>
                   )}
-                  <p className="mt-1 text-caption-2 text-label-500">회사의 주소를 입력해주세요.</p>
+                  {!errors.address && touchedFields.address && formData.address && (
+                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
+                      <span className="text-status-success">✓</span> 입력 완료
+                    </p>
+                  )}
+                  {!touchedFields.address && (
+                    <p className="mt-1 text-caption-2 text-label-500">회사의 주소를 입력해주세요.</p>
+                  )}
                 </div>
               </div>
             </div>

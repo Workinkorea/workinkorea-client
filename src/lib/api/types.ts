@@ -143,7 +143,7 @@ export interface CompanyProfileResponse {
   establishment_date: string;
   company_type: string;
   insurance: string;
-  phone_number: number;
+  phone_number: string;
   address: string;
   website_url: string;
   email: string;
@@ -155,7 +155,7 @@ export interface CompanyProfileRequest {
   establishment_date: string;
   company_type: string;
   insurance: string;
-  phone_number: number;
+  phone_number: string;
   address: string;
   website_url: string;
   email: string;
