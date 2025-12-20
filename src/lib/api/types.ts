@@ -147,6 +147,8 @@ export interface CompanyProfileResponse {
   address: string;
   website_url: string;
   email: string;
+  country_id: number;
+  position_id: number;
 }
 
 export interface CompanyProfileRequest {
@@ -159,6 +161,8 @@ export interface CompanyProfileRequest {
   address: string;
   website_url: string;
   email: string;
+  country_id: number;
+  position_id: number;
 }
 
 export interface ApiErrorResponse {

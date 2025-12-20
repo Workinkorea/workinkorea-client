@@ -226,7 +226,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
           </div>
 
           <div>
-            <label htmlFor="language" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+            <label htmlFor="language" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
               <Languages size={16} />
               언어 요건
             </label>
@@ -273,7 +273,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
           </div>
 
           <div>
-            <label htmlFor="work_location" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+            <label htmlFor="work_location" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
               <MapPin size={16} />
               근무 위치 *
             </label>
@@ -325,7 +325,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
           </div>
 
           <div>
-            <label htmlFor="salary" className="block text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+            <label htmlFor="salary" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
               <DollarSign size={16} />
               연봉
             </label>

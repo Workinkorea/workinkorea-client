@@ -24,7 +24,6 @@ import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import { FormField } from '@/components/ui/FormField';
 import Input from '@/components/ui/Input';
-import { UserProfile } from '@/types/user';
 import {
   basicProfileSchema,
   contactInfoSchema,
