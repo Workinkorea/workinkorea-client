@@ -46,10 +46,6 @@ const CompanyProfileEditClient: React.FC = () => {
   // 프로필 데이터가 로드되면 폼에 설정
   useEffect(() => {
     if (profile) {
-      console.log('=== API 응답 (profile) ===');
-      console.log('원본 데이터:', profile);
-      console.log('phone_number 타입:', typeof profile.phone_number);
-      console.log('phone_number 값:', profile.phone_number);
 
       const data = {
         industry_type: profile.industry_type || '',
@@ -63,7 +59,6 @@ const CompanyProfileEditClient: React.FC = () => {
         email: profile.email || '',
       };
 
-      console.log('변환된 데이터:', data);
       setFormData(data);
       setOriginalData(data);
     }
@@ -89,17 +84,8 @@ const CompanyProfileEditClient: React.FC = () => {
     return JSON.stringify(formData) !== JSON.stringify(originalData);
   }, [formData, originalData]);
 
-  // 디버깅: hasChanges 상태 확인
-  useEffect(() => {
-    console.log('=== 변경사항 확인 ===');
-    console.log('formData:', formData);
-    console.log('originalData:', originalData);
-    console.log('hasChanges:', hasChanges);
-  }, [formData, originalData, hasChanges]);
-
   const updateProfileMutation = useMutation({
     mutationFn: (data: CompanyProfileRequest) => {
-      // 기존 프로필 데이터가 있으면 PUT, 없으면 POST 요청
       if (profile) {
         return profileApi.updateProfileCompany(data);
       } else {

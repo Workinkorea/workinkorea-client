@@ -42,6 +42,7 @@ import { profileApi } from '@/lib/api/profile';
 import { apiClient } from '@/lib/api/client';
 import { uploadFileToMinio } from '@/lib/api/minio';
 import type { ContactUpdateRequest, AccountConfigUpdateRequest } from '@/lib/api/types';
+import { COUNTRIES_FULL } from '@/constants/countries';
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
@@ -61,29 +62,6 @@ const CAREER_OPTIONS = [
   { key: 'YEAR_10_LESS', label: '10년 이하' },
   { key: 'YEAR_10', label: '10년' },
   { key: 'YEAR_10_MORE', label: '10년 이상' },
-] as const;
-
-// 국가 옵션
-const COUNTRY_OPTIONS = [
-  { id: 1, name: '한국' },
-  { id: 2, name: '미국' },
-  { id: 3, name: '일본' },
-  { id: 4, name: '중국' },
-  { id: 5, name: '베트남' },
-  { id: 6, name: '필리핀' },
-  { id: 7, name: '인도네시아' },
-  { id: 8, name: '태국' },
-  { id: 9, name: '인도' },
-  { id: 10, name: '파키스탄' },
-  { id: 11, name: '방글라데시' },
-  { id: 12, name: '네팔' },
-  { id: 13, name: '캐나다' },
-  { id: 14, name: '영국' },
-  { id: 15, name: '프랑스' },
-  { id: 16, name: '독일' },
-  { id: 17, name: '호주' },
-  { id: 18, name: '뉴질랜드' },
-  { id: 19, name: '기타' },
 ] as const;
 
 // 직무 옵션
@@ -229,7 +207,7 @@ const ProfileEditClient: React.FC = () => {
       job_status: '',
       portfolio_url: '',
       language_skills: [],
-      country_id: 1, // 기본값: 한국
+      country_id: 122, // 기본값: 대한민국
     }
   });
 
@@ -313,7 +291,7 @@ const ProfileEditClient: React.FC = () => {
           level: skill.level ?? '',
         })),
         name: profile.name ?? '',
-        country_id: profile.country_id ?? 1, // 기본값: 한국
+        country_id: profile.country_id ?? 122, // 기본값: 대한민국
       });
 
       // 기존 포트폴리오 URL에서 파일명 추출
@@ -482,7 +460,6 @@ const ProfileEditClient: React.FC = () => {
           // 비밀번호가 입력된 경우에만 변경 요청
           if (passwordData.currentPassword && passwordData.newPassword) {
             // TODO: 비밀번호 변경 API 구현 필요
-            console.log('Password change:', passwordData);
             toast.info('비밀번호 변경 기능은 준비 중입니다.');
           }
         }
@@ -861,15 +838,15 @@ const ProfileEditClient: React.FC = () => {
             <select
               {...field}
               id={fieldId}
-              value={field.value ?? 1}
-              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 1)}
+              value={field.value ?? 122}
+              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 122)}
               className={cn(
                 "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                 "border-line-400 focus:ring-primary",
                 basicForm.formState.errors.country_id && "border-status-error focus:ring-status-error"
               )}
             >
-              {COUNTRY_OPTIONS.map((option) => (
+              {COUNTRIES_FULL.map((option) => (
                 <option key={option.id} value={option.id}>
                   {option.name}
                 </option>
