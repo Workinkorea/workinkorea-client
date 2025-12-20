@@ -43,6 +43,7 @@ import { apiClient } from '@/lib/api/client';
 import { uploadFileToMinio } from '@/lib/api/minio';
 import type { ContactUpdateRequest, AccountConfigUpdateRequest } from '@/lib/api/types';
 import { COUNTRIES_FULL } from '@/constants/countries';
+import { getPositionsByHierarchy } from '@/constants/positions';
 
 type SectionType = 'basic' | 'contact' | 'preferences' | 'account';
 
@@ -62,23 +63,6 @@ const CAREER_OPTIONS = [
   { key: 'YEAR_10_LESS', label: '10년 이하' },
   { key: 'YEAR_10', label: '10년' },
   { key: 'YEAR_10_MORE', label: '10년 이상' },
-] as const;
-
-// 직무 옵션
-const POSITION_OPTIONS = [
-  { id: 1, name: '프론트엔드 개발자' },
-  { id: 2, name: '백엔드 개발자' },
-  { id: 3, name: '풀스택 개발자' },
-  { id: 4, name: '데이터 엔지니어' },
-  { id: 5, name: 'DevOps 엔지니어' },
-  { id: 6, name: 'UI/UX 디자이너' },
-  { id: 7, name: '프로덕트 매니저' },
-  { id: 8, name: '프로젝트 매니저' },
-  { id: 9, name: 'QA 엔지니어' },
-  { id: 10, name: '데이터 분석가' },
-  { id: 11, name: '시스템 관리자' },
-  { id: 12, name: '보안 엔지니어' },
-  { id: 13, name: '기타' },
 ] as const;
 
 // 언어 옵션
@@ -807,26 +791,35 @@ const ProfileEditClient: React.FC = () => {
           control={basicForm.control}
           label="직무 선택"
           error={basicForm.formState.errors.position_id?.message}
-          render={(field, fieldId) => (
-            <select
-              {...field}
-              id={fieldId}
-              value={field.value ?? ''}
-              onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
-              className={cn(
-                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                "border-line-400 focus:ring-primary",
-                basicForm.formState.errors.position_id && "border-status-error focus:ring-status-error"
-              )}
-            >
-              <option value="">직무를 선택하세요</option>
-              {POSITION_OPTIONS.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.name}
-                </option>
-              ))}
-            </select>
-          )}
+          render={(field, fieldId) => {
+            const positionHierarchy = getPositionsByHierarchy();
+            return (
+              <select
+                {...field}
+                id={fieldId}
+                value={field.value ?? ''}
+                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                className={cn(
+                  "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                  "border-line-400 focus:ring-primary",
+                  basicForm.formState.errors.position_id && "border-status-error focus:ring-status-error"
+                )}
+              >
+                <option value="">직무를 선택하세요</option>
+                {positionHierarchy.map((category) => (
+                  <optgroup key={category.categoryCode} label={category.category}>
+                    {category.subcategories.map((subcategory) =>
+                      subcategory.positions.map((position) => (
+                        <option key={position.id} value={position.id}>
+                          {subcategory.name} - {position.name}
+                        </option>
+                      ))
+                    )}
+                  </optgroup>
+                ))}
+              </select>
+            );
+          }}
         />
 
         <FormField
