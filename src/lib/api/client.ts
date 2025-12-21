@@ -85,8 +85,6 @@ async function refreshToken(): Promise<string> {
       userType === "admin" ? "/api/auth/admin/refresh" :
         "/api/auth/refresh";
 
-  console.log(`[apiClient] Starting refresh for ${userType} token`);
-
   try {
     const response = await api.post(
       endpoint,
@@ -109,8 +107,6 @@ async function refreshToken(): Promise<string> {
 
     // 새 토큰과 token_type 저장
     tokenManager.setToken(newToken, rememberMe, newTokenType);
-
-    console.log(`[apiClient] Refresh successful for ${userType} token`);
     return newToken;
   } catch (err) {
     console.error(`[apiClient] Refresh failed for ${userType} token:`, err);
@@ -124,7 +120,6 @@ async function refreshToken(): Promise<string> {
         userType === "company" ? "/company-login" :
           userType === "admin" ? "/admin/login" :
             "/login";
-      console.log(`[apiClient] Redirecting to ${loginPath}`);
       window.location.replace(loginPath);
     }
     throw err;
@@ -154,14 +149,10 @@ api.interceptors.response.use(
 
     // Handle 401 errors with automatic token refresh
     if (error.response?.status === 401 && !originalConfig._retry) {
-      console.log(
-        `[apiClient] 401 error on ${originalConfig?.url}, attempting refresh`
-      );
       originalConfig._retry = true;
 
       // If already refreshing, queue this request
       if (isRefreshing) {
-        console.log("[apiClient] Refresh in progress, queueing request");
         return new Promise((resolve, reject) => {
           refreshQueue.push({
             resolve: (token: string) => {
@@ -183,7 +174,6 @@ api.interceptors.response.use(
 
         // Retry original request with new token
         originalConfig.headers.Authorization = `Bearer ${token}`;
-        console.log(`[apiClient] Retrying ${originalConfig?.url} with new token`);
         return api(originalConfig);
       } catch (err) {
         processQueue(err, null);
