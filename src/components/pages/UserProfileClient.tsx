@@ -273,7 +273,7 @@ const UserProfileClient: React.FC = () => {
             {!resumeList?.length && (
               <button
                 onClick={() => router.push('/user/resume/create')}
-                className="mt-4 px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600"
+                className="mt-4 px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 cursor-pointer"
               >
                 이력서 작성하기
               </button>
@@ -404,7 +404,7 @@ const UserProfileClient: React.FC = () => {
                     <button
                       onClick={handleUploadImage}
                       disabled={!selectedFile || uploadImageMutation.isPending}
-                      className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       {uploadImageMutation.isPending ? '업로드 중...' : '업로드'}
                     </button>
@@ -438,7 +438,7 @@ const UserProfileClient: React.FC = () => {
                             handleDeleteResume(resume.id, resume.title || '이력서');
                           }}
                           disabled={deleteResumeMutation.isPending}
-                          className="px-4 py-2 bg-red-500 text-white rounded-lg text-body-3 font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-4 py-2 bg-red-500 text-white rounded-lg text-body-3 font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         >
                           {deleteResumeMutation.isPending ? '삭제 중...' : '삭제'}
                         </button>

@@ -99,7 +99,7 @@ export const SelectSearchInput = ({
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-0"
+          className="fixed inset-0 z-0 cursor-pointer"
           onClick={() => {
             setIsOpen(false);
             setSearchTerm('');

@@ -49,7 +49,7 @@ export default function HeroSection() {
               </div>
               <button
                 type="submit"
-                className="bg-primary-600 hover:bg-primary-700 text-white rounded-full px-8 py-3 flex items-center gap-2 transition-colors text-body-1 font-medium"
+                className="bg-primary-600 hover:bg-primary-700 text-white rounded-full px-8 py-3 flex items-center gap-2 transition-colors text-body-1 font-medium cursor-pointer"
               >
                 <Search className="w-5 h-5" />
                 검색

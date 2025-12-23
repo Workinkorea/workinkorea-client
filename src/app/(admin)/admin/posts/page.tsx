@@ -185,13 +185,13 @@ export default function AdminPostsPage() {
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button
                     onClick={() => openEditModal(post)}
-                    className="text-purple-600 hover:text-purple-900 mr-4"
+                    className="text-purple-600 hover:text-purple-900 mr-4 cursor-pointer"
                   >
                     수정
                   </button>
                   <button
                     onClick={() => handleDelete(post.id)}
-                    className="text-red-600 hover:text-red-900"
+                    className="text-red-600 hover:text-red-900 cursor-pointer"
                   >
                     삭제
                   </button>
@@ -211,14 +211,14 @@ export default function AdminPostsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             이전
           </button>
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={posts.length < limit}
-            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             다음
           </button>
@@ -401,13 +401,13 @@ export default function AdminPostsPage() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  className="flex-1 rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 cursor-pointer"
                 >
                   취소
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-500"
+                  className="flex-1 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-500 cursor-pointer"
                 >
                   수정
                 </button>

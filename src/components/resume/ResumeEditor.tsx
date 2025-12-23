@@ -355,7 +355,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors cursor-pointer"
                     >
                       <X size={14} />
                     </button>

@@ -136,7 +136,7 @@ export default function JobsListClient({
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1 || loading}
-                  className="p-2 rounded-lg border border-line-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 rounded-lg border border-line-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -159,7 +159,7 @@ export default function JobsListClient({
                         key={pageNum}
                         onClick={() => handlePageChange(pageNum)}
                         disabled={loading}
-                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                        className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
                           currentPage === pageNum
                             ? 'bg-primary-500 text-white'
                             : 'border border-line-200 hover:bg-gray-50 text-label-700'
@@ -174,7 +174,7 @@ export default function JobsListClient({
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages || loading}
-                  className="p-2 rounded-lg border border-line-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-2 rounded-lg border border-line-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
