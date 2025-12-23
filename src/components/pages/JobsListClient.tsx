@@ -22,6 +22,13 @@ export default function JobsListClient({
   initialPage,
   initialLimit
 }: JobsListClientProps) {
+  console.log('[Client] JobsListClient initialized with:', {
+    postsCount: initialPosts?.length || 0,
+    total: initialTotal,
+    page: initialPage,
+    limit: initialLimit
+  });
+
   const [posts, setPosts] = useState<CompanyPost[]>(initialPosts);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [total, setTotal] = useState(initialTotal);
@@ -33,15 +40,20 @@ export default function JobsListClient({
   const handlePageChange = async (newPage: number) => {
     if (newPage < 1 || newPage > totalPages || loading) return;
 
+    console.log('[Client] Changing page to:', newPage);
     setLoading(true);
     try {
       const response = await postsApi.getPublicCompanyPosts({ page: newPage, limit });
+      console.log('[Client] Received response:', {
+        postsCount: response.company_posts?.length || 0,
+        total: response.total
+      });
       setPosts(response.company_posts);
       setTotal(response.total);
       setCurrentPage(newPage);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
-      console.error('Failed to fetch posts:', error);
+      console.error('[Client] Failed to fetch posts:', error);
     } finally {
       setLoading(false);
     }

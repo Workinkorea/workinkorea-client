@@ -12,11 +12,16 @@ export async function getCompanyPosts(
   page: number = DEFAULT_PAGE,
   limit: number = DEFAULT_LIMIT
 ): Promise<CompanyPostsResponse> {
+  const url = `${API_BASE_URL}/api/posts/company/list?page=${page}&limit=${limit}`;
+
+  console.log('[Server] Fetching company posts from:', url);
+  console.log('[Server] API_BASE_URL:', API_BASE_URL);
+
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10초 타임아웃
 
-    const res = await fetch(`${API_BASE_URL}/api/posts/company/list?page=${page}&limit=${limit}`, {
+    const res = await fetch(url, {
       next: { revalidate: 3600 },
       headers: {
         'Content-Type': 'application/json',
@@ -26,22 +31,31 @@ export async function getCompanyPosts(
 
     clearTimeout(timeoutId);
 
+    console.log('[Server] Response status:', res.status);
+
     if (!res.ok) {
-      console.error('Failed to fetch company posts:', {
+      const errorText = await res.text();
+      console.error('[Server] Failed to fetch company posts:', {
         status: res.status,
         statusText: res.statusText,
-        url: `${API_BASE_URL}/api/posts/company/list?page=${page}&limit=${limit}`,
+        errorText,
+        url,
       });
       return { company_posts: [], total: 0, page: 1, limit, total_pages: 0 };
     }
 
     const data = await res.json();
+    console.log('[Server] Successfully fetched posts:', {
+      count: data.company_posts?.length || 0,
+      total: data.total,
+    });
     return data;
   } catch (error) {
-    console.error('Error fetching company posts:', {
+    console.error('[Server] Error fetching company posts:', {
       error,
       message: error instanceof Error ? error.message : 'Unknown error',
-      url: `${API_BASE_URL}/api/posts/company/list?page=${page}&limit=${limit}`,
+      name: error instanceof Error ? error.name : 'Unknown',
+      url,
     });
     return { company_posts: [], total: 0, page: 1, limit, total_pages: 0 };
   }
