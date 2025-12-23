@@ -33,7 +33,7 @@ const processQueue = (error: unknown, token: string | null) => {
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
-  timeout: 3000,
+  timeout: 10000,
 });
 
 // Get token (단일 토큰 사용)

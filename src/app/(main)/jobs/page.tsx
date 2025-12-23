@@ -2,7 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { createMetadata } from '@/lib/metadata';
 import JobsListClient from '@/components/pages/JobsListClient';
-import { CompanyPostsResponse } from '@/lib/api/types';
+import { getCompanyPosts } from '@/lib/api/server/posts';
 
 export const metadata: Metadata = createMetadata({
   title: '채용 공고 - WorkInKorea',
@@ -12,31 +12,8 @@ export const metadata: Metadata = createMetadata({
 // ISR: 1시간마다 재검증
 export const revalidate = 3600;
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 12;
-
-async function getCompanyPosts(page: number = DEFAULT_PAGE, limit: number = DEFAULT_LIMIT): Promise<CompanyPostsResponse> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/posts/company/list?page=${page}&limit=${limit}`, {
-      next: { revalidate: 3600 },
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!res.ok) {
-      console.error('Failed to fetch company posts:', res.status);
-      return { company_posts: [], total: 0, page: 1, limit, total_pages: 0 };
-    }
-
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching company posts:', error);
-    return { company_posts: [], total: 0, page: 1, limit, total_pages: 0 };
-  }
-}
 
 export default async function JobsPage() {
   const data = await getCompanyPosts(DEFAULT_PAGE, DEFAULT_LIMIT);

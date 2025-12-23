@@ -7,6 +7,7 @@ import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import { CompanyPost } from '@/lib/api/types';
 import { postsApi } from '@/lib/api/posts';
+import { useAuth } from '@/hooks/useAuth';
 
 interface JobsListClientProps {
   initialPosts: CompanyPost[];
@@ -27,6 +28,7 @@ export default function JobsListClient({
   const [loading, setLoading] = useState(false);
   const limit = initialLimit;
   const totalPages = Math.ceil(total / limit);
+  const { isAuthenticated, isLoading: authLoading, logout } = useAuth();
 
   const handlePageChange = async (newPage: number) => {
     if (newPage < 1 || newPage > totalPages || loading) return;
@@ -47,7 +49,12 @@ export default function JobsListClient({
 
   return (
     <Layout>
-      <Header type="homepage" />
+      <Header
+        type="homepage"
+        isAuthenticated={isAuthenticated}
+        isLoading={authLoading}
+        onLogout={logout}
+      />
       <div className="min-h-screen bg-background-alternative py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* 헤더 */}
