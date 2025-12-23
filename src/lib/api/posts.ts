@@ -11,8 +11,17 @@ import {
 
 export const postsApi = {
   // 공개 API: 인증 없이 공고 목록 조회 (메인 페이지용)
-  async getPublicCompanyPosts(): Promise<CompanyPostsResponse> {
-    return apiClient.get<CompanyPostsResponse>('/api/posts/company/list', {
+  async getPublicCompanyPosts(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<CompanyPostsResponse> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+
+    const url = `/api/posts/company/list${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+
+    return apiClient.get<CompanyPostsResponse>(url, {
       skipAuth: true,
     });
   },
@@ -23,10 +32,11 @@ export const postsApi = {
   },
 
   // 공개 API: 공고 목록 조회 (deprecated - getPublicCompanyPosts 사용 권장)
-  async getCompanyPosts(): Promise<CompanyPostsResponse> {
-    return apiClient.get<CompanyPostsResponse>('/api/posts/company/list', {
-      skipAuth: true,
-    });
+  async getCompanyPosts(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<CompanyPostsResponse> {
+    return this.getPublicCompanyPosts(params);
   },
 
   async getCompanyPostById(companyPostId: number): Promise<CompanyPostDetailResponse> {

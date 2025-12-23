@@ -277,6 +277,10 @@ export interface CompanyPost {
 
 export interface CompanyPostsResponse {
   company_posts: CompanyPost[];
+  total: number;
+  page: number;
+  limit: number;
+  total_pages: number;
 }
 
 export interface CreateCompanyPostRequest {

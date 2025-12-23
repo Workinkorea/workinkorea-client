@@ -2,7 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { createMetadata } from '@/lib/metadata';
 import JobsListClient from '@/components/pages/JobsListClient';
-import { CompanyPost } from '@/lib/api/types';
+import { CompanyPostsResponse } from '@/lib/api/types';
 
 export const metadata: Metadata = createMetadata({
   title: '채용 공고 - WorkInKorea',
@@ -13,10 +13,12 @@ export const metadata: Metadata = createMetadata({
 export const revalidate = 3600;
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 12;
 
-async function getCompanyPosts(): Promise<CompanyPost[]> {
+async function getCompanyPosts(page: number = DEFAULT_PAGE, limit: number = DEFAULT_LIMIT): Promise<CompanyPostsResponse> {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/posts/company/list`, {
+    const res = await fetch(`${API_BASE_URL}/api/posts/company/list?page=${page}&limit=${limit}`, {
       next: { revalidate: 3600 },
       headers: {
         'Content-Type': 'application/json',
@@ -25,19 +27,26 @@ async function getCompanyPosts(): Promise<CompanyPost[]> {
 
     if (!res.ok) {
       console.error('Failed to fetch company posts:', res.status);
-      return [];
+      return { company_posts: [], total: 0, page: 1, limit, total_pages: 0 };
     }
 
     const data = await res.json();
-    return data.company_posts || [];
+    return data;
   } catch (error) {
     console.error('Error fetching company posts:', error);
-    return [];
+    return { company_posts: [], total: 0, page: 1, limit, total_pages: 0 };
   }
 }
 
 export default async function JobsPage() {
-  const posts = await getCompanyPosts();
+  const data = await getCompanyPosts(DEFAULT_PAGE, DEFAULT_LIMIT);
 
-  return <JobsListClient initialPosts={posts} />;
+  return (
+    <JobsListClient
+      initialPosts={data.company_posts}
+      initialTotal={data.total}
+      initialPage={data.page}
+      initialLimit={data.limit}
+    />
+  );
 }
