@@ -47,12 +47,20 @@ const CompanyProfileClient: React.FC = () => {
   };
 
   // 기업 공고 목록 조회
-  const { data: posts, isLoading: postsLoading } = useQuery({
+  const { data: posts, isLoading: postsLoading, error: postsError } = useQuery({
     queryKey: ['myCompanyPosts'],
     queryFn: async () => {
-      const response = await postsApi.getMyCompanyPosts();
-      return response.company_posts;
-    }
+      try {
+        const response = await postsApi.getMyCompanyPosts();
+        console.log('Company posts response:', response);
+        return response.company_posts;
+      } catch (error) {
+        console.error('Failed to fetch company posts:', error);
+        throw error;
+      }
+    },
+    enabled: !!profile, // 프로필이 로드된 후에만 공고 조회
+    retry: 1,
   });
 
   // 로딩 상태 처리 (프로필이 없거나 로딩 중일 때)
@@ -144,7 +152,7 @@ const CompanyProfileClient: React.FC = () => {
 
               <button
                 onClick={() => router.push('/company/profile/edit')}
-                className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors"
+                className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors cursor-pointer"
               >
                 <Edit3 size={16} />
                 프로필 편집
@@ -259,7 +267,7 @@ const CompanyProfileClient: React.FC = () => {
                     </h3>
                     <button
                       onClick={() => router.push('/company/posts/create')}
-                      className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
                     >
                       <Plus size={16} />
                       새 공고 등록
@@ -269,6 +277,19 @@ const CompanyProfileClient: React.FC = () => {
                   {postsLoading ? (
                     <div className="flex items-center justify-center py-12">
                       <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full"></div>
+                    </div>
+                  ) : postsError ? (
+                    <div className="text-center py-12">
+                      <p className="text-status-error mb-4">공고를 불러오는 데 실패했습니다.</p>
+                      <p className="text-caption-2 text-label-500 mb-4">
+                        {postsError instanceof Error ? postsError.message : '알 수 없는 오류가 발생했습니다.'}
+                      </p>
+                      <button
+                        onClick={() => window.location.reload()}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                      >
+                        다시 시도
+                      </button>
                     </div>
                   ) : posts && posts.length > 0 ? (
                     <div className="space-y-4">
@@ -298,7 +319,7 @@ const CompanyProfileClient: React.FC = () => {
                             </div>
                             <button
                               onClick={() => router.push(`/company/posts/edit/${post.id}`)}
-                              className="text-primary-500 hover:text-primary-600 transition-colors"
+                              className="text-primary-500 hover:text-primary-600 transition-colors cursor-pointer"
                             >
                               <Edit3 size={18} />
                             </button>
@@ -311,7 +332,7 @@ const CompanyProfileClient: React.FC = () => {
                       <p className="text-label-500 mb-4">등록된 공고가 없습니다.</p>
                       <button
                         onClick={() => router.push('/company/posts/create')}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
                       >
                         <Plus size={16} />
                         첫 공고 등록하기
@@ -333,10 +354,10 @@ const CompanyProfileClient: React.FC = () => {
                     계정 설정
                   </h3>
                   <div className="space-y-4">
-                    <button className="w-full text-left p-3 border border-line-400 rounded-lg text-body-3 text-label-700 hover:bg-component-alternative transition-colors">
+                    <button className="w-full text-left p-3 border border-line-400 rounded-lg text-body-3 text-label-700 hover:bg-component-alternative transition-colors cursor-pointer">
                       비밀번호 변경
                     </button>
-                    <button className="w-full text-left p-3 border border-status-error rounded-lg text-body-3 text-status-error hover:bg-component-alternative transition-colors">
+                    <button className="w-full text-left p-3 border border-status-error rounded-lg text-body-3 text-status-error hover:bg-component-alternative transition-colors cursor-pointer">
                       계정 삭제
                     </button>
                   </div>

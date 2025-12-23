@@ -27,8 +27,17 @@ export const postsApi = {
   },
 
   // 인증 필요: 내 회사의 공고 목록만 조회 (기업 전용)
-  async getMyCompanyPosts(): Promise<CompanyPostsResponse> {
-    return apiClient.get<CompanyPostsResponse>('/api/company/posts/my');
+  async getMyCompanyPosts(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<CompanyPostsResponse> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+
+    const url = `/api/posts/company${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+
+    return apiClient.get<CompanyPostsResponse>(url);
   },
 
   // 공개 API: 공고 목록 조회 (deprecated - getPublicCompanyPosts 사용 권장)
