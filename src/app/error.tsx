@@ -38,7 +38,7 @@ export default function Error({
         <div className="space-y-4">
           <motion.button
             onClick={reset}
-            className="w-full px-6 py-3 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 transition-colors"
+            className="w-full px-6 py-3 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 transition-colors cursor-pointer"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -47,7 +47,7 @@ export default function Error({
 
           <motion.button
             onClick={() => window.location.href = '/'}
-            className="w-full px-6 py-3 border border-line-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+            className="w-full px-6 py-3 border border-line-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors cursor-pointer"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >

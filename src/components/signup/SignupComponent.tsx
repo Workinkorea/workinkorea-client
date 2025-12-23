@@ -292,7 +292,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                     </span>
                     <button
                       type="button"
-                      className="text-caption-2 text-label-500 hover:text-primary-500 underline"
+                      className="text-caption-2 text-label-500 hover:text-primary-500 underline cursor-pointer"
                       onClick={(e) => {
                         e.preventDefault();
                         openTermsModal('termsOfService');
@@ -321,7 +321,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                     </span>
                     <button
                       type="button"
-                      className="text-caption-2 text-label-500 hover:text-primary-500 underline"
+                      className="text-caption-2 text-label-500 hover:text-primary-500 underline cursor-pointer"
                       onClick={(e) => {
                         e.preventDefault();
                         openTermsModal('privacyPolicy');
@@ -350,7 +350,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                     </span>
                     <button
                       type="button"
-                      className="text-caption-2 text-label-500 hover:text-primary-500 underline"
+                      className="text-caption-2 text-label-500 hover:text-primary-500 underline cursor-pointer"
                       onClick={(e) => {
                         e.preventDefault();
                         openTermsModal('privacyPolicyHold');
@@ -379,7 +379,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                     </span>
                     <button
                       type="button"
-                      className="text-caption-2 text-label-500 hover:text-primary-500 underline"
+                      className="text-caption-2 text-label-500 hover:text-primary-500 underline cursor-pointer"
                       onClick={(e) => {
                         e.preventDefault();
                         openTermsModal('copyrightPolicy');
@@ -408,7 +408,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                     </span>
                     <button
                       type="button"
-                      className="text-caption-2 text-label-500 hover:text-primary-500 underline"
+                      className="text-caption-2 text-label-500 hover:text-primary-500 underline cursor-pointer"
                       onClick={(e) => {
                         e.preventDefault();
                         openTermsModal('cookiePolicy');

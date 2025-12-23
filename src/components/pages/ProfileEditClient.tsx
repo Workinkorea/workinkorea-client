@@ -577,7 +577,7 @@ const ProfileEditClient: React.FC = () => {
             </p>
             <button
               onClick={handleBack}
-              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors cursor-pointer"
             >
               돌아가기
             </button>
@@ -606,7 +606,7 @@ const ProfileEditClient: React.FC = () => {
           <button
             type="button"
             onClick={handleImageButtonClick}
-            className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white hover:bg-primary-600 transition-colors"
+            className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white hover:bg-primary-600 transition-colors cursor-pointer"
           >
             <Camera size={16} />
           </button>
@@ -753,7 +753,7 @@ const ProfileEditClient: React.FC = () => {
             <button
               type="button"
               onClick={handlePortfolioButtonClick}
-              className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-caption-2 text-label-700 hover:bg-component-alternative transition-colors"
+              className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-caption-2 text-label-700 hover:bg-component-alternative transition-colors cursor-pointer"
             >
               <Camera size={16} />
               파일 선택
@@ -773,7 +773,7 @@ const ProfileEditClient: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleRemovePortfolio}
-                  className="text-status-error hover:text-status-error/80"
+                  className="text-status-error hover:text-status-error/80 cursor-pointer"
                 >
                   <X size={16} />
                 </button>

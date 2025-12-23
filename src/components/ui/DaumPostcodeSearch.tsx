@@ -84,7 +84,7 @@ const DaumPostcodeSearch: React.FC<DaumPostcodeSearchProps> = ({
         <button
           type="button"
           onClick={handleSearchClick}
-          className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-primary-500 text-white rounded hover:bg-primary-600 flex items-center gap-1.5"
+          className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-primary-500 text-white rounded hover:bg-primary-600 flex items-center gap-1.5 cursor-pointer"
         >
           <Search size={14} />
           <span className="text-caption-1 font-medium">주소검색</span>

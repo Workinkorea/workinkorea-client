@@ -42,7 +42,7 @@ export default function TermsModal({ isOpen, onClose, title, content }: TermsMod
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black bg-opacity-50 z-50"
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 cursor-pointer"
           />
 
           {/* 모달 */}
@@ -60,7 +60,7 @@ export default function TermsModal({ isOpen, onClose, title, content }: TermsMod
                 <h2 className="text-title-3 text-label-900 font-semibold">{title}</h2>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                   aria-label="닫기"
                 >
                   <X className="w-5 h-5 text-label-500" />
@@ -130,7 +130,7 @@ export default function TermsModal({ isOpen, onClose, title, content }: TermsMod
               <div className="flex items-center justify-end p-6 border-t border-line-200">
                 <button
                   onClick={onClose}
-                  className="px-6 py-2.5 bg-primary-300 text-white rounded-lg hover:bg-primary-400 transition-colors font-medium text-sm"
+                  className="px-6 py-2.5 bg-primary-300 text-white rounded-lg hover:bg-primary-400 transition-colors font-medium text-sm cursor-pointer"
                 >
                   확인
                 </button>

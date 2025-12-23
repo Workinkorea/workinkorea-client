@@ -74,7 +74,7 @@ const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
                 <div className="h-4 w-px bg-line-400"></div>
                 <button
                   onClick={onLogout}
-                  className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
+                  className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors cursor-pointer"
                 >
                   로그아웃
                 </button>
