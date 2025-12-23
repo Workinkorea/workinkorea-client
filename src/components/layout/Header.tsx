@@ -17,7 +17,7 @@ const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
       ];
     } else {
       return [
-        { name: '인재채용', href: '/company/recruitment' },
+        { name: '인재채용', href: '/company/posts/create' },
         { name: '채용공고 관리', href: '/company/jobs' },
       ];
     }
