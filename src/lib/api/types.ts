@@ -278,9 +278,11 @@ export interface CompanyPost {
 export interface CompanyPostsResponse {
   company_posts: CompanyPost[];
   total: number;
-  page: number;
+  skip?: number; // API에서 사용
+  page?: number; // 클라이언트에서 사용
   limit: number;
-  total_pages: number;
+  count?: number; // API에서 사용 (현재 페이지의 아이템 수)
+  total_pages?: number; // 클라이언트에서 사용
 }
 
 export interface CreateCompanyPostRequest {
