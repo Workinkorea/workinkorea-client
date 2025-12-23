@@ -2,7 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { createMetadata } from '@/lib/metadata';
 import JobsListClient from '@/components/pages/JobsListClient';
-import { getCompanyPosts } from '@/lib/api/server/posts';
+import { getCompanyPosts } from '@/lib/api/posts';
 
 export const metadata: Metadata = createMetadata({
   title: '채용 공고 - WorkInKorea',
