@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import Layout from '@/components/layout/Layout';
@@ -9,33 +9,41 @@ import { CompanyPost } from '@/lib/api/types';
 import { postsApi } from '@/lib/api/posts';
 import { useAuth } from '@/hooks/useAuth';
 
-interface JobsListClientProps {
-  initialPosts: CompanyPost[];
-  initialTotal: number;
-  initialPage: number;
-  initialLimit: number;
-}
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 12;
 
-export default function JobsListClient({
-  initialPosts,
-  initialTotal,
-  initialPage,
-  initialLimit
-}: JobsListClientProps) {
-  console.log('[Client] JobsListClient initialized with:', {
-    postsCount: initialPosts?.length || 0,
-    total: initialTotal,
-    page: initialPage,
-    limit: initialLimit
-  });
-
-  const [posts, setPosts] = useState<CompanyPost[]>(initialPosts);
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const [total, setTotal] = useState(initialTotal);
-  const [loading, setLoading] = useState(false);
-  const limit = initialLimit;
+export default function JobsListClient() {
+  const [posts, setPosts] = useState<CompanyPost[]>([]);
+  const [currentPage, setCurrentPage] = useState(DEFAULT_PAGE);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const limit = DEFAULT_LIMIT;
   const totalPages = Math.ceil(total / limit);
   const { isAuthenticated, isLoading: authLoading, logout } = useAuth();
+
+  // 초기 데이터 로드
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      console.log('[Client] Fetching initial data');
+      setLoading(true);
+      try {
+        const response = await postsApi.getPublicCompanyPosts({ page: DEFAULT_PAGE, limit: DEFAULT_LIMIT });
+        console.log('[Client] Initial data loaded:', {
+          postsCount: response.company_posts?.length || 0,
+          total: response.total
+        });
+        setPosts(response.company_posts);
+        setTotal(response.total);
+        setCurrentPage(DEFAULT_PAGE);
+      } catch (error) {
+        console.error('[Client] Failed to fetch initial data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
 
   const handlePageChange = async (newPage: number) => {
     if (newPage < 1 || newPage > totalPages || loading) return;
