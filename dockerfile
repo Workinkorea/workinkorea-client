@@ -35,6 +35,8 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
+ENV NODE_ENV=production
+
 # 리눅스 그룹과 유저 생성
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -49,8 +51,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # 리눅스 사용자
 USER nextjs
 
-ENV PORT=3001
-EXPOSE 3001
+ENV PORT=3000
+EXPOSE 3000
+
+ENV BACKEND_API_URL=""
 
 # 'standalone' 옵션 사용 시 server.js 사용
 CMD ["node", "server.js"]
