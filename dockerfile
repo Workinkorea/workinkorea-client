@@ -26,7 +26,12 @@ COPY . .
 
 # 환경변수 설정
 ARG NEXT_PUBLIC_API_URL
+ARG BACKEND_API_URL=http://localhost:8000
+
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV BACKEND_API_URL=$BACKEND_API_URL
+
+RUN npm run build
 
 RUN npm run build
 
@@ -34,6 +39,8 @@ RUN npm run build
 # 3. 실행
 FROM base AS runner
 WORKDIR /app
+
+ENV NODE_ENV=production
 
 # 리눅스 그룹과 유저 생성
 RUN addgroup --system --gid 1001 nodejs
@@ -49,8 +56,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # 리눅스 사용자
 USER nextjs
 
-ENV PORT=3001
-EXPOSE 3001
+ENV PORT=3000
+EXPOSE 3000
+
+ENV BACKEND_API_URL=""
 
 # 'standalone' 옵션 사용 시 server.js 사용
 CMD ["node", "server.js"]
