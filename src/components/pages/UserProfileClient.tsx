@@ -13,7 +13,7 @@ import { UserProfile, RadarChartData, UserSkill } from '@/types/user';
 import { useAuth } from '@/hooks/useAuth';
 import { resumeApi } from '@/lib/api/resume';
 import { profileApi } from '@/lib/api/profile';
-import type { CareerHistory, ResumeListItem, ResumeDetail } from '@/lib/api/types';
+import type { CareerHistory, ResumeListItem } from '@/lib/api/types';
 
 const UserProfileClient: React.FC = () => {
   const router = useRouter();
@@ -112,8 +112,7 @@ const UserProfileClient: React.FC = () => {
     queryKey: ['resume', firstResumeId],
     queryFn: async () => {
       if (!firstResumeId) return null;
-      const responseString = await resumeApi.getResumeById(firstResumeId);
-      const response: ResumeDetail = JSON.parse(responseString);
+      const response = await resumeApi.getResumeById(firstResumeId);
 
       // 언어 숙련도를 숫자로 변환하는 함수
       const proficiencyToLevel = (level: string): number => {

@@ -15,6 +15,7 @@ interface Session4Props {
   initialData: Partial<Session4Data>;
   onNext: (data: Session4Data) => void;
   onBack: () => void;
+  isSubmitting?: boolean;
 }
 
 const CHALLENGES = [
@@ -26,7 +27,7 @@ const CHALLENGES = [
   { value: 'network', label: '아는 사람이 없어요', emoji: '👥' },
 ];
 
-export const Session4Matching = ({ initialData, onNext, onBack }: Session4Props) => {
+export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = false }: Session4Props) => {
   const { control, handleSubmit, watch, setValue } = useForm<Session4Data>({
     defaultValues: {
       ...initialData,
@@ -162,16 +163,16 @@ export const Session4Matching = ({ initialData, onNext, onBack }: Session4Props)
         </motion.button>
         <motion.button
           type="submit"
-          disabled={selectedChallenges.length === 0}
+          disabled={selectedChallenges.length === 0 || isSubmitting}
           className={`flex-1 py-4 font-semibold text-body-1 rounded-lg transition-all shadow-sm hover:shadow-md ${
-            selectedChallenges.length === 0
+            selectedChallenges.length === 0 || isSubmitting
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
               : 'bg-primary-600 hover:bg-primary-700 text-white cursor-pointer'
           }`}
-          whileHover={selectedChallenges.length > 0 ? { scale: 1.02 } : {}}
-          whileTap={selectedChallenges.length > 0 ? { scale: 0.98 } : {}}
+          whileHover={selectedChallenges.length > 0 && !isSubmitting ? { scale: 1.02 } : {}}
+          whileTap={selectedChallenges.length > 0 && !isSubmitting ? { scale: 0.98 } : {}}
         >
-          결과 보기
+          {isSubmitting ? '제출 중...' : '결과 보기'}
         </motion.button>
       </div>
     </motion.form>
