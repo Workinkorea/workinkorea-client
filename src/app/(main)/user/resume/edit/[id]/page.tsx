@@ -7,7 +7,6 @@ import ResumeEditor from '@/components/resume/ResumeEditor';
 import { Resume } from '@/types/user';
 import { resumeApi } from '@/lib/api/resume';
 import { profileApi } from '@/lib/api/profile';
-import { ResumeDetail } from '@/lib/api/types';
 
 // ISO 날짜 형식(2022-02-23T00:00:00)을 YYYY-MM-DD 형식으로 변환
 const formatDateForInput = (dateString: string | null | undefined): string => {
@@ -45,9 +44,7 @@ const EditResumePage: React.FC = () => {
     queryKey: ['resume', resumeId, profileData, contactData],
     queryFn: async () => {
       if (!resumeId) throw new Error('Invalid resume ID');
-      const apiResponse = await resumeApi.getResumeById(resumeId);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response: ResumeDetail = (apiResponse as any).resume || apiResponse;
+      const response = await resumeApi.getResumeById(resumeId);
 
       // introduction 배열에서 첫 번째 항목의 content를 objective로 사용
       const objective = response.introduction && response.introduction.length > 0
