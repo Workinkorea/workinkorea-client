@@ -21,7 +21,7 @@ const TOTAL_STEPS = 4;
 const DiagnosisClient = () => {
   const router = useRouter();
   const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: false });
-  const { currentStep, diagnosisData, setStep, updateData } = useDiagnosisStore();
+  const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId } = useDiagnosisStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogout = async () => {
@@ -77,7 +77,11 @@ const DiagnosisClient = () => {
 
       const response = await diagnosisApi.submitAnswer(apiRequest);
 
-      router.push('/diagnosis/result');
+      // Save diagnosis ID to store
+      setDiagnosisId(response.id);
+
+      // Redirect to result page with ID
+      router.push(`/diagnosis/result?id=${response.id}`);
     } catch (error) {
       console.error('Failed to submit diagnosis:', error);
       alert('진단 결과 제출에 실패했습니다. 다시 시도해주세요.');

@@ -13,4 +13,8 @@ export const diagnosisApi = {
       data
     );
   },
+
+  async getDiagnosisAnswer(id: number): Promise<DiagnosisAnswerResponse> {
+    return apiClient.get<DiagnosisAnswerResponse>(`/api/diagnosis/answer/${id}`);
+  },
 };

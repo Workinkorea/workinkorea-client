@@ -31,8 +31,10 @@ export interface DiagnosisData {
 interface DiagnosisStore {
   currentStep: number;
   diagnosisData: Partial<DiagnosisData>;
+  diagnosisId: number | null;
   setStep: (step: number) => void;
   updateData: (data: Partial<DiagnosisData>) => void;
+  setDiagnosisId: (id: number) => void;
   reset: () => void;
 }
 
@@ -45,10 +47,12 @@ const initialData: Partial<DiagnosisData> = {
 export const useDiagnosisStore = create<DiagnosisStore>()((set) => ({
   currentStep: 1,
   diagnosisData: initialData,
+  diagnosisId: null,
   setStep: (step) => set({ currentStep: step }),
   updateData: (data) =>
     set((state) => ({
       diagnosisData: { ...state.diagnosisData, ...data },
     })),
-  reset: () => set({ currentStep: 1, diagnosisData: initialData }),
+  setDiagnosisId: (id) => set({ diagnosisId: id }),
+  reset: () => set({ currentStep: 1, diagnosisData: initialData, diagnosisId: null }),
 }));
