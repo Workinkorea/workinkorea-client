@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useDiagnosisStore } from '@/store/diagnosisStore';
 import Layout from '@/components/layout/Layout';
@@ -9,6 +9,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { CheckCircle, AlertCircle, Briefcase, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { DiagnosisData } from '@/store/diagnosisStore';
+import { diagnosisApi } from '@/lib/api/diagnosis';
+import { DiagnosisAnswerResponse } from '@/lib/api/types';
 
 interface MatchingResult {
   score: number;
@@ -19,15 +21,41 @@ interface MatchingResult {
 
 const DiagnosisResultClient = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: false });
-  const { diagnosisData } = useDiagnosisStore();
+  const { diagnosisId } = useDiagnosisStore();
   const [result, setResult] = useState<MatchingResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // TODO(human): Calculate matching score based on diagnosis data
-    const calculatedResult = calculateMatchingScore(diagnosisData);
-    setResult(calculatedResult);
-  }, [diagnosisData]);
+    const fetchDiagnosisResult = async () => {
+      try {
+        // URL 쿼리 파라미터에서 ID를 가져오거나 store에서 가져옴
+        const idFromQuery = searchParams.get('id');
+        const id = idFromQuery ? parseInt(idFromQuery, 10) : diagnosisId;
+
+        if (!id) {
+          setError('진단 결과를 찾을 수 없습니다.');
+          return;
+        }
+
+        // API 호출
+        const response: DiagnosisAnswerResponse = await diagnosisApi.getDiagnosisAnswer(id);
+
+        // 응답 데이터를 DiagnosisData 형태로 변환
+        const diagnosisData = convertResponseToDiagnosisData(response);
+
+        // 매칭 점수 계산
+        const calculatedResult = calculateMatchingScore(diagnosisData);
+        setResult(calculatedResult);
+      } catch (err) {
+        console.error('Failed to fetch diagnosis result:', err);
+        setError('진단 결과를 불러오는데 실패했습니다.');
+      }
+    };
+
+    fetchDiagnosisResult();
+  }, [searchParams, diagnosisId]);
 
   const handleLogout = async () => {
     await logout();
@@ -44,6 +72,33 @@ const DiagnosisResultClient = () => {
   const handleJobSearch = () => {
     router.push('/jobs');
   };
+
+  if (error) {
+    return (
+      <Layout>
+        <Header
+          type={userType === 'company' ? 'business' : 'homepage'}
+          isAuthenticated={isAuthenticated}
+          isLoading={isLoading}
+          onLogout={handleLogout}
+        />
+        <div className="min-h-screen bg-background-alternative flex items-center justify-center">
+          <div className="text-center">
+            <AlertCircle className="text-red-500 mx-auto mb-4" size={48} />
+            <p className="text-body-1 text-label-700">{error}</p>
+            <motion.button
+              onClick={() => router.push('/diagnosis')}
+              className="mt-6 px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              다시 진단하기
+            </motion.button>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!result) {
     return (
@@ -239,6 +294,24 @@ const DiagnosisResultClient = () => {
     </Layout>
   );
 };
+
+// TODO(human): Map API response questions to DiagnosisData fields
+function convertResponseToDiagnosisData(response: DiagnosisAnswerResponse): Partial<DiagnosisData> {
+  // This is a placeholder mapping. Update based on actual question-to-field mapping
+  return {
+    currentLocation: response.q1_answer,
+    koreanLevel: response.q2_answer,
+    visaStatus: response.q3_answer,
+    workExperience: response.q4_answer,
+    jobField: response.q5_answer,
+    education: response.q6_answer,
+    desiredSalary: response.q7_answer,
+    employmentType: response.q8_answer,
+    companySize: response.q9_answer,
+    startDate: response.q10_answer,
+    // Add more mappings as needed
+  };
+}
 
 // TODO(human): Implement matching score calculation logic
 function calculateMatchingScore(data: Partial<DiagnosisData>): MatchingResult {

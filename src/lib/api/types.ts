@@ -440,3 +440,43 @@ export interface UpdateAdminPostRequest {
   start_date?: string;
   end_date?: string;
 }
+
+// Diagnosis API types
+export interface DiagnosisAnswerRequest {
+  total_score: number;
+  q1_answer: string;
+  q2_answer: string;
+  q3_answer: string;
+  q4_answer: string;
+  q5_answer: string;
+  q6_answer: string;
+  q7_answer: string;
+  q8_answer: string;
+  q9_answer: string;
+  q10_answer: string;
+  q11_answer: string;
+  q12_answer: string;
+  q13_answer: string;
+  q14_answer: string;
+  q15_answer: string;
+}
+
+export interface DiagnosisAnswerResponse {
+  id: number;
+  total_score: number;
+  q1_answer: string;
+  q2_answer: string;
+  q3_answer: string;
+  q4_answer: string;
+  q5_answer: string;
+  q6_answer: string;
+  q7_answer: string;
+  q8_answer: string;
+  q9_answer: string;
+  q10_answer: string;
+  q11_answer: string;
+  q12_answer: string;
+  q13_answer: string;
+  q14_answer: string;
+  q15_answer: string;
+}

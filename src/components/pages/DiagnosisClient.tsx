@@ -12,13 +12,17 @@ import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import { useAuth } from '@/hooks/useAuth';
 import { DiagnosisData } from '@/store/diagnosisStore';
+import { diagnosisApi } from '@/lib/api/diagnosis';
+import { DiagnosisAnswerRequest } from '@/lib/api/types';
+import { useState } from 'react';
 
 const TOTAL_STEPS = 4;
 
 const DiagnosisClient = () => {
   const router = useRouter();
   const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: false });
-  const { currentStep, diagnosisData, setStep, updateData } = useDiagnosisStore();
+  const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId } = useDiagnosisStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -39,9 +43,51 @@ const DiagnosisClient = () => {
     setStep(4);
   };
 
-  const handleSession4Next = (data: Partial<DiagnosisData>) => {
+  const convertToApiRequest = (data: Partial<DiagnosisData>): DiagnosisAnswerRequest => {
+    const languagesStr = data.languages?.map(l => `${l.language}(${l.level})`).join(', ') || '';
+    const challengesStr = data.challenges?.join(', ') || '';
+
+    return {
+      total_score: 0,
+      q1_answer: data.currentLocation || '',
+      q2_answer: data.koreanLevel || '',
+      q3_answer: data.visaStatus || '',
+      q4_answer: data.workExperience || '',
+      q5_answer: data.jobField || '',
+      q6_answer: data.education || '',
+      q7_answer: languagesStr,
+      q8_answer: data.desiredSalary || '',
+      q9_answer: data.employmentType || '',
+      q10_answer: data.companySize || '',
+      q11_answer: data.startDate || '',
+      q12_answer: challengesStr,
+      q13_answer: data.email || '',
+      q14_answer: '',
+      q15_answer: '',
+    };
+  };
+
+  const handleSession4Next = async (data: Partial<DiagnosisData>) => {
     updateData(data);
-    router.push('/diagnosis/result');
+    setIsSubmitting(true);
+
+    try {
+      const finalData = { ...diagnosisData, ...data };
+      const apiRequest = convertToApiRequest(finalData);
+
+      const response = await diagnosisApi.submitAnswer(apiRequest);
+
+      // Save diagnosis ID to store
+      setDiagnosisId(response.id);
+
+      // Redirect to result page with ID
+      router.push(`/diagnosis/result?id=${response.id}`);
+    } catch (error) {
+      console.error('Failed to submit diagnosis:', error);
+      alert('진단 결과 제출에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleBack = () => {
@@ -105,6 +151,7 @@ const DiagnosisClient = () => {
                   initialData={diagnosisData}
                   onNext={handleSession4Next}
                   onBack={handleBack}
+                  isSubmitting={isSubmitting}
                 />
               )}
             </AnimatePresence>
