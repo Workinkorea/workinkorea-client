@@ -24,14 +24,9 @@ export default function JobsListClient() {
   // 초기 데이터 로드
   useEffect(() => {
     const fetchInitialData = async () => {
-      console.log('[Client] Fetching initial data');
       setLoading(true);
       try {
         const response = await postsApi.getPublicCompanyPosts({ page: DEFAULT_PAGE, limit: DEFAULT_LIMIT });
-        console.log('[Client] Initial data loaded:', {
-          postsCount: response.company_posts?.length || 0,
-          total: response.total
-        });
         setPosts(response.company_posts);
         setTotal(response.total);
         setCurrentPage(DEFAULT_PAGE);
@@ -48,14 +43,9 @@ export default function JobsListClient() {
   const handlePageChange = async (newPage: number) => {
     if (newPage < 1 || newPage > totalPages || loading) return;
 
-    console.log('[Client] Changing page to:', newPage);
     setLoading(true);
     try {
       const response = await postsApi.getPublicCompanyPosts({ page: newPage, limit });
-      console.log('[Client] Received response:', {
-        postsCount: response.company_posts?.length || 0,
-        total: response.total
-      });
       setPosts(response.company_posts);
       setTotal(response.total);
       setCurrentPage(newPage);

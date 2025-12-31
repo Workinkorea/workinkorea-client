@@ -10,26 +10,26 @@ import type {
 
 export const profileApi = {
   async getProfile(): Promise<ProfileResponse> {
-    return apiClient.get<ProfileResponse>('/api/me');
+    return apiClient.get<ProfileResponse>('/me');
   },
 
   async updateProfile(data: ProfileUpdateRequest): Promise<ProfileResponse> {
-    return apiClient.put<ProfileResponse>('/api/me', data);
+    return apiClient.put<ProfileResponse>('/me', data);
   },
 
   async getContact(): Promise<ContactResponse> {
-    return apiClient.get<ContactResponse>('/api/contact');
+    return apiClient.get<ContactResponse>('/contact');
   },
 
   async updateContact(data: ContactUpdateRequest): Promise<ContactResponse> {
-    return apiClient.put<ContactResponse>('/api/contact', data);
+    return apiClient.put<ContactResponse>('/contact', data);
   },
 
   async getAccountConfig(): Promise<AccountConfigResponse> {
-    return apiClient.get<AccountConfigResponse>('/api/account-config');
+    return apiClient.get<AccountConfigResponse>('/account-config');
   },
 
   async updateAccountConfig(data: AccountConfigUpdateRequest): Promise<AccountConfigResponse> {
-    return apiClient.put<AccountConfigResponse>('/api/account-config', data);
+    return apiClient.put<AccountConfigResponse>('/account-config', data);
   },
 };

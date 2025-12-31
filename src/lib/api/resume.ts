@@ -13,15 +13,15 @@ import type {
 
 export const resumeApi = {
   async getMyResumes(): Promise<ResumeListResponse> {
-    return apiClient.get<ResumeListResponse>('/api/posts/resume/list/me');
+    return apiClient.get<ResumeListResponse>('/posts/resume/list/me');
   },
 
   async getResumeById(resumeId: number): Promise<ResumeDetail> {
-    return apiClient.get<ResumeDetail>(`/api/posts/resume/${resumeId}`);
+    return apiClient.get<ResumeDetail>(`/posts/resume/${resumeId}`);
   },
 
   async createResume(data: CreateResumeRequest): Promise<string> {
-    return apiClient.post<string>('/api/posts/resume', data);
+    return apiClient.post<string>('/posts/resume', data);
   },
 
   async updateResume(
@@ -29,13 +29,13 @@ export const resumeApi = {
     data: UpdateResumeRequest
   ): Promise<string> {
     return apiClient.put<string>(
-      `/api/posts/resume/${resumeId}`,
+      `/posts/resume/${resumeId}`,
       data
     );
   },
 
   async deleteResume(resumeId: number): Promise<string> {
-    return apiClient.delete<string>(`/api/posts/resume/${resumeId}`);
+    return apiClient.delete<string>(`/posts/resume/${resumeId}`);
   },
 
   async uploadResumeFile(file: File): Promise<UploadResumeFileResponse> {
@@ -43,7 +43,7 @@ export const resumeApi = {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
     // 1단계: 백엔드에서 presigned POST URL 받기
-    const presignedResponse = await fetch(`${API_BASE_URL}/api/metest/user/image`, {
+    const presignedResponse = await fetch(`${API_BASE_URL}/metest/user/image`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ export const resumeApi = {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
     // 1단계: 백엔드에서 presigned POST URL 받기
-    const presignedResponse = await fetch(`${API_BASE_URL}/api/metest/user/image`, {
+    const presignedResponse = await fetch(`${API_BASE_URL}/metest/user/image`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export const resumeApi = {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
     // 1단계: 백엔드에서 presigned POST URL 받기
-    const presignedResponse = await fetch(`${API_BASE_URL}/api/metest/user/image`, {
+    const presignedResponse = await fetch(`${API_BASE_URL}/metest/user/image`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

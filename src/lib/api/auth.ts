@@ -14,30 +14,30 @@ import type {
 
 export const authApi = {
   async sendEmailVerification(email: string): Promise<EmailVerificationResponse> {
-    return apiClient.post<EmailVerificationResponse>('/api/auth/email/certify', {email}, { skipAuth: true });
+    return apiClient.post<EmailVerificationResponse>('/auth/email/certify', {email}, { skipAuth: true });
   },
 
   async verifyEmailCode(email: string, code: string): Promise<EmailVerificationResponse> {
-    return apiClient.post<EmailVerificationResponse>('/api/auth/email/certify/verify', { email, code }, { skipAuth: true });
+    return apiClient.post<EmailVerificationResponse>('/auth/email/certify/verify', { email, code }, { skipAuth: true });
   },
 
   async login(data: LoginRequest): Promise<LoginResponse> {
-    return apiClient.post<LoginResponse>('/api/auth/login', data, {
+    return apiClient.post<LoginResponse>('/auth/login', data, {
       skipAuth: true,
       withCredentials: true
     });
   },
 
   async logout(): Promise<LogoutResponse> {
-    return apiClient.post<LogoutResponse>('/api/auth/logout');
+    return apiClient.post<LogoutResponse>('/auth/logout');
   },
 
   async signup(data: SignupRequest) {
-    return apiClient.post('/api/auth/signup', data, { skipAuth: true });
+    return apiClient.post('/auth/signup', data, { skipAuth: true });
   },
 
   async companySignup(data: CompanySignupRequest): Promise<CompanySignupResponse> {
-    return apiClient.post<CompanySignupResponse>('/api/auth/company/signup', data, { skipAuth: true });
+    return apiClient.post<CompanySignupResponse>('/auth/company/signup', data, { skipAuth: true });
   },
 
   async companyLogin(data: CompanyLoginRequest): Promise<CompanyLoginResponse> {
@@ -46,7 +46,7 @@ export const authApi = {
     formData.append('username', data.username);
     formData.append('password', data.password);
 
-    return apiClient.post<CompanyLoginResponse>('/api/auth/company/login', formData, {
+    return apiClient.post<CompanyLoginResponse>('/auth/company/login', formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -56,7 +56,7 @@ export const authApi = {
   },
 
   async refreshToken(): Promise<RefreshTokenResponse> {
-    return apiClient.post<RefreshTokenResponse>('/api/auth/refresh', {}, {
+    return apiClient.post<RefreshTokenResponse>('/auth/refresh', {}, {
       skipAuth: true,
       withCredentials: true
     });
