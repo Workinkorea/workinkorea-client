@@ -28,8 +28,8 @@ export async function createServerAdminApi() {
   const client = await createServerApiClient();
 
   return {
-    async getUsers() {
-      const response = await client.get('/admin/users/');
+    async getUsers(skip: number = 0, limit: number = 10) {
+      const response = await client.get(`/admin/users/?skip=${skip}&limit=${limit}`);
       return response.data;
     },
 
