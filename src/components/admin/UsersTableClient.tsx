@@ -12,19 +12,22 @@ interface UsersTableClientProps {
 
 export default function UsersTableClient({ initialUsers }: UsersTableClientProps) {
   const [users, setUsers] = useState<AdminUser[]>(initialUsers);
+  const [page, setPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   const [passportCerti, setPassportCerti] = useState(false);
+  const limit = 10;
 
   const fetchUsers = useCallback(async () => {
     try {
-      const data = await adminApi.getUsers();
+      const skip = (page - 1) * limit;
+      const data = await adminApi.getUsers(skip, limit);
       setUsers(data);
     } catch (error) {
       console.error('Failed to fetch users:', error);
       toast.error('사용자 목록을 불러오는데 실패했습니다.');
     }
-  }, []);
+  }, [page, limit]);
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: { passport_certi: boolean } }) =>
@@ -135,7 +138,28 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
         </table>
       </div>
 
-      <div className="mt-6 text-sm text-gray-700">전체 {users.length}명</div>
+      {/* Pagination */}
+      <div className="flex items-center justify-between mt-6">
+        <div className="text-sm text-gray-700">
+          페이지 {page} (현재 {users.length}개 표시)
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          >
+            이전
+          </button>
+          <button
+            onClick={() => setPage((p) => p + 1)}
+            disabled={users.length < limit}
+            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          >
+            다음
+          </button>
+        </div>
+      </div>
 
       {/* Modal */}
       {showModal && editingUser && (

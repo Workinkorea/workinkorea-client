@@ -10,8 +10,8 @@ import type {
 
 export const adminApi = {
   // User management
-  async getUsers(): Promise<AdminUser[]> {
-    return apiClient.get<AdminUser[]>('/admin/users/');
+  async getUsers(skip: number = 0, limit: number = 10): Promise<AdminUser[]> {
+    return apiClient.get<AdminUser[]>(`/admin/users/?skip=${skip}&limit=${limit}`);
   },
 
   async getUserById(userId: number): Promise<AdminUser> {

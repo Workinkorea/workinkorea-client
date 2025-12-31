@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 async function getUsers() {
   try {
     const adminApi = await createServerAdminApi();
-    return await adminApi.getUsers();
+    return await adminApi.getUsers(0, 10);
   } catch (error) {
     console.error('Failed to fetch users:', error);
     return [];
