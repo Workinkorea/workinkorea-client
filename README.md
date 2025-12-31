@@ -1,36 +1,21 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 📄 통합 기능 명세서
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+|                  |                                             |                                                                         |                                                                        |
+| ---------------- | ------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **섹션**           | **기능 명세 (화면 내용)**                           | **관련 API 엔드포인트**                                                        | **디자이너를 위한 핵심 고려 사항**                                                  |
+| **🔑 인증 (Auth)** | **일반/기업 회원가입 및 로그인** 폼                      | `POST /api/auth/signup`<br><br>  <br><br>`POST /api/auth/company/login` | **구글 로그인** 시 비회원일 경우 국적, 이름, 생년월일 등 **추가 정보 입력 페이지**로 이동시키는 UX가 중요합니다. |
+|                  | **소셜 로그인 연동**                               | `GET /api/auth/login/google`                                            | 소셜 로그인 버튼의 시각적 위계를 명확히 해야 합니다.                                         |
+|                  | **기업 본인 인증**                                | (기업 회원가입 시 필요)                                                          | 사업자 등록 번호 및 담당자 이메일 인증 절차의 명확성을 확보해야 합니다.                              |
+|                  | **로그아웃/토큰 재발급**                             | `DELETE /api/auth/logout`<br><br>  <br><br>`POST /api/auth/refresh`     | 로그아웃 버튼은 실수 클릭 방지 및 접근성을 고려해야 합니다.                                     |
+| **📢 채용 공고**     | **검색창** 및 **네비게이션** (`Work in Korea` 간단 설명) | `GET /api/posts/company?query...`                                       | 검색창의 직관성 및 **주요 메뉴(자가 진단, 이력서 작성)**로의 접근성을 높여야 합니다.                    |
+|                  | **공고 목록 및 필터링**                             | `GET /api/posts/company?params...`                                      | 기업 공고와 **알바** 공고를 명확히 구분하여 필터링할 수 있어야 합니다. 공고 카드 가독성 확보가 중요합니다.        |
+|                  | **기업 공고 등록/수정**                             | `POST /api/posts/company`                                               | 연봉/월급 입력 시 **원화(KRW) 기준**을 명확히 하고 **달러(USD) 환산 표시**의 가독성을 확보해야 합니다.    |
+| **👤 사용자 프로필**   | **내 프로필 요약 및 정보 등록**                        | (프로필 조회/PUT API)                                                        | **스킬 등록** 기능의 사용자 친화성(태그, 드롭다운 등)을 검토해야 합니다.                           |
+|                  | **희망 급여 설정**                                | (프로필 PUT API)                                                           | 최저 임금 확인 기능 UI를 명확히 제공해야 합니다.                                          |
+|                  | **여권 번호 인증**                                | (인증 API - 이메일 전송)                                                       | 여권 인증 상태를 프로필에서 명확히 보여주고, 인증된 사용자만 지원 가능하도록 하는 UX 흐름이 필요합니다.           |
+|                  | **프로필 편집/계정 설정**                            | (사용자 프로필 PUT/DELETE API)                                                | 민감한 기능(계정 삭제)은 다른 설정과 **시각적으로 분리**되어야 합니다.                             |
+| **📜 이력서 관리**    | **이력서 목록** (상태, 통계 표시)                      | `GET /api/posts/resume/list/me`                                         | 이력서 상태(`게시됨`, `작성 중`) 태그가 명확해야 합니다.                                    |
+|                  | **새 이력서 작성** 폼                              | `POST /api/posts/resume`                                                | 긴 폼 작성을 위한 **섹션 구분 및 단계별 UX**를 고려해야 합니다.                               |
+| **💡 자가 진단 시스템** | **간이 자가 진단** (한국 관심도, 언어)                   | (데이터 저장 API)                                                            | 비회원 데이터 저장이 가능하도록 설계되어, 진단 완료 후 **회원가입 유도 메시지**의 CTA를 강화해야 합니다.        |
+|                  | **심화 자가 진단** (NCS, EPS)                     | (데이터 저장 및 강의 연동 API)                                                    | 진단 결과를 **스킬 관리 시스템**과 연동하여 **강의/교육 콘텐츠로 유도**하는 UI 흐름이 중요합니다.           |
+| **🌐 기타/전략**     | **Footer**                                  | (N/A)                                                                   | 회사 정보, 고객지원, 회원가입, **LinkedIn 개인정보 사이트 링크** 등 필수 정보 포함.                |
