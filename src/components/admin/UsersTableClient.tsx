@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { adminApi } from '@/lib/api/admin';
 import { toast } from 'sonner';
 import type { AdminUser } from '@/lib/api/types';
@@ -15,7 +15,6 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   const [passportCerti, setPassportCerti] = useState(false);
-  const queryClient = useQueryClient();
 
   const fetchUsers = useCallback(async () => {
     try {

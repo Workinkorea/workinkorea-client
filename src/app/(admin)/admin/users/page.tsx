@@ -1,6 +1,8 @@
 import { createServerAdminApi } from '@/lib/api/server';
 import UsersTableClient from '@/components/admin/UsersTableClient';
 
+export const dynamic = 'force-dynamic';
+
 async function getUsers() {
   try {
     const adminApi = await createServerAdminApi();

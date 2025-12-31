@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { createServerAdminApi } from '@/lib/api/server';
 import StatCards from '@/components/admin/StatCards';
 
+export const dynamic = 'force-dynamic';
+
 async function getAdminStats() {
   try {
     const adminApi = await createServerAdminApi();

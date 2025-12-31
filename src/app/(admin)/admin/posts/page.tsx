@@ -1,6 +1,8 @@
 import { createServerAdminApi } from '@/lib/api/server';
 import PostsTableClient from '@/components/admin/PostsTableClient';
 
+export const dynamic = 'force-dynamic';
+
 async function getPosts() {
   try {
     const adminApi = await createServerAdminApi();

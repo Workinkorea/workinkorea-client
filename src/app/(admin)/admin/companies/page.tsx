@@ -1,6 +1,8 @@
 import { createServerAdminApi } from '@/lib/api/server';
 import CompaniesTableClient from '@/components/admin/CompaniesTableClient';
 
+export const dynamic = 'force-dynamic';
+
 async function getCompanies() {
   try {
     const adminApi = await createServerAdminApi();
