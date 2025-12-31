@@ -1,33 +1,22 @@
-'use client';
-
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { MapPin, Clock, DollarSign, Briefcase, GraduationCap, Languages, Calendar, ArrowLeft } from 'lucide-react';
+import { MapPin, Clock, DollarSign, Briefcase, GraduationCap, Languages, Calendar } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
-import Header from '@/components/layout/Header';
-import { CompanyPostDetailResponse } from '@/lib/api/types';
+import HeaderClient from '@/components/layout/HeaderClient';
+import JobDetailActions from './JobDetailActions';
+import type { CompanyPostDetailResponse } from '@/lib/api/types';
 
-interface JobDetailClientProps {
+interface JobDetailViewProps {
   job: CompanyPostDetailResponse;
 }
 
-export default function JobDetailClient({ job }: JobDetailClientProps) {
-  const router = useRouter();
+export default function JobDetailView({ job }: JobDetailViewProps) {
   const language = job.language ? job.language.split(',').map(l => l.trim()) : [];
 
   return (
     <Layout>
-      <Header type="homepage" />
+      <HeaderClient type="homepage" />
       <div className="min-h-screen bg-background-alternative py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* 뒤로가기 버튼 */}
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-2 text-label-600 hover:text-label-900 mb-6 transition-colors"
-          >
-            <ArrowLeft size={20} />
-            <span>목록으로</span>
-          </button>
+          <JobDetailActions />
 
           {/* 공고 헤더 */}
           <div className="bg-white rounded-xl p-8 shadow-normal mb-6">

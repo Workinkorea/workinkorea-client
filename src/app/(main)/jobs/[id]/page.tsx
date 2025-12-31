@@ -1,7 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import JobDetailClient from '@/components/pages/JobDetailClient';
+import JobDetailView from '@/components/pages/JobDetailView';
 import { CompanyPostDetailResponse } from '@/lib/api/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -59,5 +59,5 @@ export default async function JobDetailPage({ params }: { params: { id: string }
     notFound();
   }
 
-  return <JobDetailClient job={job} />;
+  return <JobDetailView job={job} />;
 }
