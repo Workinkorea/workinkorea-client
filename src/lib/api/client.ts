@@ -81,9 +81,9 @@ async function refreshToken(): Promise<string> {
   }
 
   const endpoint =
-    userType === "company" ? "/api/auth/company/refresh" :
-      userType === "admin" ? "/api/auth/admin/refresh" :
-        "/api/auth/refresh";
+    userType === "company" ? "/auth/company/refresh" :
+      userType === "admin" ? "/auth/admin/refresh" :
+        "/auth/refresh";
 
   try {
     const response = await api.post(

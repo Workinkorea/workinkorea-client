@@ -33,8 +33,6 @@ ENV BACKEND_API_URL=$BACKEND_API_URL
 
 RUN npm run build
 
-RUN npm run build
-
 
 # 3. 실행
 FROM base AS runner

@@ -1,5 +1,3 @@
-'use client';
-
 import { MapPin, Clock, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 

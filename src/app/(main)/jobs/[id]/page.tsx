@@ -1,7 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import JobDetailClient from '@/components/pages/JobDetailClient';
+import JobDetailView from '@/components/pages/JobDetailView';
 import { CompanyPostDetailResponse } from '@/lib/api/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -9,26 +9,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 // ISR: 1시간마다 재검증
 export const revalidate = 3600;
 
-// generateStaticParams: 빌드 시 정적 페이지 생성
-export async function generateStaticParams() {
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/posts/company/list`);
-
-    if (!res.ok) {
-      return [];
-    }
-
-    const data = await res.json();
-    const posts = data.company_posts || [];
-
-    return posts.map((post: { id: number }) => ({
-      id: String(post.id),
-    }));
-  } catch (error) {
-    console.error('Error generating static params:', error);
-    return [];
-  }
-}
+// 동적 파라미터 허용 (빌드 시 정적 생성 없이 런타임에 생성)
+export const dynamicParams = true;
 
 // generateMetadata: 동적 메타데이터 생성
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
@@ -77,5 +59,5 @@ export default async function JobDetailPage({ params }: { params: { id: string }
     notFound();
   }
 
-  return <JobDetailClient job={job} />;
+  return <JobDetailView job={job} />;
 }

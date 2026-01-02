@@ -52,7 +52,6 @@ const CompanyProfileClient: React.FC = () => {
     queryFn: async () => {
       try {
         const response = await postsApi.getMyCompanyPosts();
-        console.log('Company posts response:', response);
         return response.company_posts;
       } catch (error) {
         console.error('Failed to fetch company posts:', error);

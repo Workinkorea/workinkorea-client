@@ -23,10 +23,7 @@ export async function getCompanyPosts(
 ): Promise<CompanyPostsResponse> {
   // page를 skip으로 변환 (API는 skip을 사용)
   const skip = (page - 1) * limit;
-  const url = `${API_BASE_URL}/api/posts/company/list?skip=${skip}&limit=${limit}`;
-
-  console.log('[Server] Fetching company posts from:', url);
-  console.log('[Server] API_BASE_URL:', API_BASE_URL);
+  const url = `${API_BASE_URL}/posts/company/list?skip=${skip}&limit=${limit}`;
 
   try {
     const controller = new AbortController();
@@ -42,8 +39,6 @@ export async function getCompanyPosts(
 
     clearTimeout(timeoutId);
 
-    console.log('[Server] Response status:', res.status);
-
     if (!res.ok) {
       const errorText = await res.text();
       console.error('[Server] Failed to fetch company posts:', {
@@ -56,11 +51,6 @@ export async function getCompanyPosts(
     }
 
     const data = await res.json();
-    console.log('[Server] Successfully fetched posts:', {
-      count: data.company_posts?.length || 0,
-      total: data.total,
-    });
-
     // API 응답을 클라이언트 형식으로 변환
     return {
       ...data,
@@ -93,7 +83,7 @@ export const postsApi = {
     queryParams.append('skip', skip.toString());
     queryParams.append('limit', limit.toString());
 
-    const url = `/api/posts/company/list?${queryParams.toString()}`;
+    const url = `/posts/company/list?${queryParams.toString()}`;
 
     const data = await apiClient.get<CompanyPostsResponse>(url, {
       skipAuth: true,
@@ -121,7 +111,7 @@ export const postsApi = {
     queryParams.append('skip', skip.toString());
     queryParams.append('limit', limit.toString());
 
-    const url = `/api/posts/company/list?${queryParams.toString()}`;
+    const url = `/posts/company/list?${queryParams.toString()}`;
 
     const data = await apiClient.get<CompanyPostsResponse>(url);
 
@@ -143,7 +133,7 @@ export const postsApi = {
 
   async getCompanyPostById(companyPostId: number): Promise<CompanyPostDetailResponse> {
     return apiClient.get<CompanyPostDetailResponse>(
-      `/api/posts/company/${companyPostId}`,
+      `/posts/company/${companyPostId}`,
       {
         skipAuth: true,
       }
@@ -154,7 +144,7 @@ export const postsApi = {
     data: CreateCompanyPostRequest
   ): Promise<CreateCompanyPostResponse> {
     return apiClient.post<CreateCompanyPostResponse>(
-      '/api/posts/company',
+      '/posts/company',
       data
     );
   },
@@ -164,14 +154,14 @@ export const postsApi = {
     data: UpdateCompanyPostRequest
   ): Promise<UpdateCompanyPostResponse> {
     return apiClient.put<UpdateCompanyPostResponse>(
-      `/api/posts/company/${companyPostId}`,
+      `/posts/company/${companyPostId}`,
       data
     );
   },
 
   async deleteCompanyPost(companyPostId: number): Promise<DeleteCompanyPostResponse> {
     return apiClient.delete<DeleteCompanyPostResponse>(
-      `/api/posts/company/${companyPostId}`
+      `/posts/company/${companyPostId}`
     );
   },
 };

@@ -5,7 +5,7 @@ pipeline {
     environment {
         DOCKER_IMAGE_NAME = "workinkorea-client"
         BASE_URL = "byeong98.xyz"
-        PORT = 3001
+        PORT = 3000
 
         TRAEFIK_BASIC_AUTH_USERS = credentials('traefik-basic-auth-users')
         NEXT_PUBLIC_API_URL = credentials('next-public-api-url')
@@ -70,11 +70,11 @@ pipeline {
 
                     sleep 5
                     
-                    sh """
+                    sh '''
                     docker build \
-                      --build-arg NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} \
-                      -t ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} .
-                    """
+                      --build-arg NEXT_PUBLIC_API_URL=''' + env.NEXT_PUBLIC_API_URL + ''' \
+                      -t ''' + env.DOCKER_IMAGE_NAME + '''-''' + env.NEW_COLOR + ''' .
+                    '''
                 }
                 echo "Docker build finished"
             }

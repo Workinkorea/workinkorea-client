@@ -10,53 +10,53 @@ import type {
 
 export const adminApi = {
   // User management
-  async getUsers(): Promise<AdminUser[]> {
-    return apiClient.get<AdminUser[]>('/api/admin/users/');
+  async getUsers(skip: number = 0, limit: number = 10): Promise<AdminUser[]> {
+    return apiClient.get<AdminUser[]>(`/admin/users/?skip=${skip}&limit=${limit}`);
   },
 
   async getUserById(userId: number): Promise<AdminUser> {
-    return apiClient.get<AdminUser>(`/api/admin/users/${userId}`);
+    return apiClient.get<AdminUser>(`/admin/users/${userId}`);
   },
 
   async updateUser(userId: number, data: UpdateAdminUserRequest): Promise<void> {
-    return apiClient.put<void>(`/api/admin/users/${userId}`, data);
+    return apiClient.put<void>(`/admin/users/${userId}`, data);
   },
 
   async deleteUser(userId: number): Promise<string> {
-    return apiClient.delete<string>(`/api/admin/users/${userId}`);
+    return apiClient.delete<string>(`/admin/users/${userId}`);
   },
 
   // Company management
   async getCompanies(skip: number = 0, limit: number = 10): Promise<AdminCompany[]> {
-    return apiClient.get<AdminCompany[]>(`/api/admin/companies/?skip=${skip}&limit=${limit}`);
+    return apiClient.get<AdminCompany[]>(`/admin/companies/?skip=${skip}&limit=${limit}`);
   },
 
   async getCompanyById(companyId: number): Promise<AdminCompany> {
-    return apiClient.get<AdminCompany>(`/api/admin/companies/${companyId}`);
+    return apiClient.get<AdminCompany>(`/admin/companies/${companyId}`);
   },
 
   async updateCompany(companyId: number, data: UpdateAdminCompanyRequest): Promise<AdminCompany> {
-    return apiClient.put<AdminCompany>(`/api/admin/companies/${companyId}`, data);
+    return apiClient.put<AdminCompany>(`/admin/companies/${companyId}`, data);
   },
 
   async deleteCompany(companyId: number): Promise<string> {
-    return apiClient.delete<string>(`/api/admin/companies/${companyId}`);
+    return apiClient.delete<string>(`/admin/companies/${companyId}`);
   },
 
   // Job posts management
   async getPosts(skip: number = 0, limit: number = 10): Promise<AdminPost[]> {
-    return apiClient.get<AdminPost[]>(`/api/admin/posts/?skip=${skip}&limit=${limit}`);
+    return apiClient.get<AdminPost[]>(`/admin/posts/?skip=${skip}&limit=${limit}`);
   },
 
   async getPostById(postId: number): Promise<AdminPost> {
-    return apiClient.get<AdminPost>(`/api/admin/posts/${postId}`);
+    return apiClient.get<AdminPost>(`/admin/posts/${postId}`);
   },
 
   async updatePost(postId: number, data: UpdateAdminPostRequest): Promise<AdminPost> {
-    return apiClient.put<AdminPost>(`/api/admin/posts/${postId}`, data);
+    return apiClient.put<AdminPost>(`/admin/posts/${postId}`, data);
   },
 
   async deletePost(postId: number): Promise<string> {
-    return apiClient.delete<string>(`/api/admin/posts/${postId}`);
+    return apiClient.delete<string>(`/admin/posts/${postId}`);
   },
 };
