@@ -364,12 +364,12 @@ export default function BusinessSignupStep2({
               <FormField
                 name="name"
                 control={control}
-                label="대표자명"
+                label="담당자명"
                 render={(field, fieldId) => (
                   <Input
                     {...field}
                     id={fieldId}
-                    placeholder="대표자명 입력"
+                    placeholder="담당자명 입력"
                     error={!!errors.name}
                   />
                 )}
@@ -378,7 +378,7 @@ export default function BusinessSignupStep2({
               <FormField
                 name="phoneNumber"
                 control={control}
-                label="대표자 휴대폰 번호"
+                label="담당자 휴대폰 번호"
                 error={errors.phoneNumber?.message}
                 render={(field, fieldId) => (
                   <Input
@@ -415,7 +415,7 @@ export default function BusinessSignupStep2({
               <FormField
                 name="email"
                 control={control}
-                label="대표자 이메일"
+                label="담당자 이메일"
                 error={errors.email?.message}
                 render={(field, fieldId) => (
                   <Input
