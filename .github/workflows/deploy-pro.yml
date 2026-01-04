@@ -26,7 +26,7 @@ jobs:
         run: |
           gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
           docker build \
-            --build-arg NEXT_PUBLIC_API_URL=/api \
+            --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}\
             -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
       
@@ -39,7 +39,7 @@ jobs:
             --platform managed \
             --port 3000 \
             --allow-unauthenticated \
-            --set-env-vars "NODE_ENV=production,BACKEND_API_URL=${{ secrets.BACKEND_API_URL }}"
+            --set-env-vars "NODE_ENV=production"
 
      # discord notification
       - name: send success message

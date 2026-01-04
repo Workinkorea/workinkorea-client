@@ -124,7 +124,7 @@ export default function LoginContent() {
     } else {
       localStorage.removeItem('googleLoginRememberMe');
     }
-    window.location.href = `${API_BASE_URL}/auth/login/google`;
+    window.location.href = `${API_BASE_URL}/api/auth/login/google`;
   };
 
   const onSubmit = async (data: LoginFormData) => {
