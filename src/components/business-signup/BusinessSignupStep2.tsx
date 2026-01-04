@@ -24,7 +24,7 @@ export default function BusinessSignupStep2({
     control,
     handleSubmit,
     watch,
-    formState: { errors, isValid },
+    formState: { errors },
     setError,
     clearErrors,
   } = useForm<Step2Form>({
@@ -134,11 +134,6 @@ export default function BusinessSignupStep2({
     !errors.email;
 
   const onSubmit = async (data: Step2Form) => {
-    if (!isValid) {
-      alert('모든 항목을 올바르게 입력해주세요.');
-      return;
-    }
-
     const companySignupData = {
       company_number: data.businessNumber.replace(/[^0-9]/g, ''),
       company_name: data.company,
