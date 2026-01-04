@@ -70,11 +70,11 @@ pipeline {
 
                     sleep 5
                     
-                    sh '''
+                    sh """
                     docker build \
-                      --build-arg NEXT_PUBLIC_API_URL=''' + env.NEXT_PUBLIC_API_URL + ''' \
-                      -t ''' + env.DOCKER_IMAGE_NAME + '''-''' + env.NEW_COLOR + ''' .
-                    '''
+                      --build-arg NEXT_PUBLIC_API_URL=${env.NEXT_PUBLIC_API_URL} \
+                      -t ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} .
+                    """
                 }
                 echo "Docker build finished"
             }
