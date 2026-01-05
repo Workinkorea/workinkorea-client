@@ -13,6 +13,7 @@ import { CompanyProfileRequest } from '@/lib/api/types';
 import toast from 'react-hot-toast';
 import { COUNTRIES_FULL } from '@/constants/countries';
 import { POSITIONS_L3 } from '@/constants/positions';
+import { detectPhoneType, formatPhoneByType, validatePhoneType, getPhonePlaceholder, PhoneType } from '@/lib/utils/phoneUtils';
 
 const CompanyProfileEditClient: React.FC = () => {
   const router = useRouter();
@@ -26,11 +27,14 @@ const CompanyProfileEditClient: React.FC = () => {
     company_type: '',
     insurance: '',
     phone_number: '',
+    phone_type: 'MOBILE',  // Default phone type
     address: '',
     website_url: '',
     email: '',
     country_id: 0,
     position_id: 0,
+    company_number: '',
+    representative_name: '',
   });
 
   const [originalData, setOriginalData] = useState<CompanyProfileRequest | null>(null);
@@ -51,18 +55,25 @@ const CompanyProfileEditClient: React.FC = () => {
   useEffect(() => {
     if (profile) {
 
+      // Detect phone type from existing phone number
+      const phoneNum = String(profile.phone_number || '');
+      const detectedType = detectPhoneType(phoneNum) || 'MOBILE';
+
       const data = {
         industry_type: profile.industry_type || '',
         employee_count: profile.employee_count || 0,
         establishment_date: profile.establishment_date || '',
         company_type: profile.company_type || '',
         insurance: profile.insurance || '',
-        phone_number: String(profile.phone_number || ''),
+        phone_number: phoneNum,
+        phone_type: (profile.phone_type as PhoneType) || detectedType,  // Use saved type or detect
         address: profile.address || '',
         website_url: profile.website_url || '',
         email: profile.email || '',
         country_id: profile.country_id || 0,
         position_id: profile.position_id || 0,
+        company_number: profile.company_number || '',
+        representative_name: profile.representative_name || '',
       };
 
       setFormData(data);
@@ -81,11 +92,14 @@ const CompanyProfileEditClient: React.FC = () => {
         company_type: '',
         insurance: '',
         phone_number: '',
+        phone_type: 'MOBILE' as PhoneType,
         address: '',
         website_url: '',
         email: '',
         country_id: 0,
         position_id: 0,
+        company_number: '',
+        representative_name: '',
       };
       return JSON.stringify(formData) !== JSON.stringify(defaultData);
     }
@@ -147,9 +161,12 @@ const CompanyProfileEditClient: React.FC = () => {
 
       case 'phone_number':
         if (!value || !String(value).trim()) return '전화번호를 입력해주세요.';
-        const phoneNumbers = String(value).replace(/[^0-9]/g, '');
-        if (phoneNumbers.length < 9) return '올바른 전화번호를 입력해주세요. (최소 9자리)';
-        if (phoneNumbers.length > 11) return '전화번호는 최대 11자리입니다.';
+        // Use phone type validation
+        const phoneTypeError = validatePhoneType(String(value), formData.phone_type);
+        return phoneTypeError;
+
+      case 'phone_type':
+        if (!value) return '전화번호 타입을 선택해주세요.';
         return '';
 
       case 'employee_count':
@@ -188,28 +205,26 @@ const CompanyProfileEditClient: React.FC = () => {
     }
   };
 
-  // 전화번호 포맷팅 함수 (010-1234-5678)
-  const formatPhoneNumber = (value: string): string => {
-    const numbers = value.replace(/[^0-9]/g, '');
-
-    if (numbers.length <= 3) {
-      return numbers;
-    } else if (numbers.length <= 7) {
-      return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
-    } else if (numbers.length <= 11) {
-      return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7)}`;
-    }
-
-    return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    let processedValue: string | number = value;
+    let processedValue: string | number | PhoneType = value;
 
-    // 전화번호는 자동으로 하이픈 포맷팅
+    // Handle phone type change
+    if (name === 'phone_type') {
+      const newPhoneType = value as PhoneType;
+      setFormData((prev) => ({
+        ...prev,
+        phone_type: newPhoneType,
+        phone_number: '',  // Reset phone number when type changes
+      }));
+      setErrors((prev) => ({ ...prev, phone_number: '' }));
+      return;
+    }
+
+    // 전화번호는 자동으로 타입별 포맷팅
     if (name === 'phone_number') {
-      processedValue = formatPhoneNumber(value);
+      processedValue = formatPhoneByType(value, formData.phone_type);
     } else if (name === 'employee_count' || name === 'country_id' || name === 'position_id') {
       processedValue = value ? Number(value) : 0;
     }
@@ -570,6 +585,34 @@ const CompanyProfileEditClient: React.FC = () => {
                     <Phone size={16} />
                     전화번호 <span className="text-status-error text-lg ml-1">*</span>
                   </label>
+
+                  {/* Phone Type Selection */}
+                  <div className="flex gap-4 mb-3">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="phone_type"
+                        value="MOBILE"
+                        checked={formData.phone_type === 'MOBILE'}
+                        onChange={handleChange}
+                        className="w-4 h-4 text-primary-500 focus:ring-primary-500 cursor-pointer"
+                      />
+                      <span className="text-body-3 text-label-700">휴대전화</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="phone_type"
+                        value="LANDLINE"
+                        checked={formData.phone_type === 'LANDLINE'}
+                        onChange={handleChange}
+                        className="w-4 h-4 text-primary-500 focus:ring-primary-500 cursor-pointer"
+                      />
+                      <span className="text-body-3 text-label-700">일반전화</span>
+                    </label>
+                  </div>
+
+                  {/* Phone Number Input */}
                   <input
                     type="text"
                     id="phone_number"
@@ -578,7 +621,7 @@ const CompanyProfileEditClient: React.FC = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={`w-full px-4 py-2 border ${errors.phone_number ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.phone_number && touchedFields.phone_number && formData.phone_number ? 'border-status-success' : ''}`}
-                    placeholder="010-1234-5678"
+                    placeholder={getPhonePlaceholder(formData.phone_type)}
                   />
                   {errors.phone_number && (
                     <p className="mt-1 text-caption-2 text-status-error">{errors.phone_number}</p>
@@ -589,7 +632,11 @@ const CompanyProfileEditClient: React.FC = () => {
                     </p>
                   )}
                   {!touchedFields.phone_number && (
-                    <p className="mt-1 text-caption-2 text-label-500">숫자를 입력하면 자동으로 포맷팅됩니다. (예: 010-1234-5678)</p>
+                    <p className="mt-1 text-caption-2 text-label-500">
+                      {formData.phone_type === 'MOBILE'
+                        ? '휴대전화: 010, 011, 016-019로 시작하는 번호'
+                        : '일반전화: 지역번호(예: 02, 031, 051) 포함'}
+                    </p>
                   )}
                 </div>
 

@@ -9,6 +9,7 @@ import Input from '@/components/ui/Input';
 import { formatBusinessNumber, isValidBusinessNumber, validateConfirmPassword, validatePassword, validatePhoneNumber } from '@/lib/utils/authNumber';
 import { toast } from 'sonner';
 import { authApi } from '@/lib/api/auth';
+import { detectPhoneType, formatPhoneByType, validatePhoneType, getPhonePlaceholder, PhoneType } from '@/lib/utils/phoneUtils';
 
 interface BusinessSignupStep2Props {
   initialData?: SignupStep2Data;
@@ -48,6 +49,7 @@ export default function BusinessSignupStep2({
     passwordMatchMessage: '',
     businessNumberVerifyToken: '',
     companyInfo: null as { company: string; owner: string } | null,
+    phoneType: 'MOBILE' as PhoneType,  // Default to mobile
   });
 
   const businessNumber = watch('businessNumber');
@@ -171,6 +173,7 @@ export default function BusinessSignupStep2({
       password: data.password,
       name: data.name,
       phone: data.phoneNumber.replace(/[^0-9]/g, ''),
+      phone_type: formState.phoneType,  // Add phone type
     };
 
     try {
@@ -403,37 +406,79 @@ export default function BusinessSignupStep2({
               <FormField
                 name="phoneNumber"
                 control={control}
-                label="담당자 휴대폰 번호"
+                label="담당자 전화번호"
                 error={errors.phoneNumber?.message}
                 render={(field, fieldId) => (
-                  <Input
-                    {...field}
-                    id={fieldId}
-                    type="tel"
-                    placeholder="010-0000-0000"
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^0-9]/g, '');
-                      const formatted = value.length > 3
-                        ? value.length > 7
-                          ? `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`
-                          : `${value.slice(0, 3)}-${value.slice(3, 7)}`
-                        : value;
-                      field.onChange(formatted);
-                    }}
-                    onBlur={(e) => {
-                      const phoneError = validatePhoneNumber(e.target.value);
-                      if (phoneError) {
-                        setError('phoneNumber', {
-                          type: 'manual',
-                          message: phoneError
-                        });
-                      } else {
-                        clearErrors('phoneNumber');
-                      }
-                    }}
-                    maxLength={13}
-                    error={!!errors.phoneNumber}
-                  />
+                  <div className="space-y-3">
+                    {/* Phone Type Selection */}
+                    <div className="flex gap-4">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="phoneType"
+                          value="MOBILE"
+                          checked={formState.phoneType === 'MOBILE'}
+                          onChange={(e) => {
+                            setFormState(prev => ({ ...prev, phoneType: 'MOBILE' }));
+                            field.onChange('');  // Reset phone number when type changes
+                            clearErrors('phoneNumber');
+                          }}
+                          className="w-4 h-4 text-primary-500 focus:ring-primary-500"
+                        />
+                        <span className="text-body-3 text-label-700">휴대전화</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="phoneType"
+                          value="LANDLINE"
+                          checked={formState.phoneType === 'LANDLINE'}
+                          onChange={(e) => {
+                            setFormState(prev => ({ ...prev, phoneType: 'LANDLINE' }));
+                            field.onChange('');  // Reset phone number when type changes
+                            clearErrors('phoneNumber');
+                          }}
+                          className="w-4 h-4 text-primary-500 focus:ring-primary-500"
+                        />
+                        <span className="text-body-3 text-label-700">일반전화</span>
+                      </label>
+                    </div>
+
+                    {/* Phone Number Input */}
+                    <Input
+                      {...field}
+                      id={fieldId}
+                      type="tel"
+                      placeholder={getPhonePlaceholder(formState.phoneType)}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9]/g, '');
+                        const formatted = formatPhoneByType(value, formState.phoneType);
+                        field.onChange(formatted);
+                      }}
+                      onBlur={(e) => {
+                        const phoneError = validatePhoneType(e.target.value, formState.phoneType);
+                        if (phoneError) {
+                          setError('phoneNumber', {
+                            type: 'manual',
+                            message: phoneError
+                          });
+                        } else {
+                          clearErrors('phoneNumber');
+                        }
+                      }}
+                      maxLength={formState.phoneType === 'MOBILE' ? 13 : 13}
+                      error={!!errors.phoneNumber}
+                    />
+
+                    {/* Helper Text */}
+                    {!errors.phoneNumber && field.value && (
+                      <p className="text-caption-2 text-label-500">
+                        {formState.phoneType === 'MOBILE'
+                          ? '휴대전화: 010, 011, 016-019로 시작'
+                          : '일반전화: 지역번호(예: 02, 031, 051) 포함'}
+                      </p>
+                    )}
+                  </div>
                 )}
               />
 
