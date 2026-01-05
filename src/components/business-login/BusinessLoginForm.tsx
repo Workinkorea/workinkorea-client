@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
 import Input from '@/components/ui/Input';
 import { useRouter } from 'next/navigation';
-import { validatePassword } from '@/lib/utils/authNumber';
+import { validatePassword } from '@/lib/utils/validation';
 import { authApi } from '@/lib/api/auth';
 import { tokenManager } from '@/lib/utils/tokenManager';
 // import { formatBusinessNumber, isValidBusinessNumber, removeBusinessNumberHyphen } from '@/lib/utils/authNumber'; // 사업자등록번호 방식에서 사용

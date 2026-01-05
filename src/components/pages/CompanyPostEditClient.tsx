@@ -11,6 +11,8 @@ import { postsApi } from '@/lib/api/posts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UpdateCompanyPostRequest } from '@/lib/api/types';
 import { CompanyPostForm } from '@/components/company-posts/CompanyPostForm';
+import { toast } from 'sonner';
+import { extractErrorMessage, logError } from '@/lib/utils/errorHandler';
 
 interface CompanyPostEditClientProps {
   postId: string;
@@ -38,12 +40,13 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyPosts'] });
       queryClient.invalidateQueries({ queryKey: ['companyPost', postId] });
-      alert('공고가 수정되었습니다.');
+      toast.success('공고가 수정되었습니다.');
       router.push('/company');
     },
     onError: (error) => {
-      console.error('공고 수정 실패:', error);
-      alert('공고 수정에 실패했습니다. 다시 시도해주세요.');
+      logError(error, 'CompanyPostEditClient.updatePost');
+      const errorMessage = extractErrorMessage(error, '공고 수정에 실패했습니다. 다시 시도해주세요.');
+      toast.error(errorMessage);
     },
   });
 
@@ -52,12 +55,13 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
     mutationFn: () => postsApi.deleteCompanyPost(Number(postId)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyPosts'] });
-      alert('공고가 삭제되었습니다.');
+      toast.success('공고가 삭제되었습니다.');
       router.push('/company');
     },
     onError: (error) => {
-      console.error('공고 삭제 실패:', error);
-      alert('공고 삭제에 실패했습니다. 다시 시도해주세요.');
+      logError(error, 'CompanyPostEditClient.deletePost');
+      const errorMessage = extractErrorMessage(error, '공고 삭제에 실패했습니다. 다시 시도해주세요.');
+      toast.error(errorMessage);
     },
   });
 

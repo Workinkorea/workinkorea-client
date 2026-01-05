@@ -145,11 +145,14 @@ export interface CompanyProfileResponse {
   company_type: string;
   insurance: string;
   phone_number: string;
+  phone_type?: 'MOBILE' | 'LANDLINE';  // 전화번호 타입 (휴대전화/일반전화)
   address: string;
   website_url: string;
   email: string;
   country_id: number;
   position_id: number;
+  company_number?: string;  // 사업자등록번호 (선택)
+  representative_name?: string;  // 대표자명 (선택)
 }
 
 export interface CompanyProfileRequest {

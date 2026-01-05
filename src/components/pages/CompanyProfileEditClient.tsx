@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, Building, MapPin, Phone, Mail, Globe, Users, Calendar, FileText } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import Header from '@/components/layout/Header';
 import { useAuth } from '@/hooks/useAuth';
@@ -11,9 +11,11 @@ import { profileApi } from '@/lib/api/profile/profileCompany';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CompanyProfileRequest } from '@/lib/api/types';
 import toast from 'react-hot-toast';
-import { COUNTRIES_FULL } from '@/constants/countries';
-import { POSITIONS_L3 } from '@/constants/positions';
-import { detectPhoneType, formatPhoneByType, validatePhoneType, getPhonePlaceholder, PhoneType } from '@/lib/utils/phoneUtils';
+import { detectPhoneType, formatPhoneByType, PhoneType } from '@/lib/utils/phoneUtils';
+import { extractErrorMessage, logError } from '@/lib/utils/errorHandler';
+import { validateCompanyProfileField, validateCompanyProfileForm } from '@/lib/validations/companyProfileValidation';
+import { BasicInfoSection } from '@/components/company-profile/BasicInfoSection';
+import { ContactInfoSection } from '@/components/company-profile/ContactInfoSection';
 
 const CompanyProfileEditClient: React.FC = () => {
   const router = useRouter();
@@ -123,87 +125,12 @@ const CompanyProfileEditClient: React.FC = () => {
       }, 1000);
     },
     onError: (error: unknown) => {
-      console.error('프로필 수정 실패:', error);
-
-      // 에러 메시지 한글화
-      let errorMessage = '프로필 수정에 실패했습니다. 다시 시도해주세요.';
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { data?: { error?: string } } };
-        const serverError = axiosError.response?.data?.error;
-        if (serverError) {
-          errorMessage = serverError;
-        }
-      }
-
+      logError(error, 'CompanyProfileEditClient.updateProfile');
+      const errorMessage = extractErrorMessage(error, '프로필 수정에 실패했습니다. 다시 시도해주세요.');
       toast.error(errorMessage);
     },
   });
 
-  // 실시간 필드 유효성 검사
-  const validateField = (name: string, value: string | number): string => {
-    switch (name) {
-      case 'email':
-        if (!value) return '이메일을 입력해주세요.';
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(String(value))) return '올바른 이메일 형식이 아닙니다.';
-        return '';
-
-      case 'website_url':
-        if (value && typeof value === 'string') {
-          try {
-            new URL(value);
-            return '';
-          } catch {
-            return '올바른 URL 형식이 아닙니다. (예: https://example.com)';
-          }
-        }
-        return '';
-
-      case 'phone_number':
-        if (!value || !String(value).trim()) return '전화번호를 입력해주세요.';
-        // Use phone type validation
-        const phoneTypeError = validatePhoneType(String(value), formData.phone_type);
-        return phoneTypeError;
-
-      case 'phone_type':
-        if (!value) return '전화번호 타입을 선택해주세요.';
-        return '';
-
-      case 'employee_count':
-        if (!value || Number(value) <= 0) return '직원 수를 입력해주세요.';
-        return '';
-
-      case 'industry_type':
-        if (!value || !String(value).trim()) return '업종을 입력해주세요.';
-        return '';
-
-      case 'company_type':
-        if (!value || !String(value).trim()) return '기업 형태를 선택해주세요.';
-        return '';
-
-      case 'address':
-        if (!value || !String(value).trim()) return '주소를 입력해주세요.';
-        return '';
-
-      case 'establishment_date':
-        if (!value) return '설립일을 입력해주세요.';
-        const selectedDate = new Date(String(value));
-        const today = new Date();
-        if (selectedDate > today) return '설립일은 오늘 이전이어야 합니다.';
-        return '';
-
-      case 'country_id':
-        if (!value || Number(value) === 0) return '국가를 선택해주세요.';
-        return '';
-
-      case 'position_id':
-        if (!value || Number(value) === 0) return '직무를 선택해주세요.';
-        return '';
-
-      default:
-        return '';
-    }
-  };
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -236,7 +163,10 @@ const CompanyProfileEditClient: React.FC = () => {
 
     // 실시간 유효성 검사 (해당 필드를 터치한 경우에만)
     if (touchedFields[name]) {
-      const error = validateField(name, processedValue);
+      const error = validateCompanyProfileField(name, processedValue, {
+        ...formData,
+        [name]: processedValue,
+      } as CompanyProfileRequest);
       setErrors((prev) => ({ ...prev, [name]: error }));
     }
   };
@@ -249,20 +179,13 @@ const CompanyProfileEditClient: React.FC = () => {
       ? formData[name as keyof CompanyProfileRequest]
       : value;
 
-    const error = validateField(name, processedValue);
+    const error = validateCompanyProfileField(name, processedValue as string | number, formData);
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
   const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
+    const newErrors = validateCompanyProfileForm(formData);
     const fields = Object.keys(formData) as Array<keyof CompanyProfileRequest>;
-
-    fields.forEach((field) => {
-      const error = validateField(field, formData[field]);
-      if (error) {
-        newErrors[field] = error;
-      }
-    });
 
     setErrors(newErrors);
     setTouchedFields(
@@ -345,358 +268,23 @@ const CompanyProfileEditClient: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             {/* 기본 정보 */}
-            <div className="bg-white rounded-lg p-6 shadow-normal">
-              <h2 className="text-title-4 font-semibold text-label-900 mb-4 flex items-center gap-2">
-                <Building size={20} />
-                기본 정보
-              </h2>
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="industry_type" className="text-body-3 font-medium text-label-700 mb-2 flex items-center">
-                    업종 <span className="text-status-error text-lg ml-1">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="industry_type"
-                    name="industry_type"
-                    value={formData.industry_type}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.industry_type ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.industry_type && touchedFields.industry_type && formData.industry_type ? 'border-status-success' : ''}`}
-                    placeholder="예: IT/소프트웨어, 제조, 유통 등"
-                  />
-                  {errors.industry_type && (
-                    <p className="mt-1 text-caption-2 text-status-error">{errors.industry_type}</p>
-                  )}
-                  {!errors.industry_type && touchedFields.industry_type && formData.industry_type && (
-                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
-                      <span className="text-status-success">✓</span> 입력 완료
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="company_type" className="text-body-3 font-medium text-label-700 mb-2 flex items-center">
-                    기업 형태 <span className="text-status-error text-lg ml-1">*</span>
-                  </label>
-                  <select
-                    id="company_type"
-                    name="company_type"
-                    value={formData.company_type}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.company_type ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors cursor-pointer ${!errors.company_type && touchedFields.company_type && formData.company_type ? 'border-status-success' : ''}`}
-                  >
-                    <option value="">선택하세요</option>
-                    <option value="주식회사">주식회사</option>
-                    <option value="유한회사">유한회사</option>
-                    <option value="개인사업자">개인사업자</option>
-                    <option value="외국계기업">외국계기업</option>
-                  </select>
-                  {errors.company_type && (
-                    <p className="mt-1 text-caption-2 text-status-error">{errors.company_type}</p>
-                  )}
-                  {!errors.company_type && touchedFields.company_type && formData.company_type && (
-                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
-                      <span className="text-status-success">✓</span> 입력 완료
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="country_id" className="text-body-3 font-medium text-label-700 mb-2 flex items-center">
-                    국가 <span className="text-status-error text-lg ml-1">*</span>
-                  </label>
-                  <select
-                    id="country_id"
-                    name="country_id"
-                    value={formData.country_id || ''}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.country_id ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors cursor-pointer ${!errors.country_id && touchedFields.country_id && formData.country_id > 0 ? 'border-status-success' : ''}`}
-                  >
-                    <option value="">선택하세요</option>
-                    {COUNTRIES_FULL.map((country) => (
-                      <option key={country.id} value={country.id}>
-                        {country.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.country_id && (
-                    <p className="mt-1 text-caption-2 text-status-error">{errors.country_id}</p>
-                  )}
-                  {!errors.country_id && touchedFields.country_id && formData.country_id > 0 && (
-                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
-                      <span className="text-status-success">✓</span> 입력 완료
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="position_id" className="text-body-3 font-medium text-label-700 mb-2 flex items-center">
-                    직무 <span className="text-status-error text-lg ml-1">*</span>
-                  </label>
-                  <select
-                    id="position_id"
-                    name="position_id"
-                    value={formData.position_id || ''}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.position_id ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors cursor-pointer ${!errors.position_id && touchedFields.position_id && formData.position_id > 0 ? 'border-status-success' : ''}`}
-                  >
-                    <option value="">선택하세요</option>
-                    {POSITIONS_L3.map((position) => (
-                      <option key={position.id} value={position.id}>
-                        {position.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.position_id && (
-                    <p className="mt-1 text-caption-2 text-status-error">{errors.position_id}</p>
-                  )}
-                  {!errors.position_id && touchedFields.position_id && formData.position_id > 0 && (
-                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
-                      <span className="text-status-success">✓</span> 입력 완료
-                    </p>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="employee_count" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
-                      <Users size={16} />
-                      직원 수 <span className="text-status-error text-lg ml-1">*</span>
-                    </label>
-                    <select
-                      id="employee_count"
-                      name="employee_count"
-                      value={formData.employee_count || ''}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={`w-full px-4 py-2 border ${errors.employee_count ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors cursor-pointer ${!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 ? 'border-status-success' : ''}`}
-                    >
-                      <option value="">선택하세요</option>
-                      <option value="10">1-10명</option>
-                      <option value="50">11-50명</option>
-                      <option value="100">51-100명</option>
-                      <option value="200">101-200명</option>
-                      <option value="500">201-500명</option>
-                      <option value="1000">500명 이상</option>
-                    </select>
-                    {errors.employee_count && (
-                      <p className="mt-1 text-caption-2 text-status-error">{errors.employee_count}</p>
-                    )}
-                    {!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 && (
-                      <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
-                        <span className="text-status-success">✓</span> 입력 완료
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label htmlFor="establishment_date" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
-                      <Calendar size={16} />
-                      설립일 <span className="text-status-error text-lg ml-1">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      id="establishment_date"
-                      name="establishment_date"
-                      value={formData.establishment_date}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      max={today}
-                      className={`w-full px-4 py-2 border ${errors.establishment_date ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date ? 'border-status-success' : ''}`}
-                    />
-                    {errors.establishment_date && (
-                      <p className="mt-1 text-caption-2 text-status-error">{errors.establishment_date}</p>
-                    )}
-                    {!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date && (
-                      <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
-                        <span className="text-status-success">✓</span> 입력 완료
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="insurance" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
-                    <FileText size={16} />
-                    보험 <span className="text-caption-2 px-2 py-0.5 bg-gray-200 text-label-600 rounded ml-2">선택</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="insurance"
-                    name="insurance"
-                    value={formData.insurance}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${formData.insurance ? 'border-status-success' : ''}`}
-                    placeholder="예: 4대보험 완비, 산재보험 등"
-                  />
-                  {formData.insurance && (
-                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
-                      <span className="text-status-success">✓</span> 입력 완료
-                    </p>
-                  )}
-                  {!formData.insurance && (
-                    <p className="mt-1 text-caption-2 text-label-500">제공하는 보험 정보를 입력해주세요.</p>
-                  )}
-                </div>
-              </div>
-            </div>
+            <BasicInfoSection
+              formData={formData}
+              errors={errors}
+              touchedFields={touchedFields}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              today={today}
+            />
 
             {/* 연락 정보 */}
-            <div className="bg-white rounded-lg p-6 shadow-normal">
-              <h2 className="text-title-4 font-semibold text-label-900 mb-4 flex items-center gap-2">
-                <Phone size={20} />
-                연락 정보
-              </h2>
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="email" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
-                    <Mail size={16} />
-                    이메일 <span className="text-status-error text-lg ml-1">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.email ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.email && touchedFields.email && formData.email ? 'border-status-success' : ''}`}
-                    placeholder="hr@example.com"
-                  />
-                  {errors.email && (
-                    <p className="mt-1 text-caption-2 text-status-error">{errors.email}</p>
-                  )}
-                  {!errors.email && touchedFields.email && formData.email && (
-                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
-                      <span className="text-status-success">✓</span> 입력 완료
-                    </p>
-                  )}
-                  {!touchedFields.email && (
-                    <p className="mt-1 text-caption-2 text-label-500">채용 담당자 이메일을 입력해주세요.</p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="phone_number" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
-                    <Phone size={16} />
-                    전화번호 <span className="text-status-error text-lg ml-1">*</span>
-                  </label>
-
-                  {/* Phone Type Selection */}
-                  <div className="flex gap-4 mb-3">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="phone_type"
-                        value="MOBILE"
-                        checked={formData.phone_type === 'MOBILE'}
-                        onChange={handleChange}
-                        className="w-4 h-4 text-primary-500 focus:ring-primary-500 cursor-pointer"
-                      />
-                      <span className="text-body-3 text-label-700">휴대전화</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="phone_type"
-                        value="LANDLINE"
-                        checked={formData.phone_type === 'LANDLINE'}
-                        onChange={handleChange}
-                        className="w-4 h-4 text-primary-500 focus:ring-primary-500 cursor-pointer"
-                      />
-                      <span className="text-body-3 text-label-700">일반전화</span>
-                    </label>
-                  </div>
-
-                  {/* Phone Number Input */}
-                  <input
-                    type="text"
-                    id="phone_number"
-                    name="phone_number"
-                    value={formData.phone_number || ''}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.phone_number ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.phone_number && touchedFields.phone_number && formData.phone_number ? 'border-status-success' : ''}`}
-                    placeholder={getPhonePlaceholder(formData.phone_type)}
-                  />
-                  {errors.phone_number && (
-                    <p className="mt-1 text-caption-2 text-status-error">{errors.phone_number}</p>
-                  )}
-                  {!errors.phone_number && touchedFields.phone_number && formData.phone_number && (
-                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
-                      <span className="text-status-success">✓</span> 입력 완료
-                    </p>
-                  )}
-                  {!touchedFields.phone_number && (
-                    <p className="mt-1 text-caption-2 text-label-500">
-                      {formData.phone_type === 'MOBILE'
-                        ? '휴대전화: 010, 011, 016-019로 시작하는 번호'
-                        : '일반전화: 지역번호(예: 02, 031, 051) 포함'}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="website_url" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
-                    <Globe size={16} />
-                    웹사이트 <span className="text-caption-2 px-2 py-0.5 bg-gray-200 text-label-600 rounded ml-2">선택</span>
-                  </label>
-                  <input
-                    type="url"
-                    id="website_url"
-                    name="website_url"
-                    value={formData.website_url}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.website_url ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.website_url && formData.website_url ? 'border-status-success' : ''}`}
-                    placeholder="https://example.com"
-                  />
-                  {errors.website_url && (
-                    <p className="mt-1 text-caption-2 text-status-error">{errors.website_url}</p>
-                  )}
-                  {!errors.website_url && formData.website_url && (
-                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
-                      <span className="text-status-success">✓</span> 입력 완료
-                    </p>
-                  )}
-                  {!formData.website_url && (
-                    <p className="mt-1 text-caption-2 text-label-500">회사 홈페이지 주소를 입력해주세요. (http:// 또는 https:// 포함)</p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="address" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
-                    <MapPin size={16} />
-                    주소 <span className="text-status-error text-lg ml-1">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="address"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border ${errors.address ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${!errors.address && touchedFields.address && formData.address ? 'border-status-success' : ''}`}
-                    placeholder="서울특별시 강남구 테헤란로 427"
-                  />
-                  {errors.address && (
-                    <p className="mt-1 text-caption-2 text-status-error">{errors.address}</p>
-                  )}
-                  {!errors.address && touchedFields.address && formData.address && (
-                    <p className="mt-1 text-caption-2 text-status-success flex items-center gap-1">
-                      <span className="text-status-success">✓</span> 입력 완료
-                    </p>
-                  )}
-                  {!touchedFields.address && (
-                    <p className="mt-1 text-caption-2 text-label-500">회사의 주소를 입력해주세요.</p>
-                  )}
-                </div>
-              </div>
-            </div>
+            <ContactInfoSection
+              formData={formData}
+              errors={errors}
+              touchedFields={touchedFields}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
 
             {/* 제출 버튼 */}
             <div className="flex gap-4">

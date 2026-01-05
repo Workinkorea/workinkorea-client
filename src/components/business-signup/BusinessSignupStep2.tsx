@@ -6,10 +6,11 @@ import { SignupStep2Data, Step2Form } from '@/types/signup.type';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/ui/FormField';
 import Input from '@/components/ui/Input';
-import { formatBusinessNumber, isValidBusinessNumber, validateConfirmPassword, validatePassword, validatePhoneNumber } from '@/lib/utils/authNumber';
+import { formatBusinessNumber, isValidBusinessNumber, validateConfirmPassword, validatePassword } from '@/lib/utils/validation';
 import { toast } from 'sonner';
 import { authApi } from '@/lib/api/auth';
-import { detectPhoneType, formatPhoneByType, validatePhoneType, getPhonePlaceholder, PhoneType } from '@/lib/utils/phoneUtils';
+import { formatPhoneByType, validatePhoneType, getPhonePlaceholder, PhoneType } from '@/lib/utils/phoneUtils';
+import { extractErrorMessage, logError } from '@/lib/utils/errorHandler';
 
 interface BusinessSignupStep2Props {
   initialData?: SignupStep2Data;
@@ -190,11 +191,9 @@ export default function BusinessSignupStep2({
 
       onNextAction(transformedData);
     } catch (error: unknown) {
-      const errorMessage =
-        error && typeof error === 'object' && 'response' in error
-          ? (error.response as { data?: { message?: string } })?.data?.message
-          : '회원가입 중 오류가 발생했습니다.';
-      toast.error(errorMessage || '회원가입 중 오류가 발생했습니다.');
+      logError(error, 'BusinessSignupStep2.onSubmit');
+      const errorMessage = extractErrorMessage(error, '회원가입 중 오류가 발생했습니다.');
+      toast.error(errorMessage);
     }
   };
 

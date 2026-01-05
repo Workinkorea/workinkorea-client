@@ -11,6 +11,8 @@ import { postsApi } from '@/lib/api/posts';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CreateCompanyPostRequest, UpdateCompanyPostRequest } from '@/lib/api/types';
 import { CompanyPostForm } from '@/components/company-posts/CompanyPostForm';
+import { toast } from 'sonner';
+import { extractErrorMessage, logError } from '@/lib/utils/errorHandler';
 
 const CompanyPostCreateClient: React.FC = () => {
   const router = useRouter();
@@ -25,12 +27,13 @@ const CompanyPostCreateClient: React.FC = () => {
     mutationFn: (data: CreateCompanyPostRequest) => postsApi.createCompanyPost(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyPosts'] });
-      alert('공고가 등록되었습니다.');
+      toast.success('공고가 등록되었습니다.');
       router.push('/company');
     },
     onError: (error) => {
-      console.error('공고 등록 실패:', error);
-      alert('공고 등록에 실패했습니다. 다시 시도해주세요.');
+      logError(error, 'CompanyPostCreateClient.createPost');
+      const errorMessage = extractErrorMessage(error, '공고 등록에 실패했습니다. 다시 시도해주세요.');
+      toast.error(errorMessage);
     },
   });
 

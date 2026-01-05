@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { FormField } from '../ui/FormField';
 import Input from '../ui/Input';
 import { useForm } from 'react-hook-form';
-import { validatePassword } from '@/lib/utils/authNumber';
+import { validatePassword } from '@/lib/utils/validation';
 import { useState } from 'react';
 import { GoogleIcon } from '@/components/ui/AccessibleIcon';
 import { useRouter } from 'next/navigation';
