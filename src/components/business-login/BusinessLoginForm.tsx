@@ -221,7 +221,7 @@ export default function BusinessLoginForm() {
         console.error('Login error:', error);
       }
 
-      let errorMessage = '기업 로그인 중 오류가 발생했습니다.';
+      let errorMessage = '로그인 중 오류가 발생했습니다.';
       let errorField: 'email' | 'password' = 'password';
 
       // Axios 에러 응답 처리
@@ -230,20 +230,32 @@ export default function BusinessLoginForm() {
         const serverError = axiosError.response?.data?.error;
 
         if (serverError) {
-          const errorMsg = serverError.toLowerCase();
-
           // 서버에서 반환하는 에러 메시지를 한글로 변환
-          if (errorMsg.includes('password is incorrect') || errorMsg.includes('invalid password')) {
-            errorMessage = '비밀번호가 일치하지 않습니다.';
-            errorField = 'password';
-          } else if (errorMsg.includes('user not found') || errorMsg.includes('not found') || errorMsg.includes('company not found')) {
-            errorMessage = '등록되지 않은 이메일입니다.';
-            errorField = 'email';
-          } else if (errorMsg.includes('account disabled') || errorMsg.includes('forbidden')) {
-            errorMessage = '계정이 비활성화되었거나 접근 권한이 없습니다.';
-            errorField = 'email';
-          } else {
-            errorMessage = serverError;
+          switch (serverError) {
+            case 'Email is required':
+              errorMessage = '이메일을 입력해주세요.';
+              errorField = 'email';
+              break;
+            case 'Password is required':
+              errorMessage = '비밀번호를 입력해주세요.';
+              errorField = 'password';
+              break;
+            case 'Company user not found':
+              errorMessage = '기업 사용자를 찾을 수 없습니다.';
+              errorField = 'email';
+              break;
+            case 'Invalid password':
+              errorMessage = '비밀번호가 일치하지 않습니다.';
+              errorField = 'password';
+              break;
+            case 'Failed to set refresh token':
+              errorMessage = '로그인 처리 중 오류가 발생했습니다.';
+              errorField = 'password';
+              break;
+            default:
+              errorMessage = '로그인 중 오류가 발생했습니다.';
+              errorField = 'password';
+              break;
           }
         }
       } else if (error instanceof Error) {
@@ -251,7 +263,7 @@ export default function BusinessLoginForm() {
 
         // HTTP 상태 코드 기반 에러 처리 (fallback)
         if (errorMsg.includes('404') || errorMsg.includes('not found') || errorMsg.includes('user not found')) {
-          errorMessage = '등록되지 않은 이메일입니다.';
+          errorMessage = '기업 사용자를 찾을 수 없습니다.';
           errorField = 'email';
         } else if (errorMsg.includes('401') || errorMsg.includes('unauthorized') || errorMsg.includes('invalid password')) {
           errorMessage = '비밀번호가 일치하지 않습니다.';
