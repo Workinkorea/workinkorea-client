@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { UserSkill } from '@/types/user';
-import ProgressBar from '@/components/ui/ProgressBar';
+import SkillProgressBar from '@/components/ui/SkillProgressBar';
 import { cn } from '@/lib/utils/utils';
 
 interface SkillBarChartProps {
@@ -128,7 +128,7 @@ const SkillBarChart: React.FC<SkillBarChartProps> = ({
               </div>
             </div>
 
-            <ProgressBar
+            <SkillProgressBar
               value={skill.level}
               average={skill.average}
               showValues={true}

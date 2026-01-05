@@ -4,7 +4,21 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils/utils';
 
-interface ProgressBarProps {
+/**
+ * SkillProgressBar Component
+ *
+ * Displays user skill scores compared to average scores.
+ * Includes animated progress bar with average marker and dynamic coloring.
+ *
+ * @example
+ * <SkillProgressBar
+ *   value={85}
+ *   average={70}
+ *   label="Communication"
+ * />
+ */
+
+interface SkillProgressBarProps {
   value: number; // 사용자 값 (0-100)
   average?: number; // 평균 값 (0-100)
   label?: string;
@@ -14,7 +28,7 @@ interface ProgressBarProps {
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({
+const SkillProgressBar: React.FC<SkillProgressBarProps> = ({
   value,
   average,
   label,
@@ -140,4 +154,4 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   );
 };
 
-export default ProgressBar;
+export default SkillProgressBar;

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDiagnosisStore } from '@/store/diagnosisStore';
-import { ProgressBar } from '@/components/diagnosis/ProgressBar';
+import { DiagnosisStepProgress } from '@/components/diagnosis/DiagnosisStepProgress';
 import { Session1BasicInfo } from '@/components/diagnosis/Session1BasicInfo';
 import { Session2CareerSkills } from '@/components/diagnosis/Session2CareerSkills';
 import { Session3Preferences } from '@/components/diagnosis/Session3Preferences';
@@ -119,7 +119,7 @@ const DiagnosisClient = () => {
           </motion.div>
 
           <div className="bg-white rounded-lg shadow-normal p-6 md:p-8">
-            <ProgressBar currentStep={currentStep} totalSteps={TOTAL_STEPS} />
+            <DiagnosisStepProgress currentStep={currentStep} totalSteps={TOTAL_STEPS} />
 
             <AnimatePresence mode="wait">
               {currentStep === 1 && (

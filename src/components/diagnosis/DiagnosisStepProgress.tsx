@@ -1,11 +1,21 @@
 import { motion } from 'framer-motion';
 
-interface ProgressBarProps {
+/**
+ * DiagnosisStepProgress Component
+ *
+ * Shows step-based progress for multi-step diagnosis flow.
+ * Displays current step, total steps, and percentage completion.
+ *
+ * @example
+ * <DiagnosisStepProgress currentStep={3} totalSteps={5} />
+ */
+
+interface DiagnosisStepProgressProps {
   currentStep: number;
   totalSteps: number;
 }
 
-export const ProgressBar = ({ currentStep, totalSteps }: ProgressBarProps) => {
+export const DiagnosisStepProgress = ({ currentStep, totalSteps }: DiagnosisStepProgressProps) => {
   const progress = (currentStep / totalSteps) * 100;
 
   return (
