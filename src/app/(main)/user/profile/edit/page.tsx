@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { createMetadata } from '@/lib/metadata';
-import ProfileEditClient from '@/components/pages/ProfileEditClient';
+import ProfileEditContainer from '@/components/profile/ProfileEditContainer';
 
 // 메타데이터
 export const metadata: Metadata = createMetadata({
@@ -10,5 +10,5 @@ export const metadata: Metadata = createMetadata({
 });
 
 export default function ProfileEditPage() {
-  return <ProfileEditClient />;
+  return <ProfileEditContainer />;
 }
