@@ -114,7 +114,6 @@ export function useMediaQuery(query: string | BreakpointKey): boolean {
     if (matchMedia.addEventListener) {
       matchMedia.addEventListener('change', handleChange);
     } else {
-      // @ts-ignore - Legacy API
       matchMedia.addListener(handleChange);
     }
 
@@ -123,7 +122,6 @@ export function useMediaQuery(query: string | BreakpointKey): boolean {
       if (matchMedia.removeEventListener) {
         matchMedia.removeEventListener('change', handleChange);
       } else {
-        // @ts-ignore - Legacy API
         matchMedia.removeListener(handleChange);
       }
     };

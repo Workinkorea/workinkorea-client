@@ -64,9 +64,11 @@ import type { ContactUpdateRequest, AccountConfigUpdateRequest } from '@/lib/api
 
 type SectionType = 'basic' | 'contact' | 'account';
 
+type CareerKey = 'NEWCOMER' | 'YEAR_1_LESS' | 'YEAR_1' | 'YEAR_2_LESS' | 'YEAR_2' | 'YEAR_3_LESS' | 'YEAR_3' | 'YEAR_5_LESS' | 'YEAR_5' | 'YEAR_7_LESS' | 'YEAR_7' | 'YEAR_10_LESS' | 'YEAR_10' | 'YEAR_10_MORE';
+
 // API response value -> key 변환 (for career field)
-const getCareerKeyFromValue = (value: string): string => {
-  const CAREER_OPTIONS = [
+const getCareerKeyFromValue = (value: string): CareerKey => {
+  const CAREER_OPTIONS: { key: CareerKey; label: string }[] = [
     { key: 'NEWCOMER', label: '신입' },
     { key: 'YEAR_1_LESS', label: '1년 이하' },
     { key: 'YEAR_1', label: '1년' },
@@ -81,7 +83,7 @@ const getCareerKeyFromValue = (value: string): string => {
     { key: 'YEAR_10_LESS', label: '10년 이하' },
     { key: 'YEAR_10', label: '10년' },
     { key: 'YEAR_10_MORE', label: '10년 이상' },
-  ] as const;
+  ];
   const option = CAREER_OPTIONS.find(opt => opt.label === value);
   return option?.key || 'NEWCOMER';
 };
@@ -96,7 +98,6 @@ const ProfileEditContainer: React.FC = () => {
 
   // File upload state (lifted from BasicInfoSection)
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedPortfolioFile, setSelectedPortfolioFile] = useState<File | null>(null);
   const [portfolioFileName, setPortfolioFileName] = useState<string>('');
 
@@ -236,7 +237,7 @@ const ProfileEditContainer: React.FC = () => {
   useEffect(() => {
     if (profile) {
       const careerKey = profile.career
-        ? (getCareerKeyFromValue(profile.career) as any)
+        ? getCareerKeyFromValue(profile.career)
         : undefined;
 
       basicForm.reset({
@@ -580,9 +581,8 @@ const ProfileEditContainer: React.FC = () => {
                   <BasicInfoSection
                     form={basicForm}
                     profile={profile}
-                    onImageSelect={(file, preview) => {
+                    onImageSelect={(file) => {
                       setSelectedImageFile(file);
-                      setImagePreview(preview);
                       setHasUnsavedChanges(true);
                     }}
                     onPortfolioSelect={(file) => {

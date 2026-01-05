@@ -144,13 +144,6 @@ export function useFormPersist<T extends FieldValues>(
     }
   };
 
-  /**
-   * Clear saved data
-   */
-  const clearSavedData = () => {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem(getStorageKey());
-  };
 
   /**
    * Watch form values (all fields)
@@ -179,6 +172,8 @@ export function useFormPersist<T extends FieldValues>(
     if (enabled && debouncedFormData) {
       saveData(debouncedFormData as T);
     }
+    // saveData is stable and doesn't need to be in dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedFormData, enabled]);
 
   /**

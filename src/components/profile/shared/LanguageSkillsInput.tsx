@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Control, useFieldArray } from 'react-hook-form';
+import { Control, useFieldArray, FieldErrors } from 'react-hook-form';
 import { Plus, X } from 'lucide-react';
 import { FormField } from '@/components/ui/FormField';
 import { cn } from '@/lib/utils/utils';
@@ -55,7 +55,7 @@ export interface LanguageSkillsInputProps {
   control: Control<BasicProfileForm>;
 
   /** Form errors object */
-  errors?: any;
+  errors?: FieldErrors<BasicProfileForm>;
 }
 
 const LanguageSkillsInput: React.FC<LanguageSkillsInputProps> = ({
