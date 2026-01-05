@@ -1,4 +1,5 @@
 import { apiClient } from './client';
+import axios from 'axios';
 import type {
   EmailVerificationResponse,
   LoginRequest,
@@ -9,7 +10,8 @@ import type {
   CompanySignupRequest,
   CompanySignupResponse,
   CompanyLoginRequest,
-  CompanyLoginResponse
+  CompanyLoginResponse,
+  BusinessVerificationResponse
 } from './types';
 
 export const authApi = {
@@ -60,5 +62,24 @@ export const authApi = {
       skipAuth: true,
       withCredentials: true
     });
+  },
+
+  async verifyBusinessNumber(businessNumber: string): Promise<BusinessVerificationResponse> {
+    try {
+      const response = await axios.post<BusinessVerificationResponse>(
+        '/api/verify-business',
+        { businessNumber },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error('Business verification error:', error);
+      throw error;
+    }
   },
 };

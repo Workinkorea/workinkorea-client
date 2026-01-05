@@ -94,20 +94,50 @@ export default function BusinessSignupStep2({
       return;
     }
 
-    setFormState(prev => ({
-      ...prev,
-      isBusinessNumberVerified: true,
-      businessNumberMessage: '사업자등록번호 인증이 완료되었습니다.',
-      businessNumberVerifyToken: 'temp_token_' + Date.now(),
-      companyInfo: {
-        company: '테스트 회사명',
-        owner: '홍길동'
+    try {
+      const response = await authApi.verifyBusinessNumber(businessNumber);
+
+      if (response.status_code === 'OK' && response.data && response.data.length > 0) {
+        const businessData = response.data[0];
+
+        // 계속사업자인지 확인
+        if (businessData.b_stt_cd !== '01') {
+          setError('businessNumber', {
+            type: 'manual',
+            message: `해당 사업자는 ${businessData.b_stt} 상태입니다.`
+          });
+          toast.error(`사업자 상태: ${businessData.b_stt}`);
+          return;
+        }
+
+        setFormState(prev => ({
+          ...prev,
+          isBusinessNumberVerified: true,
+          businessNumberMessage: '사업자등록번호 인증이 완료되었습니다.',
+          businessNumberVerifyToken: `verified_${businessNumber}_${Date.now()}`,
+          companyInfo: {
+            company: businessData.tax_type || '',
+            owner: businessData.b_stt || ''
+          }
+        }));
+
+        clearErrors('businessNumber');
+        toast.success('사업자등록번호 인증이 완료되었습니다.');
+      } else {
+        setError('businessNumber', {
+          type: 'manual',
+          message: '유효하지 않은 사업자등록번호입니다.'
+        });
+        toast.error('유효하지 않은 사업자등록번호입니다.');
       }
-    }));
-    
-    clearErrors('businessNumber');
-    
-    toast.success('사업자등록번호 인증이 완료되었습니다.');
+    } catch (error) {
+      console.error('Business number verification failed:', error);
+      setError('businessNumber', {
+        type: 'manual',
+        message: '사업자등록번호 인증에 실패했습니다.'
+      });
+      toast.error('사업자등록번호 인증에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   const company = watch('company');
