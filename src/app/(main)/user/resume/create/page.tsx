@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ResumeEditor from '@/components/resume/ResumeEditor';
-import { ResumeTemplate } from '@/types/user';
+import ResumeEditor from '@/features/resume/components/ResumeEditor';
+import { ResumeTemplate } from '@/features/user/types/user';
 
 const CreateResumePage: React.FC = () => {
   const [currentStep] = useState<'template' | 'editor'>('editor');

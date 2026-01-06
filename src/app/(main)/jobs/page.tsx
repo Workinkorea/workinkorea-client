@@ -1,8 +1,8 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { createMetadata } from '@/lib/metadata';
-import JobsListView from '@/components/pages/JobsListView';
-import { createServerAdminApi } from '@/lib/api/server';
+import { createMetadata } from '@/shared/lib/metadata';
+import JobsListView from '@/features/jobs/pages/JobsListView';
+import { createServerAdminApi } from '@/shared/api/server';
 
 export const metadata: Metadata = createMetadata({
   title: '채용 공고 - WorkInKorea',

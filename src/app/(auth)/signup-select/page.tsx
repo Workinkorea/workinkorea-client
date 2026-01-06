@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { createMetadata } from '@/lib/metadata';
-import SignupSelectContent from '@/components/auth/SignupSelectContent';
+import { createMetadata } from '@/shared/lib/metadata';
+import SignupSelectContent from '@/features/auth/components/SignupSelectContent';
 
 export const metadata: Metadata = createMetadata({
   title: '회원가입',

@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { createMetadata } from '@/lib/metadata';
-import ProfileEditContainer from '@/components/profile/ProfileEditContainer';
+import { createMetadata } from '@/shared/lib/metadata';
+import ProfileEditContainer from '@/features/profile/components/ProfileEditContainer';
 
 // 메타데이터
 export const metadata: Metadata = createMetadata({

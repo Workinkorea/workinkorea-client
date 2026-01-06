@@ -1,8 +1,8 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import JobDetailView from '@/components/pages/JobDetailView';
-import { CompanyPostDetailResponse } from '@/lib/api/types';
+import JobDetailView from '@/features/jobs/pages/JobDetailView';
+import { CompanyPostDetailResponse } from '@/shared/types/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 

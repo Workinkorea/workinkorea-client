@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { createMetadata } from '@/lib/metadata';
-import MyProfileClient from '@/components/pages/MyProfileClient';
+import { createMetadata } from '@/shared/lib/metadata';
+import MyProfileClient from '@/features/profile/pages/MyProfileClient';
 
 export const metadata: Metadata = createMetadata({
   title: '내 프로필 - WorkInKorea',

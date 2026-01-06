@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { createMetadata } from '@/lib/metadata';
-import CompanyLoginClient from '@/components/pages/CompanyLoginClient';
+import { createMetadata } from '@/shared/lib/metadata';
+import CompanyLoginClient from '@/features/auth/pages/CompanyLoginClient';
 
 export const metadata: Metadata = createMetadata({
   title: '기업 로그인',

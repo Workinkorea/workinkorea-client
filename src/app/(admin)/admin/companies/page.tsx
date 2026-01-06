@@ -1,5 +1,5 @@
-import { createServerAdminApi } from '@/lib/api/server';
-import CompaniesTableClient from '@/components/admin/CompaniesTableClient';
+import { createServerAdminApi } from '@/shared/api/server';
+import CompaniesTableClient from '@/features/admin/components/CompaniesTableClient';
 
 export const dynamic = 'force-dynamic';
 

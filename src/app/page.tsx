@@ -1,13 +1,13 @@
 import { Metadata } from 'next';
-import { createMetadata } from '@/lib/metadata';
-import { getServerAuth } from '@/lib/auth/server';
-import HeaderClient from '@/components/layout/HeaderClient';
-import HeroSection from '@/components/main/sections/HeroSection';
-import JobCategoriesSection from '@/components/main/sections/JobCategoriesSection';
-import PopularJobsSection from '@/components/main/sections/PopularJobsSection';
-import ServicesSection from '@/components/main/sections/ServicesSection';
-import CTASection from '@/components/main/sections/CTASection';
-import Footer from '@/components/main/sections/Footer';
+import { createMetadata } from '@/shared/lib/metadata';
+import { getServerAuth } from '@/features/auth/lib/server';
+import HeaderClient from '@/shared/components/layout/HeaderClient';
+import HeroSection from '@/features/landing/components/sections/HeroSection';
+import JobCategoriesSection from '@/features/landing/components/sections/JobCategoriesSection';
+import PopularJobsSection from '@/features/landing/components/sections/PopularJobsSection';
+import ServicesSection from '@/features/landing/components/sections/ServicesSection';
+import CTASection from '@/features/landing/components/sections/CTASection';
+import Footer from '@/features/landing/components/sections/Footer';
 
 export const metadata: Metadata = createMetadata({
   title: '워크인코리아 - 한국 취업의 모든 것',

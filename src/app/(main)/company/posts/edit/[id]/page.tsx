@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { createMetadata } from '@/lib/metadata';
-import CompanyPostEditClient from '@/components/pages/CompanyPostEditClient';
+import { createMetadata } from '@/shared/lib/metadata';
+import CompanyPostEditClient from '@/features/jobs/pages/CompanyPostEditClient';
 
 export const metadata: Metadata = createMetadata({
   title: '채용 공고 수정 - WorkInKorea',

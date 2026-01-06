@@ -1,5 +1,5 @@
-import Header from '@/components/layout/Header';
-import Layout from '@/components/layout/Layout';
+import Header from '@/shared/components/layout/Header';
+import Layout from '@/shared/components/layout/Layout';
 import { ReactNode } from 'react';
 
 export default function BusinessLoginLayout({
