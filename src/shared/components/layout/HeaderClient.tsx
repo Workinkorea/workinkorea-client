@@ -12,7 +12,7 @@ interface HeaderClientProps {
  * useAuth 훅을 사용하여 인증 상태를 관리하고 Header 컴포넌트에 전달합니다.
  */
 export default function HeaderClient({ type }: HeaderClientProps = {}) {
-  const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: false });
+  const { isAuthenticated, isLoading, userType, logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();

@@ -18,7 +18,7 @@ interface SelfDiagnosisFormData {
 
 const SelfDiagnosisClient = () => {
   const router = useRouter();
-  const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: false });
+  const { isAuthenticated, isLoading, userType, logout } = useAuth();
   const {
     control,
     handleSubmit,

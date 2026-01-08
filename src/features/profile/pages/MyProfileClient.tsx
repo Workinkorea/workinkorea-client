@@ -79,7 +79,7 @@ const mockMySkillStats = {
 
 const MyProfileClient: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience' | 'resume'>('overview');
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
+  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
 

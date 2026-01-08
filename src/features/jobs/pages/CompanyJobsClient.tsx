@@ -12,7 +12,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 
 const CompanyJobsClient: React.FC = () => {
   const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
+  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
 
   // 인증 체크 및 리다이렉트
   useEffect(() => {

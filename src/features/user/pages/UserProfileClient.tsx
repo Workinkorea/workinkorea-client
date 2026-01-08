@@ -20,7 +20,7 @@ const UserProfileClient: React.FC = () => {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'resume' | 'skills' | 'career'>('dashboard');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
+  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();

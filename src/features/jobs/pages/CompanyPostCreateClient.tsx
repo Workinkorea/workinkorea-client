@@ -17,7 +17,7 @@ import { extractErrorMessage, logError } from '@/shared/lib/utils/errorHandler';
 const CompanyPostCreateClient: React.FC = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
+  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();

@@ -20,7 +20,7 @@ import { ContactInfoSection } from '@/features/company/components/ContactInfoSec
 const CompanyProfileEditClient: React.FC = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
+  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
 
   const [formData, setFormData] = useState<CompanyProfileRequest>({
     industry_type: '',

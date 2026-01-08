@@ -111,9 +111,6 @@ async function refreshToken(): Promise<string> {
           userType === "admin" ? "/admin/login" :
             "/login";
 
-      // 사용자 친화적 메시지
-      const errorMessage = '세션이 만료되었습니다. 다시 로그인해주세요.';
-
       // 콘솔에 상세 에러 로그 (개발자용)
       console.warn('[Auth] Session expired. Redirecting to login...', {
         userType,

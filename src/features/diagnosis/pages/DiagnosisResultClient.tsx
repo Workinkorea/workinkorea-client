@@ -22,7 +22,7 @@ interface MatchingResult {
 const DiagnosisResultClient = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: false });
+  const { isAuthenticated, isLoading, userType, logout } = useAuth();
   const { diagnosisId } = useDiagnosisStore();
   const [result, setResult] = useState<MatchingResult | null>(null);
   const [error, setError] = useState<string | null>(null);

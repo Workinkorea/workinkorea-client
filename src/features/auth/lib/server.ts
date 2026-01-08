@@ -58,7 +58,7 @@ export async function getServerAuthFromBackend() {
       userType: response.data.user_type as 'user' | 'company',
       user: response.data,
     };
-  } catch (error) {
+  } catch {
     return {
       isAuthenticated: false,
       userType: null,

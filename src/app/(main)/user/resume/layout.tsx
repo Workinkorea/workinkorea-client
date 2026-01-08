@@ -10,7 +10,7 @@ interface ResumeLayoutProps {
 }
 
 export default function ResumeLayout({ children }: ResumeLayoutProps) {
-  const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: true });
+  const { isAuthenticated, isLoading, userType, logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();

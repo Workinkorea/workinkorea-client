@@ -21,7 +21,7 @@ interface CompanyPostEditClientProps {
 const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
+  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();

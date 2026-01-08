@@ -20,7 +20,7 @@ const TOTAL_STEPS = 4;
 
 const DiagnosisClient = () => {
   const router = useRouter();
-  const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: false });
+  const { isAuthenticated, isLoading, userType, logout } = useAuth();
   const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId } = useDiagnosisStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 

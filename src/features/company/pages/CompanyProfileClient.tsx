@@ -15,7 +15,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 const CompanyProfileClient: React.FC = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'settings'>('overview');
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth({ required: true });
+  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
 
   // 기업 프로필 조회
   const { data: profile, isLoading: profileLoading, error, isError } = useQuery({
