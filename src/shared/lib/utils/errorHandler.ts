@@ -209,3 +209,66 @@ export const logError = (error: unknown, context?: string): void => {
     console.error(prefix, error);
   }
 };
+
+/**
+ * ✅ 최적화 11: 토큰 관련 에러 메시지 유틸리티
+ */
+
+/**
+ * 사용자 친화적인 인증 에러 메시지를 반환합니다
+ *
+ * @param error - Unknown error object
+ * @returns 한글 에러 메시지
+ *
+ * @example
+ * catch (error) {
+ *   const message = getAuthErrorMessage(error);
+ *   toast.error(message);
+ * }
+ */
+export const getAuthErrorMessage = (error: unknown): string => {
+  const status = getErrorStatus(error);
+  const errorMessage = extractErrorMessage(error, '').toLowerCase();
+
+  // 상태 코드 기반 메시지
+  if (status === 401) {
+    if (errorMessage.includes('expired') || errorMessage.includes('만료')) {
+      return '세션이 만료되었습니다. 다시 로그인해주세요.';
+    }
+    return '인증에 실패했습니다. 다시 로그인해주세요.';
+  }
+
+  if (status === 403) {
+    return '접근 권한이 없습니다.';
+  }
+
+  if (status === 404) {
+    return '사용자를 찾을 수 없습니다.';
+  }
+
+  // 메시지 기반 처리
+  if (errorMessage.includes('token') && errorMessage.includes('invalid')) {
+    return '유효하지 않은 토큰입니다. 다시 로그인해주세요.';
+  }
+
+  if (errorMessage.includes('refresh')) {
+    return '세션 갱신에 실패했습니다. 다시 로그인해주세요.';
+  }
+
+  if (isNetworkError(error)) {
+    return '네트워크 연결을 확인해주세요.';
+  }
+
+  return '인증 처리 중 오류가 발생했습니다.';
+};
+
+/**
+ * 토큰 유효성 검사 실패 메시지
+ */
+export const TOKEN_ERROR_MESSAGES = {
+  INVALID_FORMAT: '올바르지 않은 토큰 형식입니다.',
+  EXPIRED: '토큰이 만료되었습니다.',
+  MISSING: '토큰이 없습니다.',
+  REFRESH_FAILED: '토큰 갱신에 실패했습니다.',
+  INVALID_TYPE: '올바르지 않은 토큰 타입입니다.',
+} as const;

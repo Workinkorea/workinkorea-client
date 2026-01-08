@@ -28,25 +28,43 @@ const CACHE_TTL = 100; // 100ms 캐시 - Storage 접근 최소화
 export const tokenManager = {
   /**
    * 토큰을 저장합니다 (user/company 구분 없이 단일 토큰)
+   * ✅ 최적화 10: 입력 검증 추가
    */
   setToken: (token: string, rememberMe: boolean = false, tokenType?: ApiTokenType) => {
+    // 입력 검증
+    if (!token || typeof token !== 'string' || token.trim() === '') {
+      console.error('[tokenManager] Invalid token: token must be a non-empty string');
+      return;
+    }
+
+    // JWT 형식 검증 (3개의 파트로 구성)
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      console.error('[tokenManager] Invalid token: not a valid JWT format');
+      return;
+    }
+
     if (typeof window !== 'undefined') {
-      const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem(TOKEN_KEY, token);
+      try {
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem(TOKEN_KEY, token);
 
-      // token_type 저장 (제공된 경우)
-      if (tokenType) {
-        storage.setItem(TOKEN_TYPE_KEY, tokenType);
+        // token_type 저장 (제공된 경우)
+        if (tokenType) {
+          storage.setItem(TOKEN_TYPE_KEY, tokenType);
+        }
+
+        // 반대 스토리지에서는 제거 (중복 방지)
+        const oppositeStorage = rememberMe ? sessionStorage : localStorage;
+        oppositeStorage.removeItem(TOKEN_KEY);
+        oppositeStorage.removeItem(TOKEN_TYPE_KEY);
+
+        // ✅ 캐시 갱신
+        cachedToken = token;
+        cacheTimestamp = Date.now();
+      } catch (error) {
+        console.error('[tokenManager] Failed to save token:', error);
       }
-
-      // 반대 스토리지에서는 제거 (중복 방지)
-      const oppositeStorage = rememberMe ? sessionStorage : localStorage;
-      oppositeStorage.removeItem(TOKEN_KEY);
-      oppositeStorage.removeItem(TOKEN_TYPE_KEY);
-
-      // ✅ 캐시 갱신
-      cachedToken = token;
-      cacheTimestamp = Date.now();
     }
   },
 
@@ -189,48 +207,5 @@ export const tokenManager = {
     if (fromJWT === 'company' || fromJWT === 'user') return fromJWT;
 
     return null;
-  },
-
-  // === 하위 호환성을 위한 Deprecated 메서드들 ===
-  // 점진적 마이그레이션을 위해 유지하되, 내부적으로는 단일 토큰 사용
-
-  /** @deprecated 단일 토큰으로 통합되었습니다. setToken()을 사용하세요 */
-  setAccessToken: (token: string, rememberMe: boolean = false, tokenType?: ApiTokenType) => {
-    tokenManager.setToken(token, rememberMe, tokenType);
-  },
-
-  /** @deprecated 단일 토큰으로 통합되었습니다. getToken()을 사용하세요 */
-  getAccessToken: (): string | null => {
-    return tokenManager.getToken();
-  },
-
-  /** @deprecated 단일 토큰으로 통합되었습니다. removeToken()을 사용하세요 */
-  removeAccessToken: () => {
-    tokenManager.removeToken();
-  },
-
-  /** @deprecated 단일 토큰으로 통합되었습니다. setToken()을 사용하세요 */
-  setCompanyAccessToken: (token: string, rememberMe: boolean = false, tokenType?: ApiTokenType) => {
-    tokenManager.setToken(token, rememberMe, tokenType);
-  },
-
-  /** @deprecated 단일 토큰으로 통합되었습니다. getToken()을 사용하세요 */
-  getCompanyAccessToken: (): string | null => {
-    return tokenManager.getToken();
-  },
-
-  /** @deprecated 단일 토큰으로 통합되었습니다. removeToken()을 사용하세요 */
-  removeCompanyAccessToken: () => {
-    tokenManager.removeToken();
-  },
-
-  /** @deprecated 단일 토큰으로 통합되었습니다. hasToken()을 사용하세요 */
-  hasAccessToken: (): boolean => {
-    return tokenManager.hasToken();
-  },
-
-  /** @deprecated 단일 토큰으로 통합되었습니다. removeToken()을 사용하세요 */
-  clearAllTokens: () => {
-    tokenManager.removeToken();
   },
 };

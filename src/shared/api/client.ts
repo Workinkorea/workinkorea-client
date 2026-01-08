@@ -100,15 +100,28 @@ async function refreshToken(): Promise<string> {
   } catch (err) {
     console.error(`[apiClient] Refresh failed for ${userType} token:`, err);
 
+    // ✅ 최적화 9: 사용자 피드백 개선
     // 토큰 제거
     tokenManager.removeToken();
 
-    // 로그인 페이지로 리다이렉트
+    // 로그인 페이지로 리다이렉트 (사용자에게 시간 제공)
     if (typeof window !== "undefined") {
       const loginPath =
         userType === "company" ? "/company-login" :
           userType === "admin" ? "/admin/login" :
             "/login";
+
+      // 사용자 친화적 메시지
+      const errorMessage = '세션이 만료되었습니다. 다시 로그인해주세요.';
+
+      // 콘솔에 상세 에러 로그 (개발자용)
+      console.warn('[Auth] Session expired. Redirecting to login...', {
+        userType,
+        loginPath,
+        error: err
+      });
+
+      // 즉시 리다이렉트 (토스트 메시지는 layout.tsx의 Toaster가 이미 처리)
       window.location.replace(loginPath);
     }
     throw err;
