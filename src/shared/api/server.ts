@@ -29,32 +29,32 @@ export async function createServerAdminApi() {
 
   return {
     async getUsers(skip: number = 0, limit: number = 10) {
-      const response = await client.get(`/admin/users/?skip=${skip}&limit=${limit}`);
+      const response = await client.get(`/api/admin/users/?skip=${skip}&limit=${limit}`);
       return response.data;
     },
 
     async getCompanies(skip: number = 0, limit: number = 10) {
-      const response = await client.get(`/admin/companies/?skip=${skip}&limit=${limit}`);
+      const response = await client.get(`/api/admin/companies/?skip=${skip}&limit=${limit}`);
       return response.data;
     },
 
     async getPosts(skip: number = 0, limit: number = 10) {
-      const response = await client.get(`/admin/posts/?skip=${skip}&limit=${limit}`);
+      const response = await client.get(`/api/admin/posts/?skip=${skip}&limit=${limit}`);
       return response.data;
     },
 
     async getProfile() {
-      const response = await client.get('/users/profile/');
+      const response = await client.get('/api/users/profile/');
       return response.data;
     },
 
     async getCompanyPosts(page: number = 1, limit: number = 12) {
-      const response = await client.get(`/posts/company/?page=${page}&limit=${limit}`);
+      const response = await client.get(`/api/posts/company/?page=${page}&limit=${limit}`);
       return response.data;
     },
 
     async getPostById(id: string) {
-      const response = await client.get(`/posts/company/${id}`);
+      const response = await client.get(`/api/posts/company/${id}`);
       return response.data;
     },
   };

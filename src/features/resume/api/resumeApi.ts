@@ -13,15 +13,15 @@ import type {
 
 export const resumeApi = {
   async getMyResumes(): Promise<ResumeListResponse> {
-    return apiClient.get<ResumeListResponse>('/posts/resume/list/me');
+    return apiClient.get<ResumeListResponse>('/api/posts/resume/list/me');
   },
 
   async getResumeById(resumeId: number): Promise<ResumeDetail> {
-    return apiClient.get<ResumeDetail>(`/posts/resume/${resumeId}`);
+    return apiClient.get<ResumeDetail>(`/api/posts/resume/${resumeId}`);
   },
 
   async createResume(data: CreateResumeRequest): Promise<string> {
-    return apiClient.post<string>('/posts/resume', data);
+    return apiClient.post<string>('/api/posts/resume', data);
   },
 
   async updateResume(
@@ -29,13 +29,13 @@ export const resumeApi = {
     data: UpdateResumeRequest
   ): Promise<string> {
     return apiClient.put<string>(
-      `/posts/resume/${resumeId}`,
+      `/api/posts/resume/${resumeId}`,
       data
     );
   },
 
   async deleteResume(resumeId: number): Promise<string> {
-    return apiClient.delete<string>(`/posts/resume/${resumeId}`);
+    return apiClient.delete<string>(`/api/posts/resume/${resumeId}`);
   },
 
   async uploadResumeFile(file: File): Promise<UploadResumeFileResponse> {

@@ -289,7 +289,7 @@ const ProfileEditContainer: React.FC = () => {
     const fetchSectionData = async () => {
       try {
         if (activeSection === 'contact') {
-          const contactData = await apiClient.get('/contact') as ContactInfoForm;
+          const contactData = await apiClient.get('/api/contact') as ContactInfoForm;
           if (contactData) {
             contactForm.reset({
               user_id: contactData.user_id ?? undefined,
@@ -350,7 +350,7 @@ const ProfileEditContainer: React.FC = () => {
             const imageUrl = await uploadFileToMinio({
               file: selectedImageFile,
               file_type: 'profile_image',
-              endpoint: '/minio/user/file',
+              endpoint: '/api/minio/user/file',
             });
             if (imageUrl) {
               formData = { ...formData, profile_image_url: imageUrl };
@@ -362,7 +362,7 @@ const ProfileEditContainer: React.FC = () => {
             const portfolioUrl = await uploadFileToMinio({
               file: selectedPortfolioFile,
               file_type: 'portfolio',
-              endpoint: '/minio/user/file',
+              endpoint: '/api/minio/user/file',
             });
             if (portfolioUrl) {
               formData = { ...formData, portfolio_url: portfolioUrl };
