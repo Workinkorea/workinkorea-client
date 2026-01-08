@@ -9,12 +9,12 @@ export const diagnosisApi = {
     data: DiagnosisAnswerRequest
   ): Promise<DiagnosisAnswerResponse> {
     return apiClient.post<DiagnosisAnswerResponse>(
-      '/diagnosis/answer',
+      '/api/diagnosis/answer',
       data
     );
   },
 
   async getDiagnosisAnswer(id: number): Promise<DiagnosisAnswerResponse> {
-    return apiClient.get<DiagnosisAnswerResponse>(`/diagnosis/answer/${id}`);
+    return apiClient.get<DiagnosisAnswerResponse>(`/api/diagnosis/answer/${id}`);
   },
 };

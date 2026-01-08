@@ -3,14 +3,14 @@ import { CompanyProfileResponse, CompanyProfileRequest } from "@/shared/types/ap
 
 export const profileApi = {
   async getProfileCompany(): Promise<CompanyProfileResponse> {
-    return apiClient.get<CompanyProfileResponse>('/company-profile');
+    return apiClient.get<CompanyProfileResponse>('/api/company-profile');
   },
 
   async createProfileCompany(data: CompanyProfileRequest): Promise<CompanyProfileResponse> {
-    return apiClient.post<CompanyProfileResponse>('/company-profile', data);
+    return apiClient.post<CompanyProfileResponse>('/api/company-profile', data);
   },
 
   async updateProfileCompany(data: CompanyProfileRequest): Promise<CompanyProfileResponse> {
-    return apiClient.put<CompanyProfileResponse>('/company-profile', data);
+    return apiClient.put<CompanyProfileResponse>('/api/company-profile', data);
   },
 };

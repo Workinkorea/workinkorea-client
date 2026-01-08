@@ -83,7 +83,7 @@ export const postsApi = {
     queryParams.append('skip', skip.toString());
     queryParams.append('limit', limit.toString());
 
-    const url = `/posts/company/list?${queryParams.toString()}`;
+    const url = `/api/posts/company/list?${queryParams.toString()}`;
 
     const data = await apiClient.get<CompanyPostsResponse>(url, {
       skipAuth: true,
@@ -111,7 +111,7 @@ export const postsApi = {
     queryParams.append('skip', skip.toString());
     queryParams.append('limit', limit.toString());
 
-    const url = `/posts/company/list?${queryParams.toString()}`;
+    const url = `/api/posts/company/list?${queryParams.toString()}`;
 
     const data = await apiClient.get<CompanyPostsResponse>(url);
 
@@ -133,7 +133,7 @@ export const postsApi = {
 
   async getCompanyPostById(companyPostId: number): Promise<CompanyPostDetailResponse> {
     return apiClient.get<CompanyPostDetailResponse>(
-      `/posts/company/${companyPostId}`,
+      `/api/posts/company/${companyPostId}`,
       {
         skipAuth: true,
       }
@@ -144,7 +144,7 @@ export const postsApi = {
     data: CreateCompanyPostRequest
   ): Promise<CreateCompanyPostResponse> {
     return apiClient.post<CreateCompanyPostResponse>(
-      '/posts/company',
+      '/api/posts/company',
       data
     );
   },
@@ -154,14 +154,14 @@ export const postsApi = {
     data: UpdateCompanyPostRequest
   ): Promise<UpdateCompanyPostResponse> {
     return apiClient.put<UpdateCompanyPostResponse>(
-      `/posts/company/${companyPostId}`,
+      `/api/posts/company/${companyPostId}`,
       data
     );
   },
 
   async deleteCompanyPost(companyPostId: number): Promise<DeleteCompanyPostResponse> {
     return apiClient.delete<DeleteCompanyPostResponse>(
-      `/posts/company/${companyPostId}`
+      `/api/posts/company/${companyPostId}`
     );
   },
 };

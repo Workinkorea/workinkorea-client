@@ -107,9 +107,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (typeof window !== 'undefined') {
       try {
         const endpoint =
-          currentUserType === 'company' ? '/auth/company/logout' :
-          currentUserType === 'admin' ? '/auth/admin/logout' :
-          '/auth/logout';
+          currentUserType === 'company' ? '/api/auth/company/logout' :
+          currentUserType === 'admin' ? '/api/auth/admin/logout' :
+          '/api/auth/logout';
         await apiClient.delete(endpoint);
       } catch (err) {
         console.error('Logout failed:', err);

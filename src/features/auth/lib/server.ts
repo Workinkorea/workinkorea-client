@@ -51,7 +51,7 @@ export async function getServerAuthFromBackend() {
     // createServerApiClient import 추가 필요
     const { createServerApiClient } = await import('@/shared/api/server');
     const apiClient = await createServerApiClient();
-    const response = await apiClient.get('/auth/me');
+    const response = await apiClient.get('/api/auth/me');
 
     return {
       isAuthenticated: true,

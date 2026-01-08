@@ -31,7 +31,7 @@ const processQueue = (error: unknown, token: string | null) => {
 };
 
 const api = axios.create({
-  baseURL: `${API_BASE_URL}/api`,
+  baseURL: API_BASE_URL,
   withCredentials: true,
   timeout: 10000,
 });
@@ -70,9 +70,9 @@ async function refreshToken(): Promise<string> {
   }
 
   const endpoint =
-    userType === "company" ? "/auth/company/refresh" :
-      userType === "admin" ? "/auth/admin/refresh" :
-        "/auth/refresh";
+    userType === "company" ? "/api/auth/company/refresh" :
+      userType === "admin" ? "/api/auth/admin/refresh" :
+        "/api/auth/refresh";
 
   try {
     const response = await api.post(
@@ -139,8 +139,8 @@ api.interceptors.response.use(
     // If refresh endpoint itself failed → don't retry, just fail
     // (refreshToken() already handles logout and redirect)
     if (
-      originalConfig.url?.includes("/auth/refresh") ||
-      originalConfig.url?.includes("/auth/company/refresh")
+      originalConfig.url?.includes("/api/auth/refresh") ||
+      originalConfig.url?.includes("/api/auth/company/refresh")
     ) {
       console.error("[apiClient] Refresh endpoint failed, not retrying");
       return Promise.reject(error);
