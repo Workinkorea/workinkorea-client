@@ -31,7 +31,7 @@ const processQueue = (error: unknown, token: string | null) => {
 };
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: `${API_BASE_URL}/api`,
   withCredentials: true,
   timeout: 10000,
 });

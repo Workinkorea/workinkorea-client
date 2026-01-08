@@ -43,7 +43,7 @@ export const resumeApi = {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
     // 1단계: 백엔드에서 presigned POST URL 받기
-    const presignedResponse = await fetch(`${API_BASE_URL}/metest/user/image`, {
+    const presignedResponse = await fetch(`${API_BASE_URL}/api/metest/user/image`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ export const resumeApi = {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
     // 1단계: 백엔드에서 presigned POST URL 받기
-    const presignedResponse = await fetch(`${API_BASE_URL}/metest/user/image`, {
+    const presignedResponse = await fetch(`${API_BASE_URL}/api/metest/user/image`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export const resumeApi = {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
     // 1단계: 백엔드에서 presigned POST URL 받기
-    const presignedResponse = await fetch(`${API_BASE_URL}/metest/user/image`, {
+    const presignedResponse = await fetch(`${API_BASE_URL}/api/metest/user/image`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

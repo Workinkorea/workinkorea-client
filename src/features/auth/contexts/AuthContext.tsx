@@ -35,7 +35,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // 인증 상태 체크 함수
   const checkAuth = useCallback(() => {
     // API 경로에서는 인증 로직 스킵
-    if (pathname?.includes('/api/auth')) {
+    if (pathname?.includes('auth')) {
       setIsLoading(false);
       return;
     }
@@ -107,9 +107,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (typeof window !== 'undefined') {
       try {
         const endpoint =
-          currentUserType === 'company' ? '/api/auth/company/logout' :
-          currentUserType === 'admin' ? '/api/auth/admin/logout' :
-          '/api/auth/logout';
+          currentUserType === 'company' ? '/auth/company/logout' :
+          currentUserType === 'admin' ? '/auth/admin/logout' :
+          '/auth/logout';
         await apiClient.delete(endpoint);
       } catch (err) {
         console.error('Logout failed:', err);
