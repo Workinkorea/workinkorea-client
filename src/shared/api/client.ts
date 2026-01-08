@@ -65,15 +65,8 @@ async function refreshToken(): Promise<string> {
     throw new Error("No token for refresh");
   }
 
-  // 저장된 token_type에서 사용자 타입 추출 (우선)
-  // fallback으로 JWT에서 파싱
-  let userType = tokenManager.getUserTypeFromTokenType();
-
-  if (!userType) {
-    console.warn("[apiClient] No stored token_type, falling back to JWT parsing");
-    const jwtUserType = tokenManager.getUserType();
-    userType = jwtUserType === 'company' ? 'company' : jwtUserType === 'user' ? 'user' : null;
-  }
+  // ✅ 최적화 4: 통합 함수 사용 (4줄 → 1줄)
+  const userType = tokenManager.getUserTypeWithFallback();
 
   if (!userType || (userType !== 'user' && userType !== 'company' && userType !== 'admin')) {
     console.error("[apiClient] Cannot determine user type from stored token_type or JWT");

@@ -50,12 +50,8 @@ export const useAuth = (options: UseAuthOptions = {}) => {
       const hasToken = tokenManager.hasToken();
       const isValid = tokenManager.isTokenValid();
 
-      // 저장된 token_type에서 사용자 타입 추출 (우선)
-      // fallback으로 JWT에서 파싱
-      let currentTokenType = tokenManager.getUserTypeFromTokenType();
-      if (!currentTokenType) {
-        currentTokenType = tokenManager.getUserType();
-      }
+      // ✅ 최적화 4: 통합 함수 사용 (4줄 → 1줄)
+      const currentTokenType = tokenManager.getUserTypeWithFallback();
 
       if (hasToken && isValid && currentTokenType) {
         // 유효한 토큰이 있으면 인증 상태 설정
@@ -89,24 +85,16 @@ export const useAuth = (options: UseAuthOptions = {}) => {
   const login = (accessToken: string, rememberMe: boolean = false) => {
     tokenManager.setToken(accessToken, rememberMe);
 
-    // 저장된 token_type에서 사용자 타입 추출 (우선)
-    // fallback으로 JWT에서 파싱
-    let userType = tokenManager.getUserTypeFromTokenType();
-    if (!userType) {
-      userType = tokenManager.getUserType();
-    }
+    // ✅ 최적화 4: 통합 함수 사용 (4줄 → 1줄)
+    const userType = tokenManager.getUserTypeWithFallback();
 
     setIsAuthenticated(true);
     setUserType(userType === 'admin' ? 'company' : userType);
   };
 
   const logout = async () => {
-    // 저장된 token_type에서 사용자 타입 추출 (우선)
-    // fallback으로 JWT에서 파싱
-    let currentUserType = tokenManager.getUserTypeFromTokenType();
-    if (!currentUserType) {
-      currentUserType = tokenManager.getUserType();
-    }
+    // ✅ 최적화 4: 통합 함수 사용 (4줄 → 1줄)
+    const currentUserType = tokenManager.getUserTypeWithFallback();
 
     tokenManager.removeToken();
     setIsAuthenticated(false);
