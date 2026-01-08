@@ -23,7 +23,7 @@ export async function getCompanyPosts(
 ): Promise<CompanyPostsResponse> {
   // page를 skip으로 변환 (API는 skip을 사용)
   const skip = (page - 1) * limit;
-  const url = `${API_BASE_URL}/posts/company/list?skip=${skip}&limit=${limit}`;
+  const url = `${API_BASE_URL}/api/posts/company/list?skip=${skip}&limit=${limit}`;
 
   try {
     const controller = new AbortController();

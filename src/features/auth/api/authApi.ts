@@ -67,7 +67,7 @@ export const authApi = {
   async verifyBusinessNumber(businessNumber: string): Promise<BusinessVerificationResponse> {
     try {
       const response = await axios.post<BusinessVerificationResponse>(
-        '/api/verify-business',
+        '/api/auth/verify-business',
         { businessNumber },
         {
           headers: {
