@@ -162,7 +162,7 @@ export default function LoginContent() {
         // 자동로그인 체크박스에 따라 localStorage 또는 sessionStorage에 저장
         // token_type을 함께 저장 (기본값: 'access')
         const tokenType = response.token_type || 'access';
-        tokenManager.setAccessToken(response.token, data.rememberMe, tokenType);
+        tokenManager.setToken(response.token, data.rememberMe, tokenType);
 
         if (data.rememberMe) {
           localStorage.setItem(SAVED_EMAIL_KEY, data.email);

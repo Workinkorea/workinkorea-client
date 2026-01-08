@@ -178,7 +178,7 @@ export default function BusinessLoginForm() {
       // 새로운 방식: access_token과 token_type을 직접 받음
       if (response.access_token) {
         const tokenType = response.token_type || 'access_company';
-        tokenManager.setCompanyAccessToken(response.access_token, data.rememberMe, tokenType);
+        tokenManager.setToken(response.access_token, data.rememberMe, tokenType);
 
         if (data.rememberMe) {
           localStorage.setItem(SAVED_EMAIL_KEY, data.email);
@@ -197,7 +197,7 @@ export default function BusinessLoginForm() {
         if (token) {
           // 자동로그인 체크박스에 따라 localStorage 또는 sessionStorage에 저장
           const tokenType = response.token_type || 'access_company';
-          tokenManager.setCompanyAccessToken(token, data.rememberMe, tokenType);
+          tokenManager.setToken(token, data.rememberMe, tokenType);
         }
 
         if (data.rememberMe) {

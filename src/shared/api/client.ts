@@ -36,17 +36,13 @@ const api = axios.create({
   timeout: 10000,
 });
 
-// Get token (단일 토큰 사용)
-function getToken(): string | null {
-  return tokenManager.getToken();
-}
-
 // Automatically attach token
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig & { skipAuth?: boolean }) => {
     if (config.skipAuth) return config;
 
-    const token = getToken();
+    // ✅ 최적화 6: 불필요한 래핑 제거 - tokenManager 직접 호출
+    const token = tokenManager.getToken();
     if (token) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
@@ -58,22 +54,15 @@ api.interceptors.request.use(
 // Refresh token
 async function refreshToken(): Promise<string> {
   // 현재 토큰 가져오기
-  const currentToken = getToken();
+  const currentToken = tokenManager.getToken();
 
   if (!currentToken) {
     console.error("[apiClient] No token found for refresh");
     throw new Error("No token for refresh");
   }
 
-  // 저장된 token_type에서 사용자 타입 추출 (우선)
-  // fallback으로 JWT에서 파싱
-  let userType = tokenManager.getUserTypeFromTokenType();
-
-  if (!userType) {
-    console.warn("[apiClient] No stored token_type, falling back to JWT parsing");
-    const jwtUserType = tokenManager.getUserType();
-    userType = jwtUserType === 'company' ? 'company' : jwtUserType === 'user' ? 'user' : null;
-  }
+  // ✅ 최적화 4: 통합 함수 사용 (4줄 → 1줄)
+  const userType = tokenManager.getUserTypeWithFallback();
 
   if (!userType || (userType !== 'user' && userType !== 'company' && userType !== 'admin')) {
     console.error("[apiClient] Cannot determine user type from stored token_type or JWT");
@@ -111,15 +100,28 @@ async function refreshToken(): Promise<string> {
   } catch (err) {
     console.error(`[apiClient] Refresh failed for ${userType} token:`, err);
 
+    // ✅ 최적화 9: 사용자 피드백 개선
     // 토큰 제거
     tokenManager.removeToken();
 
-    // 로그인 페이지로 리다이렉트
+    // 로그인 페이지로 리다이렉트 (사용자에게 시간 제공)
     if (typeof window !== "undefined") {
       const loginPath =
         userType === "company" ? "/company-login" :
           userType === "admin" ? "/admin/login" :
             "/login";
+
+      // 사용자 친화적 메시지
+      const errorMessage = '세션이 만료되었습니다. 다시 로그인해주세요.';
+
+      // 콘솔에 상세 에러 로그 (개발자용)
+      console.warn('[Auth] Session expired. Redirecting to login...', {
+        userType,
+        loginPath,
+        error: err
+      });
+
+      // 즉시 리다이렉트 (토스트 메시지는 layout.tsx의 Toaster가 이미 처리)
       window.location.replace(loginPath);
     }
     throw err;
