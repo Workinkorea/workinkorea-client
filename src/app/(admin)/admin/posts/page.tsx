@@ -1,5 +1,5 @@
-import { createServerAdminApi } from '@/lib/api/server';
-import PostsTableClient from '@/components/admin/PostsTableClient';
+import { createServerAdminApi } from '@/shared/api/server';
+import PostsTableClient from '@/features/admin/components/PostsTableClient';
 
 export const dynamic = 'force-dynamic';
 

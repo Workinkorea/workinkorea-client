@@ -3,10 +3,10 @@
 import React from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import ResumeEditor from '@/components/resume/ResumeEditor';
-import { Resume } from '@/types/user';
-import { resumeApi } from '@/lib/api/resume';
-import { profileApi } from '@/lib/api/profile';
+import ResumeEditor from '@/features/resume/components/ResumeEditor';
+import { Resume } from '@/features/user/types/user';
+import { resumeApi } from '@/features/resume/api/resumeApi';
+import { profileApi } from '@/features/profile/api/profileApi';
 
 // ISO 날짜 형식(2022-02-23T00:00:00)을 YYYY-MM-DD 형식으로 변환
 const formatDateForInput = (dateString: string | null | undefined): string => {

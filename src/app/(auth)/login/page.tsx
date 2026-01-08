@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { createMetadata } from '@/lib/metadata';
-import LoginContent from "@/components/login/LoginContent";
+import { createMetadata } from '@/shared/lib/metadata';
+import LoginContent from "@/features/auth/components/LoginContent";
 
 export const metadata: Metadata = createMetadata({
   title: '개인 로그인',

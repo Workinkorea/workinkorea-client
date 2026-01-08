@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { SignupStep2Data } from '@/types/signup.type';
+import { SignupStep2Data } from '@/features/auth/types/signup.types';
 import { useRouter } from 'next/navigation';
-import BusinessSignupStep2 from '@/components/business-signup/BusinessSignupStep2';
+import BusinessSignupStep2 from '@/features/auth/components/BusinessSignupStep2';
 
 export default function SignupStep2Page() {
   const router = useRouter();

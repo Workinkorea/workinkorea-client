@@ -1,4 +1,4 @@
-import SignupComponent from "@/components/signup/SignupComponent";
+import SignupComponent from "@/features/auth/components/SignupComponent";
 
 interface SignupPageProps {
   searchParams: {

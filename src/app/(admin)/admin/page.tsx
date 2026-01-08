@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { createServerAdminApi } from '@/lib/api/server';
-import StatCards from '@/components/admin/StatCards';
+import { createServerAdminApi } from '@/shared/api/server';
+import StatCards from '@/features/admin/components/StatCards';
 
 export const dynamic = 'force-dynamic';
 

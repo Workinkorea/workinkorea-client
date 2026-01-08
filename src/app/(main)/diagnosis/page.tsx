@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { createMetadata } from '@/lib/metadata';
-import DiagnosisClient from '@/components/pages/DiagnosisClient';
+import { createMetadata } from '@/shared/lib/metadata';
+import DiagnosisClient from '@/features/diagnosis/pages/DiagnosisClient';
 
 export const metadata: Metadata = createMetadata({
   title: '자가진단 - WorkInKorea',

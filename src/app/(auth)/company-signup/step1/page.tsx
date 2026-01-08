@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import BusinessSignupStep1 from '@/components/business-signup/BusinessSignupStep1';
-import { SignupStep1Data } from '@/types/signup.type';
+import BusinessSignupStep1 from '@/features/auth/components/BusinessSignupStep1';
+import { SignupStep1Data } from '@/features/auth/types/signup.types';
 
 export default function SignupStep1Page() {
   const router = useRouter();

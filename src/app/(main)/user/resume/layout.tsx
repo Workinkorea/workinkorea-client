@@ -1,16 +1,16 @@
 'use client';
 
 import React from 'react';
-import Layout from '@/components/layout/Layout';
-import Header from '@/components/layout/Header';
-import { useAuth } from '@/hooks/useAuth';
+import Layout from '@/shared/components/layout/Layout';
+import Header from '@/shared/components/layout/Header';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 interface ResumeLayoutProps {
   children: React.ReactNode;
 }
 
 export default function ResumeLayout({ children }: ResumeLayoutProps) {
-  const { isAuthenticated, isLoading, userType, logout } = useAuth({ required: true });
+  const { isAuthenticated, isLoading, userType, logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();
