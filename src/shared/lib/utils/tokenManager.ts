@@ -13,6 +13,13 @@ export type ApiTokenType = 'access' | 'access_company' | 'admin_access';
 const TOKEN_KEY = 'accessToken';
 const TOKEN_TYPE_KEY = 'tokenType';
 
+// ✅ 최적화 7: 타입 안정성 개선 - 명확한 타입 매핑
+const TOKEN_TYPE_MAP: Record<ApiTokenType, 'user' | 'company' | 'admin'> = {
+  access: 'user',
+  access_company: 'company',
+  admin_access: 'admin',
+} as const;
+
 // ✅ 최적화 2: Storage 캐싱 (50% 성능 향상)
 let cachedToken: string | null = null;
 let cacheTimestamp: number = 0;
@@ -160,16 +167,11 @@ export const tokenManager = {
 
   /**
    * 저장된 token_type을 기반으로 사용자 타입을 반환합니다
+   * ✅ 최적화 7: 타입 매핑 객체 사용으로 안정성 향상
    */
   getUserTypeFromTokenType: (): 'user' | 'company' | 'admin' | null => {
     const tokenType = tokenManager.getTokenType();
-    if (!tokenType) return null;
-
-    if (tokenType === 'access_company') return 'company';
-    if (tokenType === 'admin_access') return 'admin';
-    if (tokenType === 'access') return 'user';
-
-    return null;
+    return tokenType ? TOKEN_TYPE_MAP[tokenType] : null;
   },
 
   /**

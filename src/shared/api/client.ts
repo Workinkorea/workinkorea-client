@@ -36,17 +36,13 @@ const api = axios.create({
   timeout: 10000,
 });
 
-// Get token (단일 토큰 사용)
-function getToken(): string | null {
-  return tokenManager.getToken();
-}
-
 // Automatically attach token
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig & { skipAuth?: boolean }) => {
     if (config.skipAuth) return config;
 
-    const token = getToken();
+    // ✅ 최적화 6: 불필요한 래핑 제거 - tokenManager 직접 호출
+    const token = tokenManager.getToken();
     if (token) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
@@ -58,7 +54,7 @@ api.interceptors.request.use(
 // Refresh token
 async function refreshToken(): Promise<string> {
   // 현재 토큰 가져오기
-  const currentToken = getToken();
+  const currentToken = tokenManager.getToken();
 
   if (!currentToken) {
     console.error("[apiClient] No token found for refresh");
