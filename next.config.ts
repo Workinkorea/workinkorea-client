@@ -13,14 +13,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  /**
-   * ✅ Phase 4 최적화 12: 보안 헤더 추가
-   * - CSP: XSS 공격 방어
-   * - X-Frame-Options: Clickjacking 방어
-   * - X-Content-Type-Options: MIME sniffing 방지
-   * - Referrer-Policy: 민감한 정보 노출 방지
-   * - Permissions-Policy: 브라우저 기능 제한
-   */
+  
   async headers() {
     return [
       {

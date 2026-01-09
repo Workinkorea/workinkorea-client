@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation';
 import { isTokenExpired } from '@/shared/lib/utils/jwtUtils';
 
 /**
- * ✅ Phase 4 최적화 13: 서버 측 쿠키 관리 개선
  *
  * ⚠️ 중요: 별도 Python 백엔드 사용 시 제한적으로 작동
  *
@@ -92,10 +91,7 @@ export async function requireUserType(requiredType: 'user' | 'company') {
 }
 
 /**
- * ✅ Phase 4 최적화 13: 쿠키 설정 유틸리티
- *
  * 안전한 쿠키 설정 옵션
- * 참고: 실제 쿠키 설정은 백엔드에서 수행해야 합니다.
  */
 export const SECURE_COOKIE_OPTIONS = {
   /**
