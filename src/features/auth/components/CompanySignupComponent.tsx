@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { FormField } from '@/shared/ui/FormField';
 import { validatePassword } from '@/shared/lib/utils/validation';
-import { authApi } from '@/features/auth/api/authApi';
 import { toast } from 'sonner';
 import TermsModal from '@/shared/ui/TermsModal';
 import {
@@ -155,17 +154,16 @@ export default function CompanySignupComponent() {
       return;
     }
 
-    const companySignupData = {
-      user_id: data.userId,
-      password: data.password,
-      name: data.name,
-      phone: data.phoneNumber.replace(/[^0-9]/g, ''),
-      email: data.email,
-      verification_method: formState.verificationMethod,
-    };
-
     try {
       // TODO: Replace with actual company signup API
+      // const companySignupData = {
+      //   user_id: data.userId,
+      //   password: data.password,
+      //   name: data.name,
+      //   phone: data.phoneNumber.replace(/[^0-9]/g, ''),
+      //   email: data.email,
+      //   verification_method: formState.verificationMethod,
+      // };
       // await authApi.companySignup(companySignupData);
 
       toast.success('기업 회원가입이 완료되었습니다. 로그인 해주세요.');
