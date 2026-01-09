@@ -19,12 +19,6 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-/**
- * ✅ 최적화 5: Context API로 전환
- * - Storage 이벤트 리스너를 1번만 등록 (이전: useAuth 호출마다 중복 등록)
- * - 전역 인증 상태 관리
- * - 메모리 누수 방지
- */
 export function AuthProvider({ children }: AuthProviderProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -134,10 +128,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-/**
- * useAuth hook - Context 값에 접근
- * ✅ 최적화: 이제 리스너를 중복 등록하지 않음
- */
 export function useAuth() {
   const context = useContext(AuthContext);
 

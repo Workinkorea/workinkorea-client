@@ -211,10 +211,6 @@ export const logError = (error: unknown, context?: string): void => {
 };
 
 /**
- * ✅ 최적화 11: 토큰 관련 에러 메시지 유틸리티
- */
-
-/**
  * 사용자 친화적인 인증 에러 메시지를 반환합니다
  *
  * @param error - Unknown error object
