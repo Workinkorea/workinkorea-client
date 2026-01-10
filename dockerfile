@@ -36,7 +36,9 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV=$NODE_ENV
+ARG NODE_ENV
+
+ENV NODE_ENV=${NODE_ENV}
 
 # 리눅스 그룹과 유저 생성
 RUN addgroup --system --gid 1001 nodejs
