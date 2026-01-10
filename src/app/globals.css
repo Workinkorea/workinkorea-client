@@ -107,18 +107,73 @@
   --color-foreground-dark: #ededed;
 }
 
+/* Light Mode (기본값) */
+:root {
+  --color-background-default: #FFFFFF;
+  --color-background-alternative: #F5F6FA;
+  --color-label-900: #0D0E0E;
+  --color-label-800: #32373F;
+  --color-label-700: #6E747E;
+  --color-label-600: #9CA3AF;
+  --color-label-500: #9CA3AF;
+  --color-label-400: #CBD5E1;
+  --color-label-100: #F9FAFB;
+  --color-line-800: #111827;
+  --color-line-400: #DFE3E8;
+  --color-line-200: #F3F4F6;
+  --color-component-dark: #23272E;
+  --color-component-light: #D1D5DB;
+  --color-component-assistive: #F8FAFC;
+  --color-component-alternative: #F1F5F9;
+}
+
+/* Dark Mode */
+.dark {
+  --color-background-default: #0a0a0a;
+  --color-background-alternative: #1a1a1a;
+  --color-label-900: #ededed;
+  --color-label-800: #d4d4d4;
+  --color-label-700: #a3a3a3;
+  --color-label-600: #737373;
+  --color-label-500: #737373;
+  --color-label-400: #525252;
+  --color-label-100: #262626;
+  --color-line-800: #f5f5f5;
+  --color-line-400: #404040;
+  --color-line-200: #262626;
+  --color-component-dark: #ededed;
+  --color-component-light: #404040;
+  --color-component-assistive: #171717;
+  --color-component-alternative: #262626;
+}
+
+/* Prevent flash of unstyled content */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --color-background-default: var(--color-background-dark);
-    --color-foreground-default: var(--color-foreground-dark);
+  :root:not(.light) {
+    --color-background-default: #0a0a0a;
+    --color-background-alternative: #1a1a1a;
+    --color-label-900: #ededed;
+    --color-label-800: #d4d4d4;
+    --color-label-700: #a3a3a3;
+    --color-label-600: #737373;
+    --color-label-500: #737373;
+    --color-label-400: #525252;
+    --color-label-100: #262626;
+    --color-line-800: #f5f5f5;
+    --color-line-400: #404040;
+    --color-line-200: #262626;
+    --color-component-dark: #ededed;
+    --color-component-light: #404040;
+    --color-component-assistive: #171717;
+    --color-component-alternative: #262626;
   }
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --color-background-default: var(--color-background-light);
-    --color-foreground-default: var(--color-foreground-light);
-  }
+/* Body 스타일 */
+body {
+  background-color: var(--color-background-default);
+  color: var(--color-label-900);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* 커스텀 텍스트 크기 클래스 */

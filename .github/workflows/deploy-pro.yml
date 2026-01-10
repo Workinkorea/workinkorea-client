@@ -8,6 +8,7 @@ env:
   REGION: asia-northeast3
   REPO_NAME: docker-repo
   IMAGE_NAME: workinkorea-client-pro
+  VPC_CONNECTOR: workinkorea-vpc-con
 
 jobs:
   deploy:
@@ -39,7 +40,9 @@ jobs:
             --platform managed \
             --port 3000 \
             --allow-unauthenticated \
-            --set-env-vars "NODE_ENV=production"
+            --vpc-connector ${{ env.VPC_CONNECTOR }} \
+            --vpc-egress all \
+            --set-env-vars "NODE_ENV=production, NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}"
 
      # discord notification
       - name: send success message
@@ -48,7 +51,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           status: ${{ job.status }}
-          title: "Workinkorea-Server-Production"
+          title: "Workinkorea-Client-Production"
           description: |
             **Image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}**
       
@@ -58,6 +61,6 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           status: ${{ job.status }}
-          title: "Workinkorea-Server-Production"
+          title: "Workinkorea-Client-Production"
           description: |
             **Image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}**
