@@ -42,7 +42,7 @@ jobs:
             --allow-unauthenticated \
             --vpc-connector ${{ env.VPC_CONNECTOR }} \
             --vpc-egress all \
-            --set-env-vars "NODE_ENV=production, NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}"
+            --set-env-vars "NODE_ENV=production, NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}, NTS_API_KEY=${{ secrets.NTS_API_KEY }}"
 
      # discord notification
       - name: send success message
