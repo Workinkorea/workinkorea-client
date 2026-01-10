@@ -22,9 +22,10 @@ async function getJobs(page: number = 1, limit: number = 12) {
 export default async function JobsPage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }) {
-  const currentPage = parseInt(searchParams.page || '1', 10);
+  const params = await searchParams;
+  const currentPage = parseInt(params.page || '1', 10);
   const { company_posts, total } = await getJobs(currentPage);
 
   return (
