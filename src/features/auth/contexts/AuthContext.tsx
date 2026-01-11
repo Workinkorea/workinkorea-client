@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { tokenManager, TokenType } from '@/shared/lib/utils/tokenManager';
+import { tokenManager, TokenType, ApiTokenType } from '@/shared/lib/utils/tokenManager';
 import { usePathname, useRouter } from 'next/navigation';
 import { apiClient } from '@/shared/api/client';
 
@@ -9,7 +9,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
   userType: TokenType | null;
-  login: (accessToken: string, rememberMe?: boolean) => void;
+  login: (accessToken: string, rememberMe?: boolean, tokenType?: ApiTokenType) => void;
   logout: () => Promise<void>;
 }
 
@@ -82,8 +82,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [checkAuth]);
 
   // 로그인 함수
-  const login = useCallback((accessToken: string, rememberMe: boolean = false) => {
-    tokenManager.setToken(accessToken, rememberMe);
+  const login = useCallback((accessToken: string, rememberMe: boolean = false, tokenType?: ApiTokenType) => {
+    tokenManager.setToken(accessToken, rememberMe, tokenType);
     const userType = tokenManager.getUserTypeWithFallback();
 
     setIsAuthenticated(true);
@@ -102,8 +102,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       try {
         const endpoint =
           currentUserType === 'company' ? '/api/auth/company/logout' :
-          currentUserType === 'admin' ? '/api/auth/admin/logout' :
-          '/api/auth/logout';
+            currentUserType === 'admin' ? '/api/auth/admin/logout' :
+              '/api/auth/logout';
         await apiClient.delete(endpoint);
       } catch (err) {
         console.error('Logout failed:', err);
@@ -111,8 +111,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       const loginPath =
         currentUserType === 'company' ? '/company-login' :
-        currentUserType === 'admin' ? '/admin/login' :
-        '/login';
+          currentUserType === 'admin' ? '/admin/login' :
+            '/login';
       router.push(loginPath);
     }
   }, [router]);

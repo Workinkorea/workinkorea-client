@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { validatePassword } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
 import { tokenManager } from '@/shared/lib/utils/tokenManager';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 // import { formatBusinessNumber, isValidBusinessNumber, removeBusinessNumberHyphen } from '@/shared/lib/utils/authNumber'; // 사업자등록번호 방식에서 사용
 
 interface BusinessLoginFormData {
@@ -55,6 +56,7 @@ const getDefaultValues = (): BusinessLoginFormData => {
 
 export default function BusinessLoginForm() {
   const router = useRouter();
+  const { login: updateAuthContext } = useAuth();
   
   const {
     control,
@@ -178,7 +180,9 @@ export default function BusinessLoginForm() {
       // 새로운 방식: access_token과 token_type을 직접 받음
       if (response.access_token) {
         const tokenType = response.token_type || 'access_company';
-        tokenManager.setToken(response.access_token, data.rememberMe, tokenType);
+        
+        // AuthContext의 login 함수를 사용하여 토큰 저장 및 상태 업데이트
+        updateAuthContext(response.access_token, data.rememberMe, tokenType);
 
         if (data.rememberMe) {
           localStorage.setItem(SAVED_EMAIL_KEY, data.email);
@@ -195,9 +199,10 @@ export default function BusinessLoginForm() {
         const token = url.searchParams.get('token');
 
         if (token) {
-          // 자동로그인 체크박스에 따라 localStorage 또는 sessionStorage에 저장
           const tokenType = response.token_type || 'access_company';
-          tokenManager.setToken(token, data.rememberMe, tokenType);
+          
+          // AuthContext의 login 함수를 사용하여 토큰 저장 및 상태 업데이트
+          updateAuthContext(token, data.rememberMe, tokenType);
         }
 
         if (data.rememberMe) {
