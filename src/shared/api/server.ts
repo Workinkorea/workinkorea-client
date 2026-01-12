@@ -49,7 +49,7 @@ export async function createServerAdminApi() {
     },
 
     async getCompanyPosts(page: number = 1, limit: number = 12) {
-      const response = await client.get(`/api/posts/company/?page=${page}&limit=${limit}`);
+      const response = await client.get(`/api/posts/company?page=${page}&limit=${limit}`);
       return response.data;
     },
 
