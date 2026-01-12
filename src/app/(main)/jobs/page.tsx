@@ -12,7 +12,6 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 async function getJobs(page: number = 1, limit: number = 12) {
   try {
-    // Use public endpoint: /api/posts/company/list with skip and limit parameters
     const skip = (page - 1) * limit;
     const url = `${API_BASE_URL}/api/posts/company/list?skip=${skip}&limit=${limit}`;
 
@@ -48,19 +47,16 @@ async function getJobs(page: number = 1, limit: number = 12) {
 
     const data = await res.json();
 
-    // API returns pagination.count (current page items), not total
-    // Estimate total pages: if count < limit, this is the last page
     const currentCount = data.pagination?.count || data.company_posts?.length || 0;
     const isLastPage = currentCount < limit;
     const estimatedTotal = isLastPage ? skip + currentCount : skip + currentCount + 1; // +1 to show "next" button
 
-    // Ensure the response matches CompanyPostsResponse structure
     return {
       company_posts: data.company_posts || [],
       total: estimatedTotal,
       page,
       limit,
-      total_pages: isLastPage ? page : page + 1, // Show at least one more page if not last
+      total_pages: isLastPage ? page : page + 1,
     };
   } catch (error) {
     console.error('Failed to fetch jobs:', error);

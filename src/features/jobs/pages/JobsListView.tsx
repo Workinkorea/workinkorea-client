@@ -15,7 +15,6 @@ interface JobsListViewProps {
 export default function JobsListView({ initialData, currentPage }: JobsListViewProps) {
   const limit = 12;
 
-  // TanStack Query: Hydrate with SSR data
   const { data, isLoading, error } = useCompanyPosts(currentPage, limit, initialData);
 
   const posts = data?.company_posts || [];
