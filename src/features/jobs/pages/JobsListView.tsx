@@ -5,7 +5,7 @@ import HeaderClient from '@/shared/components/layout/HeaderClient';
 import JobCard from '@/features/jobs/components/JobCard';
 import JobsPaginationClient from '@/features/jobs/components/JobsPaginationClient';
 import { useCompanyPosts } from '@/features/jobs/hooks/useCompanyPosts';
-import type { CompanyPost, CompanyPostsResponse } from '@/shared/types/api';
+import type { CompanyPostsResponse } from '@/shared/types/api';
 
 interface JobsListViewProps {
   initialData: CompanyPostsResponse;

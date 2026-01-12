@@ -33,7 +33,7 @@ import { toast } from 'react-hot-toast';
 export function useJobApplication() {
   return useMutation({
     mutationFn: (data: ApplyToJobRequest) => postsApi.applyToJob(data),
-    onSuccess: (data) => {
+    onSuccess: (_data) => {
       toast.success('지원이 완료되었습니다!', {
         duration: 3000,
         position: 'top-center',

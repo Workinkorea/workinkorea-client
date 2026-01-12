@@ -41,7 +41,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
           {/* 공고 헤더 */}
           <div className="bg-white rounded-xl p-8 shadow-normal mb-6">
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl flex-shrink-0">
+              <div className="w-16 h-16 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl shrink-0">
                 {job.company_id}
               </div>
               <div className="flex-1">
