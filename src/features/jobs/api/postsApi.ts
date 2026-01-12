@@ -7,6 +7,8 @@ import {
   UpdateCompanyPostRequest,
   UpdateCompanyPostResponse,
   DeleteCompanyPostResponse,
+  ApplyToJobRequest,
+  ApplyToJobResponse,
 } from '@/shared/types/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -21,9 +23,8 @@ export async function getCompanyPosts(
   page: number = DEFAULT_PAGE,
   limit: number = DEFAULT_LIMIT
 ): Promise<CompanyPostsResponse> {
-  // page를 skip으로 변환 (API는 skip을 사용)
-  const skip = (page - 1) * limit;
-  const url = `${API_BASE_URL}/api/posts/company/list?skip=${skip}&limit=${limit}`;
+  // GET /api/posts/company?page=X&limit=Y 엔드포인트 사용
+  const url = `${API_BASE_URL}/api/posts/company?page=${page}&limit=${limit}`;
 
   try {
     const controller = new AbortController();
@@ -76,14 +77,13 @@ export const postsApi = {
   }): Promise<CompanyPostsResponse> {
     const page = params?.page || DEFAULT_PAGE;
     const limit = params?.limit || DEFAULT_LIMIT;
-    // page를 skip으로 변환
-    const skip = (page - 1) * limit;
 
     const queryParams = new URLSearchParams();
-    queryParams.append('skip', skip.toString());
+    queryParams.append('page', page.toString());
     queryParams.append('limit', limit.toString());
 
-    const url = `/api/posts/company/list?${queryParams.toString()}`;
+    // GET /api/posts/company 엔드포인트 사용
+    const url = `/api/posts/company?${queryParams.toString()}`;
 
     const data = await apiClient.get<CompanyPostsResponse>(url, {
       skipAuth: true,
@@ -104,14 +104,13 @@ export const postsApi = {
   }): Promise<CompanyPostsResponse> {
     const page = params?.page || DEFAULT_PAGE;
     const limit = params?.limit || DEFAULT_LIMIT;
-    // page를 skip으로 변환
-    const skip = (page - 1) * limit;
 
     const queryParams = new URLSearchParams();
-    queryParams.append('skip', skip.toString());
+    queryParams.append('page', page.toString());
     queryParams.append('limit', limit.toString());
 
-    const url = `/api/posts/company/list?${queryParams.toString()}`;
+    // GET /api/posts/company 엔드포인트 사용 (인증 토큰으로 내 공고만 조회)
+    const url = `/api/posts/company?${queryParams.toString()}`;
 
     const data = await apiClient.get<CompanyPostsResponse>(url);
 
@@ -162,6 +161,18 @@ export const postsApi = {
   async deleteCompanyPost(companyPostId: number): Promise<DeleteCompanyPostResponse> {
     return apiClient.delete<DeleteCompanyPostResponse>(
       `/api/posts/company/${companyPostId}`
+    );
+  },
+
+  /**
+   * 채용 공고에 지원하기
+   * @param data - 지원 정보 (company_post_id, resume_id, cover_letter)
+   * @returns 지원 완료 응답
+   */
+  async applyToJob(data: ApplyToJobRequest): Promise<ApplyToJobResponse> {
+    return apiClient.post<ApplyToJobResponse>(
+      '/api/applications',
+      data
     );
   },
 };
