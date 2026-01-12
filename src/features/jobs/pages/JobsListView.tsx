@@ -1,21 +1,18 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import Layout from '@/shared/components/layout/Layout';
 import HeaderClient from '@/shared/components/layout/HeaderClient';
 import JobCard from '@/features/jobs/components/JobCard';
 import JobsPaginationClient from '@/features/jobs/components/JobsPaginationClient';
 import { useCompanyPosts } from '@/features/jobs/hooks/useCompanyPosts';
-import type { CompanyPostsResponse } from '@/shared/types/api';
 
-interface JobsListViewProps {
-  initialData: CompanyPostsResponse;
-  currentPage: number;
-}
-
-export default function JobsListView({ initialData, currentPage }: JobsListViewProps) {
+export default function JobsListView() {
+  const searchParams = useSearchParams();
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const limit = 12;
 
-  const { data, isLoading, error } = useCompanyPosts(currentPage, limit, initialData);
+  const { data, isLoading, error } = useCompanyPosts(currentPage, limit);
 
   const posts = data?.company_posts || [];
   const total = data?.total || 0;
