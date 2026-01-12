@@ -23,8 +23,9 @@ export async function getCompanyPosts(
   page: number = DEFAULT_PAGE,
   limit: number = DEFAULT_LIMIT
 ): Promise<CompanyPostsResponse> {
-  // GET /api/posts/company?page=X&limit=Y 엔드포인트 사용
-  const url = `${API_BASE_URL}/api/posts/company?page=${page}&limit=${limit}`;
+  // GET /api/posts/company/list?skip=X&limit=Y 엔드포인트 사용 (공개)
+  const skip = (page - 1) * limit;
+  const url = `${API_BASE_URL}/api/posts/company/list?skip=${skip}&limit=${limit}`;
 
   try {
     const controller = new AbortController();
@@ -52,11 +53,20 @@ export async function getCompanyPosts(
     }
 
     const data = await res.json();
+
+    // API returns pagination.count (current page items), not total
+    // Estimate total pages: if count < limit, this is the last page
+    const currentCount = data.pagination?.count || data.company_posts?.length || 0;
+    const isLastPage = currentCount < limit;
+    const estimatedTotal = isLastPage ? skip + currentCount : skip + currentCount + 1;
+
     // API 응답을 클라이언트 형식으로 변환
     return {
-      ...data,
+      company_posts: data.company_posts || [],
+      total: estimatedTotal,
       page,
-      total_pages: Math.ceil(data.total / limit),
+      limit,
+      total_pages: isLastPage ? page : page + 1,
     };
   } catch (error) {
     console.error('[Server] Error fetching company posts:', {
@@ -78,22 +88,43 @@ export const postsApi = {
     const page = params?.page || DEFAULT_PAGE;
     const limit = params?.limit || DEFAULT_LIMIT;
 
+    // Convert page to skip for the API
+    const skip = (page - 1) * limit;
+
     const queryParams = new URLSearchParams();
-    queryParams.append('page', page.toString());
+    queryParams.append('skip', skip.toString());
     queryParams.append('limit', limit.toString());
 
-    // GET /api/posts/company 엔드포인트 사용
-    const url = `/api/posts/company?${queryParams.toString()}`;
+    // GET /api/posts/company/list 엔드포인트 사용 (공개)
+    const url = `/api/posts/company/list?${queryParams.toString()}`;
 
-    const data = await apiClient.get<CompanyPostsResponse>(url, {
+    // API response type with pagination
+    interface ApiResponse {
+      company_posts: CompanyPostsResponse['company_posts'];
+      pagination?: {
+        count?: number;
+        skip?: number;
+        limit?: number;
+      };
+    }
+
+    const data = await apiClient.get<ApiResponse>(url, {
       skipAuth: true,
     });
 
+    // API returns pagination.count (current page items), not total
+    // Estimate total pages: if count < limit, this is the last page
+    const currentCount = data.pagination?.count || data.company_posts?.length || 0;
+    const isLastPage = currentCount < limit;
+    const estimatedTotal = isLastPage ? skip + currentCount : skip + currentCount + 1;
+
     // API 응답을 클라이언트 형식으로 변환
     return {
-      ...data,
+      company_posts: data.company_posts || [],
+      total: estimatedTotal,
       page,
-      total_pages: Math.ceil(data.total / limit),
+      limit,
+      total_pages: isLastPage ? page : page + 1,
     };
   },
 
