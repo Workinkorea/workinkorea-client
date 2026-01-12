@@ -12,10 +12,25 @@ export const metadata: Metadata = createMetadata({
 async function getJobs(page: number = 1, limit: number = 12) {
   try {
     const adminApi = await createServerAdminApi();
-    return await adminApi.getCompanyPosts(page, limit);
+    const data = await adminApi.getCompanyPosts(page, limit);
+
+    // Ensure the response matches CompanyPostsResponse structure
+    return {
+      company_posts: data.company_posts || [],
+      total: data.total || 0,
+      page,
+      limit,
+      total_pages: Math.ceil((data.total || 0) / limit),
+    };
   } catch (error) {
     console.error('Failed to fetch jobs:', error);
-    return { company_posts: [], total: 0 };
+    return {
+      company_posts: [],
+      total: 0,
+      page,
+      limit,
+      total_pages: 0,
+    };
   }
 }
 
@@ -26,12 +41,11 @@ export default async function JobsPage({
 }) {
   const params = await searchParams;
   const currentPage = parseInt(params.page || '1', 10);
-  const { company_posts, total } = await getJobs(currentPage);
+  const initialData = await getJobs(currentPage);
 
   return (
     <JobsListView
-      initialPosts={company_posts}
-      total={total}
+      initialData={initialData}
       currentPage={currentPage}
     />
   );

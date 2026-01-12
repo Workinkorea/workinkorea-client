@@ -1,7 +1,10 @@
+'use client';
+
 import { MapPin, Clock, DollarSign, Briefcase, GraduationCap, Languages, Calendar } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
 import HeaderClient from '@/shared/components/layout/HeaderClient';
 import JobDetailActions from './JobDetailActions';
+import { useJobApplication } from '@/features/jobs/hooks/useJobApplication';
 import type { CompanyPostDetailResponse } from '@/shared/types/api';
 
 interface JobDetailViewProps {
@@ -9,6 +12,23 @@ interface JobDetailViewProps {
 }
 
 export default function JobDetailView({ job }: JobDetailViewProps) {
+  const { mutate: applyToJob, isPending } = useJobApplication();
+
+  const handleApply = () => {
+    applyToJob(
+      {
+        company_post_id: job.id,
+        // resume_id는 사용자가 선택하도록 모달 등으로 구현 가능
+        // cover_letter도 선택적으로 입력받을 수 있음
+      },
+      {
+        onSuccess: () => {
+          // 지원 완료 후 처리 (예: 마이페이지로 이동)
+          console.log('Application submitted successfully');
+        },
+      }
+    );
+  };
   const language = job.language ? job.language.split(',').map(l => l.trim()) : [];
 
   return (
@@ -135,8 +155,12 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
 
           {/* 지원하기 버튼 */}
           <div className="bg-white rounded-xl p-6 shadow-normal">
-            <button className="w-full bg-primary-500 hover:bg-primary-600 text-white py-4 rounded-lg font-semibold text-body-1 transition-colors">
-              지원하기
+            <button
+              onClick={handleApply}
+              disabled={isPending}
+              className="w-full bg-primary-500 hover:bg-primary-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-4 rounded-lg font-semibold text-body-1 transition-colors"
+            >
+              {isPending ? '지원 중...' : '지원하기'}
             </button>
           </div>
         </div>
