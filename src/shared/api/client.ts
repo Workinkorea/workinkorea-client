@@ -90,10 +90,9 @@ class TokenService {
       throw new Error("Invalid token: cannot determine user type");
     }
 
-    const endpoint =
-      userType === "company" ? "/api/auth/company/refresh" :
-        userType === "admin" ? "/api/auth/admin/refresh" :
-          "/api/auth/refresh";
+    // 백엔드는 모든 사용자 타입에 대해 동일한 refresh 엔드포인트 사용
+    // JWT payload의 token_type으로 자동 구분
+    const endpoint = "/api/auth/refresh";
 
     try {
       const response = await api.post(
@@ -182,11 +181,7 @@ api.interceptors.response.use(
     }
 
     // If refresh endpoint itself failed → don't retry, just fail
-    if (
-      originalConfig.url?.includes("/api/auth/refresh") ||
-      originalConfig.url?.includes("/api/auth/company/refresh") ||
-      originalConfig.url?.includes("/api/auth/admin/refresh")
-    ) {
+    if (originalConfig.url?.includes("/api/auth/refresh")) {
       console.error("[apiClient] Refresh endpoint failed, not retrying");
       return Promise.reject(error);
     }

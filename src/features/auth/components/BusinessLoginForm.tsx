@@ -8,7 +8,6 @@ import Input from '@/shared/ui/Input';
 import { useRouter } from 'next/navigation';
 import { validatePassword } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
-import { tokenManager } from '@/shared/lib/utils/tokenManager';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 // import { formatBusinessNumber, isValidBusinessNumber, removeBusinessNumberHyphen } from '@/shared/lib/utils/authNumber'; // 사업자등록번호 방식에서 사용
 

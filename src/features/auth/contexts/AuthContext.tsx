@@ -100,11 +100,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     if (typeof window !== 'undefined') {
       try {
-        const endpoint =
-          currentUserType === 'company' ? '/api/auth/company/logout' :
-            currentUserType === 'admin' ? '/api/auth/admin/logout' :
-              '/api/auth/logout';
-        await apiClient.delete(endpoint);
+        // 백엔드는 모든 사용자 타입에 대해 동일한 logout 엔드포인트 사용 (DELETE)
+        await apiClient.delete('/api/auth/logout');
       } catch (err) {
         console.error('Logout failed:', err);
       }

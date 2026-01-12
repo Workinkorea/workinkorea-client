@@ -377,6 +377,23 @@ export interface DeleteCompanyPostResponse {
   message: string;
 }
 
+// Job Application API types
+export interface ApplyToJobRequest {
+  company_post_id: number;
+  resume_id?: number;
+  cover_letter?: string;
+}
+
+export interface ApplyToJobResponse {
+  id: number;
+  user_id: number;
+  company_post_id: number;
+  resume_id?: number;
+  cover_letter?: string;
+  status: string;
+  applied_at: string;
+}
+
 // User Image Upload API types
 export interface UploadUserImageRequest {
   file_name: string;
