@@ -179,7 +179,7 @@ export default function BusinessLoginForm() {
       // 새로운 방식: access_token과 token_type을 직접 받음
       if (response.access_token) {
         const tokenType = response.token_type || 'access_company';
-        
+
         // AuthContext의 login 함수를 사용하여 토큰 저장 및 상태 업데이트
         updateAuthContext(response.access_token, data.rememberMe, tokenType);
 
@@ -189,8 +189,8 @@ export default function BusinessLoginForm() {
           localStorage.removeItem(SAVED_EMAIL_KEY);
         }
 
-        // 홈으로 리다이렉트
-        router.push('/');
+        // 기업 페이지로 리다이렉트
+        router.push('/company');
       }
       // 기존 방식 (하위 호환성): URL에서 token 파싱
       else if (response.url) {
@@ -199,7 +199,7 @@ export default function BusinessLoginForm() {
 
         if (token) {
           const tokenType = response.token_type || 'access_company';
-          
+
           // AuthContext의 login 함수를 사용하여 토큰 저장 및 상태 업데이트
           updateAuthContext(token, data.rememberMe, tokenType);
         }
@@ -210,8 +210,8 @@ export default function BusinessLoginForm() {
           localStorage.removeItem(SAVED_EMAIL_KEY);
         }
 
-        // 홈으로 리다이렉트
-        router.push('/');
+        // 기업 페이지로 리다이렉트
+        router.push('/company');
       } else {
         setError('password', {
           type: 'manual',
@@ -222,7 +222,7 @@ export default function BusinessLoginForm() {
 
     } catch (error: unknown) {
       if (process.env.NODE_ENV === 'development') {
-        console.error('Login error:', error);
+        console.error('Company login error:', error);
       }
 
       let errorMessage = '로그인 중 오류가 발생했습니다.';
@@ -230,51 +230,103 @@ export default function BusinessLoginForm() {
 
       // Axios 에러 응답 처리
       if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { data?: { error?: string } } };
-        const serverError = axiosError.response?.data?.error;
+        const axiosError = error as {
+          response?: {
+            status?: number;
+            data?: {
+              error?: string;
+              detail?: string;
+              message?: string;
+            }
+          };
+          message?: string;
+        };
 
-        if (serverError) {
-          // 서버에서 반환하는 에러 메시지를 한글로 변환
-          switch (serverError) {
-            case 'Email is required':
-              errorMessage = '이메일을 입력해주세요.';
+        const status = axiosError.response?.status;
+        const serverError =
+          axiosError.response?.data?.detail ||
+          axiosError.response?.data?.error ||
+          axiosError.response?.data?.message;
+
+        // HTTP 상태 코드별 처리
+        if (status === 401) {
+          // 401: 인증 실패 (비밀번호 오류)
+          errorMessage = '비밀번호가 일치하지 않습니다.';
+          errorField = 'password';
+        } else if (status === 404) {
+          // 404: 기업 사용자를 찾을 수 없음
+          errorMessage = '등록되지 않은 기업 계정입니다.';
+          errorField = 'email';
+        } else if (status === 403) {
+          // 403: 접근 권한 없음 (계정 비활성화 등)
+          errorMessage = '기업 계정이 비활성화되었거나 접근 권한이 없습니다.';
+          errorField = 'email';
+        } else if (status === 400) {
+          // 400: 잘못된 요청 (이메일 또는 비밀번호 형식 오류)
+          if (serverError) {
+            const errorMsg = serverError.toLowerCase();
+            if (errorMsg.includes('email')) {
+              errorMessage = '올바른 이메일 형식을 입력해주세요.';
               errorField = 'email';
-              break;
-            case 'Password is required':
-              errorMessage = '비밀번호를 입력해주세요.';
+            } else if (errorMsg.includes('password')) {
+              errorMessage = '올바른 비밀번호를 입력해주세요.';
               errorField = 'password';
-              break;
-            case 'Company user not found':
-              errorMessage = '기업 사용자를 찾을 수 없습니다.';
-              errorField = 'email';
-              break;
-            case 'Invalid password':
-              errorMessage = '비밀번호가 일치하지 않습니다.';
-              errorField = 'password';
-              break;
-            case 'Failed to set refresh token':
-              errorMessage = '로그인 처리 중 오류가 발생했습니다.';
-              errorField = 'password';
-              break;
-            default:
-              errorMessage = '로그인 중 오류가 발생했습니다.';
-              errorField = 'password';
-              break;
+            } else {
+              errorMessage = serverError;
+            }
+          } else {
+            errorMessage = '입력 정보를 확인해주세요.';
+          }
+        } else if (status === 429) {
+          // 429: 너무 많은 요청
+          errorMessage = '로그인 시도 횟수가 초과되었습니다. 잠시 후 다시 시도해주세요.';
+          errorField = 'password';
+        } else if (status && status >= 500) {
+          // 500번대: 서버 오류
+          errorMessage = '서버에 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+          errorField = 'password';
+        } else if (serverError) {
+          // 서버에서 제공한 에러 메시지가 있는 경우
+          const errorMsg = serverError.toLowerCase();
+
+          if (errorMsg.includes('password') && (errorMsg.includes('incorrect') || errorMsg.includes('invalid') || errorMsg.includes('wrong'))) {
+            errorMessage = '비밀번호가 일치하지 않습니다.';
+            errorField = 'password';
+          } else if (errorMsg.includes('company') && errorMsg.includes('not found')) {
+            errorMessage = '등록되지 않은 기업 계정입니다.';
+            errorField = 'email';
+          } else if (errorMsg.includes('user') && errorMsg.includes('not found')) {
+            errorMessage = '등록되지 않은 기업 계정입니다.';
+            errorField = 'email';
+          } else if (errorMsg.includes('email') && errorMsg.includes('not found')) {
+            errorMessage = '등록되지 않은 기업 계정입니다.';
+            errorField = 'email';
+          } else if (errorMsg.includes('disabled') || errorMsg.includes('suspended') || errorMsg.includes('blocked')) {
+            errorMessage = '기업 계정이 비활성화되었습니다. 관리자에게 문의해주세요.';
+            errorField = 'email';
+          } else if (errorMsg.includes('email is required')) {
+            errorMessage = '이메일을 입력해주세요.';
+            errorField = 'email';
+          } else if (errorMsg.includes('password is required')) {
+            errorMessage = '비밀번호를 입력해주세요.';
+            errorField = 'password';
+          } else if (errorMsg.includes('refresh token')) {
+            errorMessage = '로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.';
+            errorField = 'password';
+          } else {
+            errorMessage = serverError;
           }
         }
       } else if (error instanceof Error) {
+        // 네트워크 에러 또는 기타 에러 처리
         const errorMsg = error.message.toLowerCase();
 
-        // HTTP 상태 코드 기반 에러 처리 (fallback)
-        if (errorMsg.includes('404') || errorMsg.includes('not found') || errorMsg.includes('user not found')) {
-          errorMessage = '기업 사용자를 찾을 수 없습니다.';
-          errorField = 'email';
-        } else if (errorMsg.includes('401') || errorMsg.includes('unauthorized') || errorMsg.includes('invalid password')) {
-          errorMessage = '비밀번호가 일치하지 않습니다.';
-          errorField = 'password';
-        } else if (errorMsg.includes('403') || errorMsg.includes('forbidden')) {
-          errorMessage = '계정이 비활성화되었거나 접근 권한이 없습니다.';
-          errorField = 'email';
+        if (errorMsg.includes('network') || errorMsg.includes('fetch')) {
+          errorMessage = '네트워크 연결을 확인해주세요.';
+        } else if (errorMsg.includes('timeout')) {
+          errorMessage = '요청 시간이 초과되었습니다. 다시 시도해주세요.';
+        } else {
+          errorMessage = '로그인 중 오류가 발생했습니다.';
         }
       }
 
