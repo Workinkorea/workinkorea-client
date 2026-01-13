@@ -23,11 +23,13 @@ function CallbackContent() {
 
       // 로그인 성공
       if (status === 'success' && token) {
-        // localStorage에서 rememberMe 값 읽기
+        // HttpOnly Cookie는 백엔드가 이미 설정함
+        // rememberMe 처리
         const rememberMe = localStorage.getItem('googleLoginRememberMe') === 'true';
-        // 임시 저장된 rememberMe 값 삭제
         localStorage.removeItem('googleLoginRememberMe');
-        login(token, rememberMe);
+
+        // 인증 상태 업데이트 (쿠키에서 읽음)
+        login();
         router.push('/');
         return;
       }

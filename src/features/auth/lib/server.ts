@@ -47,15 +47,14 @@ export async function getServerAuth() {
  */
 export async function getServerAuthFromBackend() {
   try {
-    // createServerApiClient import 추가 필요
-    const { createServerApiClient } = await import('@/shared/api/server');
-    const apiClient = await createServerApiClient();
-    const response = await apiClient.get('/api/auth/me');
+    // fetchAPI 사용 (HttpOnly Cookie 자동 전송)
+    const { fetchAPI } = await import('@/shared/api/fetchClient');
+    const response = await fetchAPI<{ user_type: string; [key: string]: unknown }>('/api/auth/me');
 
     return {
       isAuthenticated: true,
-      userType: response.data.user_type as 'user' | 'company',
-      user: response.data,
+      userType: response.user_type as 'user' | 'company',
+      user: response,
     };
   } catch {
     return {

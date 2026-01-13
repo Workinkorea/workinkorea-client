@@ -38,7 +38,7 @@ import {
 } from '../validations/profile';
 import { cn } from '@/shared/lib/utils/utils';
 import { profileApi } from '../api/profileApi';
-import { apiClient } from '@/shared/api/client';
+import { fetchClient } from '@/shared/api/fetchClient';
 import { uploadFileToMinio } from '@/shared/api/minio';
 import type { ContactUpdateRequest, AccountConfigUpdateRequest } from '@/shared/types/api';
 import { COUNTRIES_FULL } from '@/shared/constants/countries';
@@ -308,7 +308,7 @@ const ProfileEditClient: React.FC = () => {
     const fetchSectionData = async () => {
       try {
         if (activeSection === 'contact') {
-          const contactData = await apiClient.get('/api/contact') as ContactInfoForm;
+          const contactData = await fetchClient.get<ContactInfoForm>('/api/contact');
           if (contactData) {
             contactForm.reset({
               user_id: contactData.user_id ?? undefined,

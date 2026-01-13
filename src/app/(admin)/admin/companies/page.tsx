@@ -1,12 +1,12 @@
-import { createServerAdminApi } from '@/shared/api/server';
+import { fetchAPI } from '@/shared/api/fetchClient';
+import { AdminCompany } from '@/shared/types/api';
 import CompaniesTableClient from '@/features/admin/components/CompaniesTableClient';
 
 export const dynamic = 'force-dynamic';
 
-async function getCompanies() {
+async function getCompanies(): Promise<AdminCompany[]> {
   try {
-    const adminApi = await createServerAdminApi();
-    return await adminApi.getCompanies(0, 10);
+    return await fetchAPI<AdminCompany[]>('/api/admin/companies/?skip=0&limit=10');
   } catch (error) {
     console.error('Failed to fetch companies:', error);
     return [];

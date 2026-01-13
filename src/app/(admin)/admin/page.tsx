@@ -1,16 +1,15 @@
 import Link from 'next/link';
-import { createServerAdminApi } from '@/shared/api/server';
+import { fetchAPI } from '@/shared/api/fetchClient';
 import StatCards from '@/features/admin/components/StatCards';
 
 export const dynamic = 'force-dynamic';
 
 async function getAdminStats() {
   try {
-    const adminApi = await createServerAdminApi();
     const [usersData, companiesData, postsData] = await Promise.all([
-      adminApi.getUsers(),
-      adminApi.getCompanies(0, 1000),
-      adminApi.getPosts(0, 1000),
+      fetchAPI<Array<unknown>>('/api/admin/users/?skip=0&limit=1000'),
+      fetchAPI<Array<unknown>>('/api/admin/companies/?skip=0&limit=1000'),
+      fetchAPI<Array<unknown>>('/api/admin/posts/?skip=0&limit=1000'),
     ]);
 
     return {
