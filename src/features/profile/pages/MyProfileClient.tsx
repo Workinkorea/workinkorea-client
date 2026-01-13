@@ -392,8 +392,11 @@ const MyProfileClient: React.FC = () => {
                   />
                 ) : (
                   <div className="bg-white rounded-lg p-12 shadow-normal text-center">
-                    <p className="text-body-3 text-label-500">
-                      등록된 스킬이 없습니다. 스킬을 추가해보세요.
+                    <p className="text-body-3 text-label-600 mb-1">
+                      보유하신 스킬을 추가해보세요
+                    </p>
+                    <p className="text-caption-2 text-label-500">
+                      스킬을 등록하면 기업에게 더 잘 어필할 수 있어요
                     </p>
                   </div>
                 )}
@@ -442,8 +445,8 @@ const MyProfileClient: React.FC = () => {
                       ))
                     ) : (
                       <div className="text-center py-8">
-                        <p className="text-body-3 text-label-400">
-                          등록된 교육 이력이 없습니다.
+                        <p className="text-body-3 text-label-500">
+                          교육 이력을 추가해보세요
                         </p>
                       </div>
                     )}
@@ -472,8 +475,8 @@ const MyProfileClient: React.FC = () => {
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <p className="text-body-3 text-label-400">
-                          등록된 자격증이 없습니다.
+                        <p className="text-body-3 text-label-500">
+                          자격증을 추가해보세요
                         </p>
                       </div>
                     )}

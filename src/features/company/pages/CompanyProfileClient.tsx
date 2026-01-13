@@ -279,15 +279,15 @@ const CompanyProfileClient: React.FC = () => {
                     </div>
                   ) : postsError ? (
                     <div className="text-center py-12">
-                      <p className="text-status-error mb-4">공고를 불러오는 데 실패했습니다.</p>
+                      <p className="text-label-900 font-semibold mb-2">공고를 불러올 수 없어요</p>
                       <p className="text-caption-2 text-label-500 mb-4">
-                        {postsError instanceof Error ? postsError.message : '알 수 없는 오류가 발생했습니다.'}
+                        네트워크 연결을 확인하고 다시 시도해주세요
                       </p>
                       <button
                         onClick={() => window.location.reload()}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
                       >
-                        다시 시도
+                        새로고침
                       </button>
                     </div>
                   ) : posts && posts.length > 0 ? (
@@ -328,7 +328,8 @@ const CompanyProfileClient: React.FC = () => {
                     </div>
                   ) : (
                     <div className="text-center py-12">
-                      <p className="text-label-500 mb-4">등록된 공고가 없습니다.</p>
+                      <p className="text-label-600 mb-2">첫 채용 공고를 등록해보세요</p>
+                      <p className="text-caption-2 text-label-500 mb-4">훌륭한 인재를 만날 수 있어요</p>
                       <button
                         onClick={() => router.push('/company/posts/create')}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"

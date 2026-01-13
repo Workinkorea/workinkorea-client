@@ -74,14 +74,14 @@ export const useMutationWithToast = <
   const {
     mutationFn,
     successMessage,
-    errorMessage = '요청 중 오류가 발생했습니다.',
+    errorMessage = '잠시 후 다시 시도해주세요',
     redirectUrl,
     invalidateQueryKeys,
     onSuccess: additionalOnSuccess,
     onError: additionalOnError,
     errorContext,
     showLoadingToast = false,
-    loadingMessage = '처리 중...',
+    loadingMessage = '처리 중',
     redirectDelay = 0,
   } = options;
 
@@ -165,7 +165,7 @@ export const useCreateMutation = <TData = unknown, TError = unknown, TVariables 
   return useMutationWithToast({
     ...restOptions,
     successMessage: `${resourceName}가 등록되었습니다.`,
-    errorMessage: `${resourceName} 등록에 실패했습니다.`,
+    errorMessage: `${resourceName}를 등록할 수 없어요. 다시 시도해주세요`,
   });
 };
 
@@ -182,7 +182,7 @@ export const useUpdateMutation = <TData = unknown, TError = unknown, TVariables 
   return useMutationWithToast({
     ...restOptions,
     successMessage: `${resourceName}가 수정되었습니다.`,
-    errorMessage: `${resourceName} 수정에 실패했습니다.`,
+    errorMessage: `${resourceName}를 수정할 수 없어요. 다시 시도해주세요`,
   });
 };
 
@@ -199,6 +199,6 @@ export const useDeleteMutation = <TData = unknown, TError = unknown, TVariables 
   return useMutationWithToast({
     ...restOptions,
     successMessage: `${resourceName}가 삭제되었습니다.`,
-    errorMessage: `${resourceName} 삭제에 실패했습니다.`,
+    errorMessage: `${resourceName}를 삭제할 수 없어요. 다시 시도해주세요`,
   });
 };
