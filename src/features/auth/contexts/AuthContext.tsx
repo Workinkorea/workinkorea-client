@@ -67,7 +67,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Cookie 변경 감지 (userType 쿠키)
   useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
+    const handleStorageChange = () => {
       // Cookie 변경은 storage 이벤트로 감지되지 않음
       // 대신 정기적인 체크 또는 API 401 에러로 감지
       checkAuth();

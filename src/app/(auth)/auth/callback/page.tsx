@@ -25,7 +25,6 @@ function CallbackContent() {
       if (status === 'success' && token) {
         // HttpOnly Cookie는 백엔드가 이미 설정함
         // rememberMe 처리
-        const rememberMe = localStorage.getItem('googleLoginRememberMe') === 'true';
         localStorage.removeItem('googleLoginRememberMe');
 
         // 인증 상태 업데이트 (쿠키에서 읽음)

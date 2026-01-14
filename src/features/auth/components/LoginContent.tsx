@@ -9,7 +9,6 @@ import { useState } from 'react';
 import { GoogleIcon } from '@/shared/ui/AccessibleIcon';
 import { useRouter } from 'next/navigation';
 import { authApi } from '@/features/auth/api/authApi';
-import { cookieManager } from '@/shared/lib/utils/cookieManager';
 import { API_BASE_URL } from '@/shared/api/fetchClient';
 
 interface LoginFormData {
