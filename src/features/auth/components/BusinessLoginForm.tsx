@@ -178,10 +178,9 @@ export default function BusinessLoginForm() {
 
       // 새로운 방식: access_token과 token_type을 직접 받음
       if (response.access_token) {
-        const tokenType = response.token_type || 'access_company';
-
-        // AuthContext의 login 함수를 사용하여 토큰 저장 및 상태 업데이트
-        updateAuthContext(response.access_token, data.rememberMe, tokenType);
+        // HttpOnly Cookie는 백엔드가 이미 설정함
+        // 인증 상태 업데이트 (쿠키에서 읽음)
+        updateAuthContext();
 
         if (data.rememberMe) {
           localStorage.setItem(SAVED_EMAIL_KEY, data.email);
@@ -194,15 +193,9 @@ export default function BusinessLoginForm() {
       }
       // 기존 방식 (하위 호환성): URL에서 token 파싱
       else if (response.url) {
-        const url = new URL(response.url);
-        const token = url.searchParams.get('token');
-
-        if (token) {
-          const tokenType = response.token_type || 'access_company';
-
-          // AuthContext의 login 함수를 사용하여 토큰 저장 및 상태 업데이트
-          updateAuthContext(token, data.rememberMe, tokenType);
-        }
+        // HttpOnly Cookie는 백엔드가 이미 설정함
+        // 인증 상태 업데이트 (쿠키에서 읽음)
+        updateAuthContext();
 
         if (data.rememberMe) {
           localStorage.setItem(SAVED_EMAIL_KEY, data.email);

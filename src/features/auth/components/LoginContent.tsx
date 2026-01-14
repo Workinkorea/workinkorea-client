@@ -9,8 +9,7 @@ import { useState } from 'react';
 import { GoogleIcon } from '@/shared/ui/AccessibleIcon';
 import { useRouter } from 'next/navigation';
 import { authApi } from '@/features/auth/api/authApi';
-import { tokenManager } from '@/shared/lib/utils/tokenManager';
-import { API_BASE_URL } from '@/shared/api/client';
+import { API_BASE_URL } from '@/shared/api/fetchClient';
 
 interface LoginFormData {
   email: string;
@@ -158,12 +157,9 @@ export default function LoginContent() {
         password: data.password
       });
 
-      if (response.success && response.token) {
-        // 자동로그인 체크박스에 따라 localStorage 또는 sessionStorage에 저장
-        // token_type을 함께 저장 (기본값: 'access')
-        const tokenType = response.token_type || 'access';
-        tokenManager.setToken(response.token, data.rememberMe, tokenType);
-
+      if (response.success) {
+        // HttpOnly Cookie는 백엔드가 자동 설정
+        // 클라이언트는 rememberMe 이메일만 관리
         if (data.rememberMe) {
           localStorage.setItem(SAVED_EMAIL_KEY, data.email);
         } else {

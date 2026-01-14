@@ -1,15 +1,15 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { tokenManager, TokenType, ApiTokenType } from '@/shared/lib/utils/tokenManager';
+import { cookieManager, UserType } from '@/shared/lib/utils/cookieManager';
 import { usePathname, useRouter } from 'next/navigation';
-import { apiClient } from '@/shared/api/client';
+import { fetchClient } from '@/shared/api/fetchClient';
 
 interface AuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
-  userType: TokenType | null;
-  login: (accessToken: string, rememberMe?: boolean, tokenType?: ApiTokenType) => void;
+  userType: UserType | null;
+  login: () => void;
   logout: () => Promise<void>;
 }
 
@@ -24,7 +24,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [userType, setUserType] = useState<TokenType | null>(null);
+  const [userType, setUserType] = useState<UserType | null>(null);
 
   // 인증 상태 체크 함수
   const checkAuth = useCallback(() => {
@@ -45,14 +45,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return;
     }
 
-    // 토큰 확인
-    const hasToken = tokenManager.hasToken();
-    const isValid = tokenManager.isTokenValid();
-    const currentTokenType = tokenManager.getUserTypeWithFallback();
+    // HttpOnly Cookie 기반 인증 확인
+    const currentUserType = cookieManager.getUserType();
+    const hasAuth = cookieManager.hasAuth();
 
-    if (hasToken && isValid && currentTokenType) {
+    if (hasAuth && currentUserType) {
       setIsAuthenticated(true);
-      setUserType(currentTokenType === 'admin' ? 'company' : currentTokenType);
+      setUserType(currentUserType);
     } else {
       setIsAuthenticated(false);
       setUserType(null);
@@ -66,12 +65,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     checkAuth();
   }, [checkAuth]);
 
-  // ✅ Storage 이벤트 리스너 - 딱 1번만 등록!
+  // Cookie 변경 감지 (userType 쿠키)
   useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'accessToken') {
-        checkAuth();
-      }
+    const handleStorageChange = () => {
+      // Cookie 변경은 storage 이벤트로 감지되지 않음
+      // 대신 정기적인 체크 또는 API 401 에러로 감지
+      checkAuth();
     };
 
     window.addEventListener('storage', handleStorageChange);
@@ -81,30 +80,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
   }, [checkAuth]);
 
-  // 로그인 함수
-  const login = useCallback((accessToken: string, rememberMe: boolean = false, tokenType?: ApiTokenType) => {
-    tokenManager.setToken(accessToken, rememberMe, tokenType);
-    const userType = tokenManager.getUserTypeWithFallback();
-
-    setIsAuthenticated(true);
-    setUserType(userType === 'admin' ? 'company' : userType);
-  }, []);
+  // 로그인 함수 (HttpOnly Cookie는 백엔드가 설정)
+  const login = useCallback(() => {
+    // HttpOnly Cookie는 백엔드가 자동 설정
+    // 클라이언트는 인증 상태만 업데이트
+    checkAuth();
+  }, [checkAuth]);
 
   // 로그아웃 함수
   const logout = useCallback(async () => {
-    const currentUserType = tokenManager.getUserTypeWithFallback();
-    tokenManager.removeToken();
+    const currentUserType = cookieManager.getUserType();
 
     setIsAuthenticated(false);
     setUserType(null);
 
     if (typeof window !== 'undefined') {
       try {
-        // 백엔드는 모든 사용자 타입에 대해 동일한 logout 엔드포인트 사용 (DELETE)
-        await apiClient.delete('/api/auth/logout');
+        // 백엔드에 로그아웃 요청 (HttpOnly Cookie 삭제)
+        await fetchClient.delete('/api/auth/logout');
       } catch (err) {
         console.error('Logout failed:', err);
       }
+
+      // Public Cookie 정리
+      cookieManager.clearAuth();
 
       const loginPath =
         currentUserType === 'company' ? '/company-login' :
