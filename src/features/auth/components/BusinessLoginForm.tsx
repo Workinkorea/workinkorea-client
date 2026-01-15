@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { validatePassword } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { cookieManager } from '@/shared/lib/utils/cookieManager';
 // import { formatBusinessNumber, isValidBusinessNumber, removeBusinessNumberHyphen } from '@/shared/lib/utils/authNumber'; // 사업자등록번호 방식에서 사용
 
 interface BusinessLoginFormData {
@@ -176,27 +177,15 @@ export default function BusinessLoginForm() {
         password: data.password
       });
 
-      // 새로운 방식: access_token과 token_type을 직접 받음
-      if (response.access_token) {
-        // HttpOnly Cookie는 백엔드가 이미 설정함
+      // HttpOnly Cookie 방식: 백엔드가 자동으로 쿠키 설정
+      if (response.success) {
+        // userType 쿠키를 명시적으로 설정하여 즉시 UI 업데이트
+        cookieManager.setUserType('company');
+
         // 인증 상태 업데이트 (쿠키에서 읽음)
         updateAuthContext();
 
-        if (data.rememberMe) {
-          localStorage.setItem(SAVED_EMAIL_KEY, data.email);
-        } else {
-          localStorage.removeItem(SAVED_EMAIL_KEY);
-        }
-
-        // 기업 페이지로 리다이렉트
-        router.push('/company');
-      }
-      // 기존 방식 (하위 호환성): URL에서 token 파싱
-      else if (response.url) {
-        // HttpOnly Cookie는 백엔드가 이미 설정함
-        // 인증 상태 업데이트 (쿠키에서 읽음)
-        updateAuthContext();
-
+        // Remember Me: 이메일만 저장
         if (data.rememberMe) {
           localStorage.setItem(SAVED_EMAIL_KEY, data.email);
         } else {

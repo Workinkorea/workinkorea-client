@@ -10,6 +10,7 @@ import { GoogleIcon } from '@/shared/ui/AccessibleIcon';
 import { useRouter } from 'next/navigation';
 import { authApi } from '@/features/auth/api/authApi';
 import { API_BASE_URL } from '@/shared/api/fetchClient';
+import { cookieManager } from '@/shared/lib/utils/cookieManager';
 
 interface LoginFormData {
   email: string;
@@ -159,7 +160,10 @@ export default function LoginContent() {
 
       if (response.success) {
         // HttpOnly Cookie는 백엔드가 자동 설정
-        // 클라이언트는 rememberMe 이메일만 관리
+        // userType 쿠키를 명시적으로 설정하여 즉시 UI 업데이트
+        cookieManager.setUserType('user');
+
+        // Remember Me: 이메일만 저장
         if (data.rememberMe) {
           localStorage.setItem(SAVED_EMAIL_KEY, data.email);
         } else {
