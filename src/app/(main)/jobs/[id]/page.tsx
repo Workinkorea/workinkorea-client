@@ -13,8 +13,9 @@ export const revalidate = 3600;
 export const dynamicParams = true;
 
 // generateMetadata: 동적 메타데이터 생성
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const job = await getJobDetail(params.id);
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const job = await getJobDetail(id);
 
   if (!job) {
     return {
@@ -52,8 +53,9 @@ async function getJobDetail(id: string): Promise<CompanyPostDetailResponse | nul
   }
 }
 
-export default async function JobDetailPage({ params }: { params: { id: string } }) {
-  const job = await getJobDetail(params.id);
+export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const job = await getJobDetail(id);
 
   if (!job) {
     notFound();
