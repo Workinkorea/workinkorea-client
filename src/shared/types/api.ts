@@ -144,7 +144,8 @@ export interface CompanyProfileResponse {
   establishment_date: string;
   company_type: string;
   insurance: string;
-  phone_number: string;
+  company_phone: string;  // 기업 일반전화 (회사 대표번호)
+  phone_number: string;  // 담당자 휴대전화
   phone_type?: 'MOBILE' | 'LANDLINE';  // 전화번호 타입 (휴대전화/일반전화)
   address: string;
   website_url: string;
@@ -161,7 +162,8 @@ export interface CompanyProfileRequest {
   establishment_date: string;
   company_type: string;
   insurance: string;
-  phone_number: string;
+  company_phone: string;  // 기업 일반전화 (회사 대표번호)
+  phone_number: string;  // 담당자 휴대전화
   phone_type: 'MOBILE' | 'LANDLINE';  // 전화번호 타입 (휴대전화/일반전화)
   address: string;
   website_url: string;
