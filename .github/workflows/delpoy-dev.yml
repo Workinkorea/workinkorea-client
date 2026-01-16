@@ -22,8 +22,8 @@ jobs:
         run: |
           docker build \
             --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
-            -t ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }} .
-          docker save ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }} | gzip > image.tar.gz
+            -t ${{ env.DOCKER_IMAGE_NAME }} .
+          docker save ${{ env.DOCKER_IMAGE_NAME }} | gzip > image.tar.gz
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -39,7 +39,6 @@ jobs:
           IMAGE_NAME="$1"
           BASE_URL="$2"
           PORT="$3"
-          COMMIT_SHA="$4"
           
           echo "Loading Docker image..."
           docker load < ~/image.tar.gz
@@ -58,7 +57,7 @@ jobs:
             -l traefik.http.routers.$IMAGE_NAME.entrypoints=websecure \
             -l traefik.http.routers.$IMAGE_NAME.tls.certresolver=le \
             -l traefik.http.services.$IMAGE_NAME.loadbalancer.server.port=$PORT \
-            $IMAGE_NAME:$COMMIT_SHA
+            $IMAGE_NAME
           
           echo "Cleaning up..."
           rm ~/image.tar.gz
@@ -77,8 +76,7 @@ jobs:
             "./deploy.sh \
             '${{ env.DOCKER_IMAGE_NAME }}' \
             '${{ env.BASE_URL }}' \
-            '${{ env.PORT }}' \
-            '${{ github.sha }}'"
+            '${{ env.PORT }}'"
 
       - name: Send Discord Deployment Notification
         if: always()
@@ -86,7 +84,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL_DEV }}
           status: ${{ job.status }}
-          title: "${{ job.status == 'success' && 'Success' || 'Failed' }}: Workinkorea-Client"
+          title: "Workinkorea-Client / Development"
           description: |
             **Deployment ${{ job.status == 'success' && 'Success' || 'Failed' }}**
 
