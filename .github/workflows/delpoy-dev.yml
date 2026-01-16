@@ -10,7 +10,7 @@ env:
   PORT: 3000
 
 jobs:
-  build-and-deploy:
+  debelopement-build-and-deploy:
     runs-on: ubuntu-latest
     environment: development
     steps:
@@ -33,25 +33,25 @@ jobs:
       - name: Deploy
         run: |
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
-          scp image.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+          scp -P ${{ secrets.SSH_PORT }} image.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
 
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
             docker load < ~/image.tar.gz
-            docker stop ${{ env.IMAGE }} 2>/dev/null || true
-            docker rm ${{ env.IMAGE }} 2>/dev/null || true
+            docker stop ${{ env.DOCKER_IMAGE_NAME }} 2>/dev/null || true
+            docker rm ${{ env.DOCKER_IMAGE_NAME }} 2>/dev/null || true
             
             docker run -d \
-              --name ${{ env.IMAGE }} \
+              --name ${{ env.DOCKER_IMAGE_NAME }} \
               --network core_network \
               --restart unless-stopped \
               -l traefik.enable=true \
-              -l traefik.http.routers.${{ env.IMAGE }}.rule=Host\(\`wik.${{ env.BASE_URL }}\`\) \
-              -l traefik.http.routers.${{ env.IMAGE }}.entrypoints=websecure \
-              -l traefik.http.routers.${{ env.IMAGE }}.tls.certresolver=le \
-              -l traefik.http.services.${{ env.IMAGE }}.loadbalancer.server.port=${{ env.PORT }} \
-              -l traefik.http.routers.${{ env.IMAGE }}.middlewares=client-auth@docker \
+              -l traefik.http.routers.${{ env.DOCKER_IMAGE_NAME }}.rule=Host\(\`wik.${{ env.BASE_URL }}\`\) \
+              -l traefik.http.routers.${{ env.DOCKER_IMAGE_NAME }}.entrypoints=websecure \
+              -l traefik.http.routers.${{ env.DOCKER_IMAGE_NAME }}.tls.certresolver=le \
+              -l traefik.http.services.${{ env.DOCKER_IMAGE_NAME }}.loadbalancer.server.port=${{ env.PORT }} \
+              -l traefik.http.routers.${{ env.DOCKER_IMAGE_NAME }}.middlewares=client-auth@docker \
               -l traefik.http.middlewares.client-auth.basicauth.users=${{ secrets.TRAEFIK_BASIC_AUTH_USERS }} \
-              ${{ env.IMAGE }}:${{ github.sha }}
+              ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
             
             rm ~/image.tar.gz
           EOF
@@ -60,7 +60,7 @@ jobs:
         if: always()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL_DEV }}
           status: ${{ job.status }}
           title: "${{ job.status == 'success' && 'Success' || 'Failed' }}: Workinkorea-Client"
           description: |
