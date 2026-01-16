@@ -40,7 +40,6 @@ jobs:
           BASE_URL="$2"
           PORT="$3"
           COMMIT_SHA="$4"
-          BASIC_AUTH="$5"
           
           echo "Loading Docker image..."
           docker load < ~/image.tar.gz
@@ -59,8 +58,6 @@ jobs:
             -l traefik.http.routers.$IMAGE_NAME.entrypoints=websecure \
             -l traefik.http.routers.$IMAGE_NAME.tls.certresolver=le \
             -l traefik.http.services.$IMAGE_NAME.loadbalancer.server.port=$PORT \
-            -l traefik.http.routers.$IMAGE_NAME.middlewares=client-auth@docker \
-            -l "traefik.http.middlewares.client-auth.basicauth.users=$BASIC_AUTH" \
             $IMAGE_NAME:$COMMIT_SHA
           
           echo "Cleaning up..."
@@ -81,8 +78,7 @@ jobs:
             '${{ env.DOCKER_IMAGE_NAME }}' \
             '${{ env.BASE_URL }}' \
             '${{ env.PORT }}' \
-            '${{ github.sha }}' \
-            '${{ secrets.TRAEFIK_BASIC_AUTH_USERS }}'"
+            '${{ github.sha }}'"
 
       - name: Send Discord Deployment Notification
         if: always()
