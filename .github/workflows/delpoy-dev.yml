@@ -30,31 +30,59 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Create deployment script
+        run: |
+          cat > deploy.sh << 'SCRIPT_EOF'
+          #!/bin/bash
+          set -e
+          
+          IMAGE_NAME="$1"
+          BASE_URL="$2"
+          PORT="$3"
+          COMMIT_SHA="$4"
+          BASIC_AUTH="$5"
+          
+          echo "Loading Docker image..."
+          docker load < ~/image.tar.gz
+          
+          echo "Stopping existing container..."
+          docker stop $IMAGE_NAME 2>/dev/null || true
+          docker rm $IMAGE_NAME 2>/dev/null || true
+          
+          echo "Starting new container..."
+          docker run -d \
+            --name $IMAGE_NAME \
+            --network core_network \
+            --restart unless-stopped \
+            -l traefik.enable=true \
+            -l "traefik.http.routers.$IMAGE_NAME.rule=Host(\`wik.$BASE_URL\`)" \
+            -l traefik.http.routers.$IMAGE_NAME.entrypoints=websecure \
+            -l traefik.http.routers.$IMAGE_NAME.tls.certresolver=le \
+            -l traefik.http.services.$IMAGE_NAME.loadbalancer.server.port=$PORT \
+            -l traefik.http.routers.$IMAGE_NAME.middlewares=client-auth@docker \
+            -l "traefik.http.middlewares.client-auth.basicauth.users=$BASIC_AUTH" \
+            $IMAGE_NAME:$COMMIT_SHA
+          
+          echo "Cleaning up..."
+          rm ~/image.tar.gz
+          
+          echo "Deployment completed successfully!"
+          SCRIPT_EOF
+          chmod +x deploy.sh
+
       - name: Deploy
         run: |
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
-          scp -P ${{ secrets.SSH_PORT }} image.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
-
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
-            docker load < ~/image.tar.gz
-            docker stop ${{ env.DOCKER_IMAGE_NAME }} 2>/dev/null || true
-            docker rm ${{ env.DOCKER_IMAGE_NAME }} 2>/dev/null || true
-            
-            docker run -d \
-              --name ${{ env.DOCKER_IMAGE_NAME }} \
-              --network core_network \
-              --restart unless-stopped \
-              -l traefik.enable=true \
-              -l traefik.http.routers.${{ env.DOCKER_IMAGE_NAME }}.rule=Host\(\`wik.${{ env.BASE_URL }}\`\) \
-              -l traefik.http.routers.${{ env.DOCKER_IMAGE_NAME }}.entrypoints=websecure \
-              -l traefik.http.routers.${{ env.DOCKER_IMAGE_NAME }}.tls.certresolver=le \
-              -l traefik.http.services.${{ env.DOCKER_IMAGE_NAME }}.loadbalancer.server.port=${{ env.PORT }} \
-              -l traefik.http.routers.${{ env.DOCKER_IMAGE_NAME }}.middlewares=client-auth@docker \
-              -l traefik.http.middlewares.client-auth.basicauth.users=${{ secrets.TRAEFIK_BASIC_AUTH_USERS }} \
-              ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
-            
-            rm ~/image.tar.gz
-          EOF
+          
+          scp -P ${{ secrets.SSH_PORT }} image.tar.gz deploy.sh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/
+          
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "./deploy.sh \
+            '${{ env.DOCKER_IMAGE_NAME }}' \
+            '${{ env.BASE_URL }}' \
+            '${{ env.PORT }}' \
+            '${{ github.sha }}' \
+            '${{ secrets.TRAEFIK_BASIC_AUTH_USERS }}'"
 
       - name: Send Discord Deployment Notification
         if: always()
