@@ -144,6 +144,6 @@ export const authApi = {
    * 유저 정보를 반환합니다.
    */
   async getProfile(): Promise<UserInfo> {
-    return fetchClient.get<UserInfo>('/api/profile');
+    return fetchClient.get<UserInfo>('/api/me');
   },
 };

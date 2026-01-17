@@ -50,25 +50,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const userInfo = await authApi.getProfile();
 
-      if (userInfo) {
-        setIsAuthenticated(true);
-        // UserInfo에 user_type이나 role이 있다면 여기서 설정
-        // 현재 UserInfo 타입에는 명시적인 user_type이 없으므로
-        // 필요한 경우 백엔드 응답에 맞춰 타입을 확장해야 함
-        // 임시로 'user'로 설정하거나, 백엔드 응답을 확인해야 함.
-        // 현재는 cookieManager의 userType을 참고하되, 없으면 null 처리
-        // 하지만 HttpOnly라서 cookieManager로 못 읽음.
+      // 성공 시 인증 상태 true
+      setIsAuthenticated(true);
 
-        // TODO: 백엔드 /api/profile 응답에 user_type 필드가 포함되어야 정확한 설정 가능
-        // 현재는 인증 성공 시 일단 로그인 상태로 간주
+      // userType 설정 로직
+      // 1. 공용 쿠키(cookieManager)에서 확인 (HttpOnly 아니라고 가정 시 시도)
+      const cookieUserType = cookieManager.getUserType();
 
-        // 임시 방편: API 호출 성공했으므로 인증은 확실함.
-        // 유저 타입은 추후 확장이 필요할 수 있음.
-        // 우선 기존 로직과 호환성을 위해 null이 아닌 값을 설정해야 함.
-        setUserType('user'); // 기본값 설정 (수정 필요)
+      if (cookieUserType) {
+        setUserType(cookieUserType);
+      } else {
+        // 2. 쿠키도 없고 응답에도 없다면 기본값 'user'로 설정
+        // (기업 회원이면 UI가 잘못 나올 수 있음 -> 백엔드 수정 필요: /api/me 응답에 type 포함 권장)
+        console.warn('[AuthContext] Cannot determine userType from cookie or API. Defaulting to "user".');
+        setUserType('user');
       }
     } catch (error) {
-      console.warn('[AuthContext] Auth check failed:', error);
+      // 401 등 에러 시 로그아웃 처리
+      console.warn('[AuthContext] Auth check failed (token invalid or expired):', error);
       setIsAuthenticated(false);
       setUserType(null);
     }
