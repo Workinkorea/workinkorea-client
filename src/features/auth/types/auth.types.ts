@@ -60,10 +60,7 @@ export interface CompanyLoginRequest {
   password: string;
 }
 
-export interface CompanyLoginResponse {
-  success: boolean;
-  message?: string;
-}
+export type CompanyLoginResponse = string;
 
 export interface CompanySignupRequest {
   company_number: string;

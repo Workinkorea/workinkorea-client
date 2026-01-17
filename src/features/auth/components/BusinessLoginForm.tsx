@@ -56,7 +56,7 @@ const getDefaultValues = (): BusinessLoginFormData => {
 export default function BusinessLoginForm() {
   const router = useRouter();
   const { login: updateAuthContext } = useAuth();
-  
+
   const {
     control,
     handleSubmit,
@@ -153,7 +153,7 @@ export default function BusinessLoginForm() {
           message: '이메일을 입력해주세요.'
         });
       }
-  
+
       if (!password) {
         setError('password', {
           type: 'manual',
@@ -171,13 +171,13 @@ export default function BusinessLoginForm() {
     clearErrors();
 
     try {
-      const response = await authApi.companyLogin({
+      const responseUrl = await authApi.companyLogin({
         username: data.email,
         password: data.password
       });
 
       // HttpOnly Cookie 방식: 백엔드가 자동으로 쿠키 설정
-      if (response.success) {
+      if (responseUrl && typeof responseUrl === 'string') {
         // 백엔드가 access_token, refresh_token, userType 쿠키를 모두 설정
         // 클라이언트는 쿠키에서 읽기만 함
 
@@ -191,14 +191,16 @@ export default function BusinessLoginForm() {
           localStorage.removeItem(SAVED_EMAIL_KEY);
         }
 
-        // 기업 페이지로 리다이렉트
-        router.push('/company');
+        // 백엔드에서 받은 URL로 리다이렉트 (외부 도메인일 수도 있으므로 window.location 사용 고려했으나, 
+        // next/navigation의 router.push도 절대 경로 지원함. 하지만 외부 URL이면 window.location.href가 더 안전할 수 있음.
+        // 여기서는 responseUrl이 http로 시작하면 window.location, 아니면 router.push 사용)
+        if (responseUrl.startsWith('http')) {
+          window.location.href = responseUrl;
+        } else {
+          router.push(responseUrl);
+        }
       } else {
-        setError('password', {
-          type: 'manual',
-          message: '로그인 응답이 올바르지 않습니다.'
-        });
-        setFormState(prev => ({ ...prev, isLoading: false }));
+        throw new Error('Invalid response from server');
       }
 
     } catch (error: unknown) {
@@ -322,7 +324,7 @@ export default function BusinessLoginForm() {
   return (
     <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-[400px] w-full space-y-8">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -332,7 +334,7 @@ export default function BusinessLoginForm() {
           </h1>
         </motion.div>
 
-        <motion.form 
+        <motion.form
           className="space-y-6"
           onSubmit={handleSubmit(onSubmit)}
           initial={{ opacity: 0, y: 30 }}
@@ -403,9 +405,9 @@ export default function BusinessLoginForm() {
                   placeholder="••••••••••"
                   error={!!errors.password}
                   showPassword={formState.showPassword}
-                  onTogglePassword={() => setFormState(prev => ({ 
-                    ...prev, 
-                    showPassword: !prev.showPassword 
+                  onTogglePassword={() => setFormState(prev => ({
+                    ...prev,
+                    showPassword: !prev.showPassword
                   }))}
                   onChange={(e) => {
                     field.onChange(e.target.value);
@@ -446,11 +448,10 @@ export default function BusinessLoginForm() {
             <motion.button
               type="submit"
               disabled={formState.isLoading || !isFormValid}
-              className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
-                formState.isLoading || !isFormValid
+              className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${formState.isLoading || !isFormValid
                   ? 'bg-gray-300 cursor-not-allowed text-white'
                   : 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
-              }`}
+                }`}
               whileTap={isFormValid && !formState.isLoading ? { scale: 0.98 } : {}}
             >
               {formState.isLoading ? '기업 로그인 중...' : '기업 로그인'}
