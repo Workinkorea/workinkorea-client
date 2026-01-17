@@ -3,14 +3,14 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { GoogleIcon } from '@/shared/ui/AccessibleIcon';
-import { API_BASE_URL } from '@/shared/api/fetchClient';
 
 export default function LoginContent() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const handleGoogleLogin = () => {
     setIsGoogleLoading(true);
-    window.location.href = `${API_BASE_URL}/api/auth/login/google`;
+    // Next.js API Route를 통해 Google OAuth 시작
+    window.location.href = '/api/auth/login/google';
   };
 
   return (
