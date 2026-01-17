@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 import { validatePassword } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
-import { cookieManager } from '@/shared/lib/utils/cookieManager';
 // import { formatBusinessNumber, isValidBusinessNumber, removeBusinessNumberHyphen } from '@/shared/lib/utils/authNumber'; // 사업자등록번호 방식에서 사용
 
 interface BusinessLoginFormData {
@@ -179,8 +178,8 @@ export default function BusinessLoginForm() {
 
       // HttpOnly Cookie 방식: 백엔드가 자동으로 쿠키 설정
       if (response.success) {
-        // userType 쿠키를 명시적으로 설정하여 즉시 UI 업데이트
-        cookieManager.setUserType('company');
+        // 백엔드가 access_token, refresh_token, userType 쿠키를 모두 설정
+        // 클라이언트는 쿠키에서 읽기만 함
 
         // 인증 상태 업데이트 (쿠키에서 읽음)
         updateAuthContext();
