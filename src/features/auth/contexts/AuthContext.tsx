@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode, useCallback 
 import { cookieManager, UserType } from '@/shared/lib/utils/cookieManager';
 import { usePathname, useRouter } from 'next/navigation';
 import { fetchClient } from '@/shared/api/fetchClient';
+import { authApi } from '@/features/auth/api/authApi';
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -27,7 +28,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [userType, setUserType] = useState<UserType | null>(null);
 
   // 인증 상태 체크 함수
-  const checkAuth = useCallback(() => {
+  const checkAuth = useCallback(async () => {
     // API 경로에서는 인증 로직 스킵
     if (pathname?.includes('auth')) {
       setIsLoading(false);
@@ -45,14 +46,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return;
     }
 
-    // HttpOnly Cookie 기반 인증 확인
-    const currentUserType = cookieManager.getUserType();
-    const hasAuth = cookieManager.hasAuth();
+    // HttpOnly Cookie 기반 인증 확인 (API 호출)
+    try {
+      const userInfo = await authApi.getProfile();
 
-    if (hasAuth && currentUserType) {
-      setIsAuthenticated(true);
-      setUserType(currentUserType);
-    } else {
+      if (userInfo) {
+        setIsAuthenticated(true);
+        // UserInfo에 user_type이나 role이 있다면 여기서 설정
+        // 현재 UserInfo 타입에는 명시적인 user_type이 없으므로
+        // 필요한 경우 백엔드 응답에 맞춰 타입을 확장해야 함
+        // 임시로 'user'로 설정하거나, 백엔드 응답을 확인해야 함.
+        // 현재는 cookieManager의 userType을 참고하되, 없으면 null 처리
+        // 하지만 HttpOnly라서 cookieManager로 못 읽음.
+
+        // TODO: 백엔드 /api/profile 응답에 user_type 필드가 포함되어야 정확한 설정 가능
+        // 현재는 인증 성공 시 일단 로그인 상태로 간주
+
+        // 임시 방편: API 호출 성공했으므로 인증은 확실함.
+        // 유저 타입은 추후 확장이 필요할 수 있음.
+        // 우선 기존 로직과 호환성을 위해 null이 아닌 값을 설정해야 함.
+        setUserType('user'); // 기본값 설정 (수정 필요)
+      }
+    } catch (error) {
+      console.warn('[AuthContext] Auth check failed:', error);
       setIsAuthenticated(false);
       setUserType(null);
     }

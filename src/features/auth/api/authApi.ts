@@ -12,6 +12,7 @@ import type {
   CompanyLoginResponse,
   BusinessVerificationResponse
 } from '../types/auth.types';
+import { UserInfo } from '@/shared/types/common.types';
 
 /**
  * Authentication API (HttpOnly Cookie 기반)
@@ -135,5 +136,14 @@ export const authApi = {
       console.error('[authApi] Business verification error:', error);
       throw error;
     }
+  },
+  /**
+   * 사용자 프로필 조회 (인증 상태 확인용)
+   * 
+   * HttpOnly Cookie(access_token)가 유효한지 확인하고
+   * 유저 정보를 반환합니다.
+   */
+  async getProfile(): Promise<UserInfo> {
+    return fetchClient.get<UserInfo>('/api/profile');
   },
 };

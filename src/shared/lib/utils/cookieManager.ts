@@ -53,13 +53,14 @@ export const cookieManager = {
   /**
    * userType 읽기 (Public Cookie)
    *
+   * @deprecated HttpOnly 쿠키 전환으로 인해 클라이언트에서 읽을 수 없음 (항상 null 반환)
+   * 인증 상태 확인은 authApi.getProfile()을 사용하세요.
+   *
    * @returns 'user' | 'company' | 'admin' | null
    *
    * @example
-   * const userType = cookieManager.getUserType()
-   * if (userType === 'company') {
-   *   // 기업 전용 UI 표시
-   * }
+   * // Don't use this for auth check
+   * // const userType = cookieManager.getUserType() // returns null
    */
   getUserType: (): UserType | null => {
     const value = getCookie('userType');
@@ -99,6 +100,8 @@ export const cookieManager = {
    */
   hasAuth: (): boolean => {
     // userType이 있다면 로그인 상태로 간주 (완벽하지 않음)
+    // HttpOnly 쿠키 환경에서는 항상 false를 반환할 가능성이 높음
+    // 정확한 인증 확인은 authApi.getProfile() 사용 권장
     return !!cookieManager.getUserType();
   },
 
