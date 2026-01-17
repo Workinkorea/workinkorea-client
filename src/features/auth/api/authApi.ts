@@ -46,20 +46,14 @@ export const authApi = {
   },
 
   /**
-   * 일반 사용자 로그인
+   * 일반 사용자 로그인 (Google OAuth)
    *
-   * HttpOnly Cookie 환경:
-   * - 백엔드가 Set-Cookie 헤더로 accessToken, refreshToken 전송
-   * - 응답 body의 token은 optional (legacy 지원)
-   * - userType 쿠키도 함께 설정됨
+   * 서버는 일반 사용자에게 Google OAuth만 제공합니다.
+   * Google 로그인은 window.location.href로 직접 이동합니다.
+   *
+   * @deprecated 일반 사용자는 이메일/비밀번호 로그인을 지원하지 않습니다.
+   * 대신 `${API_BASE_URL}/api/auth/login/google`로 리다이렉트하세요.
    */
-  async login(data: LoginRequest): Promise<LoginResponse> {
-    return fetchClient.post<LoginResponse>(
-      '/api/auth/login',
-      data,
-      { skipAuth: true }
-    );
-  },
 
   /**
    * 로그아웃
