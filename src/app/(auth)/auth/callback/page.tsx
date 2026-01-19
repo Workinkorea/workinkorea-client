@@ -27,8 +27,7 @@ function CallbackContent() {
         // rememberMe 처리
         localStorage.removeItem('googleLoginRememberMe');
 
-        // 인증 상태 업데이트 (쿠키에서 읽음)
-        login();
+        login('user');
         router.push('/');
         return;
       }

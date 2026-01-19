@@ -55,7 +55,7 @@ const getDefaultValues = (): BusinessLoginFormData => {
 
 export default function BusinessLoginForm() {
   const router = useRouter();
-  const { login: updateAuthContext } = useAuth();
+  const { login } = useAuth();
 
   const {
     control,
@@ -179,10 +179,8 @@ export default function BusinessLoginForm() {
       // HttpOnly Cookie 방식: 백엔드가 자동으로 쿠키 설정
       if (responseUrl && typeof responseUrl === 'string') {
         // 백엔드가 access_token, refresh_token, userType 쿠키를 모두 설정
-        // 클라이언트는 쿠키에서 읽기만 함
 
-        // 인증 상태 업데이트 (쿠키에서 읽음)
-        updateAuthContext();
+        login('company');
 
         // Remember Me: 이메일만 저장
         if (data.rememberMe) {
@@ -191,9 +189,6 @@ export default function BusinessLoginForm() {
           localStorage.removeItem(SAVED_EMAIL_KEY);
         }
 
-        // 백엔드에서 받은 URL로 리다이렉트 (외부 도메인일 수도 있으므로 window.location 사용 고려했으나, 
-        // next/navigation의 router.push도 절대 경로 지원함. 하지만 외부 URL이면 window.location.href가 더 안전할 수 있음.
-        // 여기서는 responseUrl이 http로 시작하면 window.location, 아니면 router.push 사용)
         if (responseUrl.startsWith('http')) {
           window.location.href = responseUrl;
         } else {
@@ -449,8 +444,8 @@ export default function BusinessLoginForm() {
               type="submit"
               disabled={formState.isLoading || !isFormValid}
               className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${formState.isLoading || !isFormValid
-                  ? 'bg-gray-300 cursor-not-allowed text-white'
-                  : 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
+                ? 'bg-gray-300 cursor-not-allowed text-white'
+                : 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
                 }`}
               whileTap={isFormValid && !formState.isLoading ? { scale: 0.98 } : {}}
             >
