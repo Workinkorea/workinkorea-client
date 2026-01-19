@@ -21,9 +21,9 @@ interface AuthState {
 
   // Actions
   login: (userType: UserType) => void;
-  logout: () => void;
-  initialize: () => void;
-  checkAuth: () => void;
+  logout: () => Promise<void>;
+  initialize: () => Promise<void>;
+  checkAuth: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -86,28 +86,96 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   /**
-   * 앱 시작 시 쿠키에서 인증 상태 복원
+   * 앱 시작 시 인증 상태 초기화
+   *
+   * 전략:
+   * 1. 먼저 쿠키에서 빠르게 초기화 (깜빡임 방지)
+   * 2. 그 다음 /api/me에서 정확한 user_type 확인
    */
-  initialize: () => {
-    const userType = cookieManager.getUserType();
+  initialize: async () => {
+    if (typeof window === 'undefined') return;
 
-    set({
-      isAuthenticated: !!userType,
-      userType,
-      isInitialized: true,
-    });
+    // 1단계: 쿠키에서 빠른 초기화
+    const cookieUserType = cookieManager.getUserType();
+
+    if (cookieUserType) {
+      set({
+        isAuthenticated: true,
+        userType: cookieUserType,
+        isInitialized: true,
+      });
+    }
+
+    // 2단계: API에서 정확한 user_type 확인
+    try {
+      const { authApi } = await import('@/features/auth/api/authApi');
+      const profile = await authApi.getProfile();
+
+      // ✅ 백엔드에서 받은 user_type 사용
+      if (profile?.user_type) {
+        set({
+          isAuthenticated: true,
+          userType: profile.user_type,
+          isInitialized: true,
+        });
+
+        // Middleware를 위해 쿠키도 동기화
+        cookieManager.setUserType(profile.user_type);
+      } else {
+        // user_type이 없으면 쿠키만 신뢰
+        set({
+          isAuthenticated: !!cookieUserType,
+          userType: cookieUserType,
+          isInitialized: true,
+        });
+      }
+    } catch (err) {
+      // API 실패 시 (401 등)
+      console.warn('[AuthStore] Failed to fetch user profile:', err);
+      set({
+        isAuthenticated: false,
+        userType: null,
+        isInitialized: true,
+      });
+    }
   },
 
   /**
-   * 쿠키 상태 재확인 (수동 동기화용)
+   * 인증 상태 재확인 (API 기반)
+   *
+   * 사용 시점:
+   * - 로그인 성공 후
+   * - 페이지 포커스 복귀 시
    */
-  checkAuth: () => {
-    const userType = cookieManager.getUserType();
+  checkAuth: async () => {
+    if (typeof window === 'undefined') return;
 
-    set({
-      isAuthenticated: !!userType,
-      userType,
-    });
+    try {
+      const { authApi } = await import('@/features/auth/api/authApi');
+      const profile = await authApi.getProfile();
+
+      if (profile?.user_type) {
+        set({
+          isAuthenticated: true,
+          userType: profile.user_type,
+        });
+
+        cookieManager.setUserType(profile.user_type);
+      } else {
+        // Fallback to cookie
+        const cookieUserType = cookieManager.getUserType();
+        set({
+          isAuthenticated: !!cookieUserType,
+          userType: cookieUserType,
+        });
+      }
+    } catch (err) {
+      // 401 등 인증 실패
+      set({
+        isAuthenticated: false,
+        userType: null,
+      });
+    }
   },
 }));
 
