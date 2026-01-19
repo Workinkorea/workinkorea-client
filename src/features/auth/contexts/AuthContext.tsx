@@ -36,12 +36,33 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
 
     // 인증 페이지에서는 인증 체크 안 함
-    const AUTH_PATHS = ['/login', '/signup', '/company-login', '/company-signup'];
+    const AUTH_PATHS = ['/login', '/signup', '/company-login', '/company-signup', '/login-select', '/signup-select'];
     const isAuthPath = AUTH_PATHS.some(path => pathname?.startsWith(path));
 
     if (isAuthPath) {
       setIsAuthenticated(false);
       setUserType(null);
+      setIsLoading(false);
+      return;
+    }
+
+    // 공개 페이지 - API 호출 없이 쿠키만 확인
+    // Layout에서 인증 체크하는 페이지가 아니면 공개 페이지로 간주
+    const PROTECTED_PATHS = ['/user', '/company', '/admin'];
+    const isProtectedPath = PROTECTED_PATHS.some(path => pathname?.startsWith(path));
+
+    if (!isProtectedPath) {
+      // 공개 페이지 - 쿠키만 확인 (API 호출 안 함)
+      const cookieUserType = cookieManager.getUserType();
+
+      if (cookieUserType) {
+        setIsAuthenticated(true);
+        setUserType(cookieUserType);
+      } else {
+        setIsAuthenticated(false);
+        setUserType(null);
+      }
+
       setIsLoading(false);
       return;
     }
@@ -104,29 +125,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // 로그아웃 함수
   const logout = useCallback(async () => {
+    if (typeof window === 'undefined') return;
+
+    // 1. userType 먼저 읽기 (백엔드 API 호출 전)
     const currentUserType = cookieManager.getUserType();
 
+    // 2. State 업데이트 (UI 즉시 반영)
     setIsAuthenticated(false);
     setUserType(null);
 
-    if (typeof window !== 'undefined') {
-      try {
-        // 백엔드에 로그아웃 요청 (HttpOnly Cookie 삭제)
-        await fetchClient.delete('/api/auth/logout');
-      } catch (err) {
-        console.error('Logout failed:', err);
-      }
-
-      // Public Cookie 정리
+    try {
+      // 3. 백엔드에 로그아웃 요청
+      // 백엔드가 모든 쿠키 삭제: access_token, refresh_token, userType
+      await fetchClient.delete('/api/auth/logout');
+    } catch (err) {
+      console.error('[AuthContext] Logout API failed:', err);
+      // API 실패해도 클라이언트 쿠키는 정리
       cookieManager.clearAuth();
-
-      const loginPath =
-        currentUserType === 'company' ? '/company-login' :
-          currentUserType === 'admin' ? '/admin/login' :
-            '/login';
-      router.push(loginPath);
     }
-  }, [router]);
+
+    // 4. 로그인 페이지로 리다이렉트
+    // window.location.href 사용 이유:
+    // - router.push()는 client-side navigation (Middleware 재실행 안 됨)
+    // - window.location.href는 전체 페이지 새로고침 (Middleware 확실히 실행)
+    const loginPath =
+      currentUserType === 'company' ? '/company-login' :
+        currentUserType === 'admin' ? '/admin/login' :
+          '/login';
+
+    window.location.href = loginPath;
+  }, []);
 
   const value: AuthContextValue = {
     isAuthenticated,

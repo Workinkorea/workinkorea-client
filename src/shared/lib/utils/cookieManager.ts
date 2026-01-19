@@ -106,10 +106,14 @@ export const cookieManager = {
   },
 
   /**
-   * 로그아웃 시 클라이언트 쿠키 정리
+   * 로그아웃 시 클라이언트 쿠키 정리 (폴백용)
    *
-   * 주의: HttpOnly 쿠키는 백엔드의 /logout 엔드포인트에서 삭제
-   * 여기서는 Public Cookie만 정리
+   * 정상 로그아웃 플로우:
+   * 1. 백엔드 /api/auth/logout 호출
+   * 2. 백엔드가 모든 쿠키 삭제: access_token, refresh_token, userType
+   * 3. 클라이언트는 쿠키 삭제 불필요
+   *
+   * 이 함수는 백엔드 API 호출 실패 시 폴백으로만 사용
    */
   clearAuth: (): void => {
     cookieManager.removeUserType();
