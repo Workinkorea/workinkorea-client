@@ -35,13 +35,20 @@ export const useAuthStore = create<AuthState>((set) => ({
   /**
    * 로그인 성공 시 호출
    * @param userType - 'user' | 'company' | 'admin'
+   *
+   * 중요: Middleware가 쿠키를 확인하므로 쿠키도 설정해야 함!
    */
   login: (userType: UserType) => {
+    // 1. Zustand State 업데이트
     set({
       isAuthenticated: true,
       userType,
       isInitialized: true,
     });
+
+    // 2. 쿠키에도 userType 설정 (Middleware가 확인함)
+    // 백엔드가 userType 쿠키를 설정하지 않는 경우를 대비
+    cookieManager.setUserType(userType);
   },
 
   /**

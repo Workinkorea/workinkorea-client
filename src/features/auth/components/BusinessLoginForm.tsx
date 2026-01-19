@@ -189,10 +189,12 @@ export default function BusinessLoginForm() {
           localStorage.removeItem(SAVED_EMAIL_KEY);
         }
 
+        // router.push는 client-side navigation이라 Middleware 재실행 안 됨
         if (responseUrl.startsWith('http')) {
           window.location.href = responseUrl;
         } else {
-          router.push(responseUrl);
+          // 상대 경로도 전체 새로고침으로 처리
+          window.location.href = responseUrl;
         }
       } else {
         throw new Error('Invalid response from server');

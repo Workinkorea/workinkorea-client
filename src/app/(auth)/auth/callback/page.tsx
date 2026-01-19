@@ -28,7 +28,8 @@ function CallbackContent() {
         localStorage.removeItem('googleLoginRememberMe');
 
         login('user');
-        router.push('/');
+
+        window.location.href = '/';
         return;
       }
 
