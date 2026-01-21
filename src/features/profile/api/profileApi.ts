@@ -23,7 +23,7 @@ export const profileApi = {
    * @returns 업데이트된 프로필 정보
    */
   async updateProfile(data: ProfileUpdateRequest): Promise<ProfileResponse> {
-    return fetchClient.put<ProfileResponse>('/api/me', data);
+    return fetchClient.patch<ProfileResponse>('/api/me', data);
   },
 
   /**
@@ -40,7 +40,7 @@ export const profileApi = {
    * @returns 업데이트된 연락처 정보
    */
   async updateContact(data: ContactUpdateRequest): Promise<ContactResponse> {
-    return fetchClient.put<ContactResponse>('/api/contact', data);
+    return fetchClient.patch<ContactResponse>('/api/contact', data);
   },
 
   /**
@@ -57,6 +57,6 @@ export const profileApi = {
    * @returns 업데이트된 계정 설정 정보
    */
   async updateAccountConfig(data: AccountConfigUpdateRequest): Promise<AccountConfigResponse> {
-    return fetchClient.put<AccountConfigResponse>('/api/account-config', data);
+    return fetchClient.patch<AccountConfigResponse>('/api/account-config', data);
   },
 };

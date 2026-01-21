@@ -29,19 +29,19 @@ const EditResumePage: React.FC = () => {
   const resumeId = params?.id ? Number(params.id) : null;
 
   // 프로필 정보 가져오기
-  const { data: profileData } = useQuery({
+  const { data: profileData, isLoading: isProfileLoading } = useQuery({
     queryKey: ['profile'],
     queryFn: () => profileApi.getProfile(),
   });
 
   // 연락처 정보 가져오기
-  const { data: contactData } = useQuery({
+  const { data: contactData, isLoading: isContactLoading } = useQuery({
     queryKey: ['contact'],
     queryFn: () => profileApi.getContact(),
   });
 
   const { data: resumeData, isLoading, error } = useQuery({
-    queryKey: ['resume', resumeId, profileData, contactData],
+    queryKey: ['resume', resumeId],
     queryFn: async () => {
       if (!resumeId) throw new Error('Invalid resume ID');
       const response = await resumeApi.getResumeById(resumeId);
@@ -109,10 +109,10 @@ const EditResumePage: React.FC = () => {
 
       return resume;
     },
-    enabled: !!resumeId
+    enabled: !!resumeId && !!profileData && !!contactData
   });
 
-  if (isLoading) {
+  if (isLoading || isProfileLoading || isContactLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

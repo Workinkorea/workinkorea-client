@@ -8,8 +8,9 @@
  * 4. Server/Client Components 모두 지원
  */
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// 클라이언트: 상대 경로 사용 (Next.js rewrites가 프록시)
+// 서버: 절대 URL 사용
+export const API_BASE_URL = "";
 
 // 서버 전용 URL (SSR/SSG에서 사용)
 export const SERVER_API_URL =
