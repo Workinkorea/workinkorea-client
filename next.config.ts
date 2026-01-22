@@ -24,11 +24,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/:path*`,
       },
     ];
   },
-  
+
   async headers() {
     return [
       {
@@ -92,11 +92,11 @@ const nextConfig: NextConfig = {
           // HTTPS 강제 (프로덕션 환경)
           ...(process.env.NODE_ENV === 'production'
             ? [
-                {
-                  key: 'Strict-Transport-Security',
-                  value: 'max-age=63072000; includeSubDomains; preload',
-                },
-              ]
+              {
+                key: 'Strict-Transport-Security',
+                value: 'max-age=63072000; includeSubDomains; preload',
+              },
+            ]
             : []),
         ],
       },
