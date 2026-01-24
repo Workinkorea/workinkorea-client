@@ -60,7 +60,9 @@ export interface CompanyLoginRequest {
   password: string;
 }
 
-export type CompanyLoginResponse = string;
+export interface CompanyLoginResponse {
+  url: string;
+}
 
 export interface CompanySignupRequest {
   company_number: string;

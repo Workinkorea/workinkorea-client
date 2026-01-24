@@ -1,4 +1,4 @@
-import { fetchClient, fetchAPI } from '@/shared/api/fetchClient';
+import { fetchClient, fetchAPI, API_BASE_URL, SERVER_API_URL } from '@/shared/api/fetchClient';
 import type {
   EmailVerificationResponse,
   LoginRequest,
@@ -88,23 +88,44 @@ export const authApi = {
   /**
    * 기업 로그인
    *
+   * 서버 응답 형식:
+   * - 200: { "url": "/company" } (성공)
+   * - 401: { "url": "/company-login" } (인증 실패)
+   * - 500: { "url": "/company-login" } (서버 오류)
+   *
+   * 모든 상태 코드에서 JSON 응답을 받아 url을 추출합니다.
+   *
    * OAuth2PasswordRequestForm 형식:
    * - Content-Type: application/x-www-form-urlencoded
    * - body: username=...&password=...
    */
-  async companyLogin(data: CompanyLoginRequest): Promise<CompanyLoginResponse> {
+  async companyLogin(data: CompanyLoginRequest): Promise<string> {
     const formData = new URLSearchParams();
     formData.append('username', data.username);
     formData.append('password', data.password);
 
-    return fetchAPI<CompanyLoginResponse>('/api/auth/company/login', {
+    // 서버 vs 클라이언트 환경 감지
+    const isServer = typeof window === 'undefined';
+    const baseURL = isServer ? SERVER_API_URL : API_BASE_URL;
+
+    const response = await fetch(`${baseURL}/api/auth/company/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),
-      skipAuth: true,
+      credentials: 'include', // HttpOnly Cookie 자동 전송
     });
+
+    // 모든 상태 코드에서 JSON 응답 파싱
+    const responseData = await response.json() as CompanyLoginResponse;
+
+    // url이 있으면 반환
+    if (responseData && responseData.url) {
+      return responseData.url;
+    }
+
+    throw new Error('로그인 응답에 url이 없습니다.');
   },
 
   /**
