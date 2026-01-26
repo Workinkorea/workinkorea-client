@@ -1,4 +1,4 @@
-import { apiClient } from './client';
+import { fetchClient } from './fetchClient';
 
 export interface MinioUploadResponse {
     url: string;
@@ -23,7 +23,7 @@ export const uploadFileToMinio = async (
 
   try {
     // 1. Presigned URL 정보 받기
-    const uploadResponse = await apiClient.post<MinioUploadResponse>(
+    const uploadResponse = await fetchClient.post<MinioUploadResponse>(
       endpoint,
       {
         file_type: file_type,

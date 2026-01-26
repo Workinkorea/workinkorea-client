@@ -18,14 +18,6 @@ export const companyPostsKeys = {
 /**
  * Hook: useCompanyPosts
  *
- * Purpose: Fetch paginated list of company job posts
- *
- * Features:
- * - SSR/ISR Hydration support via initialData
- * - Automatic caching (5min staleTime)
- * - keepPreviousData for smooth pagination
- * - Loading/Error states
- *
  * @param page - Current page number (1-based)
  * @param limit - Items per page (default: 12)
  * @param initialData - SSR prefetched data for hydration

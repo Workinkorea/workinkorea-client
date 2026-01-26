@@ -2,9 +2,9 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { AxiosError } from 'axios';
 import React, { ReactNode, useState } from 'react';
-import { getErrorByCode } from '@/shared/lib/utils/getErrorByCode';
+import { getErrorByFetch } from '@/shared/lib/utils/getErrorByFetch';
+import { FetchError } from '@/shared/api/fetchClient';
 
 interface ReactQueryProviderProps {
   children: ReactNode;
@@ -29,8 +29,8 @@ function ReactQueryProvider({
         mutations: {
           throwOnError: false,
           onError: (error) => {
-            if (error instanceof AxiosError) {
-              const { description } = getErrorByCode(error);
+            if (error instanceof FetchError) {
+              const { description } = getErrorByFetch(error);
               console.error(description);
             }
           }

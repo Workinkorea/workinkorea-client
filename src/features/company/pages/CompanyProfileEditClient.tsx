@@ -14,8 +14,8 @@ import toast from 'react-hot-toast';
 import { detectPhoneType, formatPhoneByType, PhoneType } from '@/shared/lib/utils/phoneUtils';
 import { extractErrorMessage, logError } from '@/shared/lib/utils/errorHandler';
 import { validateCompanyProfileField, validateCompanyProfileForm } from '../validations/companyProfileValidation';
-import { BasicInfoSection } from '@/features/company/components/BasicInfoSection';
-import { ContactInfoSection } from '@/features/company/components/ContactInfoSection';
+import { CompanyInfoSection } from '@/features/company/components/CompanyInfoSection';
+import { ContactPersonSection } from '@/features/company/components/ContactPersonSection';
 
 const CompanyProfileEditClient: React.FC = () => {
   const router = useRouter();
@@ -28,7 +28,8 @@ const CompanyProfileEditClient: React.FC = () => {
     establishment_date: '',
     company_type: '',
     insurance: '',
-    phone_number: '',
+    company_phone: '',  // 기업 일반전화
+    phone_number: '',  // 담당자 휴대전화
     phone_type: 'MOBILE',  // Default phone type
     address: '',
     website_url: '',
@@ -56,7 +57,6 @@ const CompanyProfileEditClient: React.FC = () => {
   // 프로필 데이터가 로드되면 폼에 설정
   useEffect(() => {
     if (profile) {
-
       // Detect phone type from existing phone number
       const phoneNum = String(profile.phone_number || '');
       const detectedType = detectPhoneType(phoneNum) || 'MOBILE';
@@ -67,7 +67,8 @@ const CompanyProfileEditClient: React.FC = () => {
         establishment_date: profile.establishment_date || '',
         company_type: profile.company_type || '',
         insurance: profile.insurance || '',
-        phone_number: phoneNum,
+        company_phone: profile.company_phone || '',  // 기업 일반전화
+        phone_number: phoneNum,  // 담당자 휴대전화
         phone_type: (profile.phone_type as PhoneType) || detectedType,  // Use saved type or detect
         address: profile.address || '',
         website_url: profile.website_url || '',
@@ -93,6 +94,7 @@ const CompanyProfileEditClient: React.FC = () => {
         establishment_date: '',
         company_type: '',
         insurance: '',
+        company_phone: '',
         phone_number: '',
         phone_type: 'MOBILE' as PhoneType,
         address: '',
@@ -137,21 +139,13 @@ const CompanyProfileEditClient: React.FC = () => {
     const { name, value } = e.target;
     let processedValue: string | number | PhoneType = value;
 
-    // Handle phone type change
-    if (name === 'phone_type') {
-      const newPhoneType = value as PhoneType;
-      setFormData((prev) => ({
-        ...prev,
-        phone_type: newPhoneType,
-        phone_number: '',  // Reset phone number when type changes
-      }));
-      setErrors((prev) => ({ ...prev, phone_number: '' }));
-      return;
+    // 기업 일반전화는 LANDLINE 포맷팅
+    if (name === 'company_phone') {
+      processedValue = formatPhoneByType(value, 'LANDLINE');
     }
-
-    // 전화번호는 자동으로 타입별 포맷팅
-    if (name === 'phone_number') {
-      processedValue = formatPhoneByType(value, formData.phone_type);
+    // 담당자 휴대전화는 MOBILE 포맷팅
+    else if (name === 'phone_number') {
+      processedValue = formatPhoneByType(value, 'MOBILE');
     } else if (name === 'employee_count' || name === 'country_id' || name === 'position_id') {
       processedValue = value ? Number(value) : 0;
     }
@@ -175,7 +169,7 @@ const CompanyProfileEditClient: React.FC = () => {
     const { name, value } = e.target;
     setTouchedFields((prev) => ({ ...prev, [name]: true }));
 
-    const processedValue = name === 'employee_count' || name === 'phone_number' || name === 'country_id' || name === 'position_id'
+    const processedValue = name === 'employee_count' || name === 'phone_number' || name === 'company_phone' || name === 'country_id' || name === 'position_id'
       ? formData[name as keyof CompanyProfileRequest]
       : value;
 
@@ -267,8 +261,8 @@ const CompanyProfileEditClient: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            {/* 기본 정보 */}
-            <BasicInfoSection
+            {/* 담당 기업 정보 */}
+            <CompanyInfoSection
               formData={formData}
               errors={errors}
               touchedFields={touchedFields}
@@ -277,8 +271,8 @@ const CompanyProfileEditClient: React.FC = () => {
               today={today}
             />
 
-            {/* 연락 정보 */}
-            <ContactInfoSection
+            {/* 담당자 정보 */}
+            <ContactPersonSection
               formData={formData}
               errors={errors}
               touchedFields={touchedFields}

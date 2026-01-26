@@ -2,6 +2,21 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+
+  // React Compiler 활성화 (Next.js 16에서 stable)
+  reactCompiler: true,
+
+  // 이미지 최적화
+  images: {
+    formats: ['image/avif', 'image/webp'], // 최신 이미지 포맷 우선 사용
+    minimumCacheTTL: 86400, // 24시간 캐싱 (Next.js 16 기본값: 4시간)
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+  },
+
+  // 번들 최적화
+  compress: true, // Gzip 압축 활성화
+
   turbopack: {
     root: __dirname,
   },
@@ -9,11 +24,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/:path*`,
       },
     ];
   },
-  
+
   async headers() {
     return [
       {
@@ -77,11 +92,11 @@ const nextConfig: NextConfig = {
           // HTTPS 강제 (프로덕션 환경)
           ...(process.env.NODE_ENV === 'production'
             ? [
-                {
-                  key: 'Strict-Transport-Security',
-                  value: 'max-age=63072000; includeSubDomains; preload',
-                },
-              ]
+              {
+                key: 'Strict-Transport-Security',
+                value: 'max-age=63072000; includeSubDomains; preload',
+              },
+            ]
             : []),
         ],
       },

@@ -1,9 +1,9 @@
 import SignupComponent from "@/features/auth/components/SignupComponent";
 
 interface SignupPageProps {
-  searchParams: {
+  searchParams: Promise<{
     user_email?: string;
-  };
+  }>;
 }
 
 export default async function SignupPage({ searchParams }: SignupPageProps) {

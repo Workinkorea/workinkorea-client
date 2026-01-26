@@ -1,12 +1,12 @@
-import { createServerAdminApi } from '@/shared/api/server';
+import { fetchAPI } from '@/shared/api/fetchClient';
+import { AdminPost } from '@/shared/types/api';
 import PostsTableClient from '@/features/admin/components/PostsTableClient';
 
 export const dynamic = 'force-dynamic';
 
-async function getPosts() {
+async function getPosts(): Promise<AdminPost[]> {
   try {
-    const adminApi = await createServerAdminApi();
-    return await adminApi.getPosts(0, 10);
+    return await fetchAPI<AdminPost[]>('/api/admin/posts/?skip=0&limit=10');
   } catch (error) {
     console.error('Failed to fetch posts:', error);
     return [];

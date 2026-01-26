@@ -23,15 +23,21 @@ export interface EmailVerificationResponse {
 // Individual User Authentication
 // ============================================================================
 
+/**
+ * @deprecated 일반 사용자는 이메일/비밀번호 로그인을 지원하지 않습니다.
+ * 일반 사용자는 Google OAuth만 사용합니다.
+ */
 export interface LoginRequest {
   email: string;
   password: string;
 }
 
+/**
+ * @deprecated 일반 사용자는 이메일/비밀번호 로그인을 지원하지 않습니다.
+ * 일반 사용자는 Google OAuth만 사용합니다.
+ */
 export interface LoginResponse {
   success: boolean;
-  token?: string;
-  token_type?: 'access' | 'access_company' | 'admin_access';
   user?: {
     id: string;
     email: string;
@@ -56,8 +62,6 @@ export interface CompanyLoginRequest {
 
 export interface CompanyLoginResponse {
   url: string;
-  access_token?: string;
-  token_type?: 'access' | 'access_company' | 'admin_access';
 }
 
 export interface CompanySignupRequest {
@@ -114,8 +118,6 @@ export interface LogoutResponse {
 
 export interface RefreshTokenResponse {
   success: boolean;
-  accessToken: string;
-  token_type?: 'access' | 'access_company' | 'admin_access';
 }
 
 export interface GetUserInfoResponse {

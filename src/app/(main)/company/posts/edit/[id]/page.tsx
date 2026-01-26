@@ -7,6 +7,7 @@ export const metadata: Metadata = createMetadata({
   description: '채용 공고를 수정하세요.',
 });
 
-export default function CompanyPostEditPage({ params }: { params: { id: string } }) {
-  return <CompanyPostEditClient postId={params.id} />;
+export default async function CompanyPostEditPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <CompanyPostEditClient postId={id} />;
 }

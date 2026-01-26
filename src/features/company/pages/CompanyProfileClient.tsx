@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Edit3, Plus, MapPin, Users, Calendar, Building } from 'lucide-react';
-import { AxiosError } from 'axios';
+import { FetchError } from '@/shared/api/fetchClient';
 import Layout from '@/shared/components/layout/Layout';
 import Header from '@/shared/components/layout/Header';
 import { profileApi } from '../api/profileCompany';
@@ -33,8 +33,8 @@ const CompanyProfileClient: React.FC = () => {
 
   // 프로필 조회 실패 시(404 Not Found 또는 500 Server Error) 프로필 작성 페이지로 리다이렉트
   useEffect(() => {
-    if (isError && error instanceof AxiosError) {
-      const status = error.response?.status;
+    if (isError && error instanceof FetchError) {
+      const status = error.status;
       // 404: 프로필 없음, 500: 서버 오류 (기존 데이터 로드 실패 시 작성 페이지로 이동)
       if (status === 404 || status === 500) {
         router.replace('/company/profile/edit');
@@ -175,11 +175,10 @@ const CompanyProfileClient: React.FC = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${
-                    activeTab === tab.key
+                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${activeTab === tab.key
                       ? 'bg-primary-500 text-white shadow-sm'
                       : 'text-label-700 hover:bg-component-alternative'
-                  }`}
+                    }`}
                 >
                   {tab.label}
                 </button>
@@ -279,15 +278,15 @@ const CompanyProfileClient: React.FC = () => {
                     </div>
                   ) : postsError ? (
                     <div className="text-center py-12">
-                      <p className="text-status-error mb-4">공고를 불러오는 데 실패했습니다.</p>
+                      <p className="text-label-900 font-semibold mb-2">공고를 불러올 수 없어요</p>
                       <p className="text-caption-2 text-label-500 mb-4">
-                        {postsError instanceof Error ? postsError.message : '알 수 없는 오류가 발생했습니다.'}
+                        네트워크 연결을 확인하고 다시 시도해주세요
                       </p>
                       <button
                         onClick={() => window.location.reload()}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
                       >
-                        다시 시도
+                        새로고침
                       </button>
                     </div>
                   ) : posts && posts.length > 0 ? (
@@ -328,7 +327,8 @@ const CompanyProfileClient: React.FC = () => {
                     </div>
                   ) : (
                     <div className="text-center py-12">
-                      <p className="text-label-500 mb-4">등록된 공고가 없습니다.</p>
+                      <p className="text-label-600 mb-2">첫 채용 공고를 등록해보세요</p>
+                      <p className="text-caption-2 text-label-500 mb-4">훌륭한 인재를 만날 수 있어요</p>
                       <button
                         onClick={() => router.push('/company/posts/create')}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"

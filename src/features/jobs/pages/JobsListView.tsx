@@ -15,7 +15,6 @@ interface JobsListViewProps {
 export default function JobsListView({ initialData, currentPage }: JobsListViewProps) {
   const limit = 12;
 
-  // TanStack Query: Hydrate with SSR data
   const { data, isLoading, error } = useCompanyPosts(currentPage, limit, initialData);
 
   const posts = data?.company_posts || [];
@@ -44,21 +43,24 @@ export default function JobsListView({ initialData, currentPage }: JobsListViewP
           {isLoading && (
             <div className="text-center py-20">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
-              <p className="mt-4 text-label-600 text-body-2">공고를 불러오는 중...</p>
+              <p className="mt-4 text-label-600 text-body-2">채용 공고 확인 중</p>
             </div>
           )}
 
           {/* 에러 상태 */}
           {error && (
             <div className="text-center py-20">
-              <p className="text-red-500 text-body-2">
-                공고를 불러오는 중 오류가 발생했습니다.
+              <p className="text-label-900 text-body-1 font-semibold mb-2">
+                공고를 불러올 수 없어요
+              </p>
+              <p className="text-label-600 text-body-2 mb-4">
+                네트워크 연결을 확인하고 다시 시도해주세요
               </p>
               <button
                 onClick={() => window.location.reload()}
                 className="mt-4 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600"
               >
-                다시 시도
+                새로고침
               </button>
             </div>
           )}
@@ -81,7 +83,8 @@ export default function JobsListView({ initialData, currentPage }: JobsListViewP
             </>
           ) : !isLoading && !error ? (
             <div className="text-center py-20">
-              <p className="text-label-500 text-body-2">등록된 공고가 없습니다.</p>
+              <p className="text-label-600 text-body-2 mb-2">새로운 채용 공고를 준비 중이에요</p>
+              <p className="text-label-500 text-body-3">곧 다양한 기회를 만나보실 수 있어요</p>
             </div>
           ) : null}
         </div>

@@ -32,11 +32,16 @@ export const companyProfileValidationRules: Record<string, ValidationRule> = {
     }
   },
 
-  phone_number: (value: string | number, formData?: CompanyProfileRequest) => {
+  company_phone: (value: string | number) => {
     const strValue = String(value);
-    if (!strValue || !strValue.trim()) return '전화번호를 입력해주세요.';
-    if (!formData?.phone_type) return '전화번호 타입을 선택해주세요.';
-    return validatePhoneType(strValue, formData.phone_type);
+    if (!strValue || !strValue.trim()) return '일반전화를 입력해주세요.';
+    return validatePhoneType(strValue, 'LANDLINE');
+  },
+
+  phone_number: (value: string | number) => {
+    const strValue = String(value);
+    if (!strValue || !strValue.trim()) return '휴대전화를 입력해주세요.';
+    return validatePhoneType(strValue, 'MOBILE');
   },
 
   phone_type: (value: string | number) => {

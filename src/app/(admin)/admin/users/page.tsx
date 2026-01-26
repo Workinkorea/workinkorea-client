@@ -1,12 +1,12 @@
-import { createServerAdminApi } from '@/shared/api/server';
+import { fetchAPI } from '@/shared/api/fetchClient';
+import { AdminUser } from '@/shared/types/api';
 import UsersTableClient from '@/features/admin/components/UsersTableClient';
 
 export const dynamic = 'force-dynamic';
 
-async function getUsers() {
+async function getUsers(): Promise<AdminUser[]> {
   try {
-    const adminApi = await createServerAdminApi();
-    return await adminApi.getUsers(0, 10);
+    return await fetchAPI<AdminUser[]>('/api/admin/users/?skip=0&limit=10');
   } catch (error) {
     console.error('Failed to fetch users:', error);
     return [];
