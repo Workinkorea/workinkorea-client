@@ -175,11 +175,10 @@ const CompanyProfileClient: React.FC = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${
-                    activeTab === tab.key
+                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${activeTab === tab.key
                       ? 'bg-primary-500 text-white shadow-sm'
                       : 'text-label-700 hover:bg-component-alternative'
-                  }`}
+                    }`}
                 >
                   {tab.label}
                 </button>
