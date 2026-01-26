@@ -233,54 +233,6 @@ export default function BusinessSignupStep2({
 
   const currentProgress = useMemo(() => calculateProgress(), [calculateProgress]);
 
-  // useEffect(() => {
-  //   const handleScroll = throttle(() => {
-  //     const headerHeight = 60;
-  //     const progressSectionHeight = 200;
-  //     const scrollY = window.scrollY;
-
-  //     setIsProgressBarSticky(scrollY > headerHeight);
-
-  //     const shouldShowToast = scrollY > progressSectionHeight;
-
-  //     if (shouldShowToast && !showProgressToast) {
-  //       setShowProgressToast(true);
-
-  //       const progress = calculateProgress();
-  
-  //       const toastId = toast.custom(
-  //         () => (
-  //           <div className="w-full max-w-[540px] mobile:max-w-[448px] mx-auto px-4 mt-14">
-  //             <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg p-3 shadow-lg">
-  //               <span className="text-body-3 text-primary-500">{progress}%</span>
-  //             </div>
-  //           </div>
-  //         ),
-  //         {
-  //           duration: Infinity,
-  //           position: 'top-center',
-  //           unstyled: true,
-  //         }
-  //       );
-  //       setCurrentToastId(toastId);
-  //     } else if (!shouldShowToast && showProgressToast) {
-  //       setShowProgressToast(false);
-  //       if (currentToastId) {
-  //         toast.dismiss(currentToastId);
-  //         setCurrentToastId(null);
-  //       }
-  //     }
-  //   }, 16);
-
-  //   window.addEventListener('scroll', handleScroll);
-  //   return () => {
-  //     window.removeEventListener('scroll', handleScroll);
-  //     if (currentToastId) {
-  //       toast.dismiss(currentToastId);
-  //     }
-  //   };
-  // }, [showProgressToast, currentToastId, calculateProgress]);
-
   return (
     <div className="h-full">
 

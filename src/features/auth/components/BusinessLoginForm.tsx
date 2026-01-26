@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { validatePassword } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
-// import { formatBusinessNumber, isValidBusinessNumber, removeBusinessNumberHyphen } from '@/shared/lib/utils/authNumber'; // 사업자등록번호 방식에서 사용
+import { FetchError } from '@/shared/api/fetchClient';
 
 interface BusinessLoginFormData {
   email: string;
@@ -208,25 +208,16 @@ export default function BusinessLoginForm() {
       let errorMessage = '로그인 중 오류가 발생했습니다.';
       let errorField: 'email' | 'password' = 'password';
 
-      // Axios 에러 응답 처리
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as {
-          response?: {
-            status?: number;
-            data?: {
-              error?: string;
-              detail?: string;
-              message?: string;
-            }
-          };
-          message?: string;
-        };
+      // FetchError 처리 (native fetch)
+      if (error instanceof FetchError) {
+        const status = error.status;
+        let serverError = '';
 
-        const status = axiosError.response?.status;
-        const serverError =
-          axiosError.response?.data?.detail ||
-          axiosError.response?.data?.error ||
-          axiosError.response?.data?.message;
+        // Extract error message from error data
+        if (error.data && typeof error.data === 'object') {
+          const data = error.data as Record<string, unknown>;
+          serverError = (data.detail as string) || (data.error as string) || (data.message as string) || '';
+        }
 
         // HTTP 상태 코드별 처리
         if (status === 401) {
@@ -261,7 +252,7 @@ export default function BusinessLoginForm() {
           // 429: 너무 많은 요청
           errorMessage = '로그인 시도 횟수가 초과되었습니다. 잠시 후 다시 시도해주세요.';
           errorField = 'password';
-        } else if (status && status >= 500) {
+        } else if (status >= 500) {
           // 500번대: 서버 오류
           errorMessage = '서버에 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
           errorField = 'password';

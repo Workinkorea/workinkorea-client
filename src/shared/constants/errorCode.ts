@@ -7,7 +7,7 @@ export const ERROR_CODE: ErrorCodeType = Object.freeze({
     title: '알 수 없는 오류가 발생했습니다.',
     description: '문제가 지속되면 관리자에게 문의하세요.'
   },
-  // axios error
+  // Network errors
   ERR_NETWORK: {
     title: '지금은 접속이 원활하지 않습니다.',
     description:
@@ -18,7 +18,7 @@ export const ERROR_CODE: ErrorCodeType = Object.freeze({
     description: '서버가 응답하지 않아서 요청이 취소되었습니다.'
   },
 
-  // http status code 및 정의된 코드
+  // HTTP status codes
   400: {
     title: '요청이 잘못되었습니다.',
     description: '잘못된 데이터나 요청 형식으로 인해 요청을 처리할 수 없습니다.'

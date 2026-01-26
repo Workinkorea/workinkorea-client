@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Edit3, Plus, MapPin, Users, Calendar, Building } from 'lucide-react';
-import { AxiosError } from 'axios';
+import { FetchError } from '@/shared/api/fetchClient';
 import Layout from '@/shared/components/layout/Layout';
 import Header from '@/shared/components/layout/Header';
 import { profileApi } from '../api/profileCompany';
@@ -33,8 +33,8 @@ const CompanyProfileClient: React.FC = () => {
 
   // 프로필 조회 실패 시(404 Not Found 또는 500 Server Error) 프로필 작성 페이지로 리다이렉트
   useEffect(() => {
-    if (isError && error instanceof AxiosError) {
-      const status = error.response?.status;
+    if (isError && error instanceof FetchError) {
+      const status = error.status;
       // 404: 프로필 없음, 500: 서버 오류 (기존 데이터 로드 실패 시 작성 페이지로 이동)
       if (status === 404 || status === 500) {
         router.replace('/company/profile/edit');
@@ -175,11 +175,10 @@ const CompanyProfileClient: React.FC = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${
-                    activeTab === tab.key
+                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${activeTab === tab.key
                       ? 'bg-primary-500 text-white shadow-sm'
                       : 'text-label-700 hover:bg-component-alternative'
-                  }`}
+                    }`}
                 >
                   {tab.label}
                 </button>

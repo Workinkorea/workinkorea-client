@@ -150,7 +150,7 @@ export const authApi = {
   async verifyBusinessNumber(businessNumber: string): Promise<BusinessVerificationResponse> {
     try {
       return await fetchClient.post<BusinessVerificationResponse>(
-        '/api/auth/verify-business',
+        '/api/verify-business',
         { businessNumber }
       );
     } catch (error) {
