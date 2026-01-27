@@ -31,12 +31,20 @@ const CompanyProfileClient: React.FC = () => {
     }
   }, [isAuthenticated, authLoading, router]);
 
-  // 프로필 조회 실패 시(404 Not Found 또는 500 Server Error) 프로필 작성 페이지로 리다이렉트
+  // 프로필 조회 실패 시 에러 처리
   useEffect(() => {
     if (isError && error instanceof FetchError) {
       const status = error.status;
-      // 404: 프로필 없음, 500: 서버 오류 (기존 데이터 로드 실패 시 작성 페이지로 이동)
-      if (status === 404 || status === 500) {
+
+      // 401, 403: 인증/권한 문제 → fetchClient에서 자동으로 로그아웃 처리
+
+      // 404: 프로필 없음 → 프로필 작성 페이지로
+      if (status === 404) {
+        router.replace('/company/profile/edit');
+      }
+
+      // 500: 서버 오류 → 프로필 작성 페이지로
+      if (status === 500) {
         router.replace('/company/profile/edit');
       }
     }
@@ -121,7 +129,7 @@ const CompanyProfileClient: React.FC = () => {
           >
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4">
-                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
+                <div className="w-20 h-20 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
                   {profile.company_id}
                 </div>
                 <div>
@@ -176,8 +184,8 @@ const CompanyProfileClient: React.FC = () => {
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
                   className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${activeTab === tab.key
-                      ? 'bg-primary-500 text-white shadow-sm'
-                      : 'text-label-700 hover:bg-component-alternative'
+                    ? 'bg-primary-500 text-white shadow-sm'
+                    : 'text-label-700 hover:bg-component-alternative'
                     }`}
                 >
                   {tab.label}
