@@ -8,13 +8,11 @@
  * 4. Server/Client Components 모두 지원
  */
 
-// 클라이언트와 서버 모두 절대 URL 사용 (도메인 불일치 문제 해결)
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const API_BASE_URL = "";
 
 // 서버 전용 URL (SSR/SSG에서 사용)
 export const SERVER_API_URL =
-  process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  process.env.API_URL || "http://workinkorea-server:8000";
 
 export interface FetchOptions extends RequestInit {
   skipAuth?: boolean;
