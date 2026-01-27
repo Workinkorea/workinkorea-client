@@ -59,28 +59,7 @@ export async function fetchAPI<T>(
   };
 
   try {
-    // 디버깅: 요청 정보 로깅
-    if (process.env.NODE_ENV === 'development' && !isServer) {
-      console.log('[fetchAPI] Request:', {
-        url: `${baseURL}${endpoint}`,
-        method: config.method || 'GET',
-        credentials: config.credentials,
-        hasAuthCookie: document.cookie.includes('access_token'),
-        cookies: document.cookie,
-      });
-    }
-
     const response = await fetch(`${baseURL}${endpoint}`, config);
-
-    // 디버깅: 응답 정보 로깅
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[fetchAPI] Response:', {
-        url: `${baseURL}${endpoint}`,
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-      });
-    }
 
     // 401 Unauthorized - Token Refresh 시도
     if (response.status === 401 && !skipAuth && !endpoint.includes('/auth/refresh')) {
@@ -106,20 +85,8 @@ export async function fetchAPI<T>(
 
     // 403 Forbidden - 권한 없음
     if (response.status === 403) {
-      // 403 응답 본문 읽기
       const errorBody = await response.text().catch(() => '');
 
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[fetchAPI] 403 Forbidden:', {
-          endpoint,
-          errorBody,
-          contentType: response.headers.get('content-type'),
-          cookies: !isServer ? document.cookie : 'server-side',
-        });
-      }
-
-      // 403은 "권한 없음"이므로 자동 로그아웃하지 않음
-      // 각 페이지에서 에러를 받아서 적절히 처리
       let errorData;
       try {
         errorData = JSON.parse(errorBody);
@@ -156,7 +123,6 @@ export async function fetchAPI<T>(
     }
 
     // Network errors
-    console.error('[fetchAPI] Network error:', error);
     throw new FetchError('Network request failed', 0, error);
   }
 }
@@ -178,15 +144,8 @@ async function refreshToken(isServer: boolean): Promise<boolean> {
       },
     });
 
-    if (response.ok) {
-      console.log('[fetchAPI] Token refreshed successfully');
-      return true;
-    }
-
-    console.error('[fetchAPI] Token refresh failed:', response.status);
-    return false;
+    return response.ok;
   } catch (error) {
-    console.error('[fetchAPI] Token refresh error:', error);
     return false;
   }
 }
@@ -198,7 +157,6 @@ async function refreshToken(isServer: boolean): Promise<boolean> {
 function handleAuthFailure(): void {
   if (typeof window === 'undefined') return;
 
-  // userType 쿠키에서 사용자 타입 확인
   const userType = getUserTypeFromCookie();
 
   const loginPath =
@@ -206,12 +164,6 @@ function handleAuthFailure(): void {
       userType === 'admin' ? '/admin/login' :
         '/login';
 
-  console.warn('[fetchAPI] Authentication failed. Redirecting to login...', {
-    userType,
-    loginPath,
-  });
-
-  // 쿠키 삭제는 백엔드의 /logout 엔드포인트에서 처리
   window.location.replace(loginPath);
 }
 

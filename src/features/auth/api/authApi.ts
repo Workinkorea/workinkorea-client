@@ -104,19 +104,9 @@ export const authApi = {
     formData.append('username', data.username);
     formData.append('password', data.password);
 
-    // 서버 vs 클라이언트 환경 감지
     const isServer = typeof window === 'undefined';
     const baseURL = isServer ? SERVER_API_URL : API_BASE_URL;
-
     const requestUrl = `${baseURL}/api/auth/company/login`;
-
-    // 디버깅: 요청 정보
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[authApi.companyLogin] Request:', {
-        url: requestUrl,
-        credentials: 'include',
-      });
-    }
 
     const response = await fetch(requestUrl, {
       method: 'POST',
@@ -124,37 +114,11 @@ export const authApi = {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),
-      credentials: 'include', // HttpOnly Cookie 자동 전송
+      credentials: 'include',
     });
 
-    // 디버깅: 응답 정보
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[authApi.companyLogin] Response:', {
-        status: response.status,
-        ok: response.ok,
-        headers: {
-          'set-cookie': response.headers.get('set-cookie'),
-          'content-type': response.headers.get('content-type'),
-        },
-      });
-
-      // 모든 응답 헤더 출력
-      const allHeaders: Record<string, string> = {};
-      response.headers.forEach((value, key) => {
-        allHeaders[key] = value;
-      });
-      console.log('[authApi.companyLogin] All Response Headers:', allHeaders);
-    }
-
-    // 모든 상태 코드에서 JSON 응답 파싱
     const responseData = await response.json() as CompanyLoginResponse;
 
-    // 디버깅: 응답 데이터
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[authApi.companyLogin] Response Data:', responseData);
-    }
-
-    // url이 있으면 반환
     if (responseData && responseData.url) {
       return responseData.url;
     }
@@ -182,15 +146,10 @@ export const authApi = {
    * 사업자 등록번호 검증 (국세청 API)
    */
   async verifyBusinessNumber(businessNumber: string): Promise<BusinessVerificationResponse> {
-    try {
-      return await fetchClient.post<BusinessVerificationResponse>(
-        '/api/verify-business',
-        { businessNumber }
-      );
-    } catch (error) {
-      console.error('[authApi] Business verification error:', error);
-      throw error;
-    }
+    return fetchClient.post<BusinessVerificationResponse>(
+      '/api/verify-business',
+      { businessNumber }
+    );
   },
   /**
    * 사용자 프로필 조회 (인증 상태 확인용)

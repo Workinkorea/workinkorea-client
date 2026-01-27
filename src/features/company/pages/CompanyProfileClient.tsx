@@ -36,17 +36,8 @@ const CompanyProfileClient: React.FC = () => {
     if (isError && error instanceof FetchError) {
       const status = error.status;
 
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[CompanyProfile] Error:', {
-          status,
-          message: error.message,
-          data: error.data,
-        });
-      }
-
       // 403: 권한 없음 - 에러 상태 유지 (리다이렉트 하지 않음)
       if (status === 403) {
-        console.error('[CompanyProfile] 403 Forbidden - 프로필 조회 권한이 없습니다.');
         return;
       }
 
