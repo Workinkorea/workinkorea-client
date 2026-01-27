@@ -105,34 +105,33 @@ export async function fetchAPI<T>(
     }
 
     // 403 Forbidden - 권한 없음
-    if (response.status === 403 && !skipAuth) {
-      console.error('[fetchAPI] 403 Forbidden - Invalid token or insufficient permissions');
+    if (response.status === 403) {
+      // 403 응답 본문 읽기
+      const errorBody = await response.text().catch(() => '');
 
-      // 토큰 리프레시 시도
-      const refreshed = await refreshToken(isServer);
-
-      if (refreshed) {
-        // Retry original request
-        const retryResponse = await fetch(`${baseURL}${endpoint}`, config);
-
-        if (retryResponse.ok) {
-          return retryResponse.json() as Promise<T>;
-        }
-
-        // 리프레시 후에도 403이면 권한 문제 → 로그아웃
-        if (retryResponse.status === 403) {
-          if (!isServer) {
-            handleAuthFailure();
-          }
-          throw new FetchError('Forbidden - Access denied', 403);
-        }
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[fetchAPI] 403 Forbidden:', {
+          endpoint,
+          errorBody,
+          contentType: response.headers.get('content-type'),
+          cookies: !isServer ? document.cookie : 'server-side',
+        });
       }
 
-      // Refresh 실패 시 로그아웃 처리
-      if (!isServer) {
-        handleAuthFailure();
+      // 403은 "권한 없음"이므로 자동 로그아웃하지 않음
+      // 각 페이지에서 에러를 받아서 적절히 처리
+      let errorData;
+      try {
+        errorData = JSON.parse(errorBody);
+      } catch {
+        errorData = { detail: errorBody || 'Forbidden' };
       }
-      throw new FetchError('Forbidden - Token refresh failed', 403);
+
+      throw new FetchError(
+        errorData.detail || errorData.message || 'Forbidden',
+        403,
+        errorData
+      );
     }
 
     // 기타 HTTP 에러

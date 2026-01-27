@@ -36,7 +36,19 @@ const CompanyProfileClient: React.FC = () => {
     if (isError && error instanceof FetchError) {
       const status = error.status;
 
-      // 401, 403: 인증/권한 문제 → fetchClient에서 자동으로 로그아웃 처리
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[CompanyProfile] Error:', {
+          status,
+          message: error.message,
+          data: error.data,
+        });
+      }
+
+      // 403: 권한 없음 - 에러 상태 유지 (리다이렉트 하지 않음)
+      if (status === 403) {
+        console.error('[CompanyProfile] 403 Forbidden - 프로필 조회 권한이 없습니다.');
+        return;
+      }
 
       // 404: 프로필 없음 → 프로필 작성 페이지로
       if (status === 404) {
@@ -69,6 +81,54 @@ const CompanyProfileClient: React.FC = () => {
     enabled: !!profile, // 프로필이 로드된 후에만 공고 조회
     retry: 1,
   });
+
+  // 에러 상태 처리
+  if (isError && error instanceof FetchError) {
+    return (
+      <Layout>
+        <Header
+          type={userType === 'company' ? 'business' : 'homepage'}
+          isAuthenticated={isAuthenticated}
+          isLoading={authLoading}
+          onLogout={handleLogout}
+        />
+        <div className="min-h-screen bg-background-alternative py-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white rounded-lg p-8 text-center">
+              <h2 className="text-title-3 font-bold text-label-900 mb-4">
+                프로필을 불러올 수 없습니다
+              </h2>
+              <p className="text-body-3 text-label-600 mb-2">
+                상태 코드: {error.status}
+              </p>
+              <p className="text-body-3 text-label-600 mb-2">
+                {error.message}
+              </p>
+              {error.data && typeof error.data === 'object' ? (
+                <pre className="bg-component-alternative p-4 rounded-lg text-left text-caption-2 mb-6 overflow-auto">
+                  {JSON.stringify(error.data, null, 2)}
+                </pre>
+              ) : null}
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                >
+                  새로고침
+                </button>
+                <button
+                  onClick={() => router.push('/company/profile/edit')}
+                  className="px-4 py-2 border border-line-400 text-label-700 rounded-lg text-body-3 font-medium hover:bg-component-alternative transition-colors cursor-pointer"
+                >
+                  프로필 작성하기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   // 로딩 상태 처리 (프로필이 없거나 로딩 중일 때)
   if (authLoading || profileLoading || !profile) {

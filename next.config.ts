@@ -50,8 +50,6 @@ const nextConfig: NextConfig = {
               `connect-src 'self' https://arw.byeong98.xyz https://t1.daumcdn.net`,
               // iframe 허용 안 함 (frame-ancestors와 함께 사용)
               "frame-src 'none'",
-              // 외부 리소스 프리페치 차단
-              "prefetch-src 'self'",
               // 객체 임베드 차단
               "object-src 'none'",
               // 기본 URI 제한
