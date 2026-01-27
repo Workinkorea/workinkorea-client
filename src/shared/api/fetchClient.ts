@@ -8,25 +8,21 @@
  * 4. Server/Client Components 모두 지원
  */
 
-// 클라이언트: 상대 경로 사용 (Next.js rewrites가 프록시)
-// 서버: 절대 URL 사용
-export const API_BASE_URL = "";
+// 클라이언트와 서버 모두 절대 URL 사용 (도메인 불일치 문제 해결)
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 // 서버 전용 URL (SSR/SSG에서 사용)
 export const SERVER_API_URL =
   process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export interface FetchOptions extends RequestInit {
-  /** 인증 토큰 첨부를 건너뛸지 여부 (Cookie는 여전히 전송됨) */
   skipAuth?: boolean;
-  /** Next.js 캐싱 옵션 */
   next?: NextFetchRequestConfig;
 }
 
 export interface NextFetchRequestConfig {
-  /** Incremental Static Regeneration (ISR) - 재검증 시간 (초) */
   revalidate?: number | false;
-  /** 캐시 태그 (revalidateTag로 무효화 가능) */
   tags?: string[];
 }
 
@@ -65,7 +61,28 @@ export async function fetchAPI<T>(
   };
 
   try {
+    // 디버깅: 요청 정보 로깅
+    if (process.env.NODE_ENV === 'development' && !isServer) {
+      console.log('[fetchAPI] Request:', {
+        url: `${baseURL}${endpoint}`,
+        method: config.method || 'GET',
+        credentials: config.credentials,
+        hasAuthCookie: document.cookie.includes('access_token'),
+        cookies: document.cookie,
+      });
+    }
+
     const response = await fetch(`${baseURL}${endpoint}`, config);
+
+    // 디버깅: 응답 정보 로깅
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[fetchAPI] Response:', {
+        url: `${baseURL}${endpoint}`,
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+      });
+    }
 
     // 401 Unauthorized - Token Refresh 시도
     if (response.status === 401 && !skipAuth && !endpoint.includes('/auth/refresh')) {
@@ -87,6 +104,37 @@ export async function fetchAPI<T>(
         handleAuthFailure();
       }
       throw new FetchError('Unauthorized - Token refresh failed', 401);
+    }
+
+    // 403 Forbidden - 권한 없음
+    if (response.status === 403 && !skipAuth) {
+      console.error('[fetchAPI] 403 Forbidden - Invalid token or insufficient permissions');
+
+      // 토큰 리프레시 시도
+      const refreshed = await refreshToken(isServer);
+
+      if (refreshed) {
+        // Retry original request
+        const retryResponse = await fetch(`${baseURL}${endpoint}`, config);
+
+        if (retryResponse.ok) {
+          return retryResponse.json() as Promise<T>;
+        }
+
+        // 리프레시 후에도 403이면 권한 문제 → 로그아웃
+        if (retryResponse.status === 403) {
+          if (!isServer) {
+            handleAuthFailure();
+          }
+          throw new FetchError('Forbidden - Access denied', 403);
+        }
+      }
+
+      // Refresh 실패 시 로그아웃 처리
+      if (!isServer) {
+        handleAuthFailure();
+      }
+      throw new FetchError('Forbidden - Token refresh failed', 403);
     }
 
     // 기타 HTTP 에러
@@ -158,8 +206,8 @@ function handleAuthFailure(): void {
 
   const loginPath =
     userType === 'company' ? '/company-login' :
-    userType === 'admin' ? '/admin/login' :
-    '/login';
+      userType === 'admin' ? '/admin/login' :
+        '/login';
 
   console.warn('[fetchAPI] Authentication failed. Redirecting to login...', {
     userType,
