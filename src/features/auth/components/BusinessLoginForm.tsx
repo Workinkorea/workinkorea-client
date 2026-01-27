@@ -180,6 +180,15 @@ export default function BusinessLoginForm() {
       if (responseUrl && typeof responseUrl === 'string') {
         // 백엔드가 access_token, refresh_token, userType 쿠키를 모두 설정
 
+        // 디버깅: 쿠키 확인
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[BusinessLogin] Login successful');
+          console.log('[BusinessLogin] Cookies after login:', document.cookie);
+          console.log('[BusinessLogin] Has access_token:', document.cookie.includes('access_token'));
+          console.log('[BusinessLogin] Has refresh_token:', document.cookie.includes('refresh_token'));
+          console.log('[BusinessLogin] Has userType:', document.cookie.includes('userType'));
+        }
+
         login('company');
 
         // Remember Me: 이메일만 저장
@@ -187,6 +196,12 @@ export default function BusinessLoginForm() {
           localStorage.setItem(SAVED_EMAIL_KEY, data.email);
         } else {
           localStorage.removeItem(SAVED_EMAIL_KEY);
+        }
+
+        // 디버깅: 리다이렉트 전 쿠키 재확인
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[BusinessLogin] Cookies before redirect:', document.cookie);
+          console.log('[BusinessLogin] Redirecting to:', responseUrl);
         }
 
         // router.push는 client-side navigation이라 Middleware 재실행 안 됨

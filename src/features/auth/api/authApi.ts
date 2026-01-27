@@ -108,7 +108,17 @@ export const authApi = {
     const isServer = typeof window === 'undefined';
     const baseURL = isServer ? SERVER_API_URL : API_BASE_URL;
 
-    const response = await fetch(`${baseURL}/api/auth/company/login`, {
+    const requestUrl = `${baseURL}/api/auth/company/login`;
+
+    // 디버깅: 요청 정보
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[authApi.companyLogin] Request:', {
+        url: requestUrl,
+        credentials: 'include',
+      });
+    }
+
+    const response = await fetch(requestUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -117,8 +127,32 @@ export const authApi = {
       credentials: 'include', // HttpOnly Cookie 자동 전송
     });
 
+    // 디버깅: 응답 정보
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[authApi.companyLogin] Response:', {
+        status: response.status,
+        ok: response.ok,
+        headers: {
+          'set-cookie': response.headers.get('set-cookie'),
+          'content-type': response.headers.get('content-type'),
+        },
+      });
+
+      // 모든 응답 헤더 출력
+      const allHeaders: Record<string, string> = {};
+      response.headers.forEach((value, key) => {
+        allHeaders[key] = value;
+      });
+      console.log('[authApi.companyLogin] All Response Headers:', allHeaders);
+    }
+
     // 모든 상태 코드에서 JSON 응답 파싱
     const responseData = await response.json() as CompanyLoginResponse;
+
+    // 디버깅: 응답 데이터
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[authApi.companyLogin] Response Data:', responseData);
+    }
 
     // url이 있으면 반환
     if (responseData && responseData.url) {
