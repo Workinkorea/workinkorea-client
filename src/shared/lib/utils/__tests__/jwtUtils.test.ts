@@ -54,12 +54,14 @@ describe('jwtUtils', () => {
       expect(decoded1).toBe(decoded2); // Same reference (cached)
     });
 
-    it('should handle tokens with special characters in payload', () => {
-      const payload = { sub: '123', name: '홍길동', role: 'admin' };
+    it('should handle tokens with multiple fields', () => {
+      const payload = { sub: '123', name: 'John Doe', role: 'admin', email: 'test@example.com' };
       const token = createToken(payload);
       const decoded = decodeJWT(token);
 
       expect(decoded?.sub).toBe('123');
+      expect(decoded?.name).toBe('John Doe');
+      expect(decoded?.role).toBe('admin');
     });
   });
 

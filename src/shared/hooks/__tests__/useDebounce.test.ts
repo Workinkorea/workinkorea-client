@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useDebounce, useDebounceCallback } from '../useDebounce';
 
 describe('useDebounce', () => {
@@ -17,7 +17,7 @@ describe('useDebounce', () => {
     expect(result.current).toBe('initial');
   });
 
-  it('should debounce value changes', async () => {
+  it('should debounce value changes', () => {
     const { result, rerender } = renderHook(
       ({ value, delay }: { value: string; delay: number }) => useDebounce(value, delay),
       {
@@ -29,21 +29,23 @@ describe('useDebounce', () => {
     expect(result.current).toBe('initial');
 
     // Change value
-    rerender({ value: 'changed', delay: 500 });
+    act(() => {
+      rerender({ value: 'changed', delay: 500 });
+    });
 
     // Value should still be initial (not debounced yet)
     expect(result.current).toBe('initial');
 
-    // Fast-forward time
-    vi.advanceTimersByTime(500);
+    // Fast-forward time and run all timers
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
 
     // Now value should be updated
-    await waitFor(() => {
-      expect(result.current).toBe('changed');
-    });
+    expect(result.current).toBe('changed');
   });
 
-  it('should reset timer if value changes before delay', async () => {
+  it('should reset timer if value changes before delay', () => {
     const { result, rerender } = renderHook(
       ({ value }: { value: string }) => useDebounce(value, 500),
       {
@@ -52,27 +54,29 @@ describe('useDebounce', () => {
     );
 
     // Change value multiple times
-    rerender({ value: 'first' });
-    vi.advanceTimersByTime(300);
+    act(() => {
+      rerender({ value: 'first' });
+      vi.advanceTimersByTime(300);
 
-    rerender({ value: 'second' });
-    vi.advanceTimersByTime(300);
+      rerender({ value: 'second' });
+      vi.advanceTimersByTime(300);
 
-    rerender({ value: 'third' });
+      rerender({ value: 'third' });
+    });
 
     // Value should still be initial
     expect(result.current).toBe('initial');
 
     // Fast-forward past delay
-    vi.advanceTimersByTime(500);
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
 
     // Value should be the latest
-    await waitFor(() => {
-      expect(result.current).toBe('third');
-    });
+    expect(result.current).toBe('third');
   });
 
-  it('should use custom delay', async () => {
+  it('should use custom delay', () => {
     const { result, rerender } = renderHook(
       ({ value, delay }: { value: string; delay: number }) => useDebounce(value, delay),
       {
@@ -80,31 +84,37 @@ describe('useDebounce', () => {
       }
     );
 
-    rerender({ value: 'changed', delay: 1000 });
+    act(() => {
+      rerender({ value: 'changed', delay: 1000 });
+    });
 
     // After 500ms, value should still be initial
-    vi.advanceTimersByTime(500);
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
     expect(result.current).toBe('initial');
 
     // After 1000ms, value should be updated
-    vi.advanceTimersByTime(500);
-    await waitFor(() => {
-      expect(result.current).toBe('changed');
+    act(() => {
+      vi.advanceTimersByTime(500);
     });
+    expect(result.current).toBe('changed');
   });
 
-  it('should work with different types', async () => {
+  it('should work with different types', () => {
     // Number
     const { result: numberResult, rerender: numberRerender } = renderHook(
       ({ value }: { value: number }) => useDebounce(value, 500),
       { initialProps: { value: 0 } }
     );
 
-    numberRerender({ value: 42 });
-    vi.advanceTimersByTime(500);
-    await waitFor(() => {
-      expect(numberResult.current).toBe(42);
+    act(() => {
+      numberRerender({ value: 42 });
     });
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+    expect(numberResult.current).toBe(42);
 
     // Object
     const { result: objResult, rerender: objRerender } = renderHook(
@@ -112,11 +122,13 @@ describe('useDebounce', () => {
       { initialProps: { value: { name: 'initial' } } }
     );
 
-    objRerender({ value: { name: 'changed' } });
-    vi.advanceTimersByTime(500);
-    await waitFor(() => {
-      expect(objResult.current).toEqual({ name: 'changed' });
+    act(() => {
+      objRerender({ value: { name: 'changed' } });
     });
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+    expect(objResult.current).toEqual({ name: 'changed' });
   });
 
   it('should cleanup on unmount', () => {
@@ -141,13 +153,17 @@ describe('useDebounceCallback', () => {
     const { result } = renderHook(() => useDebounceCallback(callback, 500));
 
     // Call the debounced function
-    result.current('test');
+    act(() => {
+      result.current('test');
+    });
 
     // Callback should not be called immediately
     expect(callback).not.toHaveBeenCalled();
 
     // Fast-forward time
-    vi.advanceTimersByTime(500);
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
 
     // Callback should be called now
     expect(callback).toHaveBeenCalledWith('test');
@@ -156,22 +172,34 @@ describe('useDebounceCallback', () => {
 
   it('should cancel previous timeout on new call', () => {
     const callback = vi.fn();
-    const { result } = renderHook(() => useDebounceCallback(callback, 500));
+    const { result, rerender } = renderHook(() => useDebounceCallback(callback, 500));
 
-    // Call multiple times
-    result.current('first');
-    vi.advanceTimersByTime(300);
+    // Call multiple times, forcing re-renders between calls to flush state updates
+    act(() => {
+      result.current('first');
+      vi.advanceTimersByTime(300);
+    });
 
-    result.current('second');
-    vi.advanceTimersByTime(300);
+    rerender(); // Force re-render to flush state updates
 
-    result.current('third');
+    act(() => {
+      result.current('second');
+      vi.advanceTimersByTime(300);
+    });
+
+    rerender(); // Force re-render to flush state updates
+
+    act(() => {
+      result.current('third');
+    });
 
     // Callback should not be called yet
     expect(callback).not.toHaveBeenCalled();
 
     // Fast-forward past delay
-    vi.advanceTimersByTime(500);
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
 
     // Callback should be called only once with the latest argument
     expect(callback).toHaveBeenCalledTimes(1);
@@ -182,8 +210,12 @@ describe('useDebounceCallback', () => {
     const callback = vi.fn();
     const { result } = renderHook(() => useDebounceCallback(callback, 500));
 
-    result.current('arg1', 'arg2', 'arg3');
-    vi.advanceTimersByTime(500);
+    act(() => {
+      result.current('arg1', 'arg2', 'arg3');
+    });
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
 
     expect(callback).toHaveBeenCalledWith('arg1', 'arg2', 'arg3');
   });
@@ -192,14 +224,20 @@ describe('useDebounceCallback', () => {
     const callback = vi.fn();
     const { result } = renderHook(() => useDebounceCallback(callback, 1000));
 
-    result.current('test');
+    act(() => {
+      result.current('test');
+    });
 
     // After 500ms, callback should not be called
-    vi.advanceTimersByTime(500);
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
     expect(callback).not.toHaveBeenCalled();
 
     // After 1000ms, callback should be called
-    vi.advanceTimersByTime(500);
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
     expect(callback).toHaveBeenCalledWith('test');
   });
 
@@ -207,11 +245,15 @@ describe('useDebounceCallback', () => {
     const callback = vi.fn();
     const { result, unmount } = renderHook(() => useDebounceCallback(callback, 500));
 
-    result.current('test');
+    act(() => {
+      result.current('test');
+    });
     unmount();
 
     // Fast-forward time after unmount
-    vi.advanceTimersByTime(500);
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
 
     // Callback should not be called after unmount
     // Note: Due to how the hook is implemented, it might still call
