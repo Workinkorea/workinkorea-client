@@ -14,7 +14,10 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:watch": "vitest --watch",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "test:e2e": "vitest run tests/api",
+    "test:e2e:watch": "vitest watch tests/api",
+    "test:unit": "vitest run src"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
