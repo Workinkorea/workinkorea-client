@@ -2,7 +2,7 @@
 name: ui-specialist
 description: UI/UX specialist for TailwindCSS and Framer Motion. Use proactively for styling, animations, and responsive design tasks.
 tools: Read, Grep, Glob, Edit, Write
-model: sonnet
+model: haiku
 skills: tailwind-patterns
 ---
 
@@ -33,7 +33,7 @@ export function Button({ children }: { children: React.ReactNode }) {
 }
 
 // ❌ Bad: CSS 모듈 사용 금지
-import styles from './Button.module.css';
+import styles from "./Button.module.css";
 
 export function Button({ children }) {
   return <button className={styles.button}>{children}</button>;
@@ -49,8 +49,8 @@ const StyledButton = styled.button`
 ### 2. 조건부 스타일링 (clsx + tailwind-merge)
 
 ```tsx
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 // 유틸리티 함수
 export function cn(...inputs: ClassValue[]) {
@@ -59,43 +59,45 @@ export function cn(...inputs: ClassValue[]) {
 
 // 사용 예시
 interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "primary" | "secondary" | "outline";
+  size?: "sm" | "md" | "lg";
   disabled?: boolean;
   children: React.ReactNode;
 }
 
 export function Button({
-  variant = 'primary',
-  size = 'md',
+  variant = "primary",
+  size = "md",
   disabled,
-  children
+  children,
 }: ButtonProps) {
   return (
     <button
       disabled={disabled}
       className={cn(
         // 기본 스타일
-        'rounded-lg font-medium transition-colors focus:outline-none focus:ring-2',
+        "rounded-lg font-medium transition-colors focus:outline-none focus:ring-2",
 
         // Variant
         {
-          'bg-blue-500 text-white hover:bg-blue-600': variant === 'primary',
-          'bg-gray-200 text-gray-900 hover:bg-gray-300': variant === 'secondary',
-          'border-2 border-blue-500 text-blue-500 hover:bg-blue-50': variant === 'outline',
+          "bg-blue-500 text-white hover:bg-blue-600": variant === "primary",
+          "bg-gray-200 text-gray-900 hover:bg-gray-300":
+            variant === "secondary",
+          "border-2 border-blue-500 text-blue-500 hover:bg-blue-50":
+            variant === "outline",
         },
 
         // Size
         {
-          'px-3 py-1.5 text-sm': size === 'sm',
-          'px-4 py-2 text-base': size === 'md',
-          'px-6 py-3 text-lg': size === 'lg',
+          "px-3 py-1.5 text-sm": size === "sm",
+          "px-4 py-2 text-base": size === "md",
+          "px-6 py-3 text-lg": size === "lg",
         },
 
         // State
         {
-          'opacity-50 cursor-not-allowed': disabled,
-        }
+          "opacity-50 cursor-not-allowed": disabled,
+        },
       )}
     >
       {children}
@@ -109,7 +111,8 @@ export function Button({
 ```tsx
 export function ResponsiveGrid() {
   return (
-    <div className="
+    <div
+      className="
       grid
       grid-cols-1           /* 모바일: 1열 */
       sm:grid-cols-2        /* 태블릿 (640px~): 2열 */
@@ -117,8 +120,9 @@ export function ResponsiveGrid() {
       xl:grid-cols-4        /* 대형 화면 (1280px~): 4열 */
       gap-4
       px-4 sm:px-6 lg:px-8  /* 반응형 패딩 */
-    ">
-      {items.map(item => (
+    "
+    >
+      {items.map((item) => (
         <div key={item.id} className="bg-white rounded-lg shadow-md p-4">
           {item.content}
         </div>
@@ -140,12 +144,14 @@ export function ResponsiveGrid() {
 ```tsx
 export function Card() {
   return (
-    <div className="
+    <div
+      className="
       bg-white dark:bg-gray-800
       text-gray-900 dark:text-white
       border border-gray-200 dark:border-gray-700
       rounded-lg p-4
-    ">
+    "
+    >
       Content
     </div>
   );
@@ -194,9 +200,9 @@ export default config;
 ### 1. 기본 애니메이션
 
 ```tsx
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 export function FadeIn({ children }: { children: React.ReactNode }) {
   return (
@@ -214,23 +220,23 @@ export function FadeIn({ children }: { children: React.ReactNode }) {
 ### 2. 리스트 애니메이션
 
 ```tsx
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 const container = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const item = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
+  show: { opacity: 1, y: 0 },
 };
 
 export function JobList({ jobs }: { jobs: Job[] }) {
@@ -241,7 +247,7 @@ export function JobList({ jobs }: { jobs: Job[] }) {
       animate="show"
       className="space-y-4"
     >
-      {jobs.map(job => (
+      {jobs.map((job) => (
         <motion.li key={job.id} variants={item}>
           <JobCard job={job} />
         </motion.li>
@@ -254,9 +260,9 @@ export function JobList({ jobs }: { jobs: Job[] }) {
 ### 3. 호버/탭 애니메이션
 
 ```tsx
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 export function JobCard({ job }: { job: Job }) {
   return (
@@ -264,7 +270,7 @@ export function JobCard({ job }: { job: Job }) {
       className="bg-white rounded-lg shadow-md p-4 cursor-pointer"
       whileHover={{ scale: 1.02, y: -4 }}
       whileTap={{ scale: 0.98 }}
-      transition={{ type: 'spring', stiffness: 300 }}
+      transition={{ type: "spring", stiffness: 300 }}
     >
       <h3 className="text-lg font-bold">{job.title}</h3>
       <p className="text-gray-600">{job.company}</p>
@@ -276,9 +282,9 @@ export function JobCard({ job }: { job: Job }) {
 ### 4. 레이아웃 애니메이션
 
 ```tsx
-'use client';
+"use client";
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "framer-motion";
 
 export function Modal({ isOpen, onClose, children }: ModalProps) {
   return (
@@ -316,12 +322,16 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
 
 ```tsx
 // app/(main)/layout.tsx
-'use client';
+"use client";
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
 
   return (
@@ -359,8 +369,8 @@ src/shared/ui/
 
 ```tsx
 // src/shared/ui/Input.tsx
-import { forwardRef } from 'react';
-import { cn } from '@/shared/lib/utils';
+import { forwardRef } from "react";
+import { cn } from "@/shared/lib/utils";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -379,44 +389,35 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           className={cn(
-            'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2',
+            "w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2",
             error
-              ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-blue-500',
-            className
+              ? "border-red-500 focus:ring-red-500"
+              : "border-gray-300 focus:ring-blue-500",
+            className,
           )}
           {...props}
         />
-        {error && (
-          <p className="mt-1 text-sm text-red-500">{error}</p>
-        )}
+        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
-Input.displayName = 'Input';
+Input.displayName = "Input";
 ```
 
 ### 3. 로딩 스켈레톤
 
 ```tsx
 // src/shared/ui/Skeleton.tsx
-import { cn } from '@/shared/lib/utils';
+import { cn } from "@/shared/lib/utils";
 
 interface SkeletonProps {
   className?: string;
 }
 
 export function Skeleton({ className }: SkeletonProps) {
-  return (
-    <div
-      className={cn(
-        'animate-pulse bg-gray-200 rounded',
-        className
-      )}
-    />
-  );
+  return <div className={cn("animate-pulse bg-gray-200 rounded", className)} />;
 }
 
 // 사용 예시
@@ -440,11 +441,13 @@ export function JobCardSkeleton() {
 ```tsx
 export function Container({ children }: { children: React.ReactNode }) {
   return (
-    <div className="
+    <div
+      className="
       max-w-7xl              /* 최대 너비 */
       mx-auto                /* 가로 중앙 정렬 */
       px-4 sm:px-6 lg:px-8   /* 반응형 패딩 */
-    ">
+    "
+    >
       {children}
     </div>
   );
@@ -457,12 +460,14 @@ export function Container({ children }: { children: React.ReactNode }) {
 // 채용 공고 목록
 export function JobGrid({ jobs }: { jobs: Job[] }) {
   return (
-    <div className="
+    <div
+      className="
       grid
       grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
       gap-4 sm:gap-6
-    ">
-      {jobs.map(job => (
+    "
+    >
+      {jobs.map((job) => (
         <JobCard key={job.id} job={job} />
       ))}
     </div>
@@ -475,7 +480,8 @@ export function JobGrid({ jobs }: { jobs: Job[] }) {
 ```tsx
 export function Sidebar() {
   return (
-    <aside className="
+    <aside
+      className="
       hidden lg:block      /* 데스크톱에서만 표시 */
       w-64
       fixed
@@ -485,7 +491,8 @@ export function Sidebar() {
       bg-white
       border-r
       border-gray-200
-    ">
+    "
+    >
       {/* 사이드바 콘텐츠 */}
     </aside>
   );
@@ -493,14 +500,16 @@ export function Sidebar() {
 
 export function MobileMenu() {
   return (
-    <div className="
+    <div
+      className="
       lg:hidden            /* 모바일/태블릿에서만 표시 */
       fixed
       inset-x-0
       bottom-0
       bg-white
       border-t
-    ">
+    "
+    >
       {/* 모바일 메뉴 */}
     </div>
   );
@@ -520,7 +529,7 @@ export function JobList({ jobs }: { jobs: Job[] }) {
         채용 공고
       </h2>
       <ul className="space-y-4">
-        {jobs.map(job => (
+        {jobs.map((job) => (
           <li key={job.id}>
             <JobCard job={job} />
           </li>
@@ -536,7 +545,7 @@ export function JobList({ jobs }: { jobs: Job[] }) {
     <div>
       <div className="text-2xl font-bold mb-4">채용 공고</div>
       <div>
-        {jobs.map(job => (
+        {jobs.map((job) => (
           <div key={job.id}>
             <JobCard job={job} />
           </div>
@@ -607,7 +616,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 // tailwind.config.ts
 export default {
   content: [
-    './src/**/*.{js,ts,jsx,tsx}',  // 사용되는 클래스만 포함
+    "./src/**/*.{js,ts,jsx,tsx}", // 사용되는 클래스만 포함
   ],
   // ...
 };

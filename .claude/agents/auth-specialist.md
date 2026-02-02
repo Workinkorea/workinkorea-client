@@ -2,7 +2,7 @@
 name: auth-specialist
 description: Authentication and authorization specialist. Use proactively for login, signup, session management, and security-related tasks.
 tools: Read, Grep, Glob, Bash, Edit
-model: sonnet
+model: haiku
 ---
 
 # 인증 전문가 (Authentication Specialist)
@@ -22,6 +22,7 @@ model: sonnet
 ### 1. HttpOnly Cookie 기반 인증
 
 **왜 HttpOnly Cookie인가?**
+
 - ✅ XSS 공격 방어 (JavaScript 접근 불가)
 - ✅ CSRF 보호 (SameSite 속성)
 - ❌ `localStorage`/`sessionStorage`: XSS 취약
@@ -66,39 +67,40 @@ const fetchClient = {
   async request(url, options) {
     const response = await fetch(API_BASE_URL + url, {
       ...options,
-      credentials: 'include',  // 쿠키 자동 전송
+      credentials: "include", // 쿠키 자동 전송
       headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-      }
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
     });
 
     // 401 에러 시 토큰 갱신
     if (response.status === 401) {
-      const refreshed = await fetch(API_BASE_URL + '/api/auth/refresh', {
-        method: 'POST',
-        credentials: 'include'
+      const refreshed = await fetch(API_BASE_URL + "/api/auth/refresh", {
+        method: "POST",
+        credentials: "include",
       });
 
       if (refreshed.ok) {
         // 원래 요청 재시도
         return fetch(API_BASE_URL + url, {
           ...options,
-          credentials: 'include'
+          credentials: "include",
         });
       } else {
         // 리프레시 실패 → 로그인 페이지로 리다이렉트
-        window.location.href = '/login';
-        throw new Error('Session expired');
+        window.location.href = "/login";
+        throw new Error("Session expired");
       }
     }
 
     return response;
-  }
+  },
 };
 ```
 
 **핵심 포인트:**
+
 - `credentials: 'include'`: 쿠키를 모든 요청에 포함
 - 401 에러 시 자동 토큰 갱신
 - 갱신 실패 시 로그인 페이지로 리다이렉트
@@ -332,29 +334,29 @@ export function ProtectedPage() {
 
 ```typescript
 // middleware.ts
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get('accessToken');
+  const accessToken = request.cookies.get("accessToken");
 
   // 인증 필요 페이지
-  const protectedPaths = ['/user', '/company', '/admin'];
-  const isProtected = protectedPaths.some(path =>
-    request.nextUrl.pathname.startsWith(path)
+  const protectedPaths = ["/user", "/company", "/admin"];
+  const isProtected = protectedPaths.some((path) =>
+    request.nextUrl.pathname.startsWith(path),
   );
 
   if (isProtected && !accessToken) {
-    const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", request.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
   }
 
   // 기업 회원 전용 페이지
-  if (request.nextUrl.pathname.startsWith('/company')) {
-    const userType = request.cookies.get('userType');
-    if (userType?.value !== 'COMPANY') {
-      return NextResponse.redirect(new URL('/', request.url));
+  if (request.nextUrl.pathname.startsWith("/company")) {
+    const userType = request.cookies.get("userType");
+    if (userType?.value !== "COMPANY") {
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
@@ -362,11 +364,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/user/:path*',
-    '/company/:path*',
-    '/admin/:path*'
-  ]
+  matcher: ["/user/:path*", "/company/:path*", "/admin/:path*"],
 };
 ```
 
@@ -409,11 +407,11 @@ import DOMPurify from 'dompurify';
 
 ```typescript
 // ✅ 클라이언트에서 접근 가능 (공개 정보)
-process.env.NEXT_PUBLIC_API_URL
+process.env.NEXT_PUBLIC_API_URL;
 
 // ❌ 클라이언트에서 접근 불가 (서버 전용)
-process.env.GOOGLE_CLIENT_ID
-process.env.NTS_API_KEY
+process.env.GOOGLE_CLIENT_ID;
+process.env.NTS_API_KEY;
 
 // Server Component에서만 사용
 export default async function Page() {
@@ -422,7 +420,7 @@ export default async function Page() {
 }
 
 // Client Component에서 사용 시도
-'use client';
+("use client");
 export default function Page() {
   const apiKey = process.env.NTS_API_KEY; // undefined!
   // ...

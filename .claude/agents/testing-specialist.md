@@ -2,7 +2,7 @@
 name: testing-specialist
 description: Testing specialist for Vitest and React Testing Library. Use proactively after implementing features to write unit and integration tests.
 tools: Read, Grep, Glob, Bash, Edit, Write
-model: sonnet
+model: haiku
 ---
 
 # 테스팅 전문가 (Testing Specialist)
@@ -20,6 +20,7 @@ model: sonnet
 ## 테스트 환경 설정
 
 ### 프로젝트 테스트 스택
+
 - **테스트 러너**: Vitest
 - **UI 테스팅**: React Testing Library
 - **DOM 환경**: happy-dom (jsdom 대체)
@@ -27,6 +28,7 @@ model: sonnet
 - **사용자 이벤트**: @testing-library/user-event
 
 ### 테스트 명령어
+
 ```bash
 # 전체 테스트 실행
 npm run test
@@ -48,28 +50,29 @@ npm run test:unit
 ```
 
 ### 설정 파일
+
 ```typescript
 // vitest.config.ts
-import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
-import path from 'path';
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: 'happy-dom',
-    setupFiles: ['./vitest.setup.ts'],
+    environment: "happy-dom",
+    setupFiles: ["./vitest.setup.ts"],
     globals: true,
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 });
 
 // vitest.setup.ts
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 ```
 
 ## 테스트 작성 패턴
@@ -276,45 +279,45 @@ describe('useJobs', () => {
 
 ```typescript
 // src/shared/lib/formatters.test.ts
-import { describe, it, expect } from 'vitest';
-import { formatSalary, formatDate, formatPhoneNumber } from './formatters';
+import { describe, it, expect } from "vitest";
+import { formatSalary, formatDate, formatPhoneNumber } from "./formatters";
 
-describe('formatSalary', () => {
-  it('formats salary with commas', () => {
-    expect(formatSalary(40000000)).toBe('40,000,000원');
-    expect(formatSalary(1000)).toBe('1,000원');
+describe("formatSalary", () => {
+  it("formats salary with commas", () => {
+    expect(formatSalary(40000000)).toBe("40,000,000원");
+    expect(formatSalary(1000)).toBe("1,000원");
   });
 
-  it('handles zero', () => {
-    expect(formatSalary(0)).toBe('0원');
+  it("handles zero", () => {
+    expect(formatSalary(0)).toBe("0원");
   });
 
-  it('handles negotiable salary', () => {
-    expect(formatSalary(null)).toBe('협의');
-    expect(formatSalary(undefined)).toBe('협의');
+  it("handles negotiable salary", () => {
+    expect(formatSalary(null)).toBe("협의");
+    expect(formatSalary(undefined)).toBe("협의");
   });
 });
 
-describe('formatDate', () => {
-  it('formats date in Korean format', () => {
-    const date = new Date('2024-01-15');
-    expect(formatDate(date)).toBe('2024년 1월 15일');
+describe("formatDate", () => {
+  it("formats date in Korean format", () => {
+    const date = new Date("2024-01-15");
+    expect(formatDate(date)).toBe("2024년 1월 15일");
   });
 
-  it('formats relative date for recent dates', () => {
+  it("formats relative date for recent dates", () => {
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    expect(formatDate(yesterday, { relative: true })).toBe('1일 전');
+    expect(formatDate(yesterday, { relative: true })).toBe("1일 전");
   });
 });
 
-describe('formatPhoneNumber', () => {
-  it('formats Korean phone numbers', () => {
-    expect(formatPhoneNumber('01012345678')).toBe('010-1234-5678');
-    expect(formatPhoneNumber('0212345678')).toBe('02-1234-5678');
+describe("formatPhoneNumber", () => {
+  it("formats Korean phone numbers", () => {
+    expect(formatPhoneNumber("01012345678")).toBe("010-1234-5678");
+    expect(formatPhoneNumber("0212345678")).toBe("02-1234-5678");
   });
 
-  it('handles already formatted numbers', () => {
-    expect(formatPhoneNumber('010-1234-5678')).toBe('010-1234-5678');
+  it("handles already formatted numbers", () => {
+    expect(formatPhoneNumber("010-1234-5678")).toBe("010-1234-5678");
   });
 });
 ```
@@ -323,46 +326,46 @@ describe('formatPhoneNumber', () => {
 
 ```typescript
 // tests/api/jobs.test.ts
-import { describe, it, expect } from 'vitest';
-import { fetchClient } from '@/shared/api/fetchClient';
+import { describe, it, expect } from "vitest";
+import { fetchClient } from "@/shared/api/fetchClient";
 
-describe('Jobs API', () => {
-  it('GET /api/posts/company - fetches job listings', async () => {
-    const response = await fetchClient.get('/api/posts/company');
+describe("Jobs API", () => {
+  it("GET /api/posts/company - fetches job listings", async () => {
+    const response = await fetchClient.get("/api/posts/company");
 
     expect(response).toBeDefined();
     expect(Array.isArray(response.data)).toBe(true);
-    expect(response.data[0]).toHaveProperty('id');
-    expect(response.data[0]).toHaveProperty('title');
+    expect(response.data[0]).toHaveProperty("id");
+    expect(response.data[0]).toHaveProperty("title");
   });
 
-  it('GET /api/posts/company/:id - fetches single job', async () => {
+  it("GET /api/posts/company/:id - fetches single job", async () => {
     // 먼저 목록에서 ID 가져오기
-    const listResponse = await fetchClient.get('/api/posts/company');
+    const listResponse = await fetchClient.get("/api/posts/company");
     const firstJobId = listResponse.data[0].id;
 
     const response = await fetchClient.get(`/api/posts/company/${firstJobId}`);
 
     expect(response).toBeDefined();
     expect(response.id).toBe(firstJobId);
-    expect(response).toHaveProperty('title');
-    expect(response).toHaveProperty('description');
+    expect(response).toHaveProperty("title");
+    expect(response).toHaveProperty("description");
   });
 
-  it('POST /api/posts/company - creates new job (authenticated)', async () => {
+  it("POST /api/posts/company - creates new job (authenticated)", async () => {
     // 인증 필요 - 테스트 환경에서는 mock token 사용
     const newJob = {
-      title: 'Test Job',
-      description: 'Test Description',
-      location: 'Seoul',
+      title: "Test Job",
+      description: "Test Description",
+      location: "Seoul",
       salary: 40000000,
     };
 
-    const response = await fetchClient.post('/api/posts/company', newJob);
+    const response = await fetchClient.post("/api/posts/company", newJob);
 
     expect(response).toBeDefined();
     expect(response.title).toBe(newJob.title);
-    expect(response).toHaveProperty('id');
+    expect(response).toHaveProperty("id");
   });
 });
 ```
@@ -399,13 +402,13 @@ it('filters jobs by location', async () => {
 // ✅ Good: 사용자가 보는 텍스트로 찾기
 screen.getByText(/로그인/i);
 screen.getByLabelText(/이메일/i);
-screen.getByRole('button', { name: /제출/i });
+screen.getByRole("button", { name: /제출/i });
 screen.getByPlaceholderText(/검색어를 입력하세요/i);
 
 // ❌ Bad: 구현 세부사항으로 찾기
-screen.getByTestId('login-button');
-screen.getByClassName('btn-primary');
-container.querySelector('.login-form');
+screen.getByTestId("login-button");
+screen.getByClassName("btn-primary");
+container.querySelector(".login-form");
 ```
 
 ### 3. 비동기 테스트
@@ -459,6 +462,7 @@ render(<JobList jobs={mockJobs} />);
 ## 테스트 커버리지 목표
 
 ### 우선순위
+
 1. **Critical Path** (80%+)
    - 인증/로그인
    - 결제 로직
@@ -479,6 +483,7 @@ render(<JobList jobs={mockJobs} />);
    - 헬퍼 함수
 
 ### 커버리지 확인
+
 ```bash
 npm run test:coverage
 
@@ -489,6 +494,7 @@ open coverage/index.html
 ## 프로젝트별 주의사항
 
 ### Next.js App Router 테스트
+
 ```typescript
 // Server Component는 직접 테스트하지 않음
 // 대신 Client Component와 API를 각각 테스트
@@ -516,6 +522,7 @@ describe('Jobs API', () => {
 ```
 
 ### React Query 테스트
+
 ```typescript
 // QueryClientProvider 래핑 필수
 const queryClient = new QueryClient({
@@ -534,6 +541,7 @@ const { result } = renderHook(() => useJobs(), { wrapper });
 ```
 
 ### Framer Motion 테스트
+
 ```typescript
 // 애니메이션은 스냅샷 테스트로 검증
 it('renders with correct animation props', () => {
