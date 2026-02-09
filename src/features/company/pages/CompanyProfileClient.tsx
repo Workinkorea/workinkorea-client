@@ -31,12 +31,23 @@ const CompanyProfileClient: React.FC = () => {
     }
   }, [isAuthenticated, authLoading, router]);
 
-  // 프로필 조회 실패 시(404 Not Found 또는 500 Server Error) 프로필 작성 페이지로 리다이렉트
+  // 프로필 조회 실패 시 에러 처리
   useEffect(() => {
     if (isError && error instanceof FetchError) {
       const status = error.status;
-      // 404: 프로필 없음, 500: 서버 오류 (기존 데이터 로드 실패 시 작성 페이지로 이동)
-      if (status === 404 || status === 500) {
+
+      // 403: 권한 없음 - 에러 상태 유지 (리다이렉트 하지 않음)
+      if (status === 403) {
+        return;
+      }
+
+      // 404: 프로필 없음 → 프로필 작성 페이지로
+      if (status === 404) {
+        router.replace('/company/profile/edit');
+      }
+
+      // 500: 서버 오류 → 프로필 작성 페이지로
+      if (status === 500) {
         router.replace('/company/profile/edit');
       }
     }
@@ -61,6 +72,54 @@ const CompanyProfileClient: React.FC = () => {
     enabled: !!profile, // 프로필이 로드된 후에만 공고 조회
     retry: 1,
   });
+
+  // 에러 상태 처리
+  if (isError && error instanceof FetchError) {
+    return (
+      <Layout>
+        <Header
+          type={userType === 'company' ? 'business' : 'homepage'}
+          isAuthenticated={isAuthenticated}
+          isLoading={authLoading}
+          onLogout={handleLogout}
+        />
+        <div className="min-h-screen bg-background-alternative py-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white rounded-lg p-8 text-center">
+              <h2 className="text-title-3 font-bold text-label-900 mb-4">
+                프로필을 불러올 수 없습니다
+              </h2>
+              <p className="text-body-3 text-label-600 mb-2">
+                상태 코드: {error.status}
+              </p>
+              <p className="text-body-3 text-label-600 mb-2">
+                {error.message}
+              </p>
+              {error.data && typeof error.data === 'object' ? (
+                <pre className="bg-component-alternative p-4 rounded-lg text-left text-caption-2 mb-6 overflow-auto">
+                  {JSON.stringify(error.data, null, 2)}
+                </pre>
+              ) : null}
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                >
+                  새로고침
+                </button>
+                <button
+                  onClick={() => router.push('/company/profile/edit')}
+                  className="px-4 py-2 border border-line-400 text-label-700 rounded-lg text-body-3 font-medium hover:bg-component-alternative transition-colors cursor-pointer"
+                >
+                  프로필 작성하기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   // 로딩 상태 처리 (프로필이 없거나 로딩 중일 때)
   if (authLoading || profileLoading || !profile) {
@@ -121,7 +180,7 @@ const CompanyProfileClient: React.FC = () => {
           >
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4">
-                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
+                <div className="w-20 h-20 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
                   {profile.company_id}
                 </div>
                 <div>
@@ -176,8 +235,8 @@ const CompanyProfileClient: React.FC = () => {
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
                   className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${activeTab === tab.key
-                      ? 'bg-primary-500 text-white shadow-sm'
-                      : 'text-label-700 hover:bg-component-alternative'
+                    ? 'bg-primary-500 text-white shadow-sm'
+                    : 'text-label-700 hover:bg-component-alternative'
                     }`}
                 >
                   {tab.label}

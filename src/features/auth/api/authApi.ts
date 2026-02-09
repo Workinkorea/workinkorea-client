@@ -104,23 +104,21 @@ export const authApi = {
     formData.append('username', data.username);
     formData.append('password', data.password);
 
-    // 서버 vs 클라이언트 환경 감지
     const isServer = typeof window === 'undefined';
     const baseURL = isServer ? SERVER_API_URL : API_BASE_URL;
+    const requestUrl = `${baseURL}/api/auth/company/login`;
 
-    const response = await fetch(`${baseURL}/api/auth/company/login`, {
+    const response = await fetch(requestUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),
-      credentials: 'include', // HttpOnly Cookie 자동 전송
+      credentials: 'include',
     });
 
-    // 모든 상태 코드에서 JSON 응답 파싱
     const responseData = await response.json() as CompanyLoginResponse;
 
-    // url이 있으면 반환
     if (responseData && responseData.url) {
       return responseData.url;
     }
@@ -148,15 +146,10 @@ export const authApi = {
    * 사업자 등록번호 검증 (국세청 API)
    */
   async verifyBusinessNumber(businessNumber: string): Promise<BusinessVerificationResponse> {
-    try {
-      return await fetchClient.post<BusinessVerificationResponse>(
-        '/api/verify-business',
-        { businessNumber }
-      );
-    } catch (error) {
-      console.error('[authApi] Business verification error:', error);
-      throw error;
-    }
+    return fetchClient.post<BusinessVerificationResponse>(
+      '/api/verify-business',
+      { businessNumber }
+    );
   },
   /**
    * 사용자 프로필 조회 (인증 상태 확인용)

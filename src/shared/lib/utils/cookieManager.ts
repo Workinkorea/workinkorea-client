@@ -37,7 +37,10 @@ function setCookie(name: string, value: string, days: number = 7): void {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
 
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+  const domain = window.location.hostname.includes('byeong98.xyz') ? '.byeong98.xyz' : '';
+  const domainAttr = domain ? `domain=${domain};` : '';
+
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;${domainAttr}SameSite=Lax`;
 }
 
 /**
@@ -46,7 +49,11 @@ function setCookie(name: string, value: string, days: number = 7): void {
 function deleteCookie(name: string): void {
   if (typeof window === 'undefined') return;
 
-  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+  // setCookie와 동일한 domain 설정 (쿠키 삭제를 위해 domain이 일치해야 함)
+  const domain = window.location.hostname.includes('byeong98.xyz') ? '.byeong98.xyz' : '';
+  const domainAttr = domain ? `domain=${domain};` : '';
+
+  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;${domainAttr}`;
 }
 
 export const cookieManager = {

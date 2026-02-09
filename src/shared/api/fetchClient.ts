@@ -8,25 +8,19 @@
  * 4. Server/Client Components 모두 지원
  */
 
-// 클라이언트: 상대 경로 사용 (Next.js rewrites가 프록시)
-// 서버: 절대 URL 사용
 export const API_BASE_URL = "";
 
 // 서버 전용 URL (SSR/SSG에서 사용)
 export const SERVER_API_URL =
-  process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  process.env.API_URL || "http://workinkorea-server:8000";
 
 export interface FetchOptions extends RequestInit {
-  /** 인증 토큰 첨부를 건너뛸지 여부 (Cookie는 여전히 전송됨) */
   skipAuth?: boolean;
-  /** Next.js 캐싱 옵션 */
   next?: NextFetchRequestConfig;
 }
 
 export interface NextFetchRequestConfig {
-  /** Incremental Static Regeneration (ISR) - 재검증 시간 (초) */
   revalidate?: number | false;
-  /** 캐시 태그 (revalidateTag로 무효화 가능) */
   tags?: string[];
 }
 
@@ -89,6 +83,24 @@ export async function fetchAPI<T>(
       throw new FetchError('Unauthorized - Token refresh failed', 401);
     }
 
+    // 403 Forbidden - 권한 없음
+    if (response.status === 403) {
+      const errorBody = await response.text().catch(() => '');
+
+      let errorData;
+      try {
+        errorData = JSON.parse(errorBody);
+      } catch {
+        errorData = { detail: errorBody || 'Forbidden' };
+      }
+
+      throw new FetchError(
+        errorData.detail || errorData.message || 'Forbidden',
+        403,
+        errorData
+      );
+    }
+
     // 기타 HTTP 에러
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -111,7 +123,6 @@ export async function fetchAPI<T>(
     }
 
     // Network errors
-    console.error('[fetchAPI] Network error:', error);
     throw new FetchError('Network request failed', 0, error);
   }
 }
@@ -133,15 +144,8 @@ async function refreshToken(isServer: boolean): Promise<boolean> {
       },
     });
 
-    if (response.ok) {
-      console.log('[fetchAPI] Token refreshed successfully');
-      return true;
-    }
-
-    console.error('[fetchAPI] Token refresh failed:', response.status);
-    return false;
+    return response.ok;
   } catch (error) {
-    console.error('[fetchAPI] Token refresh error:', error);
     return false;
   }
 }
@@ -153,20 +157,13 @@ async function refreshToken(isServer: boolean): Promise<boolean> {
 function handleAuthFailure(): void {
   if (typeof window === 'undefined') return;
 
-  // userType 쿠키에서 사용자 타입 확인
   const userType = getUserTypeFromCookie();
 
   const loginPath =
     userType === 'company' ? '/company-login' :
-    userType === 'admin' ? '/admin/login' :
-    '/login';
+      userType === 'admin' ? '/admin/login' :
+        '/login';
 
-  console.warn('[fetchAPI] Authentication failed. Redirecting to login...', {
-    userType,
-    loginPath,
-  });
-
-  // 쿠키 삭제는 백엔드의 /logout 엔드포인트에서 처리
   window.location.replace(loginPath);
 }
 
