@@ -69,10 +69,10 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
       transition={{ duration: 0.3 }}
     >
       <div>
-        <h2 className="text-title-3 font-bold text-label-900 mb-2">
+        <h2 className="text-title-3 font-bold text-slate-900 mb-2">
           취업 선호도 💡
         </h2>
-        <p className="text-body-2 text-label-500 mb-6">
+        <p className="text-body-2 text-slate-500 mb-6">
           당신이 원하는 조건을 알려주세요
         </p>
       </div>
@@ -91,8 +91,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                 key={salary.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === salary.value
-                    ? 'border-primary-600 bg-primary-50'
-                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
                 }`}
               >
                 <input
@@ -100,9 +100,9 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                   value={salary.value}
                   checked={field.value === salary.value}
                   onChange={(e) => field.onChange(e.target.value)}
-                  className="w-5 h-5 text-primary-600 focus:ring-primary-500"
+                  className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-body-2 text-label-700">{salary.label}</span>
+                <span className="text-body-2 text-slate-700">{salary.label}</span>
               </label>
             ))}
           </div>
@@ -123,8 +123,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                 key={type.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === type.value
-                    ? 'border-primary-600 bg-primary-50'
-                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
                 }`}
               >
                 <input
@@ -132,9 +132,9 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                   value={type.value}
                   checked={field.value === type.value}
                   onChange={(e) => field.onChange(e.target.value)}
-                  className="w-5 h-5 text-primary-600 focus:ring-primary-500"
+                  className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-body-2 text-label-700">{type.label}</span>
+                <span className="text-body-2 text-slate-700">{type.label}</span>
               </label>
             ))}
           </div>
@@ -155,8 +155,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                 key={size.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === size.value
-                    ? 'border-primary-600 bg-primary-50'
-                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
                 }`}
               >
                 <input
@@ -164,11 +164,11 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                   value={size.value}
                   checked={field.value === size.value}
                   onChange={(e) => field.onChange(e.target.value)}
-                  className="w-5 h-5 text-primary-600 focus:ring-primary-500"
+                  className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{size.emoji}</span>
-                  <span className="text-body-2 text-label-700">{size.label}</span>
+                  <span className="text-body-2 text-slate-700">{size.label}</span>
                 </div>
               </label>
             ))}
@@ -190,8 +190,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                 key={date.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === date.value
-                    ? 'border-primary-600 bg-primary-50'
-                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
                 }`}
               >
                 <input
@@ -199,9 +199,9 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                   value={date.value}
                   checked={field.value === date.value}
                   onChange={(e) => field.onChange(e.target.value)}
-                  className="w-5 h-5 text-primary-600 focus:ring-primary-500"
+                  className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-body-2 text-label-700">{date.label}</span>
+                <span className="text-body-2 text-slate-700">{date.label}</span>
               </label>
             ))}
           </div>
@@ -213,7 +213,7 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
         <motion.button
           type="button"
           onClick={onBack}
-          className="flex-1 py-4 bg-gray-200 hover:bg-gray-300 text-label-700 font-semibold text-body-1 rounded-lg transition-all cursor-pointer"
+          className="flex-1 py-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-body-1 rounded-lg transition-all cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -221,7 +221,7 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
         </motion.button>
         <motion.button
           type="submit"
-          className="flex-1 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold text-body-1 rounded-lg transition-all shadow-sm hover:shadow-md cursor-pointer"
+          className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-body-1 rounded-lg transition-all shadow-sm hover:shadow-md cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >

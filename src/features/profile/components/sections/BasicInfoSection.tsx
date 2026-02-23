@@ -1,10 +1,9 @@
 'use client';
 
-import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { X } from 'lucide-react';
 import { FormField } from '@/shared/ui/FormField';
-import Input from '@/shared/ui/Input';
+import { Input } from '@/shared/ui/Input';
 import ProfileImageUpload from '../shared/ProfileImageUpload';
 import FileUploadButton from '../shared/FileUploadButton';
 import LanguageSkillsInput from '../shared/LanguageSkillsInput';
@@ -86,14 +85,14 @@ export interface BasicInfoSectionProps {
   onRemovePortfolio: () => void;
 }
 
-const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
+function BasicInfoSection({
   form,
   profile,
   onImageSelect,
   onPortfolioSelect,
   selectedPortfolioFileName,
   onRemovePortfolio,
-}) => {
+}: BasicInfoSectionProps) {
   const {
     control,
     formState: { errors },
@@ -175,13 +174,13 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
               rows={4}
               maxLength={500}
               className={cn(
-                'w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm',
+                'w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm',
                 'transition-colors focus:ring-2 focus:border-transparent resize-none',
-                'border-line-400 focus:ring-primary',
-                errors.introduction && 'border-status-error focus:ring-status-error'
+                'border-slate-200 focus:ring-blue-500',
+                errors.introduction && 'border-red-500 focus:ring-red-500'
               )}
             />
-            <div className="absolute bottom-2 right-2 text-caption-2 text-label-400">
+            <div className="absolute bottom-2 right-2 text-[11px] text-slate-400">
               {field.value?.length || 0}/500
             </div>
           </div>
@@ -199,10 +198,10 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             {...field}
             id={fieldId}
             className={cn(
-              'w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm',
+              'w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm',
               'transition-colors focus:ring-2 focus:border-transparent',
-              'border-line-400 focus:ring-primary',
-              errors.job_status && 'border-status-error focus:ring-status-error'
+              'border-slate-200 focus:ring-blue-500',
+              errors.job_status && 'border-red-500 focus:ring-red-500'
             )}
           >
             <option value="">상태를 선택하세요</option>
@@ -226,8 +225,8 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             className={cn(
               'w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm',
               'transition-colors focus:ring-2 focus:border-transparent',
-              'border-line-400 focus:ring-primary',
-              errors.career && 'border-status-error focus:ring-status-error'
+              'border-slate-200 focus:ring-blue-500',
+              errors.career && 'border-red-500 focus:ring-red-500'
             )}
           >
             <option value="">경력을 선택하세요</option>
@@ -242,7 +241,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
 
       {/* Portfolio File Upload */}
       <div className="space-y-2">
-        <label className="text-caption-2 font-medium text-label-900">
+        <label className="text-[11px] font-medium text-slate-900">
           포트폴리오
         </label>
         <div className="flex items-center gap-3">
@@ -265,13 +264,13 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           {/* Selected file display */}
           {(selectedPortfolioFileName || profile.portfolio_url) && (
             <div className="flex items-center gap-2 flex-1">
-              <span className="text-caption-2 text-label-600 truncate">
+              <span className="text-[11px] text-slate-600 truncate">
                 {selectedPortfolioFileName || profile.portfolio_url}
               </span>
               <button
                 type="button"
                 onClick={onRemovePortfolio}
-                className="text-status-error hover:text-status-error/80 cursor-pointer"
+                className="text-red-500 hover:text-red-600 cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -295,8 +294,8 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             className={cn(
               'w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm',
               'transition-colors focus:ring-2 focus:border-transparent',
-              'border-line-400 focus:ring-primary',
-              errors.position_id && 'border-status-error focus:ring-status-error'
+              'border-slate-200 focus:ring-blue-500',
+              errors.position_id && 'border-red-500 focus:ring-red-500'
             )}
           >
             <option value="">직무를 선택하세요</option>
@@ -330,8 +329,8 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             className={cn(
               'w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm',
               'transition-colors focus:ring-2 focus:border-transparent',
-              'border-line-400 focus:ring-primary',
-              errors.country_id && 'border-status-error focus:ring-status-error'
+              'border-slate-200 focus:ring-blue-500',
+              errors.country_id && 'border-red-500 focus:ring-red-500'
             )}
           >
             {COUNTRIES_FULL.map((option) => (
@@ -360,4 +359,4 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
  * - Add image cropping for profile picture
  * - Add preview modal for portfolio documents
  */
-export default React.memo(BasicInfoSection);
+export default BasicInfoSection;

@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/shared/ui/FormField';
-import Input from '@/shared/ui/Input';
+import { Input } from '@/shared/ui/Input';
 import { useRouter } from 'next/navigation';
 import { validatePassword } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
@@ -309,7 +309,7 @@ export default function BusinessLoginForm() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-title-2 text-label-900 mb-8">
+          <h1 className="text-title-2 text-slate-900 mb-8">
             기업 로그인
           </h1>
         </motion.div>
@@ -409,14 +409,14 @@ export default function BusinessLoginForm() {
                   <input
                     id={fieldId}
                     type="checkbox"
-                    className="h-4 w-4 text-primary-500 focus:ring-primary border-line-200 rounded cursor-pointer"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-200 rounded cursor-pointer"
                     name={field.name}
                     ref={field.ref}
                     checked={!!field.value}
                     onChange={(e) => field.onChange(e.target.checked)}
                     onBlur={field.onBlur}
                   />
-                  <label htmlFor={fieldId} className="ml-2 block text-sm text-gray-900">
+                  <label htmlFor={fieldId} className="ml-2 block text-sm text-slate-900">
                     이메일 저장
                   </label>
                 </div>
@@ -429,8 +429,8 @@ export default function BusinessLoginForm() {
               type="submit"
               disabled={formState.isLoading || !isFormValid}
               className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${formState.isLoading || !isFormValid
-                ? 'bg-gray-300 cursor-not-allowed text-white'
-                : 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
+                ? 'bg-slate-200 cursor-not-allowed text-slate-400'
+                : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                 }`}
               whileTap={isFormValid && !formState.isLoading ? { scale: 0.98 } : {}}
             >
@@ -440,7 +440,7 @@ export default function BusinessLoginForm() {
             <motion.button
               type="button"
               onClick={() => router.push('/company-signup/step1')}
-              className="w-full py-3 px-4 border border-line-200 text-primary-300 rounded-lg font-medium text-sm hover:bg-primary-300 hover:text-white transition-colors cursor-pointer"
+              className="w-full py-3 px-4 border border-slate-200 text-blue-600 rounded-lg font-medium text-sm hover:bg-blue-50 transition-colors cursor-pointer"
               whileTap={{ scale: 0.98 }}
             >
               회원가입

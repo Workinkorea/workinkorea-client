@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import { SearchIcon } from '@/shared/ui/AccessibleIcon';
 
@@ -9,7 +8,7 @@ interface HeaderProps {
   onLogout?: () => void;
 }
 
-const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
+export function Header({ type, isAuthenticated, onLogout }: HeaderProps) {
   const getNavigationItems = () => {
     if (type === 'homepage') {
       return [
@@ -26,16 +25,15 @@ const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
   const navigationItems = getNavigationItems();
 
   return (
-    <header className="w-full bg-color-background-default border-b border-line-200 shadow-normal">
-      <div className="px-4 sm:px-6 lg:px-8">
-
-        <div className="w-full flex items-center h-16">
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-slate-100 shadow-sm">
+      <div className="px-6 md:px-10">
+        <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <span className="text-title-3 font-bold text-primary-500">
+              <span className="font-['Plus_Jakarta_Sans'] text-xl font-extrabold text-blue-600 tracking-tight">
                 WorkInKorea
               </span>
-              <span className="hidden sm:block ml-2 text-caption-2 text-label-500 bg-component-alternative px-2 py-1 rounded">
+              <span className="hidden sm:block ml-2 text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
                 {type === 'homepage' ? '개인' : '기업'}
               </span>
             </Link>
@@ -47,7 +45,7 @@ const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-label-900 hover:text-primary-500 font-medium text-body-3 transition-colors whitespace-nowrap"
+                  className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap"
                 >
                   {item.name}
                 </Link>
@@ -55,9 +53,9 @@ const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
             </div>
           </nav>
 
-          <div className="w-full flex justify-end items-center space-x-3">
+          <div className="flex justify-end items-center space-x-3 ml-auto">
             <button
-              className="hidden sm:block p-2 text-label-500 hover:text-label-700 transition-colors"
+              className="hidden sm:block p-2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
               aria-label="검색"
             >
               <SearchIcon />
@@ -67,14 +65,14 @@ const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
               <div className="flex items-center gap-3">
                 <Link
                   href={type === 'homepage' ? '/user/profile' : '/company'}
-                  className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
+                  className="text-sm font-medium text-slate-700 hover:text-blue-600 h-9 flex items-center transition-colors"
                 >
                   MY홈
                 </Link>
-                <div className="h-4 w-px bg-line-400"></div>
+                <div className="h-4 w-px bg-slate-200"></div>
                 <button
                   onClick={onLogout}
-                  className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors cursor-pointer"
+                  className="text-sm font-medium text-slate-700 hover:text-blue-600 h-9 flex items-center transition-colors cursor-pointer"
                 >
                   로그아웃
                 </button>
@@ -83,14 +81,14 @@ const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
               <div className="flex items-center gap-3">
                 <Link
                   href="/login-select"
-                  className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
+                  className="text-sm font-medium text-slate-700 hover:text-blue-600 h-9 flex items-center transition-colors"
                 >
                   로그인
                 </Link>
-                <div className="h-4 w-px bg-line-400"></div>
+                <div className="h-4 w-px bg-slate-200"></div>
                 <Link
                   href="/signup-select"
-                  className="text-label-700 hover:text-primary-500 h-9 flex items-center text-body-3 font-medium transition-colors"
+                  className="text-sm font-medium text-slate-700 hover:text-blue-600 h-9 flex items-center transition-colors"
                 >
                   회원가입
                 </Link>
@@ -101,12 +99,12 @@ const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
       </div>
 
       <div className="sm:hidden">
-        <div className="flex flex-col gap-1 pl-5 pt-1 pb-1 bg-gray-50">
+        <div className="flex flex-col bg-slate-50 border-t border-slate-100">
           {navigationItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className="text-label-900 hover:text-primary-500 py-0.5 text-caption-1 font-medium transition-colors border-b border-label-100 last:border-b-0"
+              className="text-sm text-slate-700 hover:text-blue-600 font-medium transition-colors border-b border-slate-100 last:border-b-0 px-6 py-2"
             >
               {item.name}
             </Link>
@@ -115,6 +113,4 @@ const Header = ({ type, isAuthenticated, onLogout }: HeaderProps) => {
       </div>
     </header>
   );
-};
-
-export default Header;
+}

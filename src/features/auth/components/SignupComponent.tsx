@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
@@ -255,20 +255,20 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
   return (
     <div className='w-full flex'>
       {/* 약관 동의 섹션 */}
-      <div className='w-full bg-gray-50 p-8 border-r border-line-200'>
+      <div className='w-full bg-slate-50 p-8 border-r border-slate-200'>
         <div className="max-w-[500px] mx-auto space-y-6">
-          <h2 className="text-title-3 text-label-900 mb-6">약관 동의</h2>
+          <h2 className="text-title-3 text-slate-900 mb-6">약관 동의</h2>
 
           {/* 모두 동의 */}
-          <div className="bg-white rounded-lg p-4 border-2 border-primary-300">
+          <div className="bg-white rounded-lg p-4 border-2 border-blue-600">
             <label className="flex items-center cursor-pointer group">
               <input
                 type="checkbox"
                 checked={termsAgreement.allAgree}
                 onChange={(e) => handleAllAgreeChange(e.target.checked)}
-                className="w-5 h-5 text-primary-500 border-line-300 rounded focus:ring-2 focus:ring-primary-300 cursor-pointer"
+                className="w-5 h-5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
               />
-              <span className="ml-3 text-body-2 font-semibold text-label-900 group-hover:text-primary-500 transition-colors">
+              <span className="ml-3 text-body-2 font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
                 전체 동의
               </span>
             </label>
@@ -277,22 +277,22 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
           {/* 개별 약관 */}
           <div className="space-y-3">
             {/* 사용자 약관 */}
-            <div className="bg-white rounded-lg p-4 border border-line-200">
+            <div className="bg-white rounded-lg p-4 border border-slate-200">
               <label className="flex items-start cursor-pointer group">
                 <input
                   type="checkbox"
                   checked={termsAgreement.termsOfService}
                   onChange={(e) => handleTermChange('termsOfService', e.target.checked)}
-                  className="w-4 h-4 mt-0.5 text-primary-500 border-line-300 rounded focus:ring-2 focus:ring-primary-300 cursor-pointer"
+                  className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
                 />
                 <div className="ml-3 flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-body-3 text-label-900 group-hover:text-primary-500 transition-colors">
-                      <span className="text-primary-500">[필수]</span> 사용자 약관
+                    <span className="text-body-3 text-slate-900 group-hover:text-blue-600 transition-colors">
+                      <span className="text-blue-600">[필수]</span> 사용자 약관
                     </span>
                     <button
                       type="button"
-                      className="text-caption-2 text-label-500 hover:text-primary-500 underline cursor-pointer"
+                      className="text-caption-2 text-slate-500 hover:text-blue-600 underline cursor-pointer"
                       onClick={(e) => {
                         e.preventDefault();
                         openTermsModal('termsOfService');
@@ -306,22 +306,22 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             </div>
 
             {/* 개인정보 처리방침 */}
-            <div className="bg-white rounded-lg p-4 border border-line-200">
+            <div className="bg-white rounded-lg p-4 border border-slate-200">
               <label className="flex items-start cursor-pointer group">
                 <input
                   type="checkbox"
                   checked={termsAgreement.privacyPolicy}
                   onChange={(e) => handleTermChange('privacyPolicy', e.target.checked)}
-                  className="w-4 h-4 mt-0.5 text-primary-500 border-line-300 rounded focus:ring-2 focus:ring-primary-300 cursor-pointer"
+                  className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
                 />
                 <div className="ml-3 flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-body-3 text-label-900 group-hover:text-primary-500 transition-colors">
-                      <span className="text-primary-500">[필수]</span> 개인정보 처리방침
+                    <span className="text-body-3 text-slate-900 group-hover:text-blue-600 transition-colors">
+                      <span className="text-blue-600">[필수]</span> 개인정보 처리방침
                     </span>
                     <button
                       type="button"
-                      className="text-caption-2 text-label-500 hover:text-primary-500 underline cursor-pointer"
+                      className="text-caption-2 text-slate-500 hover:text-blue-600 underline cursor-pointer"
                       onClick={(e) => {
                         e.preventDefault();
                         openTermsModal('privacyPolicy');
@@ -335,22 +335,22 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             </div>
 
             {/* 개인정보 처리방침 보류 */}
-            <div className="bg-white rounded-lg p-4 border border-line-200">
+            <div className="bg-white rounded-lg p-4 border border-slate-200">
               <label className="flex items-start cursor-pointer group">
                 <input
                   type="checkbox"
                   checked={termsAgreement.privacyPolicyHold}
                   onChange={(e) => handleTermChange('privacyPolicyHold', e.target.checked)}
-                  className="w-4 h-4 mt-0.5 text-primary-500 border-line-300 rounded focus:ring-2 focus:ring-primary-300 cursor-pointer"
+                  className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
                 />
                 <div className="ml-3 flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-body-3 text-label-900 group-hover:text-primary-500 transition-colors">
-                      <span className="text-primary-500">[필수]</span> 개인정보 처리방침 보류
+                    <span className="text-body-3 text-slate-900 group-hover:text-blue-600 transition-colors">
+                      <span className="text-blue-600">[필수]</span> 개인정보 처리방침 보류
                     </span>
                     <button
                       type="button"
-                      className="text-caption-2 text-label-500 hover:text-primary-500 underline cursor-pointer"
+                      className="text-caption-2 text-slate-500 hover:text-blue-600 underline cursor-pointer"
                       onClick={(e) => {
                         e.preventDefault();
                         openTermsModal('privacyPolicyHold');
@@ -364,22 +364,22 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             </div>
 
             {/* 저작권 정책 */}
-            <div className="bg-white rounded-lg p-4 border border-line-200">
+            <div className="bg-white rounded-lg p-4 border border-slate-200">
               <label className="flex items-start cursor-pointer group">
                 <input
                   type="checkbox"
                   checked={termsAgreement.copyrightPolicy}
                   onChange={(e) => handleTermChange('copyrightPolicy', e.target.checked)}
-                  className="w-4 h-4 mt-0.5 text-primary-500 border-line-300 rounded focus:ring-2 focus:ring-primary-300 cursor-pointer"
+                  className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
                 />
                 <div className="ml-3 flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-body-3 text-label-900 group-hover:text-primary-500 transition-colors">
-                      <span className="text-primary-500">[필수]</span> 저작권 정책
+                    <span className="text-body-3 text-slate-900 group-hover:text-blue-600 transition-colors">
+                      <span className="text-blue-600">[필수]</span> 저작권 정책
                     </span>
                     <button
                       type="button"
-                      className="text-caption-2 text-label-500 hover:text-primary-500 underline cursor-pointer"
+                      className="text-caption-2 text-slate-500 hover:text-blue-600 underline cursor-pointer"
                       onClick={(e) => {
                         e.preventDefault();
                         openTermsModal('copyrightPolicy');
@@ -393,22 +393,22 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             </div>
 
             {/* 쿠키 정책 */}
-            <div className="bg-white rounded-lg p-4 border border-line-200">
+            <div className="bg-white rounded-lg p-4 border border-slate-200">
               <label className="flex items-start cursor-pointer group">
                 <input
                   type="checkbox"
                   checked={termsAgreement.cookiePolicy}
                   onChange={(e) => handleTermChange('cookiePolicy', e.target.checked)}
-                  className="w-4 h-4 mt-0.5 text-primary-500 border-line-300 rounded focus:ring-2 focus:ring-primary-300 cursor-pointer"
+                  className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
                 />
                 <div className="ml-3 flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-body-3 text-label-900 group-hover:text-primary-500 transition-colors">
-                      <span className="text-primary-500">[필수]</span> 쿠키 정책
+                    <span className="text-body-3 text-slate-900 group-hover:text-blue-600 transition-colors">
+                      <span className="text-blue-600">[필수]</span> 쿠키 정책
                     </span>
                     <button
                       type="button"
-                      className="text-caption-2 text-label-500 hover:text-primary-500 underline cursor-pointer"
+                      className="text-caption-2 text-slate-500 hover:text-blue-600 underline cursor-pointer"
                       onClick={(e) => {
                         e.preventDefault();
                         openTermsModal('cookiePolicy');
@@ -435,17 +435,17 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
       {/* 회원가입 폼 섹션 */}
       <div className="flex justify-center w-full py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-[400px] w-full space-y-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-title-2 text-label-900 mb-8">
+            <h1 className="text-title-2 text-slate-900 mb-8">
               개인 회원가입
             </h1>
           </motion.div>
 
-          <motion.form 
+          <motion.form
             className="space-y-6"
             onSubmit={handleSubmit(onSubmit)}
             initial={{ opacity: 0, y: 30 }}
@@ -481,8 +481,8 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                           }));
                           clearErrors('email');
                         }}
-                        className={`flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent ${
-                          isEmailFromParam ? 'bg-gray-50 cursor-not-allowed' : ''
+                        className={`flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent ${
+                          isEmailFromParam ? 'bg-slate-50 cursor-not-allowed' : ''
                         }`}
                       />
                       {!isEmailFromParam && (
@@ -492,8 +492,8 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                           disabled={!emailValue || validateEmail(emailValue) !== null || formState.isEmailSent}
                           className={`relative px-4 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
                             emailValue && validateEmail(emailValue) === null && !formState.isEmailSent
-                              ? 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
-                              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                              : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                           }`}
                           whileTap={emailValue && validateEmail(emailValue) === null && !formState.isEmailSent ? { scale: 0.95 } : {}}
                         >
@@ -536,8 +536,8 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                               }));
                               clearErrors('verificationCode');
                             }}
-                            className={`flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent ${
-                              formState.isEmailVerified ? 'bg-gray-50 cursor-not-allowed' : ''
+                            className={`flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent ${
+                              formState.isEmailVerified ? 'bg-slate-50 cursor-not-allowed' : ''
                             }`}
                           />
                           <motion.button
@@ -552,8 +552,8 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                               formState.isEmailVerified
                                 ? 'bg-green-500 text-white cursor-not-allowed'
                                 : codeValue && codeValue.length === 6
-                                ? 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
-                                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                             }`}
                             whileTap={!formState.isEmailVerified && codeValue && codeValue.length === 6 ? { scale: 0.95 } : {}}
                           >
@@ -589,7 +589,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                     type="text"
                     value={field.value || ''}
                     placeholder="Hong Gildong"
-                    className="w-full border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   />
                 )}
               />
@@ -610,7 +610,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                       const value = e.target.value.replace(/\D/g, '');
                       field.onChange(value);
                     }}
-                    className="w-full border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   />
                 )}
               />
@@ -635,8 +635,8 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                 type="submit"
                 className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
                   isFormValid
-                    ? 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
-                    : 'bg-gray-300 text-white cursor-not-allowed'
+                    ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                 }`}
                 disabled={!isFormValid}
                 whileTap={isFormValid ? { scale: 0.98 }: {}}

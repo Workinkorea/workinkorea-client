@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
 import Layout from '@/shared/components/layout/Layout';
-import Header from '@/shared/components/layout/Header';
+import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
 interface ResumeLayoutProps {

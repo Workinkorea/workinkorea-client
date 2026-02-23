@@ -15,13 +15,13 @@ interface CompanyPostFormProps {
   isSubmitting?: boolean;
 }
 
-export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
+export function CompanyPostForm({
   mode,
   initialData,
   onSubmit,
   onDelete,
   isSubmitting = false,
-}) => {
+}: CompanyPostFormProps) {
   const [formData, setFormData] = useState<CreateCompanyPostRequest>({
     title: '',
     content: '',
@@ -117,14 +117,14 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-6">
       {/* 기본 정보 */}
-      <div className="bg-white rounded-lg p-6 shadow-normal">
-        <h2 className="text-title-4 font-semibold text-label-900 mb-4 flex items-center gap-2">
+      <div className="bg-white rounded-lg p-6 shadow-sm">
+        <h2 className="text-[17px] font-semibold text-slate-900 mb-4 flex items-center gap-2">
           <Briefcase size={20} />
           기본 정보
         </h2>
         <div className="space-y-4">
           <div>
-            <label htmlFor="title" className="block text-body-3 font-medium text-label-700 mb-2">
+            <label htmlFor="title" className="block text-sm font-medium text-slate-700 mb-2">
               공고 제목 *
             </label>
             <input
@@ -133,16 +133,16 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className={`w-full px-4 py-2 border ${errors.title ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500`}
+              className={`w-full px-4 py-2 border ${errors.title ? 'border-red-500' : 'border-slate-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
               placeholder="예: 외국인 환영! 프론트엔드 개발자 모집"
             />
             {errors.title && (
-              <p className="mt-1 text-caption-2 text-status-error">{errors.title}</p>
+              <p className="mt-1 text-[11px] text-red-500">{errors.title}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="position_id" className="block text-body-3 font-medium text-label-700 mb-2">
+            <label htmlFor="position_id" className="block text-sm font-medium text-slate-700 mb-2">
               포지션 *
             </label>
             <select
@@ -150,7 +150,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
               name="position_id"
               value={String(formData.position_id)}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
               {POSITION_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -161,7 +161,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
           </div>
 
           <div>
-            <label htmlFor="content" className="block text-body-3 font-medium text-label-700 mb-2">
+            <label htmlFor="content" className="block text-sm font-medium text-slate-700 mb-2">
               상세 설명 *
             </label>
             <textarea
@@ -170,25 +170,25 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
               value={formData.content}
               onChange={handleChange}
               rows={8}
-              className={`w-full px-4 py-2 border ${errors.content ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500`}
+              className={`w-full px-4 py-2 border ${errors.content ? 'border-red-500' : 'border-slate-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
               placeholder="채용 공고 상세 내용을 입력하세요..."
             />
             {errors.content && (
-              <p className="mt-1 text-caption-2 text-status-error">{errors.content}</p>
+              <p className="mt-1 text-[11px] text-red-500">{errors.content}</p>
             )}
           </div>
         </div>
       </div>
 
       {/* 자격 요건 */}
-      <div className="bg-white rounded-lg p-6 shadow-normal">
-        <h2 className="text-title-4 font-semibold text-label-900 mb-4 flex items-center gap-2">
+      <div className="bg-white rounded-lg p-6 shadow-sm">
+        <h2 className="text-[17px] font-semibold text-slate-900 mb-4 flex items-center gap-2">
           <GraduationCap size={20} />
           자격 요건
         </h2>
         <div className="space-y-4">
           <div>
-            <label htmlFor="work_experience" className="block text-body-3 font-medium text-label-700 mb-2">
+            <label htmlFor="work_experience" className="block text-sm font-medium text-slate-700 mb-2">
               경력 요건
             </label>
             <select
@@ -196,7 +196,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
               name="work_experience"
               value={formData.work_experience}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
               {WORK_EXPERIENCE_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -207,7 +207,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
           </div>
 
           <div>
-            <label htmlFor="education" className="block text-body-3 font-medium text-label-700 mb-2">
+            <label htmlFor="education" className="block text-sm font-medium text-slate-700 mb-2">
               학력 요건
             </label>
             <select
@@ -215,7 +215,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
               name="education"
               value={formData.education}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
               {EDUCATION_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -226,7 +226,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
           </div>
 
           <div>
-            <label htmlFor="language" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+            <label htmlFor="language" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
               <Languages size={16} />
               언어 요건
             </label>
@@ -235,7 +235,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
               name="language"
               value={formData.language}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
               {LANGUAGE_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -248,14 +248,14 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
       </div>
 
       {/* 근무 조건 */}
-      <div className="bg-white rounded-lg p-6 shadow-normal">
-        <h2 className="text-title-4 font-semibold text-label-900 mb-4 flex items-center gap-2">
+      <div className="bg-white rounded-lg p-6 shadow-sm">
+        <h2 className="text-[17px] font-semibold text-slate-900 mb-4 flex items-center gap-2">
           <Clock size={20} />
           근무 조건
         </h2>
         <div className="space-y-4">
           <div>
-            <label htmlFor="employment_type" className="block text-body-3 font-medium text-label-700 mb-2">
+            <label htmlFor="employment_type" className="block text-sm font-medium text-slate-700 mb-2">
               고용 형태
             </label>
             <select
@@ -263,7 +263,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
               name="employment_type"
               value={formData.employment_type}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
               <option value="정규직">정규직</option>
               <option value="계약직">계약직</option>
@@ -273,7 +273,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
           </div>
 
           <div>
-            <label htmlFor="work_location" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+            <label htmlFor="work_location" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
               <MapPin size={16} />
               근무 위치 *
             </label>
@@ -283,7 +283,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
                   type="text"
                   value={baseAddress}
                   readOnly
-                  className={`flex-1 px-4 py-2 border ${errors.work_location ? 'border-status-error' : 'border-line-400'} rounded-lg bg-bg-100`}
+                  className={`flex-1 px-4 py-2 border ${errors.work_location ? 'border-red-500' : 'border-slate-300'} rounded-lg bg-slate-100`}
                   placeholder="주소 검색 버튼을 클릭하세요"
                 />
                 <DaumPostcodeSearch
@@ -296,17 +296,17 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
                 type="text"
                 value={detailAddress}
                 onChange={(e) => setDetailAddress(e.target.value)}
-                className="w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 placeholder="상세 주소 (선택)"
               />
             </div>
             {errors.work_location && (
-              <p className="mt-1 text-caption-2 text-status-error">{errors.work_location}</p>
+              <p className="mt-1 text-[11px] text-red-500">{errors.work_location}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="working_hours" className="block text-body-3 font-medium text-label-700 mb-2">
+            <label htmlFor="working_hours" className="block text-sm font-medium text-slate-700 mb-2">
               주당 근무 시간
             </label>
             <div className="flex items-center gap-2">
@@ -318,14 +318,14 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
                 onChange={handleChange}
                 min="1"
                 max="80"
-                className="w-32 px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-32 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
-              <span className="text-body-3 text-label-600">시간</span>
+              <span className="text-sm text-slate-600">시간</span>
             </div>
           </div>
 
           <div>
-            <label htmlFor="salary" className="text-body-3 font-medium text-label-700 mb-2 flex items-center gap-2">
+            <label htmlFor="salary" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
               <DollarSign size={16} />
               연봉
             </label>
@@ -340,10 +340,10 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
                   disabled={isNegotiableSalary}
                   min="0"
                   step="1000000"
-                  className={`flex-1 px-4 py-2 border ${errors.salary ? 'border-status-error' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-bg-100 disabled:text-label-400`}
+                  className={`flex-1 px-4 py-2 border ${errors.salary ? 'border-red-500' : 'border-slate-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-slate-100 disabled:text-slate-400`}
                   placeholder="예: 40000000"
                 />
-                <span className="text-body-3 text-label-600">원</span>
+                <span className="text-sm text-slate-600">원</span>
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -356,27 +356,27 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
                       setErrors((prev) => ({ ...prev, salary: '' }));
                     }
                   }}
-                  className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                  className="w-4 h-4 text-blue-600 rounded focus:ring-blue-600"
                 />
-                <span className="text-caption-1 text-label-600">급여 협의 가능</span>
+                <span className="text-xs text-slate-600">급여 협의 가능</span>
               </label>
             </div>
             {errors.salary && (
-              <p className="mt-1 text-caption-2 text-status-error">{errors.salary}</p>
+              <p className="mt-1 text-[11px] text-red-500">{errors.salary}</p>
             )}
           </div>
         </div>
       </div>
 
       {/* 모집 기간 */}
-      <div className="bg-white rounded-lg p-6 shadow-normal">
-        <h2 className="text-title-4 font-semibold text-label-900 mb-4 flex items-center gap-2">
+      <div className="bg-white rounded-lg p-6 shadow-sm">
+        <h2 className="text-[17px] font-semibold text-slate-900 mb-4 flex items-center gap-2">
           <Calendar size={20} />
           모집 기간
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="start_date" className="block text-body-3 font-medium text-label-700 mb-2">
+            <label htmlFor="start_date" className="block text-sm font-medium text-slate-700 mb-2">
               시작일
             </label>
             <input
@@ -385,11 +385,11 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
               name="start_date"
               value={formData.start_date}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
           </div>
           <div>
-            <label htmlFor="end_date" className="block text-body-3 font-medium text-label-700 mb-2">
+            <label htmlFor="end_date" className="block text-sm font-medium text-slate-700 mb-2">
               종료일
             </label>
             <input
@@ -398,7 +398,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
               name="end_date"
               value={formData.end_date}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-line-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
           </div>
         </div>
@@ -410,7 +410,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
           <motion.button
             type="button"
             onClick={onDelete}
-            className="px-6 py-3 border-2 border-status-error text-status-error rounded-lg font-medium hover:bg-status-error hover:text-white transition-all flex items-center gap-2"
+            className="px-6 py-3 border-2 border-red-500 text-red-500 rounded-lg font-medium hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -421,7 +421,7 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
         <motion.button
           type="submit"
           disabled={isSubmitting}
-          className="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-3 bg-blue-700 text-white rounded-lg font-medium hover:bg-blue-800 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -431,4 +431,4 @@ export const CompanyPostForm: React.FC<CompanyPostFormProps> = ({
       </div>
     </form>
   );
-};
+}

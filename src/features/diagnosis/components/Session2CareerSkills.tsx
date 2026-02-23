@@ -108,10 +108,10 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
       transition={{ duration: 0.3 }}
     >
       <div>
-        <h2 className="text-title-3 font-bold text-label-900 mb-2">
+        <h2 className="text-title-3 font-bold text-slate-900 mb-2">
           경력 및 스킬 💼
         </h2>
-        <p className="text-body-2 text-label-500 mb-6">
+        <p className="text-body-2 text-slate-500 mb-6">
           당신의 경험을 알려주세요
         </p>
       </div>
@@ -130,8 +130,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 key={exp.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === exp.value
-                    ? 'border-primary-600 bg-primary-50'
-                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
                 }`}
               >
                 <input
@@ -139,9 +139,9 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                   value={exp.value}
                   checked={field.value === exp.value}
                   onChange={(e) => field.onChange(e.target.value)}
-                  className="w-5 h-5 text-primary-600 focus:ring-primary-500"
+                  className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-body-2 text-label-700">{exp.label}</span>
+                <span className="text-body-2 text-slate-700">{exp.label}</span>
               </label>
             ))}
           </div>
@@ -162,8 +162,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 key={job.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === job.value
-                    ? 'border-primary-600 bg-primary-50'
-                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
                 }`}
               >
                 <input
@@ -171,9 +171,9 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                   value={job.value}
                   checked={field.value === job.value}
                   onChange={(e) => field.onChange(e.target.value)}
-                  className="w-5 h-5 text-primary-600 focus:ring-primary-500"
+                  className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-body-2 text-label-700">{job.label}</span>
+                <span className="text-body-2 text-slate-700">{job.label}</span>
               </label>
             ))}
           </div>
@@ -194,8 +194,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 key={edu.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === edu.value
-                    ? 'border-primary-600 bg-primary-50'
-                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
                 }`}
               >
                 <input
@@ -203,9 +203,9 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                   value={edu.value}
                   checked={field.value === edu.value}
                   onChange={(e) => field.onChange(e.target.value)}
-                  className="w-5 h-5 text-primary-600 focus:ring-primary-500"
+                  className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-body-2 text-label-700">{edu.label}</span>
+                <span className="text-body-2 text-slate-700">{edu.label}</span>
               </label>
             ))}
           </div>
@@ -214,16 +214,16 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
 
       {/* Q7. 언어 */}
       <div>
-        <label className="text-label-900 text-title-3 font-semibold mb-2 block">
+        <label className="text-slate-900 text-title-3 font-semibold mb-2 block">
           Q7. 어떤 언어를 사용하실 수 있나요? 🗣️
         </label>
-        <p className="text-body-2 text-label-500 mb-4">여러 개 선택 가능</p>
+        <p className="text-body-2 text-slate-500 mb-4">여러 개 선택 가능</p>
 
         <div className="flex flex-wrap gap-2 mb-4">
           {selectedLanguages.map((lang, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-700 rounded-full"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full"
             >
               <span className="text-body-2 font-medium">{lang.language}</span>
               <span className="text-caption-2">
@@ -232,7 +232,7 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
               <button
                 type="button"
                 onClick={() => removeLanguage(index)}
-                className="ml-1 hover:text-primary-900"
+                className="ml-1 hover:text-blue-900"
               >
                 <X size={16} />
               </button>
@@ -243,7 +243,7 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
         <motion.button
           type="button"
           onClick={() => setShowLanguageModal(true)}
-          className="px-6 py-3 border-2 border-primary-600 text-primary-600 rounded-lg font-medium hover:bg-primary-50 transition-all cursor-pointer"
+          className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-all cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -254,16 +254,16 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-6 border-2 border-primary-300 rounded-lg bg-primary-50"
+            className="mt-4 p-6 border-2 border-blue-300 rounded-lg bg-blue-50"
           >
-            <h3 className="text-body-1 font-semibold text-label-900 mb-4">언어 선택</h3>
+            <h3 className="text-body-1 font-semibold text-slate-900 mb-4">언어 선택</h3>
             <div className="space-y-4">
               <div>
-                <label className="text-caption-1 text-label-400 mb-2 block">언어</label>
+                <label className="text-caption-1 text-slate-400 mb-2 block">언어</label>
                 <select
                   value={newLanguage}
                   onChange={(e) => setNewLanguage(e.target.value)}
-                  className="w-full border-2 border-line-400 rounded-lg px-4 py-3 text-body-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-body-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">선택해주세요</option>
                   {AVAILABLE_LANGUAGES.map((lang) => (
@@ -273,7 +273,7 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 </select>
               </div>
               <div>
-                <label className="text-caption-1 text-label-400 mb-2 block">레벨</label>
+                <label className="text-caption-1 text-slate-400 mb-2 block">레벨</label>
                 <div className="space-y-2">
                   {LANGUAGE_LEVELS.map((level) => (
                     <label key={level.value} className="flex items-center gap-2 cursor-pointer">
@@ -282,9 +282,9 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                         value={level.value}
                         checked={newLanguageLevel === level.value}
                         onChange={(e) => setNewLanguageLevel(e.target.value)}
-                        className="w-4 h-4 text-primary-600 focus:ring-primary-500"
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                       />
-                      <span className="text-body-2 text-label-700">{level.label}</span>
+                      <span className="text-body-2 text-slate-700">{level.label}</span>
                     </label>
                   ))}
                 </div>
@@ -293,7 +293,7 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 <motion.button
                   type="button"
                   onClick={addLanguage}
-                  className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 cursor-pointer"
+                  className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 cursor-pointer"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -306,7 +306,7 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                     setNewLanguage('');
                     setNewLanguageLevel('');
                   }}
-                  className="flex-1 py-2 bg-gray-200 text-label-700 rounded-lg font-medium hover:bg-gray-300 cursor-pointer"
+                  className="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-300 cursor-pointer"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -323,7 +323,7 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
         <motion.button
           type="button"
           onClick={onBack}
-          className="flex-1 py-4 bg-gray-200 hover:bg-gray-300 text-label-700 font-semibold text-body-1 rounded-lg transition-all cursor-pointer"
+          className="flex-1 py-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-body-1 rounded-lg transition-all cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -331,7 +331,7 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
         </motion.button>
         <motion.button
           type="submit"
-          className="flex-1 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold text-body-1 rounded-lg transition-all shadow-sm hover:shadow-md cursor-pointer"
+          className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-body-1 rounded-lg transition-all shadow-sm hover:shadow-md cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >

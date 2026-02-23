@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { FormField } from '@/shared/ui/FormField';
 import type { AccountSettingsForm } from '../../validations/profile';
@@ -30,18 +29,18 @@ export interface AccountSettingsSectionProps {
   form: UseFormReturn<AccountSettingsForm>;
 }
 
-const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({ form }) => {
+function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
   const { control } = form;
 
   return (
     <div className="space-y-8">
       {/* Notification Settings */}
       <div className="space-y-4">
-        <div className="border-b border-line-200 pb-3">
-          <h4 className="text-body-2 font-semibold text-label-700">
+        <div className="border-b border-slate-200 pb-3">
+          <h4 className="text-[15px] font-semibold text-slate-700">
             알림 설정
           </h4>
-          <p className="text-caption-2 text-label-500 mt-1">
+          <p className="text-[11px] text-slate-500 mt-1">
             받고 싶은 알림을 선택하세요
           </p>
         </div>
@@ -56,12 +55,12 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({ form })
               // Destructure to handle checkbox separately
               const { value, ...fieldWithoutValue } = field;
               return (
-                <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
+                <label className="flex items-center justify-between p-3 bg-slate-50 rounded-lg cursor-pointer">
                   <div>
-                    <span className="text-body-3 font-medium">
+                    <span className="text-sm font-medium">
                       SNS 메시지 알림
                     </span>
-                    <p className="text-caption-2 text-label-500">
+                    <p className="text-[11px] text-slate-500">
                       중요한 활동을 SNS 메시지로 알림 받습니다
                     </p>
                   </div>
@@ -71,7 +70,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({ form })
                     type="checkbox"
                     checked={value}
                     onChange={(e) => field.onChange(e.target.checked)}
-                    className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
+                    className="w-4 h-4 text-blue-500 rounded focus:ring-blue-500"
                   />
                 </label>
               );
@@ -86,12 +85,12 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({ form })
             render={(field, fieldId) => {
               const { value, ...fieldWithoutValue } = field;
               return (
-                <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
+                <label className="flex items-center justify-between p-3 bg-slate-50 rounded-lg cursor-pointer">
                   <div>
-                    <span className="text-body-3 font-medium">
+                    <span className="text-sm font-medium">
                       이메일 알림
                     </span>
-                    <p className="text-caption-2 text-label-500">
+                    <p className="text-[11px] text-slate-500">
                       중요한 활동을 이메일로 알림 받습니다
                     </p>
                   </div>
@@ -101,7 +100,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({ form })
                     type="checkbox"
                     checked={value}
                     onChange={(e) => field.onChange(e.target.checked)}
-                    className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
+                    className="w-4 h-4 text-blue-500 rounded focus:ring-blue-500"
                   />
                 </label>
               );
@@ -112,11 +111,11 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({ form })
 
       {/* Danger Zone: Account Deletion */}
       <div className="space-y-4">
-        <div className="border-b border-status-error pb-3">
-          <h4 className="text-body-2 font-semibold text-status-error">
+        <div className="border-b border-red-500 pb-3">
+          <h4 className="text-[15px] font-semibold text-red-500">
             계정 관리
           </h4>
-          <p className="text-caption-2 text-label-500 mt-1">
+          <p className="text-[11px] text-slate-500 mt-1">
             주의가 필요한 계정 관리 옵션입니다
           </p>
         </div>
@@ -126,9 +125,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({ form })
             type="button"
             className="
               w-full text-left p-3
-              border border-status-error rounded-lg
-              text-body-3 text-status-error
-              hover:bg-component-alternative
+              border border-red-500 rounded-lg
+              text-sm text-red-500
+              hover:bg-slate-50
               transition-colors cursor-pointer
             "
             onClick={() => {
@@ -150,4 +149,4 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({ form })
  * - Checkbox pattern avoids unnecessary controlled input warnings
  * - Future: Could extract notification items into separate component if list grows
  */
-export default React.memo(AccountSettingsSection);
+export default AccountSettingsSection;

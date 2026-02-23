@@ -1,17 +1,17 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Edit3 } from 'lucide-react';
 import { toast } from 'sonner';
 import Layout from '@/shared/components/layout/Layout';
-import Header from '@/shared/components/layout/Header';
+import { Header } from '@/shared/components/layout/Header';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
 import SkillBarChart from '@/features/user/components/SkillBarChart';
 import RadarChart from '@/shared/ui/RadarChart';
-import ResumeSection from '@/features/user/components/ResumeSection';
+import { ResumeSection } from '@/features/user/components/ResumeSection';
 import { UserProfile, RadarChartData, Resume } from '@/features/user/types/user';
 import { profileApi } from '../api/profileApi';
 import { resumeApi } from '@/features/resume/api/resumeApi';
@@ -77,7 +77,7 @@ const mockMySkillStats = {
   industryRanking: 88
 };
 
-const MyProfileClient: React.FC = () => {
+function MyProfileClient() {
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience' | 'resume'>('overview');
   const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
   const queryClient = useQueryClient();
@@ -220,7 +220,7 @@ const MyProfileClient: React.FC = () => {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-        <div className="min-h-screen bg-background-alternative py-8">
+        <div className="min-h-screen bg-slate-50 py-8">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="animate-pulse space-y-6">
               <div className="bg-white rounded-lg h-64"></div>
@@ -244,12 +244,12 @@ const MyProfileClient: React.FC = () => {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-        <div className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-title-3 font-semibold text-label-700 mb-2">
+            <h2 className="text-[24px] font-semibold text-slate-700 mb-2">
               프로필을 불러올 수 없습니다
             </h2>
-            <p className="text-body-3 text-label-500">
+            <p className="text-sm text-slate-500">
               잠시 후 다시 시도해주세요.
             </p>
           </div>
@@ -268,7 +268,7 @@ const MyProfileClient: React.FC = () => {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-      <div className="min-h-screen bg-background-alternative py-8">
+      <div className="min-h-screen bg-slate-50 py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           {/* 페이지 헤더 */}
           <motion.div 
@@ -278,8 +278,8 @@ const MyProfileClient: React.FC = () => {
             transition={{ duration: 0.5 }}
           >
             <div>
-              <h1 className="text-title-2 font-bold text-label-900">내 프로필</h1>
-              <p className="text-body-3 text-label-500 mt-1">
+              <h1 className="text-[28px] font-bold text-slate-900">내 프로필</h1>
+              <p className="text-sm text-slate-500 mt-1">
                 프로필을 관리하고 스킬 분석을 확인하세요
               </p>
             </div>
@@ -287,14 +287,14 @@ const MyProfileClient: React.FC = () => {
             {/* <div className="flex items-center gap-2">
               <button
                 onClick={handleShare}
-                className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors"
+                className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors"
               >
                 <Share2 size={16} />
                 공유
               </button>
               <button
                 onClick={() => setActiveTab('settings')}
-                className="flex items-center gap-2 px-4 py-2 bg-label-700 text-white rounded-lg text-body-3 font-medium hover:bg-label-800 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-label-700 text-white rounded-lg text-sm font-medium hover:bg-label-800 transition-colors"
               >
                 <Settings size={16} />
                 이력서
@@ -311,7 +311,7 @@ const MyProfileClient: React.FC = () => {
 
           {/* 탭 네비게이션 */}
           <motion.div 
-            className="bg-white rounded-lg p-2 shadow-normal"
+            className="bg-white rounded-lg p-2 shadow-sm"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -326,10 +326,10 @@ const MyProfileClient: React.FC = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                     activeTab === tab.key
-                      ? 'bg-primary-500 text-white shadow-sm'
-                      : 'text-label-700 hover:bg-component-alternative'
+                      ? 'bg-blue-500 text-white shadow-sm'
+                      : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 >
                   {tab.label}
@@ -345,18 +345,18 @@ const MyProfileClient: React.FC = () => {
                 <div className="grid grid-cols-1 gap-6">
                   {/* 레이더 차트 */}
                   <motion.div 
-                    className="bg-white rounded-lg p-6 shadow-normal"
+                    className="bg-white rounded-lg p-6 shadow-sm"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                   >
                     <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-title-4 font-semibold text-label-900">
+                      <h3 className="text-[17px] font-semibold text-slate-900">
                         종합 역량 분석
                       </h3>
                       <button
                         onClick={handleEditClick}
-                        className="text-primary-500 hover:text-primary-600 transition-colors cursor-pointer"
+                        className="text-blue-500 hover:text-blue-600 transition-colors cursor-pointer"
                       >
                         <Edit3 size={16} />
                       </button>
@@ -375,10 +375,10 @@ const MyProfileClient: React.FC = () => {
             {activeTab === 'skills' && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-title-4 font-semibold text-label-900">
+                  <h3 className="text-[17px] font-semibold text-slate-900">
                     스킬 관리
                   </h3>
-                  <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer">
+                  <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors cursor-pointer">
                     스킬 추가
                   </button>
                 </div>
@@ -391,11 +391,11 @@ const MyProfileClient: React.FC = () => {
                     showCategory={true}
                   />
                 ) : (
-                  <div className="bg-white rounded-lg p-12 shadow-normal text-center">
-                    <p className="text-body-3 text-label-600 mb-1">
+                  <div className="bg-white rounded-lg p-12 shadow-sm text-center">
+                    <p className="text-sm text-slate-600 mb-1">
                       보유하신 스킬을 추가해보세요
                     </p>
-                    <p className="text-caption-2 text-label-500">
+                    <p className="text-[11px] text-slate-500">
                       스킬을 등록하면 기업에게 더 잘 어필할 수 있어요
                     </p>
                   </div>
@@ -411,41 +411,41 @@ const MyProfileClient: React.FC = () => {
                 transition={{ duration: 0.5 }}
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="text-title-4 font-semibold text-label-900">
+                  <h3 className="text-[17px] font-semibold text-slate-900">
                     경력 및 교육 관리
                   </h3>
                   <div className="flex gap-2">
-                    <button className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors cursor-pointer">
+                    <button className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
                       교육 추가
                     </button>
-                    <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer">
+                    <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors cursor-pointer">
                       경력 추가
                     </button>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg p-6 shadow-normal">
+                <div className="bg-white rounded-lg p-6 shadow-sm">
                   {/* 교육 이력 */}
                   <div className="space-y-4 mb-8">
-                    <h4 className="text-body-2 font-semibold text-label-700">교육 이력</h4>
+                    <h4 className="text-[15px] font-semibold text-slate-700">교육 이력</h4>
                     {profile.education.length > 0 ? (
                       profile.education.map((edu) => (
-                        <div key={edu.id} className="flex items-start justify-between border-l-4 border-primary-200 pl-4 py-2">
+                        <div key={edu.id} className="flex items-start justify-between border-l-4 border-blue-200 pl-4 py-2">
                           <div>
-                            <h5 className="text-body-3 font-semibold text-label-900">{edu.institution}</h5>
-                            <p className="text-body-3 text-label-600">{edu.degree} - {edu.field}</p>
-                            <p className="text-caption-2 text-label-500">
+                            <h5 className="text-sm font-semibold text-slate-900">{edu.institution}</h5>
+                            <p className="text-sm text-slate-600">{edu.degree} - {edu.field}</p>
+                            <p className="text-[11px] text-slate-500">
                               {edu.startDate} ~ {edu.endDate || '현재'}
                             </p>
                           </div>
-                          <button className="text-label-400 hover:text-label-600 transition-colors cursor-pointer">
+                          <button className="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
                             <Edit3 size={16} />
                           </button>
                         </div>
                       ))
                     ) : (
                       <div className="text-center py-8">
-                        <p className="text-body-3 text-label-500">
+                        <p className="text-sm text-slate-500">
                           교육 이력을 추가해보세요
                         </p>
                       </div>
@@ -455,9 +455,9 @@ const MyProfileClient: React.FC = () => {
                   {/* 자격증 */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-body-2 font-semibold text-label-700">자격증</h4>
+                      <h4 className="text-[15px] font-semibold text-slate-700">자격증</h4>
                       {profile.certifications.length > 0 && (
-                        <button className="text-primary-500 hover:text-primary-600 text-caption-2 font-medium transition-colors cursor-pointer">
+                        <button className="text-blue-500 hover:text-blue-600 text-[11px] font-medium transition-colors cursor-pointer">
                           관리
                         </button>
                       )}
@@ -467,7 +467,7 @@ const MyProfileClient: React.FC = () => {
                         {profile.certifications.map((cert, index) => (
                           <span
                             key={index}
-                            className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-caption-2 border border-primary-200 cursor-pointer hover:bg-primary-100 transition-colors"
+                            className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[11px] border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors"
                           >
                             {cert}
                           </span>
@@ -475,7 +475,7 @@ const MyProfileClient: React.FC = () => {
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <p className="text-body-3 text-label-500">
+                        <p className="text-sm text-slate-500">
                           자격증을 추가해보세요
                         </p>
                       </div>

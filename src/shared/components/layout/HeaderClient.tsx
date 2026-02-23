@@ -1,13 +1,13 @@
 'use client';
 
 import { useAuth } from '@/features/auth/hooks/useAuth';
-import Header from './Header';
+import { Header } from './Header';
 
 interface HeaderClientProps {
   type?: 'homepage' | 'business';
 }
 
-export default function HeaderClient({ type }: HeaderClientProps = {}) {
+export function HeaderClient({ type }: HeaderClientProps = {}) {
   const { isAuthenticated, isLoading, userType, logout } = useAuth();
 
   return (

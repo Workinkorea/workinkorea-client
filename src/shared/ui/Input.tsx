@@ -1,4 +1,4 @@
-import React, { forwardRef, InputHTMLAttributes, ReactNode } from 'react';
+import { forwardRef, InputHTMLAttributes, ReactNode } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/shared/lib/utils/utils';
 
@@ -11,7 +11,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   rightElement?: ReactNode;
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
+export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({
     className,
     variant = 'default',
@@ -28,22 +28,23 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       ? (showPassword ? 'text' : 'password')
       : type;
 
-    const baseClasses = "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent";
+    const baseClasses = "w-full border rounded-lg px-3.5 py-2.5 text-sm text-slate-800 bg-white font-sans transition-colors focus:outline-none";
 
     const variantClasses = {
-      default: "border-line-400 focus:ring-primary",
-      password: "border-line-400 focus:ring-primary pr-10"
+      default: "border-slate-200 focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100",
+      password: "border-slate-200 focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 pr-10"
     };
 
     const stateClasses = cn(
-      error && "border-red-500 focus:ring-red-500",
-      success && "border-green-500 focus:ring-green-500"
+      error && "border-red-500 focus:border-red-500 focus:ring-[3px] focus:ring-red-100",
+      success && "border-emerald-500 focus:border-emerald-500 focus:ring-[3px] focus:ring-emerald-100"
     );
 
     const inputClasses = cn(
       baseClasses,
       variantClasses[variant],
       stateClasses,
+      "placeholder:text-slate-400",
       className
     );
 
@@ -59,12 +60,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           value={safeValue}
           {...props}
         />
-        
+
         {variant === 'password' && onTogglePassword && (
           <button
             type="button"
             onClick={onTogglePassword}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
           >
             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
@@ -81,5 +82,3 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 );
 
 Input.displayName = "Input";
-
-export default Input;
