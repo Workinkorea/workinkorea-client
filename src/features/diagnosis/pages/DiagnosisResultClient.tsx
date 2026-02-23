@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useDiagnosisStore } from '@/features/diagnosis/store/diagnosisStore';
 import Layout from '@/shared/components/layout/Layout';
-import Header from '@/shared/components/layout/Header';
+import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { CheckCircle, AlertCircle, Briefcase, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -82,13 +82,13 @@ const DiagnosisResultClient = () => {
           isLoading={isLoading}
           onLogout={handleLogout}
         />
-        <div className="min-h-screen bg-background-alternative flex items-center justify-center">
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
           <div className="text-center">
             <AlertCircle className="text-red-500 mx-auto mb-4" size={48} />
-            <p className="text-body-1 text-label-700">{error}</p>
+            <p className="text-body-1 text-slate-700">{error}</p>
             <motion.button
               onClick={() => router.push('/diagnosis')}
-              className="mt-6 px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all cursor-pointer"
+              className="mt-6 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all cursor-pointer"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -109,10 +109,10 @@ const DiagnosisResultClient = () => {
           isLoading={isLoading}
           onLogout={handleLogout}
         />
-        <div className="min-h-screen bg-background-alternative flex items-center justify-center">
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-            <p className="mt-4 text-body-2 text-label-500">결과를 분석하는 중...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-body-2 text-slate-500">결과를 분석하는 중...</p>
           </div>
         </div>
       </Layout>
@@ -127,16 +127,16 @@ const DiagnosisResultClient = () => {
         isLoading={isLoading}
         onLogout={handleLogout}
       />
-      <div className="min-h-screen bg-background-alternative py-12">
+      <div className="min-h-screen bg-slate-50 py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* 매칭 점수 */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="bg-white rounded-lg shadow-normal p-8 mb-8 text-center"
+            className="bg-white rounded-lg shadow-sm p-8 mb-8 text-center"
           >
-            <h1 className="text-title-2 font-bold text-label-900 mb-4">
+            <h1 className="text-[20px] md:text-title-2 font-bold text-slate-900 mb-4">
               진단 결과가 나왔어요! 🎉
             </h1>
             <div className="relative inline-block">
@@ -165,13 +165,13 @@ const DiagnosisResultClient = () => {
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div>
-                  <div className="text-4xl font-bold text-primary-600">{result.score}%</div>
-                  <div className="text-caption-1 text-label-500">준비도</div>
+                  <div className="text-4xl font-bold text-blue-600">{result.score}%</div>
+                  <div className="text-caption-1 text-slate-500">준비도</div>
                 </div>
               </div>
             </div>
-            <p className="mt-6 text-body-1 text-label-700">
-              당신의 한국 취업 준비도는 <span className="font-bold text-primary-600">{result.score}%</span>입니다!
+            <p className="mt-6 text-body-1 text-slate-700">
+              당신의 한국 취업 준비도는 <span className="font-bold text-blue-600">{result.score}%</span>입니다!
             </p>
           </motion.div>
 
@@ -181,17 +181,17 @@ const DiagnosisResultClient = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-white rounded-lg shadow-normal p-6"
+              className="bg-white rounded-lg shadow-sm p-6"
             >
               <div className="flex items-center gap-2 mb-4">
-                <CheckCircle className="text-green-500" size={24} />
-                <h2 className="text-title-4 font-bold text-label-900">당신의 강점</h2>
+                <CheckCircle className="text-emerald-500" size={24} />
+                <h2 className="text-[17px] md:text-title-4 font-bold text-slate-900">당신의 강점</h2>
               </div>
               <ul className="space-y-3">
                 {result.strengths.map((strength, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="text-green-500 text-xl leading-6 flex-shrink-0">✓</span>
-                    <span className="text-body-2 text-label-700 leading-6">{strength}</span>
+                    <span className="text-emerald-500 text-xl leading-6 flex-shrink-0">✓</span>
+                    <span className="text-body-2 text-slate-700 leading-6">{strength}</span>
                   </li>
                 ))}
               </ul>
@@ -202,17 +202,17 @@ const DiagnosisResultClient = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-white rounded-lg shadow-normal p-6"
+              className="bg-white rounded-lg shadow-sm p-6"
             >
               <div className="flex items-center gap-2 mb-4">
-                <AlertCircle className="text-orange-500" size={24} />
-                <h2 className="text-title-4 font-bold text-label-900">개선할 점</h2>
+                <AlertCircle className="text-amber-500" size={24} />
+                <h2 className="text-[17px] md:text-title-4 font-bold text-slate-900">개선할 점</h2>
               </div>
               <ul className="space-y-3">
                 {result.improvements.map((improvement, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="text-orange-500 text-xl leading-6 flex-shrink-0">!</span>
-                    <span className="text-body-2 text-label-700 leading-6">{improvement}</span>
+                    <span className="text-amber-500 text-xl leading-6 flex-shrink-0">!</span>
+                    <span className="text-body-2 text-slate-700 leading-6">{improvement}</span>
                   </li>
                 ))}
               </ul>
@@ -224,19 +224,19 @@ const DiagnosisResultClient = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="bg-white rounded-lg shadow-normal p-6 mb-8"
+            className="bg-white rounded-lg shadow-sm p-6 mb-8"
           >
             <div className="flex items-center gap-2 mb-4">
-              <Briefcase className="text-primary-600" size={24} />
-              <h2 className="text-title-4 font-bold text-label-900">추천 직무</h2>
+              <Briefcase className="text-blue-600" size={24} />
+              <h2 className="text-[17px] md:text-title-4 font-bold text-slate-900">추천 직무</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {result.recommendedJobs.map((job, index) => (
                 <div
                   key={index}
-                  className="px-4 py-3 bg-primary-50 border-2 border-primary-200 rounded-lg text-center"
+                  className="px-4 py-3 bg-blue-50 border-2 border-blue-200 rounded-lg text-center"
                 >
-                  <span className="text-body-2 font-medium text-primary-700">{job}</span>
+                  <span className="text-body-2 font-medium text-blue-700">{job}</span>
                 </div>
               ))}
             </div>
@@ -247,10 +247,10 @@ const DiagnosisResultClient = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="bg-gradient-to-r from-primary-600 to-blue-600 rounded-lg shadow-lg p-8 text-center text-white"
+            className="bg-gradient-to-r from-blue-600 to-blue-600 rounded-lg shadow-lg p-8 text-center text-white"
           >
             <TrendingUp size={48} className="mx-auto mb-4" />
-            <h2 className="text-title-3 font-bold mb-2">
+            <h2 className="text-[18px] md:text-title-3 font-bold mb-2">
               지금 바로 시작하세요!
             </h2>
             <p className="text-body-2 mb-6 opacity-90">
@@ -260,7 +260,7 @@ const DiagnosisResultClient = () => {
               {!isAuthenticated && (
                 <motion.button
                   onClick={handleSignup}
-                  className="px-8 py-3 bg-white text-primary-600 font-semibold rounded-lg hover:bg-gray-100 transition-all shadow-md cursor-pointer"
+                  className="px-8 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-slate-100 transition-all shadow-md cursor-pointer"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -282,7 +282,7 @@ const DiagnosisResultClient = () => {
           <div className="mt-6 text-center">
             <motion.button
               onClick={handleRestart}
-              className="text-body-2 text-label-500 hover:text-label-700 underline cursor-pointer"
+              className="text-body-2 text-slate-500 hover:text-slate-700 underline cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

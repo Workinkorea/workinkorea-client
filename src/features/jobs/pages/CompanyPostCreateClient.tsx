@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
-import Header from '@/shared/components/layout/Header';
+import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -14,7 +13,7 @@ import { CompanyPostForm } from '@/features/jobs/components/CompanyPostForm';
 import { toast } from 'sonner';
 import { extractErrorMessage, logError } from '@/shared/lib/utils/errorHandler';
 
-const CompanyPostCreateClient: React.FC = () => {
+function CompanyPostCreateClient() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
@@ -52,7 +51,7 @@ const CompanyPostCreateClient: React.FC = () => {
           onLogout={handleLogout}
         />
         <div className="flex justify-center items-center h-screen">
-          <div className="text-label-500">로딩 중...</div>
+          <div className="text-slate-500">로딩 중...</div>
         </div>
       </Layout>
     );
@@ -70,7 +69,7 @@ const CompanyPostCreateClient: React.FC = () => {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-      <div className="min-h-screen bg-bg-100 py-8 px-4">
+      <div className="min-h-screen bg-slate-100 py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -79,13 +78,13 @@ const CompanyPostCreateClient: React.FC = () => {
           >
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 text-label-600 hover:text-primary-600 transition-colors mb-4"
+              className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors mb-4"
             >
               <ArrowLeft size={20} />
               <span>뒤로 가기</span>
             </button>
-            <h1 className="text-heading-1 font-bold text-label-900">채용 공고 등록</h1>
-            <p className="text-body-2 text-label-600 mt-2">
+            <h1 className="text-[22px] md:text-[32px] font-extrabold text-slate-900">채용 공고 등록</h1>
+            <p className="text-[13px] md:text-[15px] text-slate-600 mt-2">
               외국인 인재를 위한 채용 공고를 작성해주세요
             </p>
           </motion.div>
@@ -105,6 +104,6 @@ const CompanyPostCreateClient: React.FC = () => {
       </div>
     </Layout>
   );
-};
+}
 
 export default CompanyPostCreateClient;
