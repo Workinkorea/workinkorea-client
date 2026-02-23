@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { SignupStep2Data, Step2Form } from '@/features/auth/types/signup.types';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/shared/ui/FormField';
-import Input from '@/shared/ui/Input';
+import { Input } from '@/shared/ui/Input';
 import { formatBusinessNumber, isValidBusinessNumber, validateConfirmPassword, validatePassword } from '@/shared/lib/utils/validation';
 import { toast } from 'sonner';
 import { authApi } from '@/features/auth/api/authApi';
@@ -26,6 +26,7 @@ export default function BusinessSignupStep2({
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
     setError,
     clearErrors,
@@ -50,7 +51,8 @@ export default function BusinessSignupStep2({
     passwordMatchMessage: '',
     businessNumberVerifyToken: '',
     companyInfo: null as { company: string; owner: string } | null,
-    phoneType: 'MOBILE' as PhoneType,  // Default to mobile
+    phoneType: 'MOBILE' as PhoneType,
+    isCompanyAutoFilled: false,
   });
 
   const businessNumber = watch('businessNumber');
@@ -113,15 +115,21 @@ export default function BusinessSignupStep2({
           return;
         }
 
+        const hasCompanyName = !!businessData.b_nm;
+        if (hasCompanyName) {
+          setValue('company', businessData.b_nm as string);
+        }
+
         setFormState(prev => ({
           ...prev,
           isBusinessNumberVerified: true,
           businessNumberMessage: '사업자등록번호 인증이 완료되었습니다.',
           businessNumberVerifyToken: `verified_${businessNumber}_${Date.now()}`,
           companyInfo: {
-            company: businessData.tax_type || '',
+            company: businessData.b_nm || businessData.tax_type || '',
             owner: businessData.b_stt || ''
-          }
+          },
+          isCompanyAutoFilled: hasCompanyName,
         }));
 
         clearErrors('businessNumber');
@@ -237,22 +245,22 @@ export default function BusinessSignupStep2({
     <div className="h-full">
 
       <div className="px-4 py-8">
-        <motion.div 
+        <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-display-2 mobile:text-title-2 text-label-900 text-center mb-4 leading-tight">
+          <h1 className="text-display-2 mobile:text-title-2 text-slate-900 text-center mb-4 leading-tight">
             <p>기업 회원가입</p>
           </h1>
           <div className="flex items-center justify-between text-body-2 mobile:text-body-3">
             <div />
-            <span className="text-primary-500">{currentProgress}%</span>
+            <span className="text-blue-600">{currentProgress}%</span>
           </div>
           <div className="mt-2">
-            <div className="w-full bg-component-alternative rounded-full h-2">
-              <div className="bg-primary-300 h-2 rounded-full" style={{ width: `${currentProgress}%` }}></div>
+            <div className="w-full bg-slate-100 rounded-full h-2">
+              <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${currentProgress}%` }}></div>
             </div>
           </div>
         </motion.div>
@@ -275,7 +283,7 @@ export default function BusinessSignupStep2({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="flex-1 border border-line-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                       placeholder="-제외 10자리 입력"
                       maxLength={12}
                       onChange={(e) => {
@@ -286,8 +294,10 @@ export default function BusinessSignupStep2({
                           ...prev,
                           isBusinessNumberVerified: false,
                           businessNumberMessage: '',
-                          companyInfo: null
+                          companyInfo: null,
+                          isCompanyAutoFilled: false,
                         }));
+                        setValue('company', '');
                         clearErrors('businessNumber');
                       }}
                     />
@@ -297,16 +307,16 @@ export default function BusinessSignupStep2({
                       disabled={!field.value || !isValidBusinessNumber(field.value)}
                       className={`relative px-4 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
                         field.value && isValidBusinessNumber(field.value)
-                          ? formState.isBusinessNumberVerified 
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
-                          : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          ? formState.isBusinessNumberVerified
+                            ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                            : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                          : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                       }`}
                       whileTap={field.value && isValidBusinessNumber(field.value) && !formState.isBusinessNumberVerified ? { scale: 0.95 } : {}}
                     >
                       {formState.isBusinessNumberVerified ? '인증완료' : '인증하기'}
                     </motion.button>
-                    <p className='absolute top-0 right-0 underline text-caption-1 hover:text-label-700 cursor-pointer'
+                    <p className='absolute top-0 right-0 underline text-xs hover:text-slate-700 cursor-pointer'
                       onClick={() => window.open(
                         "https://github.com/Workinkorea/workinkorea-client",
                         "_blank"
@@ -319,7 +329,7 @@ export default function BusinessSignupStep2({
               />
 
               {formState.isBusinessNumberVerified && formState.businessNumberMessage && (
-                <p className="text-caption-2 text-primary-500 mt-1">
+                <p className="text-caption-2 text-blue-600 mt-1">
                   {formState.businessNumberMessage}
                 </p>
               )}
@@ -331,12 +341,21 @@ export default function BusinessSignupStep2({
                 control={control}
                 label="기업명"
                 render={(field, fieldId) => (
-                  <Input
-                    {...field}
-                    id={fieldId}
-                    placeholder="기업명 입력"
-                    error={!!errors.company}
-                  />
+                  <div className="space-y-1">
+                    <Input
+                      {...field}
+                      id={fieldId}
+                      placeholder="기업명 입력"
+                      error={!!errors.company}
+                      disabled={formState.isCompanyAutoFilled}
+                      className={formState.isCompanyAutoFilled ? 'bg-slate-50 text-slate-500 cursor-not-allowed' : ''}
+                    />
+                    {formState.isCompanyAutoFilled && (
+                      <p className="text-xs text-blue-600 flex items-center gap-1">
+                        <span>✓</span> 사업자등록번호로 자동 입력된 기업명입니다.
+                      </p>
+                    )}
+                  </div>
                 )}
               />
 
@@ -374,9 +393,9 @@ export default function BusinessSignupStep2({
                             field.onChange('');  // Reset phone number when type changes
                             clearErrors('phoneNumber');
                           }}
-                          className="w-4 h-4 text-primary-500 focus:ring-primary-500"
+                          className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="text-body-3 text-label-700">휴대전화</span>
+                        <span className="text-body-3 text-slate-700">휴대전화</span>
                       </label>
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
@@ -389,9 +408,9 @@ export default function BusinessSignupStep2({
                             field.onChange('');  // Reset phone number when type changes
                             clearErrors('phoneNumber');
                           }}
-                          className="w-4 h-4 text-primary-500 focus:ring-primary-500"
+                          className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="text-body-3 text-label-700">일반전화</span>
+                        <span className="text-body-3 text-slate-700">일반전화</span>
                       </label>
                     </div>
 
@@ -423,7 +442,7 @@ export default function BusinessSignupStep2({
 
                     {/* Helper Text */}
                     {!errors.phoneNumber && field.value && (
-                      <p className="text-caption-2 text-label-500">
+                      <p className="text-caption-2 text-slate-500">
                         {formState.phoneType === 'MOBILE'
                           ? '휴대전화: 010, 011, 016-019로 시작'
                           : '일반전화: 지역번호(예: 02, 031, 051) 포함'}
@@ -439,24 +458,30 @@ export default function BusinessSignupStep2({
                 label="담당자 이메일"
                 error={errors.email?.message}
                 render={(field, fieldId) => (
-                  <Input
-                    {...field}
-                    id={fieldId}
-                    type="email"
-                    placeholder="이메일 입력"
-                    onBlur={(e) => {
-                      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                      if (!emailRegex.test(e.target.value)) {
-                        setError('email', {
-                          type: 'manual',
-                          message: '이메일 형식이 올바르지 않습니다.'
-                        });
-                      } else {
-                        clearErrors('email');
-                      }
-                    }}
-                    error={!!errors.email}
-                  />
+                  <div className="space-y-1.5">
+                    <Input
+                      {...field}
+                      id={fieldId}
+                      type="email"
+                      placeholder="이메일 입력"
+                      onBlur={(e) => {
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(e.target.value)) {
+                          setError('email', {
+                            type: 'manual',
+                            message: '이메일 형식이 올바르지 않습니다.'
+                          });
+                        } else {
+                          clearErrors('email');
+                        }
+                      }}
+                      error={!!errors.email}
+                    />
+                    <p className="text-xs text-slate-500 flex items-center gap-1">
+                      <span className="text-blue-500">ℹ</span>
+                      이 이메일은 추후 <span className="font-semibold text-slate-700">로그인 아이디</span>로 사용됩니다.
+                    </p>
+                  </div>
                 )}
               />
             </div>
@@ -521,8 +546,8 @@ export default function BusinessSignupStep2({
                 disabled={!isFormValid}
                 className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
                   isFormValid
-                    ? 'bg-primary-300 text-white hover:bg-primary-400 cursor-pointer'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                 }`}
                 whileTap={isFormValid ? { scale: 0.98 } : {}}
               >
