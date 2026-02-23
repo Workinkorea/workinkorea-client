@@ -4,6 +4,37 @@
 
 이 프로젝트는 외국인 근로자를 위한 한국 취업 지원 플랫폼입니다. Next.js 16 App Router, React 19, TypeScript를 기반으로 하며, 일반 회원(외국인 구직자)과 기업 회원을 위한 채용 공고, 이력서 관리, 자가 진단 시스템을 제공합니다. HttpOnly Cookie 기반 인증을 사용하고, Feature-Sliced Design 아키텍처를 따릅니다.
 
+## 디자인 시스템 (Blue Design System)
+
+모든 UI 컴포넌트는 아래 Blue Design System 토큰을 기반으로 구현합니다. 디자인 일관성이 최우선입니다.
+
+### Color Tokens
+
+- **Primary**: blue-50(#EFF6FF) ~ blue-950(#172554), 메인 액션 색상은 **blue-600(#2563EB)**
+- **Neutral**: slate-50(#F8FAFC) ~ slate-900(#0F172A), 본문 기본 색상은 **slate-800(#1E293B)**
+- **Semantic**: success(#10B981), warning(#F59E0B), error(#EF4444), info(#3B82F6)
+
+### Typography
+
+- **기본 폰트**: `Pretendard`, -apple-system, BlinkMacSystemFont, sans-serif
+- **로고/브랜드**: `Plus Jakarta Sans` (font-weight: 800, letter-spacing: -0.5px)
+- **제목 계층**: 44px(hero/900) → 28px(section/800) → 24px(page/800) → 17px(card/700) → 14-16px(body)
+- **캡션**: 11-13px, color slate-400~500
+
+### Spacing & Radius
+
+- **Spacing**: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64 px
+- **Radius**: sm(6), md(8), lg(12), xl(16), 2xl(20), full(9999) px
+- **Shadow**: sm, md, lg, xl, blue(0 4px 14px rgba(37,99,235,0.25))
+
+### 컴포넌트 규칙
+
+- **Button**: primary(blue-600), secondary(blue-50+border), outline(white+border), ghost(transparent) / 크기: sm, md, lg
+- **Input**: border slate-200, focus시 border-blue-500 + ring blue-100 / label 13px 600 slate-700
+- **Card**: white bg, border slate-200, radius-lg / hover시 shadow-lg + border blue-200
+- **Badge**: radius-full, 11px 600 / blue, green, orange, red 변형
+- **Tab**: border-bottom 2px / active: blue-600 indicator
+
 ## 코드 스타일
 
 ### 기본 규칙
@@ -11,7 +42,7 @@
 - **모듈 시스템**: ES 모듈 사용 (import/export)
 - **TypeScript**: strict mode 활성화, 타입 안정성 최우선
 - **내보내기**: Named export 선호 (default export는 Next.js 페이지/라우트만 사용)
-- **컴포넌트**: 함수형 컴포�트만 사용 (React 19 + React Compiler 활성화)
+- **컴포넌트**: 함수형 컴포넌트만 사용 (React 19 + React Compiler 활성화)
 
 ### Path Alias
 
@@ -27,6 +58,7 @@
 - **TailwindCSS 4** 사용 (`tailwind.config.ts`, `@tailwindcss/postcss`)
 - 인라인 Tailwind 클래스 사용, `clsx`와 `tailwind-merge`로 조건부 스타일 적용
 - CSS 모듈이나 Styled Components 사용 금지
+- **cn() 유틸** 필수 사용: `cn(...inputs)` = `twMerge(clsx(inputs))`
 
 ### 폴더 구조 (Feature-Sliced Design)
 
@@ -41,8 +73,8 @@ src/
       types/       # 타입 정의
       validations/ # Zod 스키마
   shared/          # 공유 리소스
-    components/    # 공통 컴포넌트
-    ui/            # 재사용 가능한 UI 컴포넌트
+    components/    # 공통 컴포넌트 (Header, Footer, Layout)
+    ui/            # 재사용 가능한 UI 컴포넌트 (Button, Input, Card, Badge, Modal 등)
     hooks/         # 공통 훅
     lib/           # 유틸리티 함수
     api/           # API 클라이언트 (fetchClient)
@@ -71,6 +103,29 @@ const result = await fetchClient.post("/api/posts/company", formData);
 - 클라이언트 전용 로직(useState, useEffect 등)이 있으면 파일명에 `Client` 접미사 추가
   - 예: `DiagnosisClient.tsx`, `CompanyPostCreateClient.tsx`
 - Props 타입은 인터페이스로 정의 (`interface ComponentNameProps`)
+
+### UI 컴포넌트 작성 규칙 (디자인 시스템 준수)
+
+- **cn() 유틸 필수**: 모든 조건부 스타일링에 `cn()` 사용
+- **디자인 토큰 사용**: 하드코딩된 색상/spacing 금지, Tailwind 클래스로 토큰 참조
+- **variant/size 패턴**: 컴포넌트는 variant, size props로 시각적 변형 제공
+- **접근성 필수**: 시맨틱 HTML, focus:ring, aria-\* 속성
+- **반응형 필수**: 모바일 우선 (기본 → sm → md → lg → xl)
+
+```tsx
+// ✅ Good: 디자인 시스템 준수
+<button className={cn(
+  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors",
+  "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+  variant === "primary" && "bg-blue-600 text-white hover:bg-blue-700",
+  variant === "outline" && "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
+  size === "sm" && "px-3.5 py-1.5 text-[13px]",
+  size === "lg" && "px-7 py-3.5 text-[15px] rounded-xl",
+)}>
+
+// ❌ Bad: 하드코딩, 토큰 미준수
+<button className="bg-[#2563EB] text-white p-2">
+```
 
 ## 명령어
 
@@ -175,3 +230,5 @@ npm run check-all    # check + build 순차 실행
 - [React 19 릴리즈 노트](https://react.dev/blog/2024/12/05/react-19)
 - [TailwindCSS 4 문서](https://tailwindcss.com/docs)
 - [Feature-Sliced Design](https://feature-sliced.design/)
+
+- 디자인 레퍼런스: `file:///Users/apple/Downloads/workinkorea-redesign.html`
