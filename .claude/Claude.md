@@ -1,5 +1,29 @@
 # Work in Korea - 프로젝트 가이드
 
+## 🤖 Claude AI 작업 지침 및 참조 파일 (필독)
+
+이 프로젝트에서 코드를 작성하거나 수정할 때는, 아래 명시된 에이전트 역할과 스킬 패턴 파일들을 반드시 먼저 읽고 본 가이드의 규칙을 엄격히 준수하세요.
+
+### Agents
+
+- @agents/auth-specialist.md
+- @agents/code-reviewer.md
+- @agents/debugger.md
+- @agents/feature-architect.md
+- @agents/nextjs-specialist.md
+- @agents/planner.md
+- @agents/testing-specialist.md
+- @agents/ui-specialist.md
+
+### Skills (Patterns)
+
+- @skills/api-patterns/SKILL.md
+- @skills/auth-patterns/SKILL.md
+- @skills/design-patterns/SKILL.md
+- @skills/form-patterns/SKILL.md
+- @skills/fsd-patterns/SKILL.md
+- @skills/testing-patterns/SKILL.md
+
 ## 프로젝트 컨텍스트
 
 이 프로젝트는 외국인 근로자를 위한 한국 취업 지원 플랫폼입니다. Next.js 16 App Router, React 19, TypeScript를 기반으로 하며, 일반 회원(외국인 구직자)과 기업 회원을 위한 채용 공고, 이력서 관리, 자가 진단 시스템을 제공합니다. HttpOnly Cookie 기반 인증을 사용하고, Feature-Sliced Design 아키텍처를 따릅니다.
