@@ -41,7 +41,7 @@ export function Header({ type, isAuthenticated, onLogout }: HeaderProps) {
           <div className="flex items-center gap-1">
             {/* 검색 아이콘 */}
             <button
-              className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg"
+              className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none rounded-lg cursor-pointer"
               aria-label="검색"
             >
               <SearchIcon />
@@ -50,7 +50,7 @@ export function Header({ type, isAuthenticated, onLogout }: HeaderProps) {
             {/* 사람 아이콘 — 비인증: 로그인, 인증: MY홈 */}
             <Link
               href={isAuthenticated ? (type === 'homepage' ? '/user/profile' : '/company') : '/login-select'}
-              className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg"
+              className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none rounded-lg cursor-pointer"
               aria-label={isAuthenticated ? '마이페이지' : '로그인'}
             >
               <User size={20} />

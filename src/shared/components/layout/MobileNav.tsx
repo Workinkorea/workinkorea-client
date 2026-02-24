@@ -89,7 +89,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
       {/* 햄버거 버튼 */}
       <button
         onClick={() => setIsOpen(true)}
-        className="p-2 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="p-2 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none cursor-pointer"
         aria-label="메뉴 열기"
       >
         <Menu size={22} />
@@ -128,14 +128,14 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                 <Link
                   href="/"
                   onClick={close}
-                  className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-slate-50 transition-colors"
+                  className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-slate-50 transition-colors cursor-pointer"
                   aria-label="홈으로"
                 >
                   <Home size={20} />
                 </Link>
                 <button
                   onClick={close}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors focus:outline-none"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors focus:outline-none cursor-pointer"
                   aria-label="메뉴 닫기"
                 >
                   <X size={22} />
