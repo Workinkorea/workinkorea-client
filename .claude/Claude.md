@@ -58,6 +58,7 @@
 - **Card**: white bg, border slate-200, radius-lg / hover시 shadow-lg + border blue-200
 - **Badge**: radius-full, 11px 600 / blue, green, orange, red 변형
 - **Tab**: border-bottom 2px / active: blue-600 indicator
+- **아이콘 버튼 (Header 등)**: `focus:outline-none`만 사용, `focus:ring-*` 미적용
 
 ## 코드 스타일
 
@@ -89,6 +90,9 @@
 ```
 src/
   app/             # Next.js App Router (페이지 라우팅)
+    icon.svg       # favicon (Blue Design System blue-600 기반)
+    layout.tsx     # Root Layout
+    template.tsx   # 페이지 전환 애니메이션 (Framer Motion, 매 라우트마다 재마운트)
   features/        # 도메인별 기능 (auth, jobs, profile, resume, etc.)
     {feature}/
       components/  # 해당 기능 전용 컴포넌트
@@ -128,18 +132,28 @@ const result = await fetchClient.post("/api/posts/company", formData);
   - 예: `DiagnosisClient.tsx`, `CompanyPostCreateClient.tsx`
 - Props 타입은 인터페이스로 정의 (`interface ComponentNameProps`)
 
+### Header 구조
+
+- 모바일·데스크탑 동일 레이아웃: **로고 + [검색 아이콘] [User 아이콘] [햄버거 메뉴]**
+- 반응형 분기 없음 (`hidden sm:flex` 데스크탑 전용 nav 없음)
+- **User 아이콘**: 비인증 → `/login-select`, 인증 → `/user/profile`(개인) 또는 `/company`(기업)
+- 로그인/회원가입 텍스트 링크 없음, User 아이콘으로 단일화
+- `src/shared/components/layout/Header.tsx` (Server Component)
+- `src/shared/components/layout/MobileNav.tsx` (Client Component, 슬라이드 패널)
+
 ### UI 컴포넌트 작성 규칙 (디자인 시스템 준수)
 
 - **cn() 유틸 필수**: 모든 조건부 스타일링에 `cn()` 사용
 - **디자인 토큰 사용**: 하드코딩된 색상/spacing 금지, Tailwind 클래스로 토큰 참조
 - **variant/size 패턴**: 컴포넌트는 variant, size props로 시각적 변형 제공
-- **접근성 필수**: 시맨틱 HTML, focus:ring, aria-\* 속성
+- **접근성 필수**: 시맨틱 HTML, aria-\* 속성 / 일반 버튼은 focus:ring 사용, 아이콘 버튼은 focus:outline-none만
 - **반응형 필수**: 모바일 우선 (기본 → sm → md → lg → xl)
+- **cursor-pointer 필수**: 클릭 가능한 모든 `<button>`, `<Link>`, 이벤트 요소에 반드시 추가
 
 ```tsx
 // ✅ Good: 디자인 시스템 준수
 <button className={cn(
-  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors",
+  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors cursor-pointer",
   "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
   variant === "primary" && "bg-blue-600 text-white hover:bg-blue-700",
   variant === "outline" && "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
@@ -147,7 +161,12 @@ const result = await fetchClient.post("/api/posts/company", formData);
   size === "lg" && "px-7 py-3.5 text-[15px] rounded-xl",
 )}>
 
-// ❌ Bad: 하드코딩, 토큰 미준수
+// ✅ Good: 아이콘 버튼 (focus:ring 미사용)
+<button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none rounded-lg cursor-pointer">
+  <SearchIcon />
+</button>
+
+// ❌ Bad: 하드코딩, 토큰 미준수, cursor-pointer 누락
 <button className="bg-[#2563EB] text-white p-2">
 ```
 
@@ -213,6 +232,9 @@ npm run check-all    # check + build 순차 실행
 - `next.config.ts`에 엄격한 Content Security Policy 설정됨
 - 외부 스크립트/이미지 추가 시 CSP 헤더 수정 필요
 - `'unsafe-eval'`, `'unsafe-inline'`은 개발 모드 전용 (프로덕션에서 제거)
+- **외부 스크립트 URL은 반드시 `https://` 명시** — 프로토콜 상대 URL(`//`) 사용 금지 (CSP 위반 원인)
+  - ✅ `<Script src="https://t1.daumcdn.net/...">`
+  - ❌ `<Script src="//t1.daumcdn.net/...">`
 
 ### 5. 수정 금지 파일
 
@@ -235,6 +257,8 @@ npm run check-all    # check + build 순차 실행
 ### 8. 특수 API 엔드포인트
 
 - **Daum Postcode API**: `https://t1.daumcdn.net` (주소 검색, CSP에 등록됨)
+  - `src/app/layout.tsx`에서 `next/script`로 로드, URL은 반드시 `https://` 명시
+  - 컴포넌트: `src/shared/ui/DaumPostcodeSearch.tsx`
 - **MinIO 파일 업로드**: `src/shared/api/minio.ts` 사용
 
 ### 9. 디버깅
