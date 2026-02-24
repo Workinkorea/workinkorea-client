@@ -60,18 +60,32 @@
   --font-weight-extrabold: 800;
   --font-weight-black: 900;
 
-  /* ─── Primary (Blue) — Blue Design System ─── */
-  --color-primary-950: #172554;
-  --color-primary-900: #1E3A8A;
-  --color-primary-800: #1E40AF;
-  --color-primary-700: #1D4ED8;
-  --color-primary-600: #2563EB;
-  --color-primary-500: #3B82F6;
-  --color-primary-400: #60A5FA;
-  --color-primary-300: #93C5FD;
-  --color-primary-200: #BFDBFE;
-  --color-primary-100: #DBEAFE;
-  --color-primary-50:  #EFF6FF;
+  /* ─── Primary (Indigo) — Blue-Violet Design System ─── */
+  --color-primary-950: #1E1B4B;
+  --color-primary-900: #312E81;
+  --color-primary-800: #3730A3;
+  --color-primary-700: #4338CA;
+  --color-primary-600: #4F46E5;
+  --color-primary-500: #6366F1;
+  --color-primary-400: #818CF8;
+  --color-primary-300: #A5B4FC;
+  --color-primary-200: #C7D2FE;
+  --color-primary-100: #E0E7FF;
+  --color-primary-50:  #EEF2FF;
+
+  /* ─── Tailwind blue-* → Indigo 팔레트 오버라이드 ─── */
+  /* bg-blue-*, text-blue-*, border-blue-* 등 모든 blue 클래스에 자동 적용 */
+  --color-blue-950: #1E1B4B;
+  --color-blue-900: #312E81;
+  --color-blue-800: #3730A3;
+  --color-blue-700: #4338CA;
+  --color-blue-600: #4F46E5;
+  --color-blue-500: #6366F1;
+  --color-blue-400: #818CF8;
+  --color-blue-300: #A5B4FC;
+  --color-blue-200: #C7D2FE;
+  --color-blue-100: #E0E7FF;
+  --color-blue-50:  #EEF2FF;
 
   /* ─── Neutral (Slate) — 텍스트 / 배경 / 보더 ─── */
   --color-label-900: #0F172A;   /* slate-900 — 제목 */
@@ -109,8 +123,8 @@
   --color-status-caution-bg: #FFFBEB; /* amber-50 */
   --color-status-error: #EF4444;     /* red-500 */
   --color-status-error-bg: #FEF2F2;  /* red-50 */
-  --color-status-info: #3B82F6;      /* blue-500 */
-  --color-status-info-bg: #EFF6FF;   /* blue-50 */
+  --color-status-info: #6366F1;      /* indigo-500 */
+  --color-status-info-bg: #EEF2FF;   /* indigo-50 */
   --color-status-disable: #CBD5E1;   /* slate-300 */
 
   /* ─── Material / Overlay ─── */
@@ -125,7 +139,7 @@
   --shadow-lg:   0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
   --shadow-xl:   0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
   --shadow-heavy: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-  --shadow-blue: 0 4px 14px rgba(37, 99, 235, 0.25);
+  --shadow-blue: 0 4px 14px rgba(79, 70, 229, 0.25);
 }
 
 /* ─── Global Reset ─── */
