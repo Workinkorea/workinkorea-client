@@ -246,10 +246,10 @@ const CompanyProfileEditClient = () => {
               className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors mb-4"
             >
               <ArrowLeft size={20} />
-              <span className="text-body-3">돌아가기</span>
+              <span className="text-sm">돌아가기</span>
             </button>
-            <h1 className="text-[20px] md:text-title-2 font-bold text-slate-900">기업 프로필 수정</h1>
-            <p className="text-body-3 text-slate-500 mt-1">
+            <h1 className="text-[20px] md:text-[28px] font-bold text-slate-900">기업 프로필 수정</h1>
+            <p className="text-sm text-slate-500 mt-1">
               기업 정보를 수정하세요
             </p>
           </motion.div>
@@ -285,17 +285,17 @@ const CompanyProfileEditClient = () => {
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="flex-1 px-6 py-3 border border-slate-200 rounded-lg text-body-3 font-medium text-slate-700 hover:bg-slate-100 transition-colors"
+                className="flex-1 px-6 py-3 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 취소
               </button>
               <button
                 type="submit"
                 disabled={updateProfileMutation.isPending || !hasChanges}
-                className={`flex-1 px-6 py-3 rounded-lg text-body-3 font-medium transition-colors flex items-center justify-center gap-2 ${
+                className={`flex-1 px-6 py-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                   updateProfileMutation.isPending || !hasChanges
                     ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
-                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                 }`}
                 title={!hasChanges ? '변경된 내용이 없습니다' : ''}
               >
@@ -317,7 +317,7 @@ const CompanyProfileEditClient = () => {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-caption-2 text-amber-600 text-center"
+                className="text-[11px] text-amber-600 text-center"
               >
                 * 저장되지 않은 변경사항이 있습니다.
               </motion.p>

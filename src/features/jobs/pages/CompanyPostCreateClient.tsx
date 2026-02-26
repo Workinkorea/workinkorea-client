@@ -51,7 +51,7 @@ function CompanyPostCreateClient() {
           onLogout={handleLogout}
         />
         <div className="flex justify-center items-center h-screen">
-          <div className="text-slate-500">로딩 중...</div>
+          <div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" />
         </div>
       </Layout>
     );

@@ -26,7 +26,7 @@ export default function NotFound() {
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Link
               href="/"
-              className="inline-block w-full px-6 py-3 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 transition-colors"
+              className="inline-block w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
             >
               홈으로 돌아가기
             </Link>
@@ -35,7 +35,7 @@ export default function NotFound() {
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <button
               onClick={() => window.history.back()}
-              className="w-full px-6 py-3 border border-line-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors cursor-pointer"
+              className="w-full px-6 py-3 border border-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-colors cursor-pointer"
             >
               이전 페이지로
             </button>

@@ -21,10 +21,10 @@ export default function LoginContent() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-title-2 text-slate-900 mb-4">
+          <h1 className="text-[28px] text-slate-900 mb-4">
             개인 로그인
           </h1>
-          <p className="text-body-3 text-slate-600">
+          <p className="text-sm text-slate-600">
             Google 계정으로 간편하게 로그인하세요
           </p>
         </motion.div>
@@ -77,7 +77,7 @@ export default function LoginContent() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <p className="text-body-3 text-slate-600">
+          <p className="text-sm text-slate-600">
             아직 회원이 아니신가요?{' '}
             <a href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
               회원가입

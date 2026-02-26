@@ -69,10 +69,10 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
       transition={{ duration: 0.3 }}
     >
       <div>
-        <h2 className="text-title-3 font-bold text-slate-900 mb-2">
+        <h2 className="text-xl font-bold text-slate-900 mb-2">
           취업 선호도 💡
         </h2>
-        <p className="text-body-2 text-slate-500 mb-6">
+        <p className="text-sm text-slate-500 mb-6">
           당신이 원하는 조건을 알려주세요
         </p>
       </div>
@@ -102,7 +102,7 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                   onChange={(e) => field.onChange(e.target.value)}
                   className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-body-2 text-slate-700">{salary.label}</span>
+                <span className="text-sm text-slate-700">{salary.label}</span>
               </label>
             ))}
           </div>
@@ -134,7 +134,7 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                   onChange={(e) => field.onChange(e.target.value)}
                   className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-body-2 text-slate-700">{type.label}</span>
+                <span className="text-sm text-slate-700">{type.label}</span>
               </label>
             ))}
           </div>
@@ -168,7 +168,7 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                 />
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{size.emoji}</span>
-                  <span className="text-body-2 text-slate-700">{size.label}</span>
+                  <span className="text-sm text-slate-700">{size.label}</span>
                 </div>
               </label>
             ))}
@@ -201,7 +201,7 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                   onChange={(e) => field.onChange(e.target.value)}
                   className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-body-2 text-slate-700">{date.label}</span>
+                <span className="text-sm text-slate-700">{date.label}</span>
               </label>
             ))}
           </div>
@@ -213,7 +213,7 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
         <motion.button
           type="button"
           onClick={onBack}
-          className="flex-1 py-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-body-1 rounded-lg transition-all cursor-pointer"
+          className="flex-1 py-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-base rounded-lg transition-all cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -221,7 +221,7 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
         </motion.button>
         <motion.button
           type="submit"
-          className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-body-1 rounded-lg transition-all shadow-sm hover:shadow-md cursor-pointer"
+          className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base rounded-lg transition-all shadow-sm hover:shadow-md cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >

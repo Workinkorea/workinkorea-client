@@ -15,6 +15,7 @@ import { DiagnosisData } from '@/features/diagnosis/store/diagnosisStore';
 import { diagnosisApi } from '@/features/diagnosis/api/diagnosisApi';
 import { DiagnosisAnswerRequest } from '@/shared/types/api';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const TOTAL_STEPS = 4;
 
@@ -83,8 +84,7 @@ const DiagnosisClient = () => {
       // Redirect to result page with ID
       router.push(`/diagnosis/result?id=${response.id}`);
     } catch (error) {
-      console.error('Failed to submit diagnosis:', error);
-      alert('진단 결과 제출에 실패했습니다. 다시 시도해주세요.');
+      toast.error('진단 결과 제출에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsSubmitting(false);
     }
@@ -110,10 +110,10 @@ const DiagnosisClient = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <h1 className="text-[20px] md:text-title-2 font-bold text-slate-900 mb-2">
+            <h1 className="text-[20px] md:text-[28px] font-bold text-slate-900 mb-2">
               한국 취업 자가진단
             </h1>
-            <p className="text-body-2 text-slate-500">
+            <p className="text-sm text-slate-500">
               당신에게 딱 맞는 직업을 찾기 위한 몇 가지 질문에 답해주세요
             </p>
           </motion.div>

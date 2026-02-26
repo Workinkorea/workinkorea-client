@@ -332,7 +332,7 @@ function ResumeEditor({
                   id={fieldId}
                   type="text"
                   placeholder="예: 프론트엔드 개발자 이력서"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               )}
             />
@@ -381,7 +381,7 @@ function ResumeEditor({
                     disabled={uploadingImage}
                     className="hidden"
                   />
-                  <p className="text-caption-2 text-slate-500 mt-2">
+                  <p className="text-[11px] text-slate-500 mt-2">
                     JPG, PNG, GIF 파일 (최대 5MB)
                   </p>
                 </div>

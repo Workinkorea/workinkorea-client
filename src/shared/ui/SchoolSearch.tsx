@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
 import { KOREAN_SCHOOLS } from '@/shared/constants/schools';
 
@@ -82,26 +82,26 @@ const SchoolSearch: React.FC<SchoolSearchProps> = ({
           onChange={(e) => handleSearch(e.target.value)}
           onFocus={() => searchTerm.length >= 2 && setIsOpen(true)}
           placeholder={placeholder}
-          className={`w-full px-3 py-2 pr-20 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500 ${className}`}
+          className={`w-full px-3 py-2 pr-20 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
         />
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
           {searchTerm && (
             <button
               type="button"
               onClick={handleClear}
-              className="p-1 text-label-400 hover:text-label-600 rounded cursor-pointer"
+              className="p-1 text-slate-400 hover:text-slate-600 rounded cursor-pointer"
             >
               <X size={16} />
             </button>
           )}
-          <Search size={16} className="text-label-400" />
+          <Search size={16} className="text-slate-400" />
         </div>
       </div>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-2 bg-white border border-line-300 rounded-lg shadow-strong max-h-60 overflow-y-auto">
+        <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-lg shadow-md max-h-60 overflow-y-auto">
           {loading ? (
-            <div className="p-4 text-center text-label-500 text-caption-1">
+            <div className="p-4 text-center text-slate-500 text-xs">
               검색 중...
             </div>
           ) : schools.length > 0 ? (
@@ -110,14 +110,14 @@ const SchoolSearch: React.FC<SchoolSearchProps> = ({
                 <li
                   key={index}
                   onClick={() => handleSelect(school)}
-                  className="px-4 py-2 hover:bg-primary-50 cursor-pointer text-body-3 text-label-900 border-b border-line-200 last:border-b-0"
+                  className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm text-slate-900 border-b border-slate-100 last:border-b-0"
                 >
                   {school}
                 </li>
               ))}
             </ul>
           ) : (
-            <div className="p-4 text-center text-label-500 text-caption-1">
+            <div className="p-4 text-center text-slate-500 text-xs">
               검색 결과가 없습니다
             </div>
           )}

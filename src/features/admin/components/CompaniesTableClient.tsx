@@ -24,7 +24,6 @@ export default function CompaniesTableClient({ initialCompanies }: CompaniesTabl
       const data = await adminApi.getCompanies(skip, limit);
       setCompanies(data);
     } catch (error) {
-      console.error('Failed to fetch companies:', error);
       toast.error('기업 목록을 불러오는데 실패했습니다.');
     }
   }, [page, limit]);
@@ -37,8 +36,7 @@ export default function CompaniesTableClient({ initialCompanies }: CompaniesTabl
       setShowModal(false);
       fetchCompanies();
     },
-    onError: (error) => {
-      console.error('Failed to save company:', error);
+    onError: () => {
       toast.error('기업 저장에 실패했습니다.');
     },
   });
@@ -49,8 +47,7 @@ export default function CompaniesTableClient({ initialCompanies }: CompaniesTabl
       toast.success('기업이 삭제되었습니다.');
       fetchCompanies();
     },
-    onError: (error) => {
-      console.error('Failed to delete company:', error);
+    onError: () => {
       toast.error('기업 삭제에 실패했습니다.');
     },
   });
@@ -81,39 +78,39 @@ export default function CompaniesTableClient({ initialCompanies }: CompaniesTabl
   return (
     <>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-slate-200">
+          <thead className="bg-slate-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                 ID
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                 사업자번호
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                 회사명
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
                 작업
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-slate-200">
             {companies.map((company) => (
-              <tr key={company.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <tr key={company.id} className="hover:bg-slate-50">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
                   {company.id}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
                   {company.company_number}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 font-medium">
                   {company.company_name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button
                     onClick={() => openEditModal(company)}
-                    className="text-green-600 hover:text-green-900 mr-4 cursor-pointer"
+                    className="text-blue-600 hover:text-blue-700 mr-4 cursor-pointer"
                   >
                     수정
                   </button>
@@ -132,21 +129,21 @@ export default function CompaniesTableClient({ initialCompanies }: CompaniesTabl
 
       {/* Pagination */}
       <div className="flex items-center justify-between mt-6">
-        <div className="text-sm text-gray-700">
+        <div className="text-sm text-slate-700">
           페이지 {page} (현재 {companies.length}개 표시)
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-slate-700 border border-slate-300 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             이전
           </button>
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={companies.length < limit}
-            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-slate-700 border border-slate-300 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             다음
           </button>
@@ -157,22 +154,22 @@ export default function CompaniesTableClient({ initialCompanies }: CompaniesTabl
       {showModal && editingCompany && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">기업 수정</h3>
+            <h3 className="text-lg font-medium text-slate-900 mb-4">기업 수정</h3>
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
                     사업자번호
                   </label>
                   <input
                     type="text"
                     disabled
                     value={editingCompany.company_number}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-gray-100"
+                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm bg-slate-100"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
                     회사명
                   </label>
                   <input
@@ -180,7 +177,7 @@ export default function CompaniesTableClient({ initialCompanies }: CompaniesTabl
                     required
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                   />
                 </div>
               </div>
@@ -188,14 +185,14 @@ export default function CompaniesTableClient({ initialCompanies }: CompaniesTabl
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 cursor-pointer"
+                  className="flex-1 rounded-md bg-white px-4 py-2 text-sm font-medium text-slate-700 border border-slate-300 hover:bg-slate-50 cursor-pointer"
                 >
                   취소
                 </button>
                 <button
                   type="submit"
                   disabled={updateMutation.isPending}
-                  className="flex-1 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-500 cursor-pointer disabled:opacity-50"
+                  className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 cursor-pointer disabled:opacity-50"
                 >
                   {updateMutation.isPending ? '처리 중...' : '수정'}
                 </button>

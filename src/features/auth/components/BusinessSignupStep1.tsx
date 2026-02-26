@@ -106,10 +106,10 @@ export default function BusinessSignupStep1({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-display-2 mobile:text-title-2 text-slate-900 text-center mb-4 leading-tight">
+          <h1 className="text-[28px] sm:text-[36px] text-slate-900 text-center mb-4 leading-tight">
             <p>회원가입 정보동의</p>
           </h1>
-          <div className="flex items-center justify-between text-body-2 mobile:text-body-3">
+          <div className="flex items-center justify-between text-sm">
             <div />
             <span className="text-blue-600">{progressPercentage}%</span>
           </div>
@@ -148,7 +148,7 @@ export default function BusinessSignupStep1({
                 )}
               </div>
             </div>
-            <span className="ml-3 text-title-3 text-slate-900">전체 동의</span>
+            <span className="ml-3 text-xl text-slate-900">전체 동의</span>
           </label>
         </motion.div>
 
@@ -183,7 +183,7 @@ export default function BusinessSignupStep1({
                   )}
                 </div>
               </div>
-              <span className="ml-3 text-body-1 text-slate-700">
+              <span className="ml-3 text-base text-slate-700">
                 서비스 이용약관 동의 (필수)
               </span>
             </label>
@@ -225,7 +225,7 @@ export default function BusinessSignupStep1({
                   )}
                 </div>
               </div>
-              <span className="ml-3 text-body-1 text-slate-700">
+              <span className="ml-3 text-base text-slate-700">
                 개인(신용)정보 수집 및 이용동의 (필수)
               </span>
             </label>
@@ -267,7 +267,7 @@ export default function BusinessSignupStep1({
                   )}
                 </div>
               </div>
-              <span className="ml-3 text-body-1 text-slate-700">
+              <span className="ml-3 text-base text-slate-700">
                 개인(신용)정보 제공 및 위탁동의 (필수)
               </span>
             </label>
@@ -309,7 +309,7 @@ export default function BusinessSignupStep1({
                   )}
                 </div>
               </div>
-              <span className="ml-3 text-body-1 text-slate-700">
+              <span className="ml-3 text-base text-slate-700">
                 개인(신용)정보 조회 동의 (필수)
               </span>
             </label>
@@ -351,7 +351,7 @@ export default function BusinessSignupStep1({
                   )}
                 </div>
               </div>
-              <span className="ml-3 text-body-1 text-slate-700">
+              <span className="ml-3 text-base text-slate-700">
                 마케팅 활용 및 광고성 정보 수신동의
               </span>
             </label>

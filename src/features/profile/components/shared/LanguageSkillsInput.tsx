@@ -178,7 +178,7 @@ function LanguageSkillsInput({
                   {...fieldProps}
                   id={fieldId}
                   className={cn(
-                    'w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm',
+                    'w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm',
                     'transition-colors focus:ring-2 focus:border-transparent',
                     'border-slate-200 focus:ring-blue-500',
                     errors?.language_skills?.[index]?.level &&

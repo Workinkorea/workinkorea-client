@@ -29,13 +29,8 @@ function CompanyJobsClient() {
   const { data: posts, isLoading: postsLoading, error: postsError } = useQuery({
     queryKey: ['myCompanyPosts'],
     queryFn: async () => {
-      try {
-        const response = await postsApi.getMyCompanyPosts();
-        return response.company_posts;
-      } catch (error) {
-        console.error('Failed to fetch company posts:', error);
-        throw error;
-      }
+      const response = await postsApi.getMyCompanyPosts();
+      return response.company_posts;
     },
     retry: 1,
   });
@@ -53,7 +48,7 @@ function CompanyJobsClient() {
         <div className="min-h-screen bg-slate-50 py-8">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-center h-64">
-              <div className="text-slate-500">로딩 중...</div>
+              <div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" />
             </div>
           </div>
         </div>

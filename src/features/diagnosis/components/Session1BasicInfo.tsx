@@ -117,7 +117,7 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
               <select
                 {...field}
                 id={fieldId}
-                className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-body-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+                className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
               >
                 <option value="">선택해주세요</option>
                 {COUNTRIES.map((country) => (
@@ -198,7 +198,7 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
       {/* 다음 버튼 */}
       <motion.button
         type="submit"
-        className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-body-1 rounded-lg transition-all shadow-sm hover:shadow-md cursor-pointer"
+        className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base rounded-lg transition-all shadow-sm hover:shadow-md cursor-pointer"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >

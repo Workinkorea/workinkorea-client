@@ -223,7 +223,7 @@ function BasicInfoSection({
             {...field}
             id={fieldId}
             className={cn(
-              'w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm',
+              'w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm',
               'transition-colors focus:ring-2 focus:border-transparent',
               'border-slate-200 focus:ring-blue-500',
               errors.career && 'border-red-500 focus:ring-red-500'
@@ -292,7 +292,7 @@ function BasicInfoSection({
             value={field.value ?? ''}
             onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
             className={cn(
-              'w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm',
+              'w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm',
               'transition-colors focus:ring-2 focus:border-transparent',
               'border-slate-200 focus:ring-blue-500',
               errors.position_id && 'border-red-500 focus:ring-red-500'
@@ -327,7 +327,7 @@ function BasicInfoSection({
             value={field.value ?? 122}
             onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 122)}
             className={cn(
-              'w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm',
+              'w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm',
               'transition-colors focus:ring-2 focus:border-transparent',
               'border-slate-200 focus:ring-blue-500',
               errors.country_id && 'border-red-500 focus:ring-red-500'

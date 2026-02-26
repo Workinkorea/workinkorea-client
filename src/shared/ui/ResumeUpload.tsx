@@ -72,8 +72,8 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({
       <motion.div
         className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${
           dragActive
-            ? 'border-primary-500 bg-primary-50'
-            : 'border-line-300 hover:border-primary-300 hover:bg-primary-25'
+            ? 'border-blue-500 bg-blue-50'
+            : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
         } ${isUploading ? 'pointer-events-none opacity-50' : ''}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -93,34 +93,34 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({
 
         {isUploading ? (
           <div className="space-y-3">
-            <div className="w-12 h-12 mx-auto bg-primary-100 rounded-full flex items-center justify-center">
-              <div className="animate-spin w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full" />
+            <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+              <div className="animate-spin w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full" />
             </div>
-            <div className="text-body-3 text-label-700">업로드 중...</div>
+            <div className="text-sm text-slate-700">업로드 중...</div>
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="w-16 h-16 mx-auto bg-primary-100 rounded-full flex items-center justify-center">
-              <Upload size={24} className="text-primary-600" />
+            <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+              <Upload size={24} className="text-blue-600" />
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-body-2 font-semibold text-label-900">
+              <h3 className="text-sm font-semibold text-slate-900">
                 기존 이력서 파일 업로드
               </h3>
-              <p className="text-body-3 text-label-600">
+              <p className="text-sm text-slate-600">
                 이미 작성된 이력서 파일을 업로드하여 관리하세요
               </p>
             </div>
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
             >
               파일 선택
             </button>
 
-            <div className="text-caption-2 text-label-500">
+            <div className="text-[11px] text-slate-500">
               지원 형식: PDF, DOC, DOCX (최대 10MB)
             </div>
           </div>
@@ -137,7 +137,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({
           transition={{ duration: 0.3 }}
         >
           <AlertCircle size={16} className="text-red-600" />
-          <span className="text-body-3 text-red-700">{error}</span>
+          <span className="text-sm text-red-700">{error}</span>
         </motion.div>
       )}
 

@@ -22,14 +22,14 @@ export const BasicInfoSection = ({
 }: BasicInfoSectionProps) => {
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-title-4 font-semibold text-slate-900 mb-4 flex items-center gap-2">
+      <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
         <Building size={20} />
         기본 정보
       </h2>
       <div className="space-y-4">
         {/* 업종 */}
         <div>
-          <label htmlFor="industry_type" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center">
+          <label htmlFor="industry_type" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
             업종 <span className="text-red-500 text-lg ml-1">*</span>
           </label>
           <input
@@ -43,10 +43,10 @@ export const BasicInfoSection = ({
             placeholder="예: IT/소프트웨어, 제조, 유통 등"
           />
           {errors.industry_type && (
-            <p className="mt-1 text-caption-2 text-red-500">{errors.industry_type}</p>
+            <p className="mt-1 text-[11px] text-red-500">{errors.industry_type}</p>
           )}
           {!errors.industry_type && touchedFields.industry_type && formData.industry_type && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
@@ -54,7 +54,7 @@ export const BasicInfoSection = ({
 
         {/* 기업 형태 */}
         <div>
-          <label htmlFor="company_type" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center">
+          <label htmlFor="company_type" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
             기업 형태 <span className="text-red-500 text-lg ml-1">*</span>
           </label>
           <select
@@ -72,10 +72,10 @@ export const BasicInfoSection = ({
             <option value="외국계기업">외국계기업</option>
           </select>
           {errors.company_type && (
-            <p className="mt-1 text-caption-2 text-red-500">{errors.company_type}</p>
+            <p className="mt-1 text-[11px] text-red-500">{errors.company_type}</p>
           )}
           {!errors.company_type && touchedFields.company_type && formData.company_type && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
@@ -83,7 +83,7 @@ export const BasicInfoSection = ({
 
         {/* 국가 */}
         <div>
-          <label htmlFor="country_id" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center">
+          <label htmlFor="country_id" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
             국가 <span className="text-red-500 text-lg ml-1">*</span>
           </label>
           <select
@@ -102,10 +102,10 @@ export const BasicInfoSection = ({
             ))}
           </select>
           {errors.country_id && (
-            <p className="mt-1 text-caption-2 text-red-500">{errors.country_id}</p>
+            <p className="mt-1 text-[11px] text-red-500">{errors.country_id}</p>
           )}
           {!errors.country_id && touchedFields.country_id && formData.country_id > 0 && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
@@ -113,7 +113,7 @@ export const BasicInfoSection = ({
 
         {/* 직무 */}
         <div>
-          <label htmlFor="position_id" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center">
+          <label htmlFor="position_id" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
             직무 <span className="text-red-500 text-lg ml-1">*</span>
           </label>
           <select
@@ -132,10 +132,10 @@ export const BasicInfoSection = ({
             ))}
           </select>
           {errors.position_id && (
-            <p className="mt-1 text-caption-2 text-red-500">{errors.position_id}</p>
+            <p className="mt-1 text-[11px] text-red-500">{errors.position_id}</p>
           )}
           {!errors.position_id && touchedFields.position_id && formData.position_id > 0 && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
@@ -144,7 +144,7 @@ export const BasicInfoSection = ({
         {/* 직원 수 & 설립일 */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="employee_count" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center gap-2">
+            <label htmlFor="employee_count" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
               <Users size={16} />
               직원 수 <span className="text-red-500 text-lg ml-1">*</span>
             </label>
@@ -165,17 +165,17 @@ export const BasicInfoSection = ({
               <option value="1000">500명 이상</option>
             </select>
             {errors.employee_count && (
-              <p className="mt-1 text-caption-2 text-red-500">{errors.employee_count}</p>
+              <p className="mt-1 text-[11px] text-red-500">{errors.employee_count}</p>
             )}
             {!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 && (
-              <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+              <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
                 <span className="text-emerald-500">✓</span> 입력 완료
               </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="establishment_date" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center gap-2">
+            <label htmlFor="establishment_date" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
               <Calendar size={16} />
               설립일 <span className="text-red-500 text-lg ml-1">*</span>
             </label>
@@ -190,10 +190,10 @@ export const BasicInfoSection = ({
               className={`w-full px-4 py-2 border ${errors.establishment_date ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date ? 'border-emerald-500' : ''}`}
             />
             {errors.establishment_date && (
-              <p className="mt-1 text-caption-2 text-red-500">{errors.establishment_date}</p>
+              <p className="mt-1 text-[11px] text-red-500">{errors.establishment_date}</p>
             )}
             {!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date && (
-              <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+              <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
                 <span className="text-emerald-500">✓</span> 입력 완료
               </p>
             )}
@@ -202,9 +202,9 @@ export const BasicInfoSection = ({
 
         {/* 보험 */}
         <div>
-          <label htmlFor="insurance" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="insurance" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
             <FileText size={16} />
-            보험 <span className="text-caption-2 px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
+            보험 <span className="text-[11px] px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
           </label>
           <input
             type="text"
@@ -216,12 +216,12 @@ export const BasicInfoSection = ({
             placeholder="예: 4대보험 완비, 산재보험 등"
           />
           {formData.insurance && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
           {!formData.insurance && (
-            <p className="mt-1 text-caption-2 text-slate-500">제공하는 보험 정보를 입력해주세요.</p>
+            <p className="mt-1 text-[11px] text-slate-500">제공하는 보험 정보를 입력해주세요.</p>
           )}
         </div>
       </div>

@@ -43,7 +43,6 @@ const SelfDiagnosisClient = () => {
       router.push('/');
     } catch (error) {
       toast.error('자가진단 제출 중 오류가 발생했습니다.');
-      console.error('Self-diagnosis error:', error);
     }
   };
 
@@ -62,10 +61,10 @@ const SelfDiagnosisClient = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-[20px] md:text-title-2 font-bold text-slate-900 mb-4">
+            <h1 className="text-[20px] md:text-[28px] font-bold text-slate-900 mb-4">
               자가진단
             </h1>
-            <p className="text-body-2 text-slate-500 mb-8">
+            <p className="text-sm text-slate-500 mb-8">
               아래 정보를 입력하시면 맞춤형 직업 정보를 제공해드립니다.
             </p>
           </motion.div>
@@ -93,7 +92,7 @@ const SelfDiagnosisClient = () => {
                         onChange={(e) => field.onChange(e.target.value)}
                         className="w-4 h-4 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       />
-                      <span className="text-body-2 text-slate-700">남성</span>
+                      <span className="text-sm text-slate-700">남성</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -103,7 +102,7 @@ const SelfDiagnosisClient = () => {
                         onChange={(e) => field.onChange(e.target.value)}
                         className="w-4 h-4 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       />
-                      <span className="text-body-2 text-slate-700">여성</span>
+                      <span className="text-sm text-slate-700">여성</span>
                     </label>
                   </div>
                 )}
@@ -129,7 +128,7 @@ const SelfDiagnosisClient = () => {
                           key={level.value}
                           type="button"
                           onClick={() => field.onChange(level.value)}
-                          className={`px-6 py-3 rounded-lg font-medium text-body-2 transition-all border-2 cursor-pointer ${
+                          className={`px-6 py-3 rounded-lg font-medium text-sm transition-all border-2 cursor-pointer ${
                             field.value === level.value
                               ? 'bg-blue-500 text-white border-blue-500 shadow-md'
                               : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300 hover:bg-blue-50'
@@ -171,9 +170,9 @@ const SelfDiagnosisClient = () => {
                         const value = e.target.value.replace(/\D/g, '');
                         field.onChange(value);
                       }}
-                      className="w-full border border-slate-200 rounded-lg px-4 py-3 text-body-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-body-2 text-slate-500">
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-slate-500">
                       만원
                     </span>
                   </div>
@@ -184,7 +183,7 @@ const SelfDiagnosisClient = () => {
               <motion.button
                 type="submit"
                 disabled={!isValid}
-                className={`w-full py-4 rounded-lg font-semibold text-body-1 transition-all ${
+                className={`w-full py-4 rounded-lg font-semibold text-base transition-all ${
                   isValid
                     ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer shadow-sm hover:shadow-md'
                     : 'bg-slate-100 text-slate-400 cursor-not-allowed'

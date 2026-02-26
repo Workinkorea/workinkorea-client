@@ -1,4 +1,4 @@
-import { fetchClient, fetchAPI, API_BASE_URL, SERVER_API_URL } from '@/shared/api/fetchClient';
+import { fetchClient, fetchAPI, FetchError, API_BASE_URL, SERVER_API_URL } from '@/shared/api/fetchClient';
 import type {
   EmailVerificationResponse,
   LoginRequest,
@@ -101,6 +101,7 @@ export const authApi = {
    */
   async companyLogin(data: CompanyLoginRequest): Promise<string> {
     const formData = new URLSearchParams();
+    formData.append('grant_type', 'password');
     formData.append('username', data.username);
     formData.append('password', data.password);
 
@@ -117,13 +118,40 @@ export const authApi = {
       credentials: 'include',
     });
 
-    const responseData = await response.json() as CompanyLoginResponse;
+    const responseData = await response.json().catch(() => ({})) as CompanyLoginResponse;
 
-    if (responseData && responseData.url) {
-      return responseData.url;
+    if (!response.ok) {
+      throw new FetchError(
+        (responseData as Record<string, string>).detail ||
+        (responseData as Record<string, string>).error ||
+        (responseData as Record<string, string>).message ||
+        response.statusText,
+        response.status,
+        responseData
+      );
     }
 
-    throw new Error('로그인 응답에 url이 없습니다.');
+    if (responseData && responseData.url) {
+      const url = responseData.url;
+
+      // 백엔드가 200이지만 에러 URL을 반환하는 경우 처리
+      // 예: /login?status=error&message=...
+      if (url.includes('status=error')) {
+        const query = url.split('?')[1] || '';
+        const params = new URLSearchParams(query);
+        const rawMessage = decodeURIComponent(params.get('message') || '');
+
+        const message = rawMessage.toLowerCase().includes('incorrect') || rawMessage.toLowerCase().includes('wrong')
+          ? '이메일 또는 비밀번호가 올바르지 않습니다.'
+          : rawMessage || '로그인에 실패했습니다.';
+
+        throw new FetchError(message, 401, responseData);
+      }
+
+      return url;
+    }
+
+    return '/company';
   },
 
   /**

@@ -21,20 +21,20 @@ export const CompanyInfoSection = ({
 }: CompanyInfoSectionProps) => {
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-title-4 font-semibold text-slate-900 mb-4 flex items-center gap-2">
+      <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
         <Building2 size={20} className="text-blue-500" />
         담당 기업 정보
       </h2>
-      <p className="text-body-3 text-slate-500 mb-6">
+      <p className="text-sm text-slate-500 mb-6">
         기업의 기본 정보를 입력해주세요
       </p>
 
       <div className="space-y-4">
         {/* 사업자등록번호 */}
         <div>
-          <label htmlFor="company_number" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="company_number" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
             <Hash size={16} />
-            사업자등록번호 <span className="text-caption-2 px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
+            사업자등록번호 <span className="text-[11px] px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
           </label>
           <input
             type="text"
@@ -48,7 +48,7 @@ export const CompanyInfoSection = ({
             maxLength={12}
           />
           {formData.company_number && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
@@ -56,9 +56,9 @@ export const CompanyInfoSection = ({
 
         {/* 대표자명 */}
         <div>
-          <label htmlFor="representative_name" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="representative_name" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
             <User size={16} />
-            대표자명 <span className="text-caption-2 px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
+            대표자명 <span className="text-[11px] px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
           </label>
           <input
             type="text"
@@ -71,7 +71,7 @@ export const CompanyInfoSection = ({
             placeholder="홍길동"
           />
           {formData.representative_name && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
@@ -79,7 +79,7 @@ export const CompanyInfoSection = ({
 
         {/* 업종 */}
         <div>
-          <label htmlFor="industry_type" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center">
+          <label htmlFor="industry_type" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
             업종 <span className="text-red-500 text-lg ml-1">*</span>
           </label>
           <input
@@ -93,10 +93,10 @@ export const CompanyInfoSection = ({
             placeholder="예: IT/소프트웨어, 제조, 유통 등"
           />
           {errors.industry_type && (
-            <p className="mt-1 text-caption-2 text-red-500">{errors.industry_type}</p>
+            <p className="mt-1 text-[11px] text-red-500">{errors.industry_type}</p>
           )}
           {!errors.industry_type && touchedFields.industry_type && formData.industry_type && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
@@ -104,7 +104,7 @@ export const CompanyInfoSection = ({
 
         {/* 기업 형태 */}
         <div>
-          <label htmlFor="company_type" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center">
+          <label htmlFor="company_type" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
             기업 형태 <span className="text-red-500 text-lg ml-1">*</span>
           </label>
           <select
@@ -122,10 +122,10 @@ export const CompanyInfoSection = ({
             <option value="외국계기업">외국계기업</option>
           </select>
           {errors.company_type && (
-            <p className="mt-1 text-caption-2 text-red-500">{errors.company_type}</p>
+            <p className="mt-1 text-[11px] text-red-500">{errors.company_type}</p>
           )}
           {!errors.company_type && touchedFields.company_type && formData.company_type && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
@@ -134,7 +134,7 @@ export const CompanyInfoSection = ({
         {/* 직원 수 & 설립일 */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="employee_count" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center gap-2">
+            <label htmlFor="employee_count" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
               <Users size={16} />
               직원 수 <span className="text-red-500 text-lg ml-1">*</span>
             </label>
@@ -155,17 +155,17 @@ export const CompanyInfoSection = ({
               <option value="1000">500명 이상</option>
             </select>
             {errors.employee_count && (
-              <p className="mt-1 text-caption-2 text-red-500">{errors.employee_count}</p>
+              <p className="mt-1 text-[11px] text-red-500">{errors.employee_count}</p>
             )}
             {!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 && (
-              <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+              <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
                 <span className="text-emerald-500">✓</span> 입력 완료
               </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="establishment_date" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center gap-2">
+            <label htmlFor="establishment_date" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
               <Calendar size={16} />
               설립일 <span className="text-red-500 text-lg ml-1">*</span>
             </label>
@@ -180,10 +180,10 @@ export const CompanyInfoSection = ({
               className={`w-full px-4 py-2 border ${errors.establishment_date ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date ? 'border-emerald-500' : ''}`}
             />
             {errors.establishment_date && (
-              <p className="mt-1 text-caption-2 text-red-500">{errors.establishment_date}</p>
+              <p className="mt-1 text-[11px] text-red-500">{errors.establishment_date}</p>
             )}
             {!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date && (
-              <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+              <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
                 <span className="text-emerald-500">✓</span> 입력 완료
               </p>
             )}
@@ -192,9 +192,9 @@ export const CompanyInfoSection = ({
 
         {/* 보험 */}
         <div>
-          <label htmlFor="insurance" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="insurance" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
             <FileText size={16} />
-            보험 <span className="text-caption-2 px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
+            보험 <span className="text-[11px] px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
           </label>
           <input
             type="text"
@@ -206,18 +206,18 @@ export const CompanyInfoSection = ({
             placeholder="예: 4대보험 완비, 산재보험 등"
           />
           {formData.insurance && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
           {!formData.insurance && (
-            <p className="mt-1 text-caption-2 text-slate-500">제공하는 보험 정보를 입력해주세요.</p>
+            <p className="mt-1 text-[11px] text-slate-500">제공하는 보험 정보를 입력해주세요.</p>
           )}
         </div>
 
         {/* 일반전화 (회사 대표번호) */}
         <div>
-          <label htmlFor="company_phone" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="company_phone" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
             <Phone size={16} />
             일반전화 (회사 대표번호) <span className="text-red-500 text-lg ml-1">*</span>
           </label>
@@ -232,15 +232,15 @@ export const CompanyInfoSection = ({
             placeholder="02-1234-5678 (지역번호 포함)"
           />
           {errors.company_phone && (
-            <p className="mt-1 text-caption-2 text-red-500">{errors.company_phone}</p>
+            <p className="mt-1 text-[11px] text-red-500">{errors.company_phone}</p>
           )}
           {!errors.company_phone && touchedFields.company_phone && formData.company_phone && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
           {!touchedFields.company_phone && (
-            <p className="mt-1 text-caption-2 text-slate-500">
+            <p className="mt-1 text-[11px] text-slate-500">
               일반전화: 지역번호(예: 02, 031, 051) 포함
             </p>
           )}
@@ -248,7 +248,7 @@ export const CompanyInfoSection = ({
 
         {/* 주소 */}
         <div>
-          <label htmlFor="address" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="address" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
             <MapPin size={16} />
             주소 <span className="text-red-500 text-lg ml-1">*</span>
           </label>
@@ -263,23 +263,23 @@ export const CompanyInfoSection = ({
             placeholder="서울특별시 강남구 테헤란로 427"
           />
           {errors.address && (
-            <p className="mt-1 text-caption-2 text-red-500">{errors.address}</p>
+            <p className="mt-1 text-[11px] text-red-500">{errors.address}</p>
           )}
           {!errors.address && touchedFields.address && formData.address && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
           {!touchedFields.address && (
-            <p className="mt-1 text-caption-2 text-slate-500">회사의 주소를 입력해주세요.</p>
+            <p className="mt-1 text-[11px] text-slate-500">회사의 주소를 입력해주세요.</p>
           )}
         </div>
 
         {/* 웹사이트 */}
         <div>
-          <label htmlFor="website_url" className="text-body-3 font-medium text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="website_url" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
             <Globe size={16} />
-            웹사이트 <span className="text-caption-2 px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
+            웹사이트 <span className="text-[11px] px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
           </label>
           <input
             type="url"
@@ -292,15 +292,15 @@ export const CompanyInfoSection = ({
             placeholder="https://example.com"
           />
           {errors.website_url && (
-            <p className="mt-1 text-caption-2 text-red-500">{errors.website_url}</p>
+            <p className="mt-1 text-[11px] text-red-500">{errors.website_url}</p>
           )}
           {!errors.website_url && formData.website_url && (
-            <p className="mt-1 text-caption-2 text-emerald-500 flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
               <span className="text-emerald-500">✓</span> 입력 완료
             </p>
           )}
           {!formData.website_url && (
-            <p className="mt-1 text-caption-2 text-slate-500">회사 홈페이지 주소를 입력해주세요. (http:// 또는 https:// 포함)</p>
+            <p className="mt-1 text-[11px] text-slate-500">회사 홈페이지 주소를 입력해주세요. (http:// 또는 https:// 포함)</p>
           )}
         </div>
       </div>

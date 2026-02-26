@@ -180,7 +180,7 @@ const CompanyProfileClient = () => {
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
                 <button
                   onClick={() => router.push('/company/jobs')}
-                  className="flex items-center gap-1.5 text-[14px] font-bold text-slate-900 hover:text-blue-600 transition-colors group"
+                  className="flex items-center gap-1.5 text-[14px] font-bold text-slate-900 hover:text-blue-600 transition-colors group cursor-pointer"
                 >
                   진행중 공고
                   <span className="text-blue-600 font-extrabold">{activePosts.length}</span>
@@ -188,7 +188,7 @@ const CompanyProfileClient = () => {
                 </button>
                 <button
                   onClick={() => router.push('/company/posts/create')}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-600 text-white text-[12px] font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-600 text-white text-[12px] font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
                 >
                   <PenSquare size={13} />
                   공고 등록
@@ -231,7 +231,7 @@ const CompanyProfileClient = () => {
                     </p>
                     <button
                       onClick={() => router.push('/company/posts/create')}
-                      className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-blue-50 text-blue-600 text-[12px] font-semibold rounded-lg hover:bg-blue-100 transition-colors"
+                      className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-blue-50 text-blue-600 text-[12px] font-semibold rounded-lg hover:bg-blue-100 transition-colors cursor-pointer"
                     >
                       <PenSquare size={13} />
                       첫 공고 등록하기
@@ -260,7 +260,7 @@ const CompanyProfileClient = () => {
                   <p className="text-[13px] text-slate-500 mb-2 leading-relaxed">
                     딱 맞는 우수한<br />인재를 찾아보세요!
                   </p>
-                  <button className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-blue-600 hover:underline transition-colors">
+                  <button className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-blue-600 hover:underline transition-colors cursor-pointer">
                     <Search size={13} />
                     인재 검색
                   </button>
@@ -286,7 +286,7 @@ const CompanyProfileClient = () => {
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
                     className={cn(
-                      'px-3.5 py-1.5 rounded-full text-[12px] font-semibold border transition-colors',
+                      'px-3.5 py-1.5 rounded-full text-[12px] font-semibold border transition-colors cursor-pointer',
                       activeTab === tab.key
                         ? 'border-blue-500 bg-blue-50 text-blue-600'
                         : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50'
@@ -304,7 +304,7 @@ const CompanyProfileClient = () => {
                   <p className="text-[13px] text-slate-400 mb-4">
                     {EMPTY_MESSAGES[activeTab]}
                   </p>
-                  <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-slate-200 text-[12px] font-semibold text-slate-600 rounded-lg hover:bg-slate-50 transition-colors">
+                  <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-slate-200 text-[12px] font-semibold text-slate-600 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer">
                     <Users size={13} />
                     후보자 관리
                   </button>
@@ -348,7 +348,7 @@ const CompanyProfileClient = () => {
               {/* CTA */}
               <button
                 onClick={() => router.push('/company/posts/create')}
-                className="text-[12px] font-semibold text-blue-600 hover:underline mb-4 block"
+                className="text-[12px] font-semibold text-blue-600 hover:underline mb-4 block cursor-pointer"
               >
                 공고 등록으로 채용을 시작해보세요.
               </button>
@@ -395,7 +395,7 @@ const CompanyProfileClient = () => {
               {/* 프로필 수정 */}
               <button
                 onClick={() => router.push('/company/profile/edit')}
-                className="mt-4 w-full py-2 border border-slate-200 rounded-lg text-[12px] font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+                className="mt-4 w-full py-2 border border-slate-200 rounded-lg text-[12px] font-semibold text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
               >
                 프로필 편집
               </button>
@@ -425,7 +425,7 @@ const CompanyProfileClient = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-[12px] text-slate-300">-</span>
-                      <button className="px-2.5 py-1 border border-slate-200 rounded text-[11px] font-semibold text-slate-500 hover:bg-slate-50 transition-colors">
+                      <button className="px-2.5 py-1 border border-slate-200 rounded text-[11px] font-semibold text-slate-500 hover:bg-slate-50 transition-colors cursor-pointer">
                         구매
                       </button>
                     </div>
@@ -448,7 +448,7 @@ const CompanyProfileClient = () => {
                 <span className="text-blue-600 font-semibold">인재풀 60건 (30일)</span> 상품으로
                 우수한 인재를 찾아보세요!
               </p>
-              <button className="w-full py-2 bg-blue-600 text-white text-[12px] font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+              <button className="w-full py-2 bg-blue-600 text-white text-[12px] font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer">
                 인재풀 이용하기
               </button>
             </motion.div>
