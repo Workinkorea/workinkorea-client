@@ -121,11 +121,9 @@ export const authApi = {
     const responseData = await response.json().catch(() => ({})) as CompanyLoginResponse;
 
     if (!response.ok) {
+      const errData = responseData as unknown as Record<string, string>;
       throw new FetchError(
-        (responseData as Record<string, string>).detail ||
-        (responseData as Record<string, string>).error ||
-        (responseData as Record<string, string>).message ||
-        response.statusText,
+        errData.detail || errData.error || errData.message || response.statusText,
         response.status,
         responseData
       );
