@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
-import Header from '@/shared/components/layout/Header';
+import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { profileApi } from '../api/profileCompany';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -17,7 +17,7 @@ import { validateCompanyProfileField, validateCompanyProfileForm } from '../vali
 import { CompanyInfoSection } from '@/features/company/components/CompanyInfoSection';
 import { ContactPersonSection } from '@/features/company/components/ContactPersonSection';
 
-const CompanyProfileEditClient: React.FC = () => {
+const CompanyProfileEditClient = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
@@ -85,7 +85,7 @@ const CompanyProfileEditClient: React.FC = () => {
   }, [profile]);
 
   // 변경사항 확인
-  const hasChanges = React.useMemo(() => {
+  const hasChanges = useMemo(() => {
     if (!originalData) {
       // originalData가 없으면 기본값과 비교
       const defaultData = {
@@ -217,8 +217,8 @@ const CompanyProfileEditClient: React.FC = () => {
           isLoading={authLoading}
           onLogout={handleLogout}
         />
-        <div className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
-          <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full"></div>
+        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
+          <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
         </div>
       </Layout>
     );
@@ -233,7 +233,7 @@ const CompanyProfileEditClient: React.FC = () => {
         onLogout={handleLogout}
       />
 
-      <div className="min-h-screen bg-background-alternative py-8">
+      <div className="min-h-screen bg-slate-50 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="mb-6"
@@ -243,13 +243,13 @@ const CompanyProfileEditClient: React.FC = () => {
           >
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 text-label-600 hover:text-label-900 transition-colors mb-4"
+              className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors mb-4"
             >
               <ArrowLeft size={20} />
-              <span className="text-body-3">돌아가기</span>
+              <span className="text-sm">돌아가기</span>
             </button>
-            <h1 className="text-title-2 font-bold text-label-900">기업 프로필 수정</h1>
-            <p className="text-body-3 text-label-500 mt-1">
+            <h1 className="text-[20px] md:text-[28px] font-bold text-slate-900">기업 프로필 수정</h1>
+            <p className="text-sm text-slate-500 mt-1">
               기업 정보를 수정하세요
             </p>
           </motion.div>
@@ -285,17 +285,17 @@ const CompanyProfileEditClient: React.FC = () => {
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="flex-1 px-6 py-3 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors"
+                className="flex-1 px-6 py-3 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 취소
               </button>
               <button
                 type="submit"
                 disabled={updateProfileMutation.isPending || !hasChanges}
-                className={`flex-1 px-6 py-3 rounded-lg text-body-3 font-medium transition-colors flex items-center justify-center gap-2 ${
+                className={`flex-1 px-6 py-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                   updateProfileMutation.isPending || !hasChanges
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-primary-500 text-white hover:bg-primary-600'
+                    ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
                 }`}
                 title={!hasChanges ? '변경된 내용이 없습니다' : ''}
               >
@@ -317,7 +317,7 @@ const CompanyProfileEditClient: React.FC = () => {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-caption-2 text-orange-600 text-center"
+                className="text-[11px] text-amber-600 text-center"
               >
                 * 저장되지 않은 변경사항이 있습니다.
               </motion.p>

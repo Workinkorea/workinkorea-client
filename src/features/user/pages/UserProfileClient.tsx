@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Layout from '@/shared/components/layout/Layout';
-import Header from '@/shared/components/layout/Header';
+import { Header } from '@/shared/components/layout/Header';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
 import SkillBarChart from '@/features/user/components/SkillBarChart';
 import RadarChart from '@/shared/ui/RadarChart';
@@ -15,7 +15,7 @@ import { resumeApi } from '@/features/resume/api/resumeApi';
 import { profileApi } from '@/features/profile/api/profileApi';
 import type { CareerHistory, ResumeListItem } from '@/shared/types/api';
 
-const UserProfileClient: React.FC = () => {
+function UserProfileClient() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'resume' | 'skills' | 'career'>('dashboard');
@@ -235,7 +235,7 @@ const UserProfileClient: React.FC = () => {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-        <div className="min-h-screen bg-background-alternative py-8">
+        <div className="min-h-screen bg-slate-50 py-8">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="animate-pulse space-y-6">
               <div className="bg-white rounded-lg h-64"></div>
@@ -259,12 +259,12 @@ const UserProfileClient: React.FC = () => {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-        <div className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-title-3 font-semibold text-label-700 mb-2">
+            <h2 className="text-xl font-semibold text-slate-700 mb-2">
               프로필을 불러올 수 없습니다
             </h2>
-            <p className="text-body-3 text-label-500">
+            <p className="text-sm text-slate-500">
               {!resumeList?.length
                 ? '먼저 이력서를 작성해주세요.'
                 : '잠시 후 다시 시도해주세요.'}
@@ -272,7 +272,7 @@ const UserProfileClient: React.FC = () => {
             {!resumeList?.length && (
               <button
                 onClick={() => router.push('/user/resume/create')}
-                className="mt-4 px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 cursor-pointer"
+                className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
               >
                 이력서 작성하기
               </button>
@@ -294,14 +294,14 @@ const UserProfileClient: React.FC = () => {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-      <div className="min-h-screen bg-background-alternative py-8">
+      <div className="min-h-screen bg-slate-50 py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           {/* 상단 액션 버튼 */}
           {resumeList && resumeList.length > 0 ? (
             <div className="flex justify-end">
               <button
                 onClick={() => router.push(`/user/resume/edit/${resumeList[0].id}`)}
-                className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
               >
                 이력서 수정하기
               </button>
@@ -310,7 +310,7 @@ const UserProfileClient: React.FC = () => {
             <div className="flex justify-end">
               <button
                 onClick={() => router.push('/user/resume/create')}
-                className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
               >
                 이력서 작성하기
               </button>
@@ -324,8 +324,8 @@ const UserProfileClient: React.FC = () => {
           />
 
           {/* 탭 네비게이션 */}
-          <motion.div 
-            className="bg-white rounded-lg p-2 shadow-normal"
+          <motion.div
+            className="bg-white rounded-lg p-2 shadow-sm"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -340,10 +340,10 @@ const UserProfileClient: React.FC = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
                     activeTab === tab.key
-                      ? 'bg-primary-500 text-white shadow-sm'
-                      : 'text-label-700 hover:bg-component-alternative'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 >
                   {tab.label}
@@ -358,13 +358,13 @@ const UserProfileClient: React.FC = () => {
               <>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* 레이더 차트 */}
-                  <motion.div 
-                    className="bg-white rounded-lg p-6 shadow-normal"
+                  <motion.div
+                    className="bg-white rounded-lg p-6 shadow-sm"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
                   >
-                    <h3 className="text-title-4 font-semibold text-label-900 mb-6 text-center">
+                    <h3 className="text-lg font-semibold text-slate-900 mb-6 text-center">
                       종합 역량 분석
                     </h3>
                     <div className="flex justify-center">
@@ -381,35 +381,35 @@ const UserProfileClient: React.FC = () => {
 
             {activeTab === 'resume' && (
               <motion.div
-                className="bg-white rounded-lg p-6 shadow-normal"
+                className="bg-white rounded-lg p-6 shadow-sm"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <h3 className="text-title-4 font-semibold text-label-900 mb-6">
+                <h3 className="text-lg font-semibold text-slate-900 mb-6">
                   이력서
                 </h3>
 
                 {/* 이미지 업로드 섹션 */}
-                <div className="mb-6 p-4 border border-line-200 rounded-lg bg-background-alternative">
-                  <h4 className="text-body-2 font-semibold text-label-900 mb-3">이력서 파일 업로드</h4>
+                <div className="mb-6 p-4 border border-slate-100 rounded-lg bg-slate-50">
+                  <h4 className="text-base font-semibold text-slate-900 mb-3">이력서 파일 업로드</h4>
                   <div className="flex items-center gap-4">
                     <input
                       type="file"
                       onChange={handleFileChange}
                       accept="image/*,.pdf,.doc,.docx"
-                      className="flex-1 text-body-3 text-label-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-body-3 file:font-medium file:bg-primary-100 file:text-primary-700 hover:file:bg-primary-200 cursor-pointer"
+                      className="flex-1 text-sm text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer"
                     />
                     <button
                       onClick={handleUploadImage}
                       disabled={!selectedFile || uploadImageMutation.isPending}
-                      className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       {uploadImageMutation.isPending ? '업로드 중...' : '업로드'}
                     </button>
                   </div>
                   {selectedFile && (
-                    <p className="mt-2 text-caption-2 text-label-600">
+                    <p className="mt-2 text-[11px] text-slate-600">
                       선택된 파일: {selectedFile.name}
                     </p>
                   )}
@@ -420,14 +420,14 @@ const UserProfileClient: React.FC = () => {
                     {resumeList.map((resume) => (
                       <div
                         key={resume.id}
-                        className="border border-line-200 rounded-lg p-4 hover:border-primary-300 transition-colors cursor-pointer flex justify-between items-center"
+                        className="border border-slate-100 rounded-lg p-4 hover:border-blue-300 transition-colors cursor-pointer flex justify-between items-center"
                         onClick={() => router.push(`/user/resume/edit/${resume.id}`)}
                       >
                         <div>
-                          <h4 className="text-body-2 font-semibold text-label-900 mb-2">
+                          <h4 className="text-base font-semibold text-slate-900 mb-2">
                             {resume.title || '이력서'}
                           </h4>
-                          <p className="text-body-3 text-label-600">
+                          <p className="text-sm text-slate-600">
                             {resume.updated_at ? new Date(resume.updated_at).toLocaleDateString('ko-KR') : '날짜 정보 없음'}
                           </p>
                         </div>
@@ -437,7 +437,7 @@ const UserProfileClient: React.FC = () => {
                             handleDeleteResume(resume.id, resume.title || '이력서');
                           }}
                           disabled={deleteResumeMutation.isPending}
-                          className="px-4 py-2 bg-red-500 text-white rounded-lg text-body-3 font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                          className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         >
                           {deleteResumeMutation.isPending ? '삭제 중...' : '삭제'}
                         </button>
@@ -446,10 +446,10 @@ const UserProfileClient: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-body-3 text-label-600 mb-4">작성된 이력서가 없습니다.</p>
+                    <p className="text-sm text-slate-600 mb-4">작성된 이력서가 없습니다.</p>
                     <button
                       onClick={() => router.push('/user/resume/create')}
-                      className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                      className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
                     >
                       이력서 작성하기
                     </button>
@@ -468,24 +468,24 @@ const UserProfileClient: React.FC = () => {
             )}
 
             {activeTab === 'career' && (
-              <motion.div 
-                className="bg-white rounded-lg p-6 shadow-normal"
+              <motion.div
+                className="bg-white rounded-lg p-6 shadow-sm"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <h3 className="text-title-4 font-semibold text-label-900 mb-6">
+                <h3 className="text-lg font-semibold text-slate-900 mb-6">
                   경력 및 교육
                 </h3>
-                
+
                 {/* 교육 이력 */}
                 <div className="space-y-4">
-                  <h4 className="text-body-2 font-semibold text-label-700">교육 이력</h4>
+                  <h4 className="text-base font-semibold text-slate-700">교육 이력</h4>
                   {resumeData.education.map((edu) => (
-                    <div key={edu.id} className="border-l-4 border-primary-200 pl-4 py-2">
-                      <h5 className="text-body-3 font-semibold text-label-900">{edu.institution}</h5>
-                      <p className="text-body-3 text-label-600">{edu.degree} - {edu.field}</p>
-                      <p className="text-caption-2 text-label-500">
+                    <div key={edu.id} className="border-l-4 border-blue-200 pl-4 py-2">
+                      <h5 className="text-sm font-semibold text-slate-900">{edu.institution}</h5>
+                      <p className="text-sm text-slate-600">{edu.degree} - {edu.field}</p>
+                      <p className="text-[11px] text-slate-500">
                         {edu.startDate} ~ {edu.endDate || '현재'}
                       </p>
                     </div>
@@ -495,12 +495,12 @@ const UserProfileClient: React.FC = () => {
                 {/* 자격증 */}
                 {resumeData.certifications.length > 0 && (
                   <div className="mt-6 space-y-4">
-                    <h4 className="text-body-2 font-semibold text-label-700">자격증</h4>
+                    <h4 className="text-base font-semibold text-slate-700">자격증</h4>
                     <div className="flex flex-wrap gap-2">
                       {resumeData.certifications.map((cert, index) => (
                         <span
                           key={index}
-                          className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-caption-2 border border-primary-200"
+                          className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[11px] border border-blue-200"
                         >
                           {cert}
                         </span>

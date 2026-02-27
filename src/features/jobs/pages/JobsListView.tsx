@@ -1,7 +1,7 @@
 'use client';
 
 import Layout from '@/shared/components/layout/Layout';
-import HeaderClient from '@/shared/components/layout/HeaderClient';
+import { HeaderClient } from '@/shared/components/layout/HeaderClient';
 import JobCard from '@/features/jobs/components/JobCard';
 import JobsPaginationClient from '@/features/jobs/components/JobsPaginationClient';
 import { useCompanyPosts } from '@/features/jobs/hooks/useCompanyPosts';
@@ -24,17 +24,17 @@ export default function JobsListView({ initialData, currentPage }: JobsListViewP
   return (
     <Layout>
       <HeaderClient />
-      <div className="min-h-screen bg-background-alternative py-8">
+      <div className="min-h-screen bg-slate-50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* 헤더 */}
           <div className="mb-8">
-            <h1 className="text-title-1 font-bold text-label-900 mb-2">
+            <h1 className="text-[22px] md:text-[32px] font-extrabold text-slate-900 mb-2">
               채용 공고
             </h1>
-            <p className="text-body-2 text-label-600">
+            <p className="text-[13px] md:text-[15px] text-slate-600">
               한국에서 외국인을 위한 다양한 채용 기회를 찾아보세요
             </p>
-            <p className="text-body-3 text-label-500 mt-2">
+            <p className="text-sm text-slate-500 mt-2">
               총 {total}개의 공고
             </p>
           </div>
@@ -42,23 +42,23 @@ export default function JobsListView({ initialData, currentPage }: JobsListViewP
           {/* 로딩 상태 */}
           {isLoading && (
             <div className="text-center py-20">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
-              <p className="mt-4 text-label-600 text-body-2">채용 공고 확인 중</p>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <p className="mt-4 text-slate-600 text-[15px]">채용 공고 확인 중</p>
             </div>
           )}
 
           {/* 에러 상태 */}
           {error && (
             <div className="text-center py-20">
-              <p className="text-label-900 text-body-1 font-semibold mb-2">
+              <p className="text-slate-900 text-base font-semibold mb-2">
                 공고를 불러올 수 없어요
               </p>
-              <p className="text-label-600 text-body-2 mb-4">
+              <p className="text-slate-600 text-[15px] mb-4">
                 네트워크 연결을 확인하고 다시 시도해주세요
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600"
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 새로고침
               </button>
@@ -83,8 +83,8 @@ export default function JobsListView({ initialData, currentPage }: JobsListViewP
             </>
           ) : !isLoading && !error ? (
             <div className="text-center py-20">
-              <p className="text-label-600 text-body-2 mb-2">새로운 채용 공고를 준비 중이에요</p>
-              <p className="text-label-500 text-body-3">곧 다양한 기회를 만나보실 수 있어요</p>
+              <p className="text-slate-600 text-[15px] mb-2">새로운 채용 공고를 준비 중이에요</p>
+              <p className="text-slate-500 text-sm">곧 다양한 기회를 만나보실 수 있어요</p>
             </div>
           ) : null}
         </div>

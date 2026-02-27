@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/shared/lib/utils/utils';
@@ -20,7 +19,7 @@ interface StatCardProps {
   delay?: number;
 }
 
-const StatCard: React.FC<StatCardProps> = ({
+export function StatCard({
   title,
   value,
   subtitle,
@@ -29,44 +28,44 @@ const StatCard: React.FC<StatCardProps> = ({
   color = 'primary',
   className = '',
   delay = 0
-}) => {
-  // 색상 스키마
+}: StatCardProps) {
+  // 색상 스키마 (Blue Design System)
   const colorSchemes = {
     primary: {
-      bg: 'bg-primary-50',
-      icon: 'text-primary-500',
-      value: 'text-primary-600',
-      border: 'border-primary-100'
+      bg: 'bg-blue-50',
+      icon: 'text-blue-600',
+      value: 'text-blue-700',
+      border: 'border-blue-100'
     },
     secondary: {
-      bg: 'bg-secondary-50', 
-      icon: 'text-secondary-500',
-      value: 'text-secondary-600',
-      border: 'border-secondary-100'
+      bg: 'bg-slate-100',
+      icon: 'text-slate-500',
+      value: 'text-slate-700',
+      border: 'border-slate-200'
     },
     success: {
-      bg: 'bg-green-50',
-      icon: 'text-status-correct',
-      value: 'text-status-correct',
-      border: 'border-green-100'
+      bg: 'bg-emerald-50',
+      icon: 'text-emerald-500',
+      value: 'text-emerald-600',
+      border: 'border-emerald-100'
     },
     warning: {
-      bg: 'bg-yellow-50',
-      icon: 'text-status-caution',
-      value: 'text-status-caution',
-      border: 'border-yellow-100'
+      bg: 'bg-amber-50',
+      icon: 'text-amber-500',
+      value: 'text-amber-600',
+      border: 'border-amber-100'
     },
     danger: {
       bg: 'bg-red-50',
-      icon: 'text-status-error',
-      value: 'text-status-error',
+      icon: 'text-red-500',
+      value: 'text-red-600',
       border: 'border-red-100'
     },
     neutral: {
-      bg: 'bg-component-alternative',
-      icon: 'text-label-500',
-      value: 'text-label-700',
-      border: 'border-line-200'
+      bg: 'bg-slate-100',
+      icon: 'text-slate-400',
+      value: 'text-slate-600',
+      border: 'border-slate-200'
     }
   };
 
@@ -75,7 +74,7 @@ const StatCard: React.FC<StatCardProps> = ({
   return (
     <motion.div
       className={cn(
-        'bg-white rounded-lg p-4 shadow-normal border transition-all duration-200 hover:shadow-strong',
+        'bg-white rounded-xl p-4 shadow-sm border transition-all duration-200 hover:shadow-md hover:border-blue-200',
         scheme.border,
         className
       )}
@@ -87,18 +86,18 @@ const StatCard: React.FC<StatCardProps> = ({
       <div className="flex items-start justify-between">
         <div className="flex-1">
           {/* 제목 */}
-          <h3 className="text-body-3 text-label-500 font-medium mb-1">
+          <h3 className="text-sm text-slate-500 font-medium mb-1">
             {title}
           </h3>
 
           {/* 값 */}
-          <div className={cn('text-title-3 font-bold mb-1', scheme.value)}>
+          <div className={cn('text-xl font-bold mb-1', scheme.value)}>
             {typeof value === 'number' ? value.toLocaleString() : value}
           </div>
 
           {/* 부제목 */}
           {subtitle && (
-            <p className="text-caption-2 text-label-500">
+            <p className="text-[11px] text-slate-500">
               {subtitle}
             </p>
           )}
@@ -107,8 +106,8 @@ const StatCard: React.FC<StatCardProps> = ({
           {trend && (
             <div className="flex items-center gap-1 mt-2">
               <span className={cn(
-                'text-caption-2 font-medium',
-                trend.isPositive ? 'text-status-correct' : 'text-status-error'
+                'text-[11px] font-medium',
+                trend.isPositive ? 'text-emerald-500' : 'text-red-500'
               )}>
                 {trend.isPositive ? '+' : ''}{trend.value}
                 {trend.label && ` ${trend.label}`}
@@ -119,7 +118,7 @@ const StatCard: React.FC<StatCardProps> = ({
 
         {/* 아이콘 */}
         {Icon && (
-          <motion.div 
+          <motion.div
             className={cn('p-2 rounded-lg', scheme.bg)}
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -131,6 +130,4 @@ const StatCard: React.FC<StatCardProps> = ({
       </div>
     </motion.div>
   );
-};
-
-export default StatCard;
+}

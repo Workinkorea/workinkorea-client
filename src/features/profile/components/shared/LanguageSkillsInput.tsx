@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Control, useFieldArray, FieldErrors } from 'react-hook-form';
 import { Plus, X } from 'lucide-react';
 import { FormField } from '@/shared/ui/FormField';
@@ -58,10 +57,10 @@ export interface LanguageSkillsInputProps {
   errors?: FieldErrors<BasicProfileForm>;
 }
 
-const LanguageSkillsInput: React.FC<LanguageSkillsInputProps> = ({
+function LanguageSkillsInput({
   control,
   errors,
-}) => {
+}: LanguageSkillsInputProps) {
   /**
    * useFieldArray hook manages dynamic array operations
    * - fields: Array of field objects with unique `id`
@@ -91,7 +90,7 @@ const LanguageSkillsInput: React.FC<LanguageSkillsInputProps> = ({
     <div className="space-y-3">
       {/* Header with Add button */}
       <div className="flex items-center justify-between">
-        <label className="text-caption-2 font-medium text-label-900">
+        <label className="text-[11px] font-medium text-slate-900">
           언어 스킬
         </label>
         <button
@@ -99,8 +98,8 @@ const LanguageSkillsInput: React.FC<LanguageSkillsInputProps> = ({
           onClick={handleAddLanguage}
           className="
             flex items-center gap-1
-            text-primary-500 hover:text-primary-600
-            text-caption-2 cursor-pointer
+            text-blue-500 hover:text-blue-600
+            text-[11px] cursor-pointer
             transition-colors
           "
         >
@@ -111,7 +110,7 @@ const LanguageSkillsInput: React.FC<LanguageSkillsInputProps> = ({
 
       {/* Empty state */}
       {fields.length === 0 && (
-        <p className="text-caption-2 text-label-400">
+        <p className="text-[11px] text-slate-400">
           언어 스킬을 추가해주세요
         </p>
       )}
@@ -121,18 +120,18 @@ const LanguageSkillsInput: React.FC<LanguageSkillsInputProps> = ({
         {fields.map((field, index) => (
           <div
             key={field.id}
-            className="border border-line-200 rounded-lg p-4 space-y-3"
+            className="border border-slate-200 rounded-lg p-4 space-y-3"
           >
             {/* Item header with remove button */}
             <div className="flex items-center justify-between mb-2">
-              <span className="text-caption-2 font-medium text-label-700">
+              <span className="text-[11px] font-medium text-slate-700">
                 언어 {index + 1}
               </span>
               <button
                 type="button"
                 onClick={() => handleRemoveLanguage(index)}
                 className="
-                  text-status-error hover:text-status-error/80
+                  text-red-500 hover:text-red-600
                   cursor-pointer transition-colors
                 "
               >
@@ -151,11 +150,11 @@ const LanguageSkillsInput: React.FC<LanguageSkillsInputProps> = ({
                   {...fieldProps}
                   id={fieldId}
                   className={cn(
-                    'w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm',
+                    'w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm',
                     'transition-colors focus:ring-2 focus:border-transparent',
-                    'border-line-400 focus:ring-primary',
+                    'border-slate-200 focus:ring-blue-500',
                     errors?.language_skills?.[index]?.language_type &&
-                      'border-status-error focus:ring-status-error'
+                      'border-red-500 focus:ring-red-500'
                   )}
                 >
                   <option value="">언어를 선택하세요</option>
@@ -179,11 +178,11 @@ const LanguageSkillsInput: React.FC<LanguageSkillsInputProps> = ({
                   {...fieldProps}
                   id={fieldId}
                   className={cn(
-                    'w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm',
+                    'w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm',
                     'transition-colors focus:ring-2 focus:border-transparent',
-                    'border-line-400 focus:ring-primary',
+                    'border-slate-200 focus:ring-blue-500',
                     errors?.language_skills?.[index]?.level &&
-                      'border-status-error focus:ring-status-error'
+                      'border-red-500 focus:ring-red-500'
                   )}
                 >
                   <option value="">수준을 선택하세요</option>

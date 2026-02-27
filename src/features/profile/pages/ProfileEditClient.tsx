@@ -21,9 +21,9 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '@/shared/components/layout/Layout';
-import HeaderClient from '@/shared/components/layout/HeaderClient';
+import { HeaderClient } from '@/shared/components/layout/HeaderClient';
 import { FormField } from '@/shared/ui/FormField';
-import Input from '@/shared/ui/Input';
+import { Input } from '@/shared/ui/Input';
 import {
   basicProfileSchema,
   contactInfoSchema,
@@ -92,7 +92,7 @@ const getCareerKeyFromValue = (value: string): string => {
   return option?.key || 'NEWCOMER';
 };
 
-const ProfileEditClient: React.FC = () => {
+function ProfileEditClient() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [activeSection, setActiveSection] = useState<SectionType>('basic');
@@ -552,10 +552,10 @@ const ProfileEditClient: React.FC = () => {
     return (
       <Layout>
         <HeaderClient />
-        <div className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
           <div className="animate-pulse text-center">
-            <div className="w-16 h-16 bg-primary-200 rounded-full mx-auto mb-4"></div>
-            <p className="text-label-500">프로필 정보를 불러오는 중...</p>
+            <div className="w-16 h-16 bg-blue-200 rounded-full mx-auto mb-4"></div>
+            <p className="text-slate-500">프로필 정보를 불러오는 중...</p>
           </div>
         </div>
       </Layout>
@@ -566,18 +566,18 @@ const ProfileEditClient: React.FC = () => {
     return (
       <Layout>
         <HeaderClient />
-        <div className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
           <div className="text-center">
-            <AlertCircle size={48} className="text-status-error mx-auto mb-4" />
-            <h2 className="text-title-3 font-semibold text-label-900 mb-2">
+            <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
+            <h2 className="text-[24px] font-semibold text-slate-900 mb-2">
               프로필을 불러올 수 없습니다
             </h2>
-            <p className="text-body-3 text-label-500 mb-4">
+            <p className="text-sm text-slate-500 mb-4">
               잠시 후 다시 시도해주세요.
             </p>
             <button
               onClick={handleBack}
-              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors cursor-pointer"
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
             >
               돌아가기
             </button>
@@ -593,12 +593,12 @@ const ProfileEditClient: React.FC = () => {
         <div className="relative">
           {imagePreview || profile.profile_image_url ? (
             <div
-              className="w-20 h-20 rounded-full bg-cover bg-center border-4 border-primary-100"
+              className="w-20 h-20 rounded-full bg-cover bg-center border-4 border-blue-100"
               style={{ backgroundImage: `url(${imagePreview || profile.profile_image_url})` }}
             />
           ) : (
-            <div className="w-20 h-20 rounded-full bg-component-alternative border-4 border-primary-100 flex items-center justify-center">
-              <span className="text-2xl font-semibold text-label-500">
+            <div className="w-20 h-20 rounded-full bg-slate-100 border-4 border-blue-100 flex items-center justify-center">
+              <span className="text-2xl font-semibold text-slate-500">
                 {profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}
               </span>
             </div>
@@ -606,7 +606,7 @@ const ProfileEditClient: React.FC = () => {
           <button
             type="button"
             onClick={handleImageButtonClick}
-            className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white hover:bg-primary-600 transition-colors cursor-pointer"
+            className="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition-colors cursor-pointer"
           >
             <Camera size={16} />
           </button>
@@ -619,8 +619,8 @@ const ProfileEditClient: React.FC = () => {
           />
         </div>
         <div>
-          <h3 className="text-body-2 font-semibold text-label-900">프로필 사진</h3>
-          <p className="text-caption-2 text-label-500">JPG, PNG 파일만 업로드 가능 (최대 5MB)</p>
+          <h3 className="text-[15px] font-semibold text-slate-900">프로필 사진</h3>
+          <p className="text-[11px] text-slate-500">JPG, PNG 파일만 업로드 가능 (최대 5MB)</p>
         </div>
       </div>
 
@@ -684,12 +684,12 @@ const ProfileEditClient: React.FC = () => {
                 rows={4}
                 maxLength={500}
                 className={cn(
-                  "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent resize-none",
-                  "border-line-400 focus:ring-primary",
-                  basicForm.formState.errors.introduction && "border-status-error focus:ring-status-error"
+                  "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent resize-none",
+                  "border-slate-200 focus:ring-blue-500",
+                  basicForm.formState.errors.introduction && "border-red-500 focus:ring-red-500"
                 )}
               />
-              <div className="absolute bottom-2 right-2 text-caption-2 text-label-400">
+              <div className="absolute bottom-2 right-2 text-[11px] text-slate-400">
                 {field.value?.length || 0}/500
               </div>
             </div>
@@ -706,9 +706,9 @@ const ProfileEditClient: React.FC = () => {
               {...field}
               id={fieldId}
               className={cn(
-                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                "border-line-400 focus:ring-primary",
-                preferencesForm.formState.errors.job_status && "border-status-error focus:ring-status-error"
+                "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-slate-200 focus:ring-blue-500",
+                preferencesForm.formState.errors.job_status && "border-red-500 focus:ring-red-500"
               )}
             >
               <option value="">상태를 선택하세요</option>
@@ -729,9 +729,9 @@ const ProfileEditClient: React.FC = () => {
               {...field}
               id={fieldId}
               className={cn(
-                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                "border-line-400 focus:ring-primary",
-                basicForm.formState.errors.career && "border-status-error focus:ring-status-error"
+                "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-slate-200 focus:ring-blue-500",
+                basicForm.formState.errors.career && "border-red-500 focus:ring-red-500"
               )}
             >
               <option value="">경력을 선택하세요</option>
@@ -746,14 +746,14 @@ const ProfileEditClient: React.FC = () => {
 
         {/* 포트폴리오 파일 업로드 */}
         <div className="space-y-2">
-          <label className="text-caption-2 font-medium text-label-900">
+          <label className="text-[11px] font-medium text-slate-900">
             포트폴리오
           </label>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={handlePortfolioButtonClick}
-              className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-caption-2 text-label-700 hover:bg-component-alternative transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-[11px] text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
             >
               <Camera size={16} />
               파일 선택
@@ -767,20 +767,20 @@ const ProfileEditClient: React.FC = () => {
             />
             {(portfolioFileName || profile.portfolio_url) && (
               <div className="flex items-center gap-2 flex-1">
-                <span className="text-caption-2 text-label-600 truncate">
+                <span className="text-[11px] text-slate-600 truncate">
                   {portfolioFileName || profile.portfolio_url}
                 </span>
                 <button
                   type="button"
                   onClick={handleRemovePortfolio}
-                  className="text-status-error hover:text-status-error/80 cursor-pointer"
+                  className="text-red-500 hover:text-red-500/80 cursor-pointer"
                 >
                   <X size={16} />
                 </button>
               </div>
             )}
           </div>
-          <p className="text-caption-2 text-label-500">
+          <p className="text-[11px] text-slate-500">
             PDF, DOCX, 이미지 파일 업로드 가능 (최대 10MB)
           </p>
         </div>
@@ -799,9 +799,9 @@ const ProfileEditClient: React.FC = () => {
                 value={field.value ?? ''}
                 onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                 className={cn(
-                  "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                  "border-line-400 focus:ring-primary",
-                  basicForm.formState.errors.position_id && "border-status-error focus:ring-status-error"
+                  "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                  "border-slate-200 focus:ring-blue-500",
+                  basicForm.formState.errors.position_id && "border-red-500 focus:ring-red-500"
                 )}
               >
                 <option value="">직무를 선택하세요</option>
@@ -833,9 +833,9 @@ const ProfileEditClient: React.FC = () => {
               value={field.value ?? 122}
               onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 122)}
               className={cn(
-                "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                "border-line-400 focus:ring-primary",
-                basicForm.formState.errors.country_id && "border-status-error focus:ring-status-error"
+                "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "border-slate-200 focus:ring-blue-500",
+                basicForm.formState.errors.country_id && "border-red-500 focus:ring-red-500"
               )}
             >
               {COUNTRIES_FULL.map((option) => (
@@ -850,11 +850,11 @@ const ProfileEditClient: React.FC = () => {
         {/* 언어 스킬 */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-caption-2 font-medium text-label-900">언어 스킬</label>
+            <label className="text-[11px] font-medium text-slate-900">언어 스킬</label>
             <button
               type="button"
               onClick={() => appendLanguage({ language_type: '', level: '' })}
-              className="flex items-center gap-1 text-primary-500 hover:text-primary-600 text-caption-2 cursor-pointer"
+              className="flex items-center gap-1 text-blue-500 hover:text-blue-600 text-[11px] cursor-pointer"
             >
               <Plus size={16} />
               <span>추가</span>
@@ -862,18 +862,18 @@ const ProfileEditClient: React.FC = () => {
           </div>
 
           {languageFields.length === 0 && (
-            <p className="text-caption-2 text-label-400">언어 스킬을 추가해주세요</p>
+            <p className="text-[11px] text-slate-400">언어 스킬을 추가해주세요</p>
           )}
 
           <div className="space-y-3">
             {languageFields.map((field, index) => (
-              <div key={field.id} className="border border-line-200 rounded-lg p-4 space-y-3">
+              <div key={field.id} className="border border-slate-100 rounded-lg p-4 space-y-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-caption-2 font-medium text-label-700">언어 {index + 1}</span>
+                  <span className="text-[11px] font-medium text-slate-700">언어 {index + 1}</span>
                   <button
                     type="button"
                     onClick={() => removeLanguage(index)}
-                    className="text-status-error hover:text-status-error/80 cursor-pointer"
+                    className="text-red-500 hover:text-red-500/80 cursor-pointer"
                   >
                     <X size={16} />
                   </button>
@@ -889,9 +889,9 @@ const ProfileEditClient: React.FC = () => {
                       {...field}
                       id={fieldId}
                       className={cn(
-                        "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                        "border-line-400 focus:ring-primary",
-                        basicForm.formState.errors.language_skills?.[index]?.language_type && "border-status-error focus:ring-status-error"
+                        "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                        "border-slate-200 focus:ring-blue-500",
+                        basicForm.formState.errors.language_skills?.[index]?.language_type && "border-red-500 focus:ring-red-500"
                       )}
                     >
                       <option value="">언어를 선택하세요</option>
@@ -914,9 +914,9 @@ const ProfileEditClient: React.FC = () => {
                       {...field}
                       id={fieldId}
                       className={cn(
-                        "w-full border rounded-lg text-caption-2 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                        "border-line-400 focus:ring-primary",
-                        basicForm.formState.errors.language_skills?.[index]?.level && "border-status-error focus:ring-status-error"
+                        "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                        "border-slate-200 focus:ring-blue-500",
+                        basicForm.formState.errors.language_skills?.[index]?.level && "border-red-500 focus:ring-red-500"
                       )}
                     >
                       <option value="">수준을 선택하세요</option>
@@ -1011,9 +1011,9 @@ const ProfileEditClient: React.FC = () => {
     <div className="space-y-8">
       {/* 비밀번호 변경 */}
       {/* <div className="space-y-4">
-        <div className="border-b border-line-200 pb-3">
-          <h4 className="text-body-2 font-semibold text-label-700">비밀번호 변경</h4>
-          <p className="text-caption-2 text-label-500 mt-1">
+        <div className="border-b border-slate-100 pb-3">
+          <h4 className="text-[15px] font-semibold text-slate-700">비밀번호 변경</h4>
+          <p className="text-[11px] text-slate-500 mt-1">
             보안을 위해 정기적으로 비밀번호를 변경하세요
           </p>
         </div>
@@ -1066,7 +1066,7 @@ const ProfileEditClient: React.FC = () => {
           )}
         />
 
-        <div className="text-caption-2 text-label-500 bg-component-alternative p-3 rounded-lg">
+        <div className="text-[11px] text-slate-500 bg-slate-100 p-3 rounded-lg">
           <div className="font-medium mb-1">비밀번호 요구사항:</div>
           <ul className="list-disc list-inside space-y-1">
             <li>최소 8자 이상</li>
@@ -1078,9 +1078,9 @@ const ProfileEditClient: React.FC = () => {
 
       {/* 알림 설정 */}
       <div className="space-y-4">
-        <div className="border-b border-line-200 pb-3">
-          <h4 className="text-body-2 font-semibold text-label-700">알림 설정</h4>
-          <p className="text-caption-2 text-label-500 mt-1">
+        <div className="border-b border-slate-100 pb-3">
+          <h4 className="text-[15px] font-semibold text-slate-700">알림 설정</h4>
+          <p className="text-[11px] text-slate-500 mt-1">
             받고 싶은 알림을 선택하세요
           </p>
         </div>
@@ -1093,10 +1093,10 @@ const ProfileEditClient: React.FC = () => {
             render={(field, fieldId) => {
               const { value, ...fieldWithoutValue } = field;
               return (
-                <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
+                <label className="flex items-center justify-between p-3 bg-slate-100 rounded-lg cursor-pointer">
                   <div>
-                    <span className="text-body-3 font-medium">SNS 메시지 알림</span>
-                    <p className="text-caption-2 text-label-500">중요한 활동을 SNS 메시지로 알림 받습니다</p>
+                    <span className="text-sm font-medium">SNS 메시지 알림</span>
+                    <p className="text-[11px] text-slate-500">중요한 활동을 SNS 메시지로 알림 받습니다</p>
                   </div>
                   <input
                     {...fieldWithoutValue}
@@ -1104,7 +1104,7 @@ const ProfileEditClient: React.FC = () => {
                     type="checkbox"
                     checked={value}
                     onChange={(e) => field.onChange(e.target.checked)}
-                    className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
+                    className="w-4 h-4 text-blue-500 rounded focus:ring-blue-500-500"
                   />
                 </label>
               );
@@ -1118,10 +1118,10 @@ const ProfileEditClient: React.FC = () => {
             render={(field, fieldId) => {
               const { value, ...fieldWithoutValue } = field;
               return (
-                <label className="flex items-center justify-between p-3 bg-component-alternative rounded-lg cursor-pointer">
+                <label className="flex items-center justify-between p-3 bg-slate-100 rounded-lg cursor-pointer">
                   <div>
-                    <span className="text-body-3 font-medium">이메일 알림</span>
-                    <p className="text-caption-2 text-label-500">중요한 활동을 이메일로 알림 받습니다</p>
+                    <span className="text-sm font-medium">이메일 알림</span>
+                    <p className="text-[11px] text-slate-500">중요한 활동을 이메일로 알림 받습니다</p>
                   </div>
                   <input
                     {...fieldWithoutValue}
@@ -1129,7 +1129,7 @@ const ProfileEditClient: React.FC = () => {
                     type="checkbox"
                     checked={value}
                     onChange={(e) => field.onChange(e.target.checked)}
-                    className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500"
+                    className="w-4 h-4 text-blue-500 rounded focus:ring-blue-500-500"
                   />
                 </label>
               );
@@ -1141,15 +1141,15 @@ const ProfileEditClient: React.FC = () => {
 
       {/* 위험 영역 */}
       <div className="space-y-4">
-        <div className="border-b border-status-error pb-3">
-          <h4 className="text-body-2 font-semibold text-status-error">계정 관리</h4>
-          <p className="text-caption-2 text-label-500 mt-1">
+        <div className="border-b border-red-500 pb-3">
+          <h4 className="text-[15px] font-semibold text-red-500">계정 관리</h4>
+          <p className="text-[11px] text-slate-500 mt-1">
             주의가 필요한 계정 관리 옵션입니다
           </p>
         </div>
 
         <div className="space-y-3">
-          <button className="w-full text-left p-3 border border-status-error rounded-lg text-body-3 text-status-error hover:bg-component-alternative transition-colors cursor-pointer">
+          <button className="w-full text-left p-3 border border-red-500 rounded-lg text-sm text-red-500 hover:bg-slate-100 transition-colors cursor-pointer">
             계정 삭제 요청
           </button>
         </div>
@@ -1160,7 +1160,7 @@ const ProfileEditClient: React.FC = () => {
   return (
     <Layout>
       <HeaderClient />
-      <div className="min-h-screen bg-background-alternative py-8">
+      <div className="min-h-screen bg-slate-50 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* 헤더 */}
           <motion.div
@@ -1172,20 +1172,20 @@ const ProfileEditClient: React.FC = () => {
             <div className="flex items-center gap-4">
               <button
                 onClick={handleBack}
-                className="flex items-center gap-2 text-label-600 hover:text-label-800 transition-colors cursor-pointer"
+                className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
               >
                 <ArrowLeft size={20} />
                 <span>돌아가기</span>
               </button>
               <div>
-                <h1 className="text-title-2 font-bold text-label-900">프로필 편집</h1>
-                <p className="text-body-3 text-label-500">개인 정보를 수정하여 프로필을 최신 상태로 유지하세요</p>
+                <h1 className="text-[28px] font-bold text-slate-900">프로필 편집</h1>
+                <p className="text-sm text-slate-500">개인 정보를 수정하여 프로필을 최신 상태로 유지하세요</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
               {hasUnsavedChanges && (
-                <div className="flex items-center gap-2 text-status-caution text-caption-2">
+                <div className="flex items-center gap-2 text-amber-500 text-[11px]">
                   <AlertCircle size={16} />
                   <span>저장되지 않은 변경사항</span>
                 </div>
@@ -1194,7 +1194,7 @@ const ProfileEditClient: React.FC = () => {
               <button
                 onClick={handleSave}
                 disabled={updateProfileMutation.isPending}
-                className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {updateProfileMutation.isPending ? (
                   <>
@@ -1219,7 +1219,7 @@ const ProfileEditClient: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <div className="bg-white rounded-lg shadow-normal p-4">
+              <div className="bg-white rounded-lg shadow-sm p-4">
                 <nav className="space-y-2">
                   {sections.map((section) => {
                     const Icon = section.icon;
@@ -1230,14 +1230,14 @@ const ProfileEditClient: React.FC = () => {
                         className={cn(
                           'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer',
                           activeSection === section.key
-                            ? 'bg-primary-50 text-primary-700 border border-primary-200'
-                            : 'text-label-700 hover:bg-component-alternative'
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                            : 'text-slate-700 hover:bg-slate-100'
                         )}
                       >
                         <Icon size={18} />
-                        <span className="text-body-3 font-medium">{section.label}</span>
+                        <span className="text-sm font-medium">{section.label}</span>
                         {updateProfileMutation.isSuccess && activeSection === section.key && (
-                          <CheckCircle size={16} className="text-status-correct ml-auto" />
+                          <CheckCircle size={16} className="text-emerald-500 ml-auto" />
                         )}
                       </button>
                     );
@@ -1248,7 +1248,7 @@ const ProfileEditClient: React.FC = () => {
 
             {/* 메인 컨텐츠 */}
             <motion.div
-              className="flex-1 bg-white rounded-lg shadow-normal p-8"
+              className="flex-1 bg-white rounded-lg shadow-sm p-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}

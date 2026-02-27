@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Camera } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -49,7 +49,7 @@ export interface FileUploadButtonProps {
   generatePreview?: boolean;
 }
 
-const FileUploadButton: React.FC<FileUploadButtonProps> = ({
+function FileUploadButton({
   fileType,
   maxSizeMB,
   acceptedTypes,
@@ -58,7 +58,7 @@ const FileUploadButton: React.FC<FileUploadButtonProps> = ({
   hint,
   className = '',
   generatePreview = false,
-}) => {
+}: FileUploadButtonProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -160,9 +160,9 @@ const FileUploadButton: React.FC<FileUploadButtonProps> = ({
         disabled={isProcessing}
         className={`
           flex items-center gap-2 px-4 py-2
-          border border-line-400 rounded-lg
-          text-caption-2 text-label-700
-          hover:bg-component-alternative
+          border border-slate-200 rounded-lg
+          text-[11px] text-slate-700
+          hover:bg-slate-100
           transition-colors cursor-pointer
           disabled:opacity-50 disabled:cursor-not-allowed
           ${className}
@@ -184,7 +184,7 @@ const FileUploadButton: React.FC<FileUploadButtonProps> = ({
 
       {/* Optional hint text */}
       {hint && (
-        <p className="text-caption-2 text-label-500">{hint}</p>
+        <p className="text-[11px] text-slate-500">{hint}</p>
       )}
     </div>
   );

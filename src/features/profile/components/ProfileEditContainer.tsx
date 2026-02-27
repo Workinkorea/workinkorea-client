@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +18,7 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '@/shared/components/layout/Layout';
-import Header from '@/shared/components/layout/Header';
+import { Header } from '@/shared/components/layout/Header';
 import BasicInfoSection from './sections/BasicInfoSection';
 import ContactInfoSection from './sections/ContactInfoSection';
 import AccountSettingsSection from './sections/AccountSettingsSection';
@@ -88,7 +88,7 @@ const getCareerKeyFromValue = (value: string): CareerKey => {
   return option?.key || 'NEWCOMER';
 };
 
-const ProfileEditContainer: React.FC = () => {
+function ProfileEditContainer() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -432,10 +432,10 @@ const ProfileEditContainer: React.FC = () => {
     return (
       <Layout>
         <Header type="homepage" />
-        <div className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
           <div className="animate-pulse text-center">
-            <div className="w-16 h-16 bg-primary-200 rounded-full mx-auto mb-4"></div>
-            <p className="text-label-500">프로필 정보를 불러오는 중...</p>
+            <div className="w-16 h-16 bg-blue-200 rounded-full mx-auto mb-4"></div>
+            <p className="text-slate-500">프로필 정보를 불러오는 중...</p>
           </div>
         </div>
       </Layout>
@@ -449,18 +449,18 @@ const ProfileEditContainer: React.FC = () => {
     return (
       <Layout>
         <Header type="homepage" />
-        <div className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
           <div className="text-center">
-            <AlertCircle size={48} className="text-status-error mx-auto mb-4" />
-            <h2 className="text-title-3 font-semibold text-label-900 mb-2">
+            <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
+            <h2 className="text-[24px] font-semibold text-slate-900 mb-2">
               프로필을 불러올 수 없습니다
             </h2>
-            <p className="text-body-3 text-label-500 mb-4">
+            <p className="text-sm text-slate-500 mb-4">
               잠시 후 다시 시도해주세요.
             </p>
             <button
               onClick={handleBack}
-              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors cursor-pointer"
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
             >
               돌아가기
             </button>
@@ -476,7 +476,7 @@ const ProfileEditContainer: React.FC = () => {
   return (
     <Layout>
       <Header type="homepage" />
-      <div className="min-h-screen bg-background-alternative py-8">
+      <div className="min-h-screen bg-slate-50 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Page Header */}
           <motion.div
@@ -488,14 +488,14 @@ const ProfileEditContainer: React.FC = () => {
             <div className="flex items-center gap-4">
               <button
                 onClick={handleBack}
-                className="flex items-center gap-2 text-label-600 hover:text-label-800 transition-colors cursor-pointer"
+                className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
               >
                 <ArrowLeft size={20} />
                 <span>돌아가기</span>
               </button>
               <div>
-                <h1 className="text-title-2 font-bold text-label-900">프로필 편집</h1>
-                <p className="text-body-3 text-label-500">
+                <h1 className="text-[28px] font-bold text-slate-900">프로필 편집</h1>
+                <p className="text-sm text-slate-500">
                   개인 정보를 수정하여 프로필을 최신 상태로 유지하세요
                 </p>
               </div>
@@ -503,7 +503,7 @@ const ProfileEditContainer: React.FC = () => {
 
             <div className="flex items-center gap-3">
               {hasUnsavedChanges && (
-                <div className="flex items-center gap-2 text-status-caution text-caption-2">
+                <div className="flex items-center gap-2 text-amber-500 text-[11px]">
                   <AlertCircle size={16} />
                   <span>저장되지 않은 변경사항</span>
                 </div>
@@ -512,7 +512,7 @@ const ProfileEditContainer: React.FC = () => {
               <button
                 onClick={handleSave}
                 disabled={updateProfileMutation.isPending}
-                className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {updateProfileMutation.isPending ? (
                   <>
@@ -537,7 +537,7 @@ const ProfileEditContainer: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <div className="bg-white rounded-lg shadow-normal p-4">
+              <div className="bg-white rounded-lg shadow-sm p-4">
                 <nav className="space-y-2">
                   {sections.map((section) => {
                     const Icon = section.icon;
@@ -548,14 +548,14 @@ const ProfileEditContainer: React.FC = () => {
                         className={cn(
                           'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer',
                           activeSection === section.key
-                            ? 'bg-primary-50 text-primary-700 border border-primary-200'
-                            : 'text-label-700 hover:bg-component-alternative'
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                            : 'text-slate-700 hover:bg-slate-100'
                         )}
                       >
                         <Icon size={18} />
-                        <span className="text-body-3 font-medium">{section.label}</span>
+                        <span className="text-sm font-medium">{section.label}</span>
                         {updateProfileMutation.isSuccess && activeSection === section.key && (
-                          <CheckCircle size={16} className="text-status-correct ml-auto" />
+                          <CheckCircle size={16} className="text-emerald-500 ml-auto" />
                         )}
                       </button>
                     );
@@ -566,7 +566,7 @@ const ProfileEditContainer: React.FC = () => {
 
             {/* Main Content */}
             <motion.div
-              className="flex-1 bg-white rounded-lg shadow-normal p-8"
+              className="flex-1 bg-white rounded-lg shadow-sm p-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}

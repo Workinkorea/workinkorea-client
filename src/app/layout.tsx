@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ReactNode } from "react";
-import { pretendard } from "@/shared/lib/fonts";
+import { pretendard, plusJakartaSans } from "@/shared/lib/fonts";
 import { defaultMetadata } from "@/shared/lib/metadata";
 import { WebsiteSchema, OrganizationSchema } from "@/shared/components/seo/StructuredData";
 import "./globals.css";
@@ -16,11 +16,11 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="ko" className={pretendard.variable}>
+    <html lang="ko" className={`${pretendard.variable} ${plusJakartaSans.variable}`}>
       <head>
         <WebsiteSchema />
         <OrganizationSchema />
-        <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></Script>
+        <Script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></Script>
       </head>
       <body suppressHydrationWarning={true}>
         <ReactQueryProvider>
