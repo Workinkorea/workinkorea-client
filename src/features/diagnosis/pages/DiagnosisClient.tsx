@@ -22,7 +22,7 @@ const TOTAL_STEPS = 4;
 const DiagnosisClient = () => {
   const router = useRouter();
   const { isAuthenticated, isLoading, userType, logout } = useAuth();
-  const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId } = useDiagnosisStore();
+  const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId, reset } = useDiagnosisStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogout = async () => {
@@ -78,10 +78,8 @@ const DiagnosisClient = () => {
 
       const response = await diagnosisApi.submitAnswer(apiRequest);
 
-      // Save diagnosis ID to store
       setDiagnosisId(response.id);
-
-      // Redirect to result page with ID
+      reset(); // sessionStorage 임시 저장 데이터 초기화
       router.push(`/diagnosis/result?id=${response.id}`);
     } catch (error) {
       toast.error('진단 결과 제출에 실패했습니다. 다시 시도해주세요.');
