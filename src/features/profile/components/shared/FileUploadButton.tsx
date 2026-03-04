@@ -141,7 +141,6 @@ function FileUploadButton({
       onFileSelect(file, preview);
 
     } catch (error) {
-      console.error('File upload error:', error);
       toast.error('파일 처리 중 오류가 발생했습니다.');
     } finally {
       setIsProcessing(false);

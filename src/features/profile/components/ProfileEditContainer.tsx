@@ -321,7 +321,7 @@ function ProfileEditContainer() {
           }
         }
       } catch (error) {
-        console.error('섹션 데이터 로드 실패:', error);
+        // silently ignore section data load errors
       }
     };
 

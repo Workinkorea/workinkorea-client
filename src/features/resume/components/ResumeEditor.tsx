@@ -234,7 +234,7 @@ function ResumeEditor({
         await createResumeMutation.mutateAsync(requestData as CreateResumeRequest);
       }
     } catch (error) {
-      console.error('이력서 저장 실패:', error);
+      // mutation onError handles user-facing error
     }
   };
 
@@ -269,7 +269,6 @@ function ResumeEditor({
       setValue('profile_url', response.file_name);
       toast.success('이미지가 업로드되었습니다.');
     } catch (error) {
-      console.error('이미지 업로드 실패:', error);
       toast.error('이미지 업로드에 실패했습니다.');
       setPreviewImage(null);
     } finally {

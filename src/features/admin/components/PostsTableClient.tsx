@@ -37,7 +37,6 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
       const data = await adminApi.getPosts(skip, limit);
       setPosts(data);
     } catch (error) {
-      console.error('Failed to fetch posts:', error);
       toast.error('공고 목록을 불러오는데 실패했습니다.');
     }
   }, [page, limit]);
@@ -51,7 +50,6 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
       fetchPosts();
     },
     onError: (error) => {
-      console.error('Failed to save post:', error);
       toast.error('공고 저장에 실패했습니다.');
     },
   });
@@ -63,7 +61,6 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
       fetchPosts();
     },
     onError: (error) => {
-      console.error('Failed to delete post:', error);
       toast.error('공고 삭제에 실패했습니다.');
     },
   });
