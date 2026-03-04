@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Target, FileText, MessageSquare } from 'lucide-react';
 
 const services = [
@@ -9,6 +10,8 @@ const services = [
     bgColor: 'bg-blue-50',
     iconColor: 'text-blue-600',
     borderColor: 'border-blue-200',
+    href: '/diagnosis',
+    linkLabel: '진단 시작하기',
   },
   {
     id: 'resume',
@@ -18,15 +21,19 @@ const services = [
     bgColor: 'bg-blue-50',
     iconColor: 'text-blue-600',
     borderColor: 'border-blue-200',
+    href: '/user/resume/create',
+    linkLabel: '이력서 작성하기',
   },
   {
-    id: 'consulting',
+    id: 'jobs',
     title: '면접 컨설팅 가이드',
     description: '실제 현직자와의 모의면접과 개인별 피드백으로 면접 성공률을 높여보세요. 한국 문화에 맞는 면접 스킬을 습득할 수 있습니다.',
     icon: MessageSquare,
     bgColor: 'bg-slate-50',
     iconColor: 'text-slate-600',
     borderColor: 'border-slate-200',
+    href: '/jobs',
+    linkLabel: '공고 둘러보기',
   },
 ];
 
@@ -55,7 +62,7 @@ export default function ServicesSection() {
                 className={`
                   ${service.bgColor} ${service.borderColor}
                   border-2 rounded-xl p-8 text-center transition-all duration-200
-                  hover:scale-105 hover:shadow-lg cursor-pointer group
+                  hover:scale-105 hover:shadow-lg group
                 `}
               >
                 {/* 아이콘 */}
@@ -77,11 +84,14 @@ export default function ServicesSection() {
                   {service.description}
                 </p>
 
-                {/* 더 알아보기 버튼 */}
+                {/* 링크 버튼 */}
                 <div className="mt-6">
-                  <button className="text-blue-600 hover:text-blue-700 font-medium transition-colors text-sm cursor-pointer">
-                    더 알아보기 →
-                  </button>
+                  <Link
+                    href={service.href}
+                    className="text-blue-600 hover:text-blue-700 font-medium transition-colors text-sm"
+                  >
+                    {service.linkLabel} →
+                  </Link>
                 </div>
               </div>
             );
