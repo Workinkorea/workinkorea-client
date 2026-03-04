@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import Layout from '@/shared/components/layout/Layout';
 import { Header } from '@/shared/components/layout/Header';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
 import SkillBarChart from '@/features/user/components/SkillBarChart';
 import RadarChart from '@/shared/ui/RadarChart';
+import { Modal } from '@/shared/ui/Modal';
 import { UserProfile, RadarChartData, UserSkill } from '@/features/user/types/user';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { resumeApi } from '@/features/resume/api/resumeApi';
@@ -20,6 +22,7 @@ function UserProfileClient() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'resume' | 'skills' | 'career'>('dashboard');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ resumeId: number; title: string } | null>(null);
   const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
 
   const handleLogout = async () => {
@@ -40,25 +43,28 @@ function UserProfileClient() {
   const uploadImageMutation = useMutation({
     mutationFn: (file: File) => resumeApi.uploadUserImage(file),
     onSuccess: () => {
-      alert('이미지가 업로드되었습니다.');
+      toast.success('이미지가 업로드되었습니다.');
       setSelectedFile(null);
       queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
-    onError: (error) => {
-      console.error('이미지 업로드 실패:', error);
-      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+    onError: () => {
+      toast.error('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
     },
   });
 
-  const handleDeleteResume = async (resumeId: number, resumeTitle: string) => {
-    if (window.confirm(`"${resumeTitle}" 이력서를 삭제하시겠습니까?`)) {
-      try {
-        await deleteResumeMutation.mutateAsync(resumeId);
-        alert('이력서가 삭제되었습니다.');
-      } catch (error) {
-        console.error('이력서 삭제 실패:', error);
-        alert('이력서 삭제에 실패했습니다. 다시 시도해주세요.');
-      }
+  const handleDeleteResume = (resumeId: number, resumeTitle: string) => {
+    setConfirmDelete({ resumeId, title: resumeTitle });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDelete) return;
+    try {
+      await deleteResumeMutation.mutateAsync(confirmDelete.resumeId);
+      toast.success('이력서가 삭제되었습니다.');
+    } catch {
+      toast.error('이력서 삭제에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setConfirmDelete(null);
     }
   };
 
@@ -71,15 +77,10 @@ function UserProfileClient() {
 
   const handleUploadImage = async () => {
     if (!selectedFile) {
-      alert('파일을 선택해주세요.');
+      toast.error('파일을 선택해주세요.');
       return;
     }
-
-    try {
-      await uploadImageMutation.mutateAsync(selectedFile);
-    } catch (error) {
-      console.error('업로드 오류:', error);
-    }
+    await uploadImageMutation.mutateAsync(selectedFile);
   };
 
   // 프로필 정보 가져오기
@@ -288,6 +289,35 @@ function UserProfileClient() {
 
   return (
     <Layout>
+      {/* 이력서 삭제 확인 모달 */}
+      <Modal
+        isOpen={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        title="이력서 삭제"
+        size="sm"
+      >
+        <p className="text-sm text-slate-700 mb-6">
+          &ldquo;{confirmDelete?.title}&rdquo; 이력서를 삭제하시겠습니까?
+          <br />
+          <span className="text-slate-500 text-xs mt-1 block">삭제 후 복구할 수 없습니다.</span>
+        </p>
+        <div className="flex gap-3 justify-end">
+          <button
+            onClick={() => setConfirmDelete(null)}
+            className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors cursor-pointer"
+          >
+            취소
+          </button>
+          <button
+            onClick={handleConfirmDelete}
+            disabled={deleteResumeMutation.isPending}
+            className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            {deleteResumeMutation.isPending ? '삭제 중...' : '삭제'}
+          </button>
+        </div>
+      </Modal>
+
       <Header
         type={userType === 'company' ? 'business' : 'homepage'}
         isAuthenticated={isAuthenticated}
@@ -356,6 +386,64 @@ function UserProfileClient() {
           <div className="space-y-6">
             {activeTab === 'dashboard' && (
               <>
+                {/* 프로필 완성도 */}
+                {(() => {
+                  const items = [
+                    { label: '프로필 사진', done: !!resumeData.profileImage },
+                    { label: '이름', done: !!profileData?.name },
+                    { label: '거주 지역', done: !!profileData?.location },
+                    { label: '자기소개', done: !!resumeData.introduction },
+                    { label: '학력', done: resumeData.education.length > 0 },
+                    { label: '언어 능력', done: resumeData.languages.length > 0 },
+                    { label: '자격증', done: resumeData.certifications.length > 0 },
+                    { label: '연락처 링크', done: !!(contactData?.github_url || contactData?.linkedin_url || resumeData.portfolioUrl) },
+                  ];
+                  const done = items.filter(i => i.done).length;
+                  const pct = Math.round((done / items.length) * 100);
+
+                  return (
+                    <motion.div
+                      className="bg-white rounded-xl p-6 shadow-sm border border-slate-100"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-[15px] font-semibold text-slate-900">프로필 완성도</h3>
+                        <span className={`text-lg font-extrabold ${pct >= 80 ? 'text-blue-600' : pct >= 50 ? 'text-amber-500' : 'text-slate-400'}`}>
+                          {pct}%
+                        </span>
+                      </div>
+                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden mb-4">
+                        <motion.div
+                          className={`h-full rounded-full ${pct >= 80 ? 'bg-blue-600' : pct >= 50 ? 'bg-amber-500' : 'bg-slate-300'}`}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${pct}%` }}
+                          transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {items.map((item) => (
+                          <div
+                            key={item.label}
+                            className={`flex items-center gap-1.5 text-[12px] font-medium ${item.done ? 'text-slate-700' : 'text-slate-400'}`}
+                          >
+                            <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] shrink-0 ${item.done ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-400'}`}>
+                              {item.done ? '✓' : ''}
+                            </span>
+                            {item.label}
+                          </div>
+                        ))}
+                      </div>
+                      {pct < 100 && (
+                        <p className="mt-3 text-[12px] text-slate-400">
+                          {items.filter(i => !i.done).map(i => i.label).join(', ')}을(를) 완성하면 더 많은 기업에 노출됩니다.
+                        </p>
+                      )}
+                    </motion.div>
+                  );
+                })()}
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* 레이더 차트 */}
                   <motion.div
@@ -368,7 +456,7 @@ function UserProfileClient() {
                       종합 역량 분석
                     </h3>
                     <div className="flex justify-center">
-                      <RadarChart 
+                      <RadarChart
                         data={radarData}
                         averageData={averageRadarData}
                         size={350}
