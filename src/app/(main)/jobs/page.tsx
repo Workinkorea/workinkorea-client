@@ -1,4 +1,3 @@
-import React from 'react';
 import { Metadata } from 'next';
 import { createMetadata } from '@/shared/lib/metadata';
 import JobsListView from '@/features/jobs/pages/JobsListView';
@@ -12,7 +11,7 @@ export const metadata: Metadata = createMetadata({
 export default async function JobsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; q?: string; type?: string; sort?: string }>;
 }) {
   const params = await searchParams;
   const currentPage = parseInt(params.page || '1', 10);
@@ -22,6 +21,9 @@ export default async function JobsPage({
     <JobsListView
       initialData={initialData}
       currentPage={currentPage}
+      initialQ={params.q || ''}
+      initialType={params.type || '전체'}
+      initialSort={params.sort || 'latest'}
     />
   );
 }
