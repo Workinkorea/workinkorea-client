@@ -64,7 +64,7 @@ export const authApi = {
    * - 클라이언트는 cookieManager.clearAuth()로 Public Cookie만 정리
    */
   async logout(): Promise<LogoutResponse> {
-    return fetchClient.post<LogoutResponse>('/api/auth/logout');
+    return fetchClient.delete<LogoutResponse>('/api/auth/logout');
   },
 
   /**

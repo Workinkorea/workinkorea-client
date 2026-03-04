@@ -158,7 +158,6 @@ export function useFormPersist<T extends FieldValues>(
   useEffect(() => {
     const savedData = loadSavedData();
     if (savedData && onRestore) {
-      console.log('Restoring saved form data:', storageKey);
       onRestore(savedData);
     }
     // Only run on mount
