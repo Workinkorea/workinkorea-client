@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -370,12 +370,20 @@ function UserProfileClient() {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                  className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                     activeTab === tab.key
-                      ? 'bg-blue-600 text-white shadow-sm'
+                      ? 'text-white'
                       : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 >
+                  {activeTab === tab.key && (
+                    <motion.div
+                      layoutId="tab-bg"
+                      className="absolute inset-0 bg-blue-600 rounded-lg shadow-sm"
+                      style={{ zIndex: -1 }}
+                      transition={{ type: 'spring', stiffness: 340, damping: 28 }}
+                    />
+                  )}
                   {tab.label}
                 </button>
               ))}
@@ -383,7 +391,15 @@ function UserProfileClient() {
           </motion.div>
 
           {/* 탭 컨텐츠 */}
-          <div className="space-y-6">
+          <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            className="space-y-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22 }}
+          >
             {activeTab === 'dashboard' && (
               <>
                 {/* 프로필 완성도 */}
@@ -468,11 +484,8 @@ function UserProfileClient() {
             )}
 
             {activeTab === 'resume' && (
-              <motion.div
+              <div
                 className="bg-white rounded-lg p-6 shadow-sm"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
               >
                 <h3 className="text-lg font-semibold text-slate-900 mb-6">
                   이력서
@@ -543,7 +556,7 @@ function UserProfileClient() {
                     </button>
                   </div>
                 )}
-              </motion.div>
+              </div>
             )}
 
             {activeTab === 'skills' && (
@@ -556,11 +569,8 @@ function UserProfileClient() {
             )}
 
             {activeTab === 'career' && (
-              <motion.div
+              <div
                 className="bg-white rounded-lg p-6 shadow-sm"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
               >
                 <h3 className="text-lg font-semibold text-slate-900 mb-6">
                   경력 및 교육
@@ -596,9 +606,10 @@ function UserProfileClient() {
                     </div>
                   </div>
                 )}
-              </motion.div>
+              </div>
             )}
-          </div>
+          </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </Layout>

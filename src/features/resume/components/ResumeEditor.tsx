@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -409,8 +409,17 @@ function ResumeEditor({
             </button>
           </div>
 
+          <AnimatePresence>
           {introFields.map((field, index) => (
-            <div key={field.id} className="mb-4 p-4 border border-slate-100 rounded-lg">
+            <motion.div
+              key={field.id}
+              className="mb-4 p-4 border border-slate-100 rounded-lg"
+              initial={{ opacity: 0, height: 0, scale: 0.96 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              exit={{ opacity: 0, height: 0, scale: 0.96 }}
+              transition={{ duration: 0.22 }}
+              style={{ overflow: 'hidden' }}
+            >
               <div className="flex justify-between items-start mb-4">
                 <h4 className="text-sm font-semibold">자기소개 {index + 1}</h4>
                 <button
@@ -449,8 +458,9 @@ function ResumeEditor({
                   )}
                 />
               </div>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
 
         {/* 경력 */}
@@ -481,8 +491,17 @@ function ResumeEditor({
             </button>
           </div>
 
+          <AnimatePresence>
           {careerFields.map((field, index) => (
-            <div key={field.id} className="mb-6 p-4 border border-slate-100 rounded-lg">
+            <motion.div
+              key={field.id}
+              className="mb-6 p-4 border border-slate-100 rounded-lg"
+              initial={{ opacity: 0, height: 0, scale: 0.96 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              exit={{ opacity: 0, height: 0, scale: 0.96 }}
+              transition={{ duration: 0.22 }}
+              style={{ overflow: 'hidden' }}
+            >
               <div className="flex justify-between items-start mb-4">
                 <h4 className="text-sm font-semibold">경력 {index + 1}</h4>
                 <button
@@ -595,8 +614,9 @@ function ResumeEditor({
                   />
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
 
         {/* 학력 */}
@@ -625,8 +645,17 @@ function ResumeEditor({
             </button>
           </div>
 
+          <AnimatePresence>
           {schoolFields.map((field, index) => (
-            <div key={field.id} className="mb-6 p-4 border border-slate-100 rounded-lg">
+            <motion.div
+              key={field.id}
+              className="mb-6 p-4 border border-slate-100 rounded-lg"
+              initial={{ opacity: 0, height: 0, scale: 0.96 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              exit={{ opacity: 0, height: 0, scale: 0.96 }}
+              transition={{ duration: 0.22 }}
+              style={{ overflow: 'hidden' }}
+            >
               <div className="flex justify-between items-start mb-4">
                 <h4 className="text-sm font-semibold">학력 {index + 1}</h4>
                 <button
@@ -709,8 +738,9 @@ function ResumeEditor({
                   />
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
 
         {/* 언어 능력 */}
@@ -733,8 +763,17 @@ function ResumeEditor({
             </button>
           </div>
 
+          <AnimatePresence>
           {languageFields.map((field, index) => (
-            <div key={field.id} className="mb-4 p-4 border border-slate-100 rounded-lg">
+            <motion.div
+              key={field.id}
+              className="mb-4 p-4 border border-slate-100 rounded-lg"
+              initial={{ opacity: 0, height: 0, scale: 0.96 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              exit={{ opacity: 0, height: 0, scale: 0.96 }}
+              transition={{ duration: 0.22 }}
+              style={{ overflow: 'hidden' }}
+            >
               <div className="flex justify-between items-start mb-4">
                 <h4 className="text-sm font-semibold">언어 {index + 1}</h4>
                 <button
@@ -796,8 +835,9 @@ function ResumeEditor({
                   )}
                 />
               </div>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
 
         {/* 자격증 */}
@@ -820,8 +860,17 @@ function ResumeEditor({
             </button>
           </div>
 
+          <AnimatePresence>
           {licenseFields.map((field, index) => (
-            <div key={field.id} className="mb-4 p-4 border border-slate-100 rounded-lg">
+            <motion.div
+              key={field.id}
+              className="mb-4 p-4 border border-slate-100 rounded-lg"
+              initial={{ opacity: 0, height: 0, scale: 0.96 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              exit={{ opacity: 0, height: 0, scale: 0.96 }}
+              transition={{ duration: 0.22 }}
+              style={{ overflow: 'hidden' }}
+            >
               <div className="flex justify-between items-start mb-4">
                 <h4 className="text-sm font-semibold">자격증 {index + 1}</h4>
                 <button
@@ -874,8 +923,9 @@ function ResumeEditor({
                   )}
                 />
               </div>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
       </div>
 
