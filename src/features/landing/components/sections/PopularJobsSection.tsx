@@ -1,5 +1,9 @@
+'use client';
+
 import { MapPin, Clock, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 
 export default function PopularJobsSection() {
   // TODO: 인기 공고 API가 준비되면 교체 필요
@@ -70,86 +74,149 @@ export default function PopularJobsSection() {
   const postsData = mockPopularPosts;
   const isLoading = false;
 
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
+
+  const containerVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.08 } },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 32 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] },
+    },
+  };
+
+  const headerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] },
+    },
+  };
+
   return (
-    <section className="py-12 md:py-16 bg-white">
+    <section className="py-12 md:py-16 bg-white" ref={ref}>
       <div className="flex flex-col justify-center px-4 sm:px-6 lg:px-8">
         {/* 섹션 헤더 */}
-        <div className="text-center mb-8 md:mb-12">
+        <motion.div
+          className="text-center mb-8 md:mb-12"
+          variants={headerVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+        >
           <h2 className="text-[24px] md:text-[28px] font-extrabold text-slate-900 mb-3 md:mb-4">
             인기 공고
           </h2>
           <p className="text-[13px] md:text-base text-slate-500">
             지금 가장 주목받는 기업들의 채용공고입니다
           </p>
-        </div>
+        </motion.div>
 
         {/* 공고 그리드 */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+          /* Skeleton shimmer */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="bg-white border border-slate-200 rounded-xl p-4 md:p-6 overflow-hidden"
+              >
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg skeleton-shimmer shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 rounded skeleton-shimmer w-3/4" />
+                    <div className="h-3 rounded skeleton-shimmer w-1/2" />
+                  </div>
+                </div>
+                <div className="space-y-2 mb-4">
+                  <div className="h-4 rounded skeleton-shimmer w-full" />
+                  <div className="h-4 rounded skeleton-shimmer w-4/5" />
+                </div>
+                <div className="space-y-1.5">
+                  <div className="h-3 rounded skeleton-shimmer w-2/3" />
+                  <div className="h-4 rounded skeleton-shimmer w-1/3" />
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <div className="h-5 w-16 rounded skeleton-shimmer" />
+                  <div className="h-5 w-16 rounded skeleton-shimmer" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12"
+            variants={containerVariants}
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
+          >
             {postsData && postsData.length > 0 ? (
               postsData.map((post) => {
                 const isRecent = new Date(post.start_date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
                 const language = post.language ? post.language.split(',').map(l => l.trim()) : [];
 
                 return (
-                  <Link
-                    key={post.id}
-                    href={`/jobs/${post.id}`}
-                    className="bg-white border border-slate-200 rounded-xl p-4 md:p-6 hover:shadow-lg transition-shadow cursor-pointer group"
-                  >
-                    {/* 회사명과 시간 */}
-                    <div className="flex items-start justify-between mb-3 md:mb-4">
-                      <div className="flex items-center gap-2 md:gap-3">
-                        <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white font-bold text-sm md:text-base shrink-0">
-                          {post.company_id}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-sm md:text-[17px] text-slate-900 group-hover:text-blue-600 transition-colors">
-                            회사 #{post.company_id}
-                          </h3>
-                          {isRecent && (
-                            <span className="inline-flex items-center gap-1 text-xs md:text-sm text-blue-600">
-                              <Clock className="w-3 h-3 md:w-4 md:h-4" />
-                              신규
-                            </span>
-                          )}
+                  <motion.div key={post.id} variants={cardVariants}>
+                    <Link
+                      href={`/jobs/${post.id}`}
+                      className="block bg-white border border-slate-200 rounded-xl p-4 md:p-6 transition-all duration-200 cursor-pointer group hover:border-blue-200 hover:shadow-lg"
+                    >
+                      {/* 회사명과 시간 */}
+                      <div className="flex items-start justify-between mb-3 md:mb-4">
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white font-bold text-sm md:text-base shrink-0">
+                            {post.company_id}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-sm md:text-[17px] text-slate-900 group-hover:text-blue-600 transition-colors">
+                              회사 #{post.company_id}
+                            </h3>
+                            {isRecent && (
+                              <span className="inline-flex items-center gap-1 text-xs md:text-sm text-blue-600">
+                                <Clock className="w-3 h-3 md:w-4 md:h-4" />
+                                신규
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* 포지션 */}
-                    <h4 className="text-sm md:text-[17px] font-medium text-slate-900 mb-2 md:mb-3 line-clamp-2">
-                      {post.title}
-                    </h4>
+                      {/* 포지션 */}
+                      <h4 className="text-sm md:text-[17px] font-medium text-slate-900 mb-2 md:mb-3 line-clamp-2">
+                        {post.title}
+                      </h4>
 
-                    {/* 위치와 급여 */}
-                    <div className="space-y-1.5 md:space-y-2 mb-3 md:mb-4">
-                      <div className="flex items-center gap-1.5 md:gap-2 text-slate-500">
-                        <MapPin className="w-3 h-3 md:w-4 md:h-4 shrink-0" />
-                        <span className="text-xs md:text-sm">{post.work_location}</span>
-                        <span className="text-xs md:text-sm">• {post.employment_type}</span>
+                      {/* 위치와 급여 */}
+                      <div className="space-y-1.5 md:space-y-2 mb-3 md:mb-4">
+                        <div className="flex items-center gap-1.5 md:gap-2 text-slate-500">
+                          <MapPin className="w-3 h-3 md:w-4 md:h-4 shrink-0" />
+                          <span className="text-xs md:text-sm">{post.work_location}</span>
+                          <span className="text-xs md:text-sm">• {post.employment_type}</span>
+                        </div>
+                        <p className="text-blue-600 font-semibold text-sm md:text-[15px]">
+                          {post.salary ? `${post.salary.toLocaleString()}원` : '연봉 협의'}
+                        </p>
                       </div>
-                      <p className="text-blue-600 font-semibold text-sm md:text-[15px]">
-                        {post.salary ? `${post.salary.toLocaleString()}원` : '연봉 협의'}
-                      </p>
-                    </div>
 
-                    {/* 태그 */}
-                    <div className="flex flex-wrap gap-1.5 md:gap-2">
-                      {language.slice(0, 3).map((lang, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-0.5 md:py-1 bg-slate-100 text-slate-600 text-[11px] md:text-xs rounded-md"
-                        >
-                          {lang}
-                        </span>
-                      ))}
-                    </div>
-                  </Link>
+                      {/* 태그 */}
+                      <div className="flex flex-wrap gap-1.5 md:gap-2">
+                        {language.slice(0, 3).map((lang, index) => (
+                          <span
+                            key={index}
+                            className="px-2 py-0.5 md:py-1 bg-slate-100 text-slate-600 text-[11px] md:text-xs rounded-md"
+                          >
+                            {lang}
+                          </span>
+                        ))}
+                      </div>
+                    </Link>
+                  </motion.div>
                 );
               })
             ) : (
@@ -157,19 +224,30 @@ export default function PopularJobsSection() {
                 <p className="text-slate-500 text-sm">등록된 공고가 없습니다.</p>
               </div>
             )}
-          </div>
+          </motion.div>
         )}
 
         {/* 더 보기 버튼 */}
-        <div className="text-center">
-          <Link
-            href="/jobs"
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-lg font-medium transition-colors text-sm md:text-base cursor-pointer"
+        <motion.div
+          className="text-center"
+          variants={headerVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+        >
+          <motion.div
+            className="inline-block"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
           >
-            더 많은 공고 보기
-            <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
+            <Link
+              href="/jobs"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-lg font-medium transition-colors text-sm md:text-base cursor-pointer"
+            >
+              더 많은 공고 보기
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
