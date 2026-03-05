@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { MapPin, Clock, Building2, Bookmark } from 'lucide-react';
 import type { CompanyPost } from '@/shared/types/api';
 import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
+import { motion, useAnimation } from 'framer-motion';
 
 interface JobCardProps {
   post: CompanyPost;
@@ -17,25 +18,51 @@ function getDaysLeft(endDate: string): number | null {
 
 export default function JobCard({ post }: JobCardProps) {
   const { toggle, isBookmarked } = useBookmarks();
+  const bookmarkControls = useAnimation();
+
   const isRecent = new Date(post.start_date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const daysLeft = getDaysLeft(post.end_date);
   const isUrgent = daysLeft !== null && daysLeft >= 0 && daysLeft <= 3;
   const isExpired = daysLeft !== null && daysLeft < 0;
   const language = post.language ? post.language.split(',').map(l => l.trim()) : [];
+  const bookmarked = isBookmarked(post.id);
+
+  const handleBookmark = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle(post.id);
+    await bookmarkControls.start({
+      rotate: [0, -15, 360],
+      scale: [1, 1.3, 1],
+      transition: { duration: 0.45, ease: 'easeInOut' },
+    });
+    bookmarkControls.set({ rotate: 0 });
+  };
 
   return (
-    <div className="relative bg-white border border-slate-200 rounded-xl p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-200 group">
+    <motion.div
+      className="relative bg-white border border-slate-200 rounded-xl p-6 group hover:border-blue-200 hover:shadow-lg transition-colors duration-200"
+      whileHover={{ y: -4, scale: 1.015 }}
+      transition={{ type: 'spring', stiffness: 320, damping: 25 }}
+    >
       {/* 북마크 버튼 */}
-      <button
-        onClick={() => toggle(post.id)}
-        className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer focus:outline-none"
-        aria-label={isBookmarked(post.id) ? '북마크 해제' : '북마크 추가'}
+      <motion.button
+        onClick={handleBookmark}
+        className="absolute top-4 right-4 p-1.5 rounded-lg cursor-pointer focus:outline-none"
+        whileHover={{ backgroundColor: '#EFF6FF', scale: 1.1 }}
+        whileTap={{ scale: 0.85 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+        aria-label={bookmarked ? '북마크 해제' : '북마크 추가'}
       >
-        <Bookmark
-          size={18}
-          className={isBookmarked(post.id) ? 'fill-blue-600 text-blue-600' : ''}
-        />
-      </button>
+        <motion.div animate={bookmarkControls}>
+          <Bookmark
+            size={18}
+            className={`transition-colors duration-200 ${
+              bookmarked ? 'fill-blue-600 text-blue-600' : 'text-slate-400'
+            }`}
+          />
+        </motion.div>
+      </motion.button>
 
       <Link href={`/jobs/${post.id}`} className="block">
         {/* 회사 정보 */}
@@ -49,15 +76,23 @@ export default function JobCard({ post }: JobCardProps) {
             </h3>
             <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
               {isRecent && (
-                <span className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium">
+                <motion.span
+                  className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium"
+                  animate={{ opacity: [1, 0.45, 1] }}
+                  transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+                >
                   <Clock className="w-3 h-3" />
                   신규
-                </span>
+                </motion.span>
               )}
               {isUrgent && (
-                <span className="inline-flex items-center text-xs text-red-500 font-semibold">
+                <motion.span
+                  className="inline-flex items-center text-xs text-red-500 font-semibold"
+                  animate={{ x: [0, -2, 2, -2, 2, 0] }}
+                  transition={{ duration: 0.35, repeat: Infinity, repeatDelay: 2.5 }}
+                >
                   마감 D-{daysLeft}
-                </span>
+                </motion.span>
               )}
               {isExpired && (
                 <span className="text-xs text-slate-400 font-medium">마감</span>
@@ -67,7 +102,7 @@ export default function JobCard({ post }: JobCardProps) {
         </div>
 
         {/* 포지션 */}
-        <h4 className="text-[17px] font-medium text-slate-900 mb-3 line-clamp-2">
+        <h4 className="text-[17px] font-medium text-slate-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
           {post.title}
         </h4>
 
@@ -95,6 +130,6 @@ export default function JobCard({ post }: JobCardProps) {
           ))}
         </div>
       </Link>
-    </div>
+    </motion.div>
   );
 }
