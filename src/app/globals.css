@@ -292,3 +292,9 @@ body {
 .react-datepicker__navigation--next {
   border-left-color: var(--color-label-600);
 }
+
+/* ─── 커서 깜빡임 ─── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
