@@ -62,6 +62,16 @@ const BUSINESS_SECTIONS = [
   },
 ];
 
+const panelContentVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.15 } },
+};
+
+const panelItemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.28 } },
+};
+
 export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -143,10 +153,15 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
               </div>
 
               {/* 스크롤 가능한 본문 */}
-              <div className="flex-1 overflow-y-auto">
+              <motion.div
+                className="flex-1 overflow-y-auto"
+                variants={panelContentVariants}
+                initial="hidden"
+                animate="visible"
+              >
 
                 {/* 자주 찾는 메뉴 */}
-                <div className="px-5 pt-6 pb-5">
+                <motion.div className="px-5 pt-6 pb-5" variants={panelItemVariants}>
                   <p className="text-[13px] font-bold text-slate-900 mb-3">
                     자주 찾는 메뉴예요
                   </p>
@@ -163,13 +178,13 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                       </Link>
                     ))}
                   </div>
-                </div>
+                </motion.div>
 
-                <div className="h-px bg-slate-100 mx-5" />
+                <motion.div className="h-px bg-slate-100 mx-5" variants={panelItemVariants} />
 
                 {/* 섹션별 2열 메뉴 */}
                 {sections.map((section, si) => (
-                  <div key={section.title}>
+                  <motion.div key={section.title} variants={panelItemVariants}>
                     {si > 0 && <div className="h-px bg-slate-100 mx-5" />}
                     <div className="px-5 pt-5 pb-3">
                       <p className="text-[13px] font-bold text-slate-900 mb-3">
@@ -191,13 +206,13 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                         ))}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
 
-                <div className="h-px bg-slate-100 mx-5" />
+                <motion.div className="h-px bg-slate-100 mx-5" variants={panelItemVariants} />
 
                 {/* 인증 링크 */}
-                <div className="px-5 py-3">
+                <motion.div className="px-5 py-3" variants={panelItemVariants}>
                   {isAuthenticated ? (
                     <>
                       <Link
@@ -236,9 +251,9 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                       </Link>
                     </>
                   )}
-                </div>
+                </motion.div>
 
-              </div>
+              </motion.div>
 
               {/* 하단 브랜드 */}
               <div className="px-5 py-4 border-t border-slate-100 flex-shrink-0">

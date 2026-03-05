@@ -161,13 +161,15 @@ export function Modal({
                       )}
 
                       {showCloseButton && (
-                        <button
+                        <motion.button
                           onClick={onClose}
                           className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                           aria-label="모달 닫기"
+                          whileHover={{ rotate: 90 }}
+                          transition={{ type: 'spring', stiffness: 320, damping: 20 }}
                         >
                           <X size={20} />
-                        </button>
+                        </motion.button>
                       )}
                     </div>
                   )}
