@@ -1,6 +1,9 @@
-import { forwardRef, InputHTMLAttributes, ReactNode } from 'react';
+'use client';
+
+import { forwardRef, InputHTMLAttributes, ReactNode, useEffect, useRef } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/shared/lib/utils/utils';
+import { motion, useAnimation } from 'framer-motion';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   variant?: 'default' | 'password';
@@ -24,6 +27,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     value,
     ...props
   }, ref) => {
+    const controls = useAnimation();
+    const prevError = useRef(error);
+
+    useEffect(() => {
+      if (error && !prevError.current) {
+        controls.start({
+          x: [0, -5, 5, -5, 5, -3, 3, 0],
+          transition: { duration: 0.4, ease: 'easeInOut' },
+        });
+      }
+      prevError.current = error;
+    }, [error, controls]);
+
     const inputType = variant === 'password'
       ? (showPassword ? 'text' : 'password')
       : type;
@@ -52,7 +68,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const safeValue = value === null ? '' : value;
 
     return (
-      <div className="relative">
+      <motion.div className="relative" animate={controls}>
         <input
           type={inputType}
           className={inputClasses}
@@ -76,7 +92,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {rightElement}
           </div>
         )}
-      </div>
+      </motion.div>
     );
   }
 );

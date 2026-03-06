@@ -168,7 +168,6 @@ function MyProfileClient() {
 
         return resumes;
       } catch (err) {
-        console.error('이력서 목록 로드 실패:', err);
         // 에러 시 빈 배열 반환
         return [];
       }
@@ -506,7 +505,6 @@ function MyProfileClient() {
                         queryClient.invalidateQueries({ queryKey: ['resumes'] });
                         toast.success(`이력서 파일이 업로드되었습니다. (ID: ${response.resume_id})`);
                       } catch (err) {
-                        console.error('이력서 파일 업로드 실패:', err);
                         throw err; // ResumeSection에서 에러 처리
                       }
                     }}
@@ -524,7 +522,6 @@ function MyProfileClient() {
                         queryClient.invalidateQueries({ queryKey: ['resumes'] });
                         toast.success('이력서가 삭제되었습니다.');
                       } catch (err) {
-                        console.error('이력서 삭제 실패:', err);
                         toast.error('이력서 삭제에 실패했습니다.');
                       }
                     }}

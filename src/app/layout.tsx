@@ -7,6 +7,7 @@ import "./globals.css";
 import ReactQueryProvider from "@/shared/lib/providers/QueryProvider";
 import { Toaster } from 'sonner';
 import Script from 'next/script';
+import { BackToTop } from '@/shared/ui/BackToTop';
 
 export const metadata: Metadata = defaultMetadata;
 
@@ -27,6 +28,7 @@ export default function RootLayout({
           {children}
         </ReactQueryProvider>
         <div id="modal-root"></div>
+        <BackToTop />
         <Toaster
           richColors
           position='top-center'

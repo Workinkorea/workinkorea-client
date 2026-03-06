@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 const footerLinks = [
   { name: '채용공고 찾아보기', href: '/jobs' },
@@ -17,9 +20,15 @@ export default function Footer() {
           <Link
             key={link.name}
             href={link.href}
-            className="text-[13px] text-slate-500 hover:text-slate-800 transition-colors"
+            className="relative text-[13px] text-slate-500 hover:text-slate-800 transition-colors group"
           >
             {link.name}
+            <motion.span
+              className="absolute bottom-0 left-0 h-px bg-slate-500 w-full origin-left"
+              initial={{ scaleX: 0 }}
+              whileHover={{ scaleX: 1 }}
+              transition={{ duration: 0.22 }}
+            />
           </Link>
         ))}
       </div>

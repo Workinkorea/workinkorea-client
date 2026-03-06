@@ -341,7 +341,6 @@ function ProfileEditClient() {
           }
         }
       } catch (error) {
-        console.error('섹션 데이터 로드 실패:', error);
         // API 호출 실패 시 빈 폼 유지 (placeholder만 표시)
         if (activeSection === 'contact') {
           contactForm.reset({

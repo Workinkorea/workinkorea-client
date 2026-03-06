@@ -171,7 +171,7 @@ export default function BusinessLoginForm() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-[28px] text-slate-900 mb-8">기업 로그인</h1>
+          <h1 className="text-title-2 text-slate-900 mb-8">기업 로그인</h1>
         </motion.div>
 
         <motion.form
