@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import BusinessSignupComponent from '@/features/auth/components/BusinessSignupComponent';
 
 export default function CompanySignupPage() {
-  redirect('/company-signup/step1');
+  return <BusinessSignupComponent />;
 }
