@@ -9,9 +9,21 @@ import { toast } from 'sonner';
 import Layout from '@/shared/components/layout/Layout';
 import { Header } from '@/shared/components/layout/Header';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
-import SkillBarChart from '@/features/user/components/SkillBarChart';
-import RadarChart from '@/shared/ui/RadarChart';
-import { ResumeSection } from '@/features/user/components/ResumeSection';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/shared/ui/Skeleton';
+
+const SkillBarChart = dynamic(() => import('@/features/user/components/SkillBarChart'), {
+  loading: () => <Skeleton className="h-64 w-full" />,
+  ssr: false,
+});
+const RadarChart = dynamic(() => import('@/shared/ui/RadarChart'), {
+  loading: () => <Skeleton variant="circle" className="w-[350px] h-[350px] mx-auto" />,
+  ssr: false,
+});
+const ResumeSection = dynamic(
+  () => import('@/features/user/components/ResumeSection').then(m => ({ default: m.ResumeSection })),
+  { loading: () => <Skeleton className="h-48 w-full" />, ssr: false }
+);
 import { UserProfile, RadarChartData, Resume } from '@/features/user/types/user';
 import { profileApi } from '../api/profileApi';
 import { resumeApi } from '@/features/resume/api/resumeApi';

@@ -8,8 +8,17 @@ import { toast } from 'sonner';
 import Layout from '@/shared/components/layout/Layout';
 import { Header } from '@/shared/components/layout/Header';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
-import SkillBarChart from '@/features/user/components/SkillBarChart';
-import RadarChart from '@/shared/ui/RadarChart';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/shared/ui/Skeleton';
+
+const SkillBarChart = dynamic(() => import('@/features/user/components/SkillBarChart'), {
+  loading: () => <Skeleton className="h-64 w-full" />,
+  ssr: false,
+});
+const RadarChart = dynamic(() => import('@/shared/ui/RadarChart'), {
+  loading: () => <Skeleton variant="circle" className="w-[350px] h-[350px] mx-auto" />,
+  ssr: false,
+});
 import { Modal } from '@/shared/ui/Modal';
 import { UserProfile, RadarChartData, UserSkill } from '@/features/user/types/user';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -238,11 +247,11 @@ function UserProfileClient() {
       />
         <div className="min-h-screen bg-slate-50 py-8">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="animate-pulse space-y-6">
-              <div className="bg-white rounded-lg h-64"></div>
+            <div className="space-y-6">
+              <div className="skeleton-shimmer rounded-lg h-64"></div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg h-96"></div>
-                <div className="bg-white rounded-lg h-96"></div>
+                <div className="skeleton-shimmer rounded-lg h-96"></div>
+                <div className="skeleton-shimmer rounded-lg h-96"></div>
               </div>
             </div>
           </div>
