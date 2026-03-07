@@ -77,7 +77,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
 
           {isLoadingResumes ? (
             <div className="space-y-2">
-              {[1, 2].map(i => <div key={i} className="h-14 bg-slate-100 rounded-lg animate-pulse" />)}
+              {[1, 2].map(i => <div key={i} className="h-14 skeleton-shimmer rounded-lg" />)}
             </div>
           ) : resumes.length > 0 ? (
             <div className="space-y-2 max-h-64 overflow-y-auto">

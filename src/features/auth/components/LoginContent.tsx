@@ -61,15 +61,10 @@ export default function LoginContent() {
           </motion.button>
 
           <div className="pt-4">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-slate-500">
-                  기업 회원이신가요?
-                </span>
-              </div>
+            <div className="flex items-center gap-3 text-sm">
+              <div className="flex-1 border-t border-slate-200" />
+              <span className="text-slate-500 whitespace-nowrap">기업 회원이신가요?</span>
+              <div className="flex-1 border-t border-slate-200" />
             </div>
           </div>
 

@@ -675,7 +675,7 @@ function ProfileEditClient() {
           label="소개"
           error={basicForm.formState.errors.introduction?.message}
           render={(field, fieldId) => (
-            <div className="relative">
+            <div>
               <textarea
                 {...field}
                 id={fieldId}
@@ -688,7 +688,7 @@ function ProfileEditClient() {
                   basicForm.formState.errors.introduction && "border-red-500 focus:ring-red-500"
                 )}
               />
-              <div className="absolute bottom-2 right-2 text-[11px] text-slate-400">
+              <div className="text-right text-[11px] text-slate-400 mt-1">
                 {field.value?.length || 0}/500
               </div>
             </div>

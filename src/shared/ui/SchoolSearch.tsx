@@ -75,16 +75,16 @@ const SchoolSearch: React.FC<SchoolSearchProps> = ({
 
   return (
     <div ref={containerRef} className="relative">
-      <div className="relative">
+      <div className={`flex items-center border border-slate-200 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 bg-white ${className}`}>
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
           onFocus={() => searchTerm.length >= 2 && setIsOpen(true)}
           placeholder={placeholder}
-          className={`w-full px-3 py-2 pr-20 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
+          className="flex-1 min-w-0 px-3 py-2 bg-transparent outline-none text-sm placeholder:text-slate-400"
         />
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+        <div className="flex items-center gap-1 pr-2 shrink-0">
           {searchTerm && (
             <button
               type="button"

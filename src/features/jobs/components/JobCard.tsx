@@ -41,36 +41,17 @@ export default function JobCard({ post }: JobCardProps) {
 
   return (
     <motion.div
-      className="relative bg-white border border-slate-200 rounded-xl p-6 group hover:border-blue-200 hover:shadow-lg transition-colors duration-200"
+      className="bg-white border border-slate-200 rounded-xl p-6 group hover:border-blue-200 hover:shadow-lg transition-colors duration-200"
       whileHover={{ y: -4, scale: 1.015 }}
       transition={{ type: 'spring', stiffness: 320, damping: 25 }}
     >
-      {/* 북마크 버튼 */}
-      <motion.button
-        onClick={handleBookmark}
-        className="absolute top-4 right-4 p-1.5 rounded-lg cursor-pointer focus:outline-none"
-        whileHover={{ backgroundColor: '#EFF6FF', scale: 1.1 }}
-        whileTap={{ scale: 0.85 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-        aria-label={bookmarked ? '북마크 해제' : '북마크 추가'}
-      >
-        <motion.div animate={bookmarkControls}>
-          <Bookmark
-            size={18}
-            className={`transition-colors duration-200 ${
-              bookmarked ? 'fill-blue-600 text-blue-600' : 'text-slate-400'
-            }`}
-          />
-        </motion.div>
-      </motion.button>
-
       <Link href={`/jobs/${post.id}`} className="block">
-        {/* 회사 정보 */}
-        <div className="flex items-start gap-3 mb-4 pr-8">
+        {/* 회사 정보 + 북마크 */}
+        <div className="flex items-start gap-3 mb-4">
           <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white shrink-0">
             <Building2 className="w-6 h-6" />
           </div>
-          <div>
+          <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-[15px] text-slate-700 group-hover:text-blue-600 transition-colors">
               기업 채용공고
             </h3>
@@ -99,6 +80,24 @@ export default function JobCard({ post }: JobCardProps) {
               )}
             </div>
           </div>
+          {/* 북마크 버튼 */}
+          <motion.button
+            onClick={handleBookmark}
+            className="shrink-0 p-1.5 rounded-lg cursor-pointer focus:outline-none"
+            whileHover={{ backgroundColor: '#EFF6FF', scale: 1.1 }}
+            whileTap={{ scale: 0.85 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            aria-label={bookmarked ? '북마크 해제' : '북마크 추가'}
+          >
+            <motion.div animate={bookmarkControls}>
+              <Bookmark
+                size={18}
+                className={`transition-colors duration-200 ${
+                  bookmarked ? 'fill-blue-600 text-blue-600' : 'text-slate-400'
+                }`}
+              />
+            </motion.div>
+          </motion.button>
         </div>
 
         {/* 포지션 */}

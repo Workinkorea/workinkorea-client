@@ -286,50 +286,52 @@ export default function BusinessSignupStep2({
                 label="사업자등록번호 (ID)"
                 error={errors.businessNumber?.message}
                 render={(field, fieldId) => (
-                  <div className="flex gap-2">
-                    <input
-                      {...field}
-                      id={fieldId}
-                      type="text"
-                      className="flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                      placeholder="-제외 10자리 입력"
-                      maxLength={12}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, '');
-                        const formattedValue = formatBusinessNumber(value);
-                        field.onChange(formattedValue);
-                        setFormState(prev => ({
-                          ...prev,
-                          isBusinessNumberVerified: false,
-                          businessNumberMessage: '',
-                          companyInfo: null,
-                        }));
-                        clearErrors('businessNumber');
-                      }}
-                    />
-                    <motion.button
-                      type="button"
-                      onClick={() => field.value && handleBusinessNumberCheck(field.value)}
-                      disabled={!field.value || !isValidBusinessNumber(field.value) || formState.isVerifying || formState.isBusinessNumberVerified}
-                      className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
-                        formState.isVerifying
-                          ? 'bg-blue-500 text-white cursor-not-allowed'
-                          : field.value && isValidBusinessNumber(field.value)
-                            ? formState.isBusinessNumberVerified
-                              ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                              : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-                            : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                      }`}
-                      whileTap={field.value && isValidBusinessNumber(field.value) && !formState.isBusinessNumberVerified && !formState.isVerifying ? { scale: 0.95 } : {}}
-                    >
-                      {formState.isVerifying ? (
-                        <>
-                          <Loader2 size={14} className="animate-spin" />
-                          인증 중
-                        </>
-                      ) : formState.isBusinessNumberVerified ? '인증완료' : '인증하기'}
-                    </motion.button>
-                    <p className='absolute top-0 right-0 underline text-xs hover:text-slate-700 cursor-pointer'
+                  <div className="space-y-1.5">
+                    <div className="flex gap-2">
+                      <input
+                        {...field}
+                        id={fieldId}
+                        type="text"
+                        className="flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                        placeholder="-제외 10자리 입력"
+                        maxLength={12}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '');
+                          const formattedValue = formatBusinessNumber(value);
+                          field.onChange(formattedValue);
+                          setFormState(prev => ({
+                            ...prev,
+                            isBusinessNumberVerified: false,
+                            businessNumberMessage: '',
+                            companyInfo: null,
+                          }));
+                          clearErrors('businessNumber');
+                        }}
+                      />
+                      <motion.button
+                        type="button"
+                        onClick={() => field.value && handleBusinessNumberCheck(field.value)}
+                        disabled={!field.value || !isValidBusinessNumber(field.value) || formState.isVerifying || formState.isBusinessNumberVerified}
+                        className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
+                          formState.isVerifying
+                            ? 'bg-blue-500 text-white cursor-not-allowed'
+                            : field.value && isValidBusinessNumber(field.value)
+                              ? formState.isBusinessNumberVerified
+                                ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                                : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                              : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                        }`}
+                        whileTap={field.value && isValidBusinessNumber(field.value) && !formState.isBusinessNumberVerified && !formState.isVerifying ? { scale: 0.95 } : {}}
+                      >
+                        {formState.isVerifying ? (
+                          <>
+                            <Loader2 size={14} className="animate-spin" />
+                            인증 중
+                          </>
+                        ) : formState.isBusinessNumberVerified ? '인증완료' : '인증하기'}
+                      </motion.button>
+                    </div>
+                    <p className='text-right text-xs underline hover:text-slate-700 cursor-pointer'
                       onClick={() => window.open(
                         "https://github.com/Workinkorea/workinkorea-client",
                         "_blank"

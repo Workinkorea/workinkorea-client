@@ -159,7 +159,7 @@ const SelfDiagnosisClient = () => {
                   }
                 }}
                 render={(field, fieldId) => (
-                  <div className="relative">
+                  <div className="flex items-center border border-slate-200 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 bg-white">
                     <input
                       {...field}
                       id={fieldId}
@@ -170,11 +170,9 @@ const SelfDiagnosisClient = () => {
                         const value = e.target.value.replace(/\D/g, '');
                         field.onChange(value);
                       }}
-                      className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 min-w-0 px-4 py-3 text-sm bg-transparent outline-none"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-slate-500">
-                      만원
-                    </span>
+                    <span className="pr-4 text-sm text-slate-500 shrink-0">만원</span>
                   </div>
                 )}
               />
