@@ -108,10 +108,24 @@ const DiagnosisResultClient = () => {
           isLoading={isLoading}
           onLogout={handleLogout}
         />
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-sm text-slate-500">결과를 분석하는 중...</p>
+        <div className="min-h-screen bg-slate-50 py-8">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div className="bg-white rounded-xl p-8 shadow-sm text-center space-y-4">
+              <div className="skeleton-shimmer rounded-full w-32 h-32 mx-auto" />
+              <div className="skeleton-shimmer h-8 w-48 rounded mx-auto" />
+              <div className="skeleton-shimmer h-4 w-64 rounded mx-auto" />
+              <p className="text-[13px] text-slate-400 mt-2">결과를 분석하는 중...</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-xl p-6 shadow-sm space-y-3">
+                  <div className="skeleton-shimmer h-5 w-32 rounded" />
+                  {Array.from({ length: 3 }).map((_, j) => (
+                    <div key={j} className="skeleton-shimmer h-4 w-full rounded" />
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </Layout>
@@ -138,8 +152,8 @@ const DiagnosisResultClient = () => {
             <h1 className="text-[20px] md:text-[28px] font-bold text-slate-900 mb-4">
               진단 결과가 나왔어요! 🎉
             </h1>
-            <div className="relative inline-block">
-              <svg className="transform -rotate-90 w-40 h-40">
+            <div className="inline-grid w-40 h-40">
+              <svg className="col-start-1 row-start-1 transform -rotate-90 w-40 h-40">
                 <circle
                   cx="80"
                   cy="80"
@@ -162,8 +176,8 @@ const DiagnosisResultClient = () => {
                   transition={{ duration: 1.5, ease: 'easeOut' }}
                 />
               </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div>
+              <div className="col-start-1 row-start-1 flex items-center justify-center">
+                <div className="text-center">
                   <div className="text-4xl font-bold text-blue-600">{result.score}%</div>
                   <div className="text-xs text-slate-500">준비도</div>
                 </div>

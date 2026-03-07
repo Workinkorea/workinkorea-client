@@ -144,14 +144,14 @@ export default function JobsListView({
 
           {/* 검색 & 필터 바 */}
           <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6 space-y-3">
-            <div className="relative">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3 focus-within:border-blue-500 focus-within:ring-[3px] focus-within:ring-blue-100 transition-colors bg-white">
+              <Search size={18} className="text-slate-400 shrink-0" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => handleSearch(e.target.value)}
                 placeholder="직무명, 근무지 검색..."
-                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
+                className="flex-1 min-w-0 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none bg-transparent"
               />
             </div>
 
@@ -202,21 +202,21 @@ export default function JobsListView({
           {isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl p-6 border border-slate-200 animate-pulse">
+                <div key={i} className="bg-white rounded-xl p-6 border border-slate-200 overflow-hidden">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 bg-slate-200 rounded-lg shrink-0" />
+                    <div className="w-12 h-12 skeleton-shimmer rounded-lg shrink-0" />
                     <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-slate-200 rounded w-3/4" />
-                      <div className="h-3 bg-slate-100 rounded w-1/2" />
+                      <div className="h-4 skeleton-shimmer rounded w-3/4" />
+                      <div className="h-3 skeleton-shimmer rounded w-1/2" />
                     </div>
                   </div>
                   <div className="space-y-2 mb-4">
-                    <div className="h-3 bg-slate-100 rounded w-full" />
-                    <div className="h-3 bg-slate-100 rounded w-5/6" />
+                    <div className="h-3 skeleton-shimmer rounded w-full" />
+                    <div className="h-3 skeleton-shimmer rounded w-5/6" />
                   </div>
                   <div className="flex gap-2">
-                    <div className="h-6 bg-slate-100 rounded-full w-16" />
-                    <div className="h-6 bg-slate-100 rounded-full w-20" />
+                    <div className="h-6 skeleton-shimmer rounded-full w-16" />
+                    <div className="h-6 skeleton-shimmer rounded-full w-20" />
                   </div>
                 </div>
               ))}

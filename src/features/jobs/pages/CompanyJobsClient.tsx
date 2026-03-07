@@ -46,9 +46,25 @@ function CompanyJobsClient() {
           onLogout={handleLogout}
         />
         <div className="min-h-screen bg-slate-50 py-8">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" />
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <div className="skeleton-shimmer h-8 w-40 rounded-lg" />
+                <div className="skeleton-shimmer h-4 w-56 rounded" />
+              </div>
+              <div className="skeleton-shimmer h-9 w-28 rounded-lg" />
+            </div>
+            <div className="bg-white rounded-lg p-6 shadow-sm space-y-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="border border-slate-100 rounded-lg p-4 space-y-3">
+                  <div className="skeleton-shimmer h-5 w-2/3 rounded" />
+                  <div className="flex gap-3">
+                    <div className="skeleton-shimmer h-3 w-24 rounded" />
+                    <div className="skeleton-shimmer h-3 w-16 rounded" />
+                    <div className="skeleton-shimmer h-3 w-20 rounded" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -96,8 +112,18 @@ function CompanyJobsClient() {
           >
             <div className="bg-white rounded-lg p-6 shadow-sm">
               {postsLoading ? (
-                <div className="flex items-center justify-center py-12">
-                  <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+                <div className="space-y-4">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="border border-slate-100 rounded-lg p-4 space-y-3">
+                      <div className="skeleton-shimmer h-5 w-2/3 rounded" />
+                      <div className="flex gap-3">
+                        <div className="skeleton-shimmer h-3 w-24 rounded" />
+                        <div className="skeleton-shimmer h-3 w-16 rounded" />
+                        <div className="skeleton-shimmer h-3 w-20 rounded" />
+                      </div>
+                      <div className="skeleton-shimmer h-3 w-48 rounded" />
+                    </div>
+                  ))}
                 </div>
               ) : postsError ? (
                 <div className="text-center py-12">

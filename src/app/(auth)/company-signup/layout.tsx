@@ -10,8 +10,8 @@ export default function BusinessSignupLayout({
   return (
     <Layout>
       <Header type="business" />
-      <main className='flex justify-center min-h-screen'>
-        <Layout.Main className="max-w-[32.5rem] w-full">
+      <main className='flex'>
+        <Layout.Main>
           {children}
         </Layout.Main>
       </main>

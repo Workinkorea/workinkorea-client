@@ -1,9 +1,28 @@
+import { Skeleton } from '@/shared/ui/Skeleton';
+
 export default function Loading() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="flex flex-col items-center space-y-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
-        <p className="text-gray-600 text-sm">페이지를 불러오는 중...</p>
+    <div className="min-h-screen bg-slate-50">
+      {/* 헤더 스켈레톤 */}
+      <div className="bg-white border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <Skeleton variant="text" className="h-7 w-32" />
+          <div className="flex gap-2">
+            <Skeleton variant="circle" className="w-9 h-9" />
+            <Skeleton variant="circle" className="w-9 h-9" />
+          </div>
+        </div>
+      </div>
+
+      {/* 페이지 콘텐츠 스켈레톤 */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+        <Skeleton variant="text" className="h-10 w-64" />
+        <Skeleton variant="text" className="h-5 w-96" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-48" />
+          ))}
+        </div>
       </div>
     </div>
   );

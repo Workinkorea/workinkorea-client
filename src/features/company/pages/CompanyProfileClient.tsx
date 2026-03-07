@@ -111,17 +111,17 @@ const CompanyProfileClient = () => {
           onLogout={handleLogout}
         />
         <div className="min-h-screen bg-slate-50 p-6">
-          <div className="max-w-6xl mx-auto animate-pulse space-y-5">
-            <div className="bg-white rounded-xl h-28 border border-slate-100" />
+          <div className="max-w-6xl mx-auto space-y-5">
+            <div className="skeleton-shimmer rounded-xl h-28" />
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5">
               <div className="space-y-5">
-                <div className="bg-white rounded-xl h-56 border border-slate-100" />
-                <div className="bg-white rounded-xl h-40 border border-slate-100" />
-                <div className="bg-white rounded-xl h-48 border border-slate-100" />
+                <div className="skeleton-shimmer rounded-xl h-56" />
+                <div className="skeleton-shimmer rounded-xl h-40" />
+                <div className="skeleton-shimmer rounded-xl h-48" />
               </div>
               <div className="space-y-4">
-                <div className="bg-white rounded-xl h-72 border border-slate-100" />
-                <div className="bg-white rounded-xl h-44 border border-slate-100" />
+                <div className="skeleton-shimmer rounded-xl h-72" />
+                <div className="skeleton-shimmer rounded-xl h-44" />
               </div>
             </div>
           </div>
@@ -199,7 +199,7 @@ const CompanyProfileClient = () => {
                 {postsLoading ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {[1, 2].map(i => (
-                      <div key={i} className="h-24 bg-slate-100 rounded-lg animate-pulse" />
+                      <div key={i} className="h-24 skeleton-shimmer rounded-lg" />
                     ))}
                   </div>
                 ) : activePosts.length > 0 ? (
