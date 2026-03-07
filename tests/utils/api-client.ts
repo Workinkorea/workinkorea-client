@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://arw.byeong98.xyz';
+export const API_BASE_URL = 'https://wik-dev.moon-core.com';
 export { API_BASE_URL as apiBaseUrl };
 
 export interface ApiError {
