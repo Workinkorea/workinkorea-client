@@ -21,7 +21,7 @@ export default function JobsPaginationClient({ currentPage, totalPages }: JobsPa
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="p-2 rounded-lg border border-line-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+        className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
@@ -45,8 +45,8 @@ export default function JobsPaginationClient({ currentPage, totalPages }: JobsPa
               onClick={() => handlePageChange(pageNum)}
               className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
                 currentPage === pageNum
-                  ? 'bg-primary-500 text-white'
-                  : 'border border-line-200 hover:bg-gray-50 text-label-700'
+                  ? 'bg-blue-600 text-white'
+                  : 'border border-slate-200 hover:bg-slate-50 text-slate-700'
               }`}
             >
               {pageNum}
@@ -58,7 +58,7 @@ export default function JobsPaginationClient({ currentPage, totalPages }: JobsPa
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="p-2 rounded-lg border border-line-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+        className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
       >
         <ChevronRight className="w-5 h-5" />
       </button>

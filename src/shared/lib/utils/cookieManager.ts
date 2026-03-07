@@ -37,7 +37,10 @@ function setCookie(name: string, value: string, days: number = 7): void {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
 
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+  const domain = window.location.hostname.includes('byeong98.xyz') ? '.byeong98.xyz' : '';
+  const domainAttr = domain ? `domain=${domain};` : '';
+
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;${domainAttr}SameSite=Lax`;
 }
 
 /**
@@ -46,20 +49,25 @@ function setCookie(name: string, value: string, days: number = 7): void {
 function deleteCookie(name: string): void {
   if (typeof window === 'undefined') return;
 
-  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+  // setCookie와 동일한 domain 설정 (쿠키 삭제를 위해 domain이 일치해야 함)
+  const domain = window.location.hostname.includes('byeong98.xyz') ? '.byeong98.xyz' : '';
+  const domainAttr = domain ? `domain=${domain};` : '';
+
+  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;${domainAttr}`;
 }
 
 export const cookieManager = {
   /**
    * userType 읽기 (Public Cookie)
    *
+   * @deprecated HttpOnly 쿠키 전환으로 인해 클라이언트에서 읽을 수 없음 (항상 null 반환)
+   * 인증 상태 확인은 authApi.getProfile()을 사용하세요.
+   *
    * @returns 'user' | 'company' | 'admin' | null
    *
    * @example
-   * const userType = cookieManager.getUserType()
-   * if (userType === 'company') {
-   *   // 기업 전용 UI 표시
-   * }
+   * // Don't use this for auth check
+   * // const userType = cookieManager.getUserType() // returns null
    */
   getUserType: (): UserType | null => {
     const value = getCookie('userType');
@@ -99,14 +107,20 @@ export const cookieManager = {
    */
   hasAuth: (): boolean => {
     // userType이 있다면 로그인 상태로 간주 (완벽하지 않음)
+    // HttpOnly 쿠키 환경에서는 항상 false를 반환할 가능성이 높음
+    // 정확한 인증 확인은 authApi.getProfile() 사용 권장
     return !!cookieManager.getUserType();
   },
 
   /**
-   * 로그아웃 시 클라이언트 쿠키 정리
+   * 로그아웃 시 클라이언트 쿠키 정리 (폴백용)
    *
-   * 주의: HttpOnly 쿠키는 백엔드의 /logout 엔드포인트에서 삭제
-   * 여기서는 Public Cookie만 정리
+   * 정상 로그아웃 플로우:
+   * 1. 백엔드 /api/auth/logout 호출
+   * 2. 백엔드가 모든 쿠키 삭제: access_token, refresh_token, userType
+   * 3. 클라이언트는 쿠키 삭제 불필요
+   *
+   * 이 함수는 백엔드 API 호출 실패 시 폴백으로만 사용
    */
   clearAuth: (): void => {
     cookieManager.removeUserType();

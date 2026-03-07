@@ -2,7 +2,10 @@
  * Error Handling Utilities
  *
  * Provides centralized error handling and message extraction for API errors
+ * Supports FetchError (native fetch) and generic error objects
  */
+
+import { FetchError } from '@/shared/api/fetchClient';
 
 /**
  * Extract error message from various error types
@@ -20,10 +23,31 @@
  * }
  */
 export const extractErrorMessage = (error: unknown, defaultMessage: string): string => {
-  // Axios error with response
+  // FetchError (native fetch with custom error class)
+  if (error instanceof FetchError) {
+    // Try to extract message from error data
+    if (error.data && typeof error.data === 'object') {
+      const data = error.data as Record<string, unknown>;
+      if (data.message && typeof data.message === 'string') {
+        return data.message;
+      }
+      if (data.error && typeof data.error === 'string') {
+        return data.error;
+      }
+      if (data.detail && typeof data.detail === 'string') {
+        return data.detail;
+      }
+    }
+    return error.message || defaultMessage;
+  }
+
+  // Legacy error with response structure (for compatibility)
   if (error && typeof error === 'object' && 'response' in error) {
-    const axiosError = error as { response?: { data?: { message?: string; error?: string } } };
-    return axiosError.response?.data?.message || axiosError.response?.data?.error || defaultMessage;
+    const responseError = error as { response?: { data?: { message?: string; error?: string; detail?: string } } };
+    return responseError.response?.data?.message ||
+           responseError.response?.data?.error ||
+           responseError.response?.data?.detail ||
+           defaultMessage;
   }
 
   // Standard Error object
@@ -57,9 +81,20 @@ export const extractErrorMessage = (error: unknown, defaultMessage: string): str
  * }
  */
 export const extractErrorField = (error: unknown, defaultField: string = 'general'): string => {
+  // FetchError
+  if (error instanceof FetchError) {
+    if (error.data && typeof error.data === 'object') {
+      const data = error.data as Record<string, unknown>;
+      if (data.field && typeof data.field === 'string') {
+        return data.field;
+      }
+    }
+  }
+
+  // Legacy error with response structure
   if (error && typeof error === 'object' && 'response' in error) {
-    const axiosError = error as { response?: { data?: { field?: string } } };
-    return axiosError.response?.data?.field || defaultField;
+    const responseError = error as { response?: { data?: { field?: string } } };
+    return responseError.response?.data?.field || defaultField;
   }
 
   return defaultField;
@@ -100,11 +135,18 @@ export const isNetworkError = (error: unknown): boolean => {
  * }
  */
 export const isAuthError = (error: unknown): boolean => {
+  // FetchError
+  if (error instanceof FetchError) {
+    return error.status === 401 || error.status === 403;
+  }
+
+  // Legacy error with response structure
   if (error && typeof error === 'object' && 'response' in error) {
-    const axiosError = error as { response?: { status?: number } };
-    const status = axiosError.response?.status;
+    const responseError = error as { response?: { status?: number } };
+    const status = responseError.response?.status;
     return status === 401 || status === 403;
   }
+
   return false;
 };
 
@@ -121,10 +163,17 @@ export const isAuthError = (error: unknown): boolean => {
  * }
  */
 export const getErrorStatus = (error: unknown): number | null => {
-  if (error && typeof error === 'object' && 'response' in error) {
-    const axiosError = error as { response?: { status?: number } };
-    return axiosError.response?.status || null;
+  // FetchError
+  if (error instanceof FetchError) {
+    return error.status;
   }
+
+  // Legacy error with response structure
+  if (error && typeof error === 'object' && 'response' in error) {
+    const responseError = error as { response?: { status?: number } };
+    return responseError.response?.status || null;
+  }
+
   return null;
 };
 
@@ -144,8 +193,30 @@ export const getErrorStatus = (error: unknown): number | null => {
  * }
  */
 export const formatValidationErrors = (error: unknown): Record<string, string> => {
+  // FetchError
+  if (error instanceof FetchError) {
+    if (error.data && typeof error.data === 'object') {
+      const data = error.data as Record<string, unknown>;
+      const errors = data.errors || data.validationErrors;
+
+      if (!errors || typeof errors !== 'object') return {};
+
+      const formattedErrors: Record<string, string> = {};
+      Object.entries(errors).forEach(([field, messages]) => {
+        if (Array.isArray(messages)) {
+          formattedErrors[field] = messages[0]; // Take first error message
+        } else if (typeof messages === 'string') {
+          formattedErrors[field] = messages;
+        }
+      });
+
+      return formattedErrors;
+    }
+  }
+
+  // Legacy error with response structure
   if (error && typeof error === 'object' && 'response' in error) {
-    const axiosError = error as {
+    const responseError = error as {
       response?: {
         data?: {
           errors?: Record<string, string[]> | Record<string, string>;
@@ -154,7 +225,7 @@ export const formatValidationErrors = (error: unknown): Record<string, string> =
       }
     };
 
-    const errors = axiosError.response?.data?.errors || axiosError.response?.data?.validationErrors;
+    const errors = responseError.response?.data?.errors || responseError.response?.data?.validationErrors;
 
     if (!errors) return {};
 

@@ -23,11 +23,19 @@ export interface EmailVerificationResponse {
 // Individual User Authentication
 // ============================================================================
 
+/**
+ * @deprecated 일반 사용자는 이메일/비밀번호 로그인을 지원하지 않습니다.
+ * 일반 사용자는 Google OAuth만 사용합니다.
+ */
 export interface LoginRequest {
   email: string;
   password: string;
 }
 
+/**
+ * @deprecated 일반 사용자는 이메일/비밀번호 로그인을 지원하지 않습니다.
+ * 일반 사용자는 Google OAuth만 사용합니다.
+ */
 export interface LoginResponse {
   success: boolean;
   user?: {
@@ -53,8 +61,7 @@ export interface CompanyLoginRequest {
 }
 
 export interface CompanyLoginResponse {
-  success: boolean;
-  message?: string;
+  url: string;
 }
 
 export interface CompanySignupRequest {
@@ -81,6 +88,7 @@ export interface BusinessVerificationRequest {
 
 export interface BusinessVerificationData {
   b_no: string;
+  b_nm?: string;
   b_stt: string;
   b_stt_cd: string;
   tax_type: string;

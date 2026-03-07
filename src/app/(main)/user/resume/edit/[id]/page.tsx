@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import ResumeEditor from '@/features/resume/components/ResumeEditor';
@@ -19,29 +18,28 @@ const formatDateForInput = (dateString: string | null | undefined): string => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   } catch (error) {
-    console.error('날짜 변환 오류:', error);
     return '';
   }
 };
 
-const EditResumePage: React.FC = () => {
+function EditResumePage() {
   const params = useParams();
   const resumeId = params?.id ? Number(params.id) : null;
 
   // 프로필 정보 가져오기
-  const { data: profileData } = useQuery({
+  const { data: profileData, isLoading: isProfileLoading } = useQuery({
     queryKey: ['profile'],
     queryFn: () => profileApi.getProfile(),
   });
 
   // 연락처 정보 가져오기
-  const { data: contactData } = useQuery({
+  const { data: contactData, isLoading: isContactLoading } = useQuery({
     queryKey: ['contact'],
     queryFn: () => profileApi.getContact(),
   });
 
   const { data: resumeData, isLoading, error } = useQuery({
-    queryKey: ['resume', resumeId, profileData, contactData],
+    queryKey: ['resume', resumeId],
     queryFn: async () => {
       if (!resumeId) throw new Error('Invalid resume ID');
       const response = await resumeApi.getResumeById(resumeId);
@@ -109,15 +107,15 @@ const EditResumePage: React.FC = () => {
 
       return resume;
     },
-    enabled: !!resumeId
+    enabled: !!resumeId && !!profileData && !!contactData
   });
 
-  if (isLoading) {
+  if (isLoading || isProfileLoading || isContactLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-label-500">이력서를 불러오는 중...</p>
+          <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-slate-500">이력서를 불러오는 중...</p>
         </div>
       </div>
     );
@@ -127,10 +125,10 @@ const EditResumePage: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-title-3 font-semibold text-label-900 mb-2">
+          <h2 className="text-xl font-semibold text-slate-900 mb-2">
             이력서를 불러올 수 없습니다
           </h2>
-          <p className="text-body-3 text-label-500">
+          <p className="text-sm text-slate-500">
             잠시 후 다시 시도해주세요.
           </p>
         </div>

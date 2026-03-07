@@ -46,7 +46,7 @@ export const SelectSearchInput = ({
   return (
     <div className="relative">
       <div
-        className="w-full px-3 py-2.5 border border-line-400 rounded-lg transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent cursor-pointer text-sm"
+        className="w-full px-3 py-2.5 border border-slate-300 rounded-lg transition-colors focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent cursor-pointer text-sm"
         onClick={handleInputClick}
       >
         <div className="flex items-center justify-between">
@@ -78,13 +78,13 @@ export const SelectSearchInput = ({
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-line-400 rounded-lg shadow-strong max-h-60 overflow-y-auto">
+        <div className="absolute z-10 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-md max-h-60 overflow-y-auto">
           {filteredOptions.length > 0 ? (
             filteredOptions.map((option) => (
               <div
                 key={option.value}
                 className={`px-3 py-2 cursor-pointer text-sm hover:bg-gray-50 transition-colors ${
-                  value === option.value ? 'bg-primary-50 text-primary-500' : ''
+                  value === option.value ? 'bg-blue-50 text-blue-600' : ''
                 }`}
                 onClick={() => handleSelect(option.value)}
               >

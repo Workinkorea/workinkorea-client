@@ -1,3 +1,1 @@
-
-// Re-export from new Context API
-export { useAuth } from '../contexts/AuthContext';
+export { useAuth, useIsUser, useIsCompany, useIsAdmin, useIsGuest } from '@/shared/stores/authStore';

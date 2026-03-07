@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface DiagnosisData {
   // Session 1: 기본 정보
@@ -44,15 +45,23 @@ const initialData: Partial<DiagnosisData> = {
   receiveInfo: false,
 };
 
-export const useDiagnosisStore = create<DiagnosisStore>()((set) => ({
-  currentStep: 1,
-  diagnosisData: initialData,
-  diagnosisId: null,
-  setStep: (step) => set({ currentStep: step }),
-  updateData: (data) =>
-    set((state) => ({
-      diagnosisData: { ...state.diagnosisData, ...data },
-    })),
-  setDiagnosisId: (id) => set({ diagnosisId: id }),
-  reset: () => set({ currentStep: 1, diagnosisData: initialData, diagnosisId: null }),
-}));
+export const useDiagnosisStore = create<DiagnosisStore>()(
+  persist(
+    (set) => ({
+      currentStep: 1,
+      diagnosisData: initialData,
+      diagnosisId: null,
+      setStep: (step) => set({ currentStep: step }),
+      updateData: (data) =>
+        set((state) => ({
+          diagnosisData: { ...state.diagnosisData, ...data },
+        })),
+      setDiagnosisId: (id) => set({ diagnosisId: id }),
+      reset: () => set({ currentStep: 1, diagnosisData: initialData, diagnosisId: null }),
+    }),
+    {
+      name: 'wik_diagnosis',
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
+);

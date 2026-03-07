@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,32 +30,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await axios.post(
-      'https://api.odcloud.kr/api/nts-businessman/v1/status',
-      {
-        b_no: [cleanedNumber]
+    // Build URL with query parameters
+    const url = new URL('https://api.odcloud.kr/api/nts-businessman/v1/status');
+    url.searchParams.append('serviceKey', apiKey);
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Infuser ${apiKey}`,
       },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Infuser ${apiKey}`
-        },
-        params: {
-          serviceKey: apiKey
-        }
-      }
-    );
+      body: JSON.stringify({
+        b_no: [cleanedNumber],
+      }),
+    });
 
-    return NextResponse.json(response.data);
-  } catch (error) {
-    console.error('Business verification error:', error);
-
-    if (axios.isAxiosError(error)) {
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
       return NextResponse.json(
-        { error: error.response?.data?.message || '사업자등록번호 인증에 실패했습니다.' },
-        { status: error.response?.status || 500 }
+        { error: errorData.message || '사업자등록번호 인증에 실패했습니다.' },
+        { status: response.status }
       );
     }
+
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Business verification error:', error);
 
     return NextResponse.json(
       { error: '사업자등록번호 인증 중 오류가 발생했습니다.' },

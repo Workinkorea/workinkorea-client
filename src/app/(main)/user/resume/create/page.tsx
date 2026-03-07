@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ResumeEditor from '@/features/resume/components/ResumeEditor';
 import { ResumeTemplate } from '@/features/user/types/user';
 
-const CreateResumePage: React.FC = () => {
+function CreateResumePage() {
   const [currentStep] = useState<'template' | 'editor'>('editor');
   const [selectedTemplate] = useState<ResumeTemplate>('modern');
 

@@ -24,11 +24,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/:path*`,
       },
     ];
   },
-  
+
   async headers() {
     return [
       {
@@ -46,12 +46,10 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: https:",
               // 폰트는 자체 도메인만
               "font-src 'self' data:",
-              // API 연결 허용 (환경변수에서 읽기)
-              `connect-src 'self' ${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'} https://t1.daumcdn.net`,
+
+              `connect-src 'self' https://arw.byeong98.xyz https://t1.daumcdn.net`,
               // iframe 허용 안 함 (frame-ancestors와 함께 사용)
               "frame-src 'none'",
-              // 외부 리소스 프리페치 차단
-              "prefetch-src 'self'",
               // 객체 임베드 차단
               "object-src 'none'",
               // 기본 URI 제한
@@ -92,11 +90,11 @@ const nextConfig: NextConfig = {
           // HTTPS 강제 (프로덕션 환경)
           ...(process.env.NODE_ENV === 'production'
             ? [
-                {
-                  key: 'Strict-Transport-Security',
-                  value: 'max-age=63072000; includeSubDomains; preload',
-                },
-              ]
+              {
+                key: 'Strict-Transport-Security',
+                value: 'max-age=63072000; includeSubDomains; preload',
+              },
+            ]
             : []),
         ],
       },

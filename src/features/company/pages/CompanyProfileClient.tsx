@@ -1,68 +1,106 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { Edit3, Plus, MapPin, Users, Calendar, Building } from 'lucide-react';
-import { AxiosError } from 'axios';
+import {
+  PenSquare,
+  ChevronRight,
+  Search,
+  Users,
+  Building2,
+  MapPin,
+  Phone,
+  Globe,
+  FileText,
+  Package,
+} from 'lucide-react';
+import { cn } from '@/shared/lib/utils/utils';
+import { FetchError } from '@/shared/api/fetchClient';
 import Layout from '@/shared/components/layout/Layout';
-import Header from '@/shared/components/layout/Header';
+import { Header } from '@/shared/components/layout/Header';
 import { profileApi } from '../api/profileCompany';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
-const CompanyProfileClient: React.FC = () => {
+type TodoTab = 'unread' | 'accepted' | 'interview' | 'evaluated';
+
+const TODO_TABS: { key: TodoTab; label: string }[] = [
+  { key: 'unread', label: '미열람' },
+  { key: 'accepted', label: '제안 수락' },
+  { key: 'interview', label: '면접' },
+  { key: 'evaluated', label: '평가' },
+];
+
+const EMPTY_MESSAGES: Record<TodoTab, string> = {
+  unread: '미열람 후보자가 없어요.',
+  accepted: '제안 수락한 후보자가 없어요.',
+  interview: '면접 예정 후보자가 없어요.',
+  evaluated: '평가 완료된 후보자가 없어요.',
+};
+
+const CompanyProfileClient = () => {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<TodoTab>('unread');
   const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
 
-  // 기업 프로필 조회
   const { data: profile, isLoading: profileLoading, error, isError } = useQuery({
     queryKey: ['companyProfile'],
     queryFn: () => profileApi.getProfileCompany(),
-    retry: false, // 에러 발생 시 재시도 하지 않음
+    retry: false,
   });
 
-  // 인증 체크 및 리다이렉트
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       router.push('/company-login');
     }
   }, [isAuthenticated, authLoading, router]);
 
-  // 프로필 조회 실패 시(404 Not Found 또는 500 Server Error) 프로필 작성 페이지로 리다이렉트
   useEffect(() => {
-    if (isError && error instanceof AxiosError) {
-      const status = error.response?.status;
-      // 404: 프로필 없음, 500: 서버 오류 (기존 데이터 로드 실패 시 작성 페이지로 이동)
-      if (status === 404 || status === 500) {
+    if (isError && error instanceof FetchError) {
+      if (error.status === 404 || error.status === 500) {
         router.replace('/company/profile/edit');
       }
     }
   }, [isError, error, router]);
 
-  const handleLogout = async () => {
-    await logout();
-  };
-
-  // 기업 공고 목록 조회
-  const { data: posts, isLoading: postsLoading, error: postsError } = useQuery({
+  const { data: postsData, isLoading: postsLoading } = useQuery({
     queryKey: ['myCompanyPosts'],
     queryFn: async () => {
-      try {
-        const response = await postsApi.getMyCompanyPosts();
-        return response.company_posts;
-      } catch (error) {
-        console.error('Failed to fetch company posts:', error);
-        throw error;
-      }
+      const response = await postsApi.getMyCompanyPosts();
+      return response.company_posts;
     },
-    enabled: !!profile, // 프로필이 로드된 후에만 공고 조회
+    enabled: !!profile,
     retry: 1,
   });
 
-  // 로딩 상태 처리 (프로필이 없거나 로딩 중일 때)
+  const handleLogout = async () => { await logout(); };
+
+  const posts = postsData ?? [];
+  const activePosts = posts.filter(p => new Date(p.end_date) > new Date());
+
+  // 403 에러
+  if (isError && error instanceof FetchError && error.status === 403) {
+    return (
+      <Layout>
+        <Header
+          type={userType === 'company' ? 'business' : 'homepage'}
+          isAuthenticated={isAuthenticated}
+          isLoading={authLoading}
+          onLogout={handleLogout}
+        />
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+          <div className="bg-white rounded-xl border border-slate-200 p-8 text-center max-w-md">
+            <p className="text-slate-900 font-semibold mb-2">접근 권한이 없습니다</p>
+            <p className="text-sm text-slate-500">{error.message}</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // 로딩 스켈레톤
   if (authLoading || profileLoading || !profile) {
     return (
       <Layout>
@@ -72,13 +110,18 @@ const CompanyProfileClient: React.FC = () => {
           isLoading={authLoading}
           onLogout={handleLogout}
         />
-        <div className="min-h-screen bg-background-alternative py-8">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="animate-pulse space-y-6">
-              <div className="bg-white rounded-lg h-64"></div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg h-96"></div>
-                <div className="bg-white rounded-lg h-96"></div>
+        <div className="min-h-screen bg-slate-50 p-6">
+          <div className="max-w-6xl mx-auto space-y-5">
+            <div className="skeleton-shimmer rounded-xl h-28" />
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5">
+              <div className="space-y-5">
+                <div className="skeleton-shimmer rounded-xl h-56" />
+                <div className="skeleton-shimmer rounded-xl h-40" />
+                <div className="skeleton-shimmer rounded-xl h-48" />
+              </div>
+              <div className="space-y-4">
+                <div className="skeleton-shimmer rounded-xl h-72" />
+                <div className="skeleton-shimmer rounded-xl h-44" />
               </div>
             </div>
           </div>
@@ -95,275 +138,321 @@ const CompanyProfileClient: React.FC = () => {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-      <div className="min-h-screen bg-background-alternative py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          {/* 페이지 헤더 */}
-          <motion.div
-            className="flex items-center justify-between"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div>
-              <h1 className="text-title-2 font-bold text-label-900">기업 프로필</h1>
-              <p className="text-body-3 text-label-500 mt-1">
-                기업 정보를 관리하고 채용 공고를 등록하세요
+
+      <div className="min-h-screen bg-slate-50">
+
+        {/* ── 배너 ── */}
+        <div className="bg-gradient-to-r from-blue-50 via-white to-blue-50 border-b border-slate-100">
+          <div className="max-w-6xl mx-auto px-6 py-7 flex items-center justify-between">
+            <div className="flex items-center gap-3 opacity-30 select-none pointer-events-none">
+              <span className="text-[40px]">📋</span>
+              <span className="text-[32px]">👤</span>
+            </div>
+            <div className="text-center">
+              <h1 className="text-[21px] font-extrabold text-slate-900 tracking-tight">
+                채용의 모든 과정을{' '}
+                <span className="text-blue-600">한 곳에서!</span>
+              </h1>
+              <p className="text-[13px] text-slate-400 mt-1">
+                WorkinKorea 외국인 채용 플랫폼
               </p>
             </div>
-          </motion.div>
+            <div className="flex items-center gap-3 opacity-30 select-none pointer-events-none">
+              <span className="text-[32px]">💼</span>
+              <span className="text-[40px]">🔍</span>
+            </div>
+          </div>
+        </div>
 
-          {/* 프로필 헤더 */}
-          <motion.div
-            className="bg-white rounded-lg p-6 shadow-normal"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-4">
-                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
-                  {profile.company_id}
-                </div>
-                <div>
-                  <h2 className="text-title-3 font-bold text-label-900 mb-2">
-                    기업 #{profile.company_id}
-                  </h2>
-                  <div className="space-y-1">
-                    <p className="text-body-3 text-label-600 flex items-center gap-2">
-                      <Building size={16} />
-                      {profile.industry_type} • {profile.company_type}
-                    </p>
-                    <p className="text-body-3 text-label-600 flex items-center gap-2">
-                      <Users size={16} />
-                      {profile.employee_count}명
-                    </p>
-                    <p className="text-body-3 text-label-600 flex items-center gap-2">
-                      <MapPin size={16} />
-                      {profile.address}
-                    </p>
-                    <p className="text-body-3 text-label-600 flex items-center gap-2">
-                      <Calendar size={16} />
-                      설립일: {profile.establishment_date}
-                    </p>
+        {/* ── 메인 레이아웃 ── */}
+        <div className="max-w-6xl mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5">
+
+          {/* ── 중앙 컨텐츠 ── */}
+          <div className="space-y-4">
+
+            {/* 진행중 공고 */}
+            <motion.div
+              className="bg-white border border-slate-200 rounded-xl overflow-hidden"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+            >
+              <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
+                <button
+                  onClick={() => router.push('/company/jobs')}
+                  className="flex items-center gap-1.5 text-[14px] font-bold text-slate-900 hover:text-blue-600 transition-colors group cursor-pointer"
+                >
+                  진행중 공고
+                  <span className="text-blue-600 font-extrabold">{activePosts.length}</span>
+                  <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400 transition-colors" />
+                </button>
+                <button
+                  onClick={() => router.push('/company/posts/create')}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-600 text-white text-[12px] font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+                >
+                  <PenSquare size={13} />
+                  공고 등록
+                </button>
+              </div>
+
+              <div className="p-4">
+                {postsLoading ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {[1, 2].map(i => (
+                      <div key={i} className="h-24 skeleton-shimmer rounded-lg" />
+                    ))}
                   </div>
+                ) : activePosts.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {activePosts.slice(0, 4).map(post => (
+                      <button
+                        key={post.id}
+                        onClick={() => router.push(`/company/posts/edit/${post.id}`)}
+                        className="text-left border border-slate-200 rounded-lg p-4 hover:border-blue-200 hover:shadow-sm transition-all group"
+                      >
+                        <p className="text-[13px] font-semibold text-slate-900 leading-snug line-clamp-2 mb-3 group-hover:text-blue-600 transition-colors">
+                          {post.title}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] text-slate-400">{post.employment_type}</span>
+                          <span className="text-[11px] font-semibold text-slate-500">
+                            미열람 후보자{' '}
+                            <span className="text-blue-600 font-black">0</span> 명
+                          </span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-9 text-center">
+                    <FileText size={30} className="text-slate-200 mb-3" />
+                    <p className="text-[13px] text-slate-400 mb-3">
+                      진행중인 공고가 없어요
+                    </p>
+                    <button
+                      onClick={() => router.push('/company/posts/create')}
+                      className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-blue-50 text-blue-600 text-[12px] font-semibold rounded-lg hover:bg-blue-100 transition-colors cursor-pointer"
+                    >
+                      <PenSquare size={13} />
+                      첫 공고 등록하기
+                    </button>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+
+            {/* 진행중 인재풀 */}
+            <motion.div
+              className="bg-white border border-slate-200 rounded-xl overflow-hidden"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.08 }}
+            >
+              <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
+                <div className="flex items-center gap-1.5 text-[14px] font-bold text-slate-900">
+                  진행중 인재풀
+                  <span className="text-blue-600 font-extrabold">0</span>
+                  <ChevronRight size={15} className="text-slate-300" />
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="bg-blue-50 rounded-lg flex flex-col items-center justify-center py-7 text-center">
+                  <p className="text-[13px] text-slate-500 mb-2 leading-relaxed">
+                    딱 맞는 우수한<br />인재를 찾아보세요!
+                  </p>
+                  <button className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-blue-600 hover:underline transition-colors cursor-pointer">
+                    <Search size={13} />
+                    인재 검색
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* 내 할일 */}
+            <motion.div
+              className="bg-white border border-slate-200 rounded-xl overflow-hidden"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.16 }}
+            >
+              <div className="px-5 py-3.5 border-b border-slate-100">
+                <span className="text-[14px] font-bold text-slate-900">내 할일</span>
+              </div>
+
+              {/* 탭 */}
+              <div className="flex items-center gap-2 px-5 pt-4 flex-wrap">
+                {TODO_TABS.map(tab => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={cn(
+                      'px-3.5 py-1.5 rounded-full text-[12px] font-semibold border transition-colors cursor-pointer',
+                      activeTab === tab.key
+                        ? 'border-blue-500 bg-blue-50 text-blue-600'
+                        : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50'
+                    )}
+                  >
+                    {tab.label} 0
+                  </button>
+                ))}
+              </div>
+
+              {/* 내용 */}
+              <div className="px-5 pb-5 pt-4">
+                <div className="flex flex-col items-center justify-center py-9 text-center">
+                  <Users size={30} className="text-slate-200 mb-3" />
+                  <p className="text-[13px] text-slate-400 mb-4">
+                    {EMPTY_MESSAGES[activeTab]}
+                  </p>
+                  <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-slate-200 text-[12px] font-semibold text-slate-600 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer">
+                    <Users size={13} />
+                    후보자 관리
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
+
+          {/* ── 오른쪽 사이드바 ── */}
+          <div className="space-y-4">
+
+            {/* 기업 정보 카드 */}
+            <motion.div
+              className="bg-white border border-slate-200 rounded-xl p-5"
+              initial={{ opacity: 0, x: 14 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.35, delay: 0.1 }}
+            >
+              {/* 로고 + 기업명 */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-11 h-11 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shrink-0">
+                  <Building2 size={20} className="text-white" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[13px] font-bold text-slate-900 truncate">
+                    기업 #{profile.company_id}
+                  </p>
+                  <p className="text-[11px] text-slate-400 truncate">{profile.industry_type}</p>
                 </div>
               </div>
 
+              {/* 담당자 */}
+              {profile.representative_name && (
+                <p className="text-[12px] text-slate-500 mb-1">
+                  담당자{' '}
+                  <span className="font-semibold text-slate-700">{profile.representative_name}</span>
+                </p>
+              )}
+
+              {/* CTA */}
               <button
-                onClick={() => router.push('/company/profile/edit')}
-                className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-component-alternative transition-colors cursor-pointer"
+                onClick={() => router.push('/company/posts/create')}
+                className="text-[12px] font-semibold text-blue-600 hover:underline mb-4 block cursor-pointer"
               >
-                <Edit3 size={16} />
-                프로필 편집
+                공고 등록으로 채용을 시작해보세요.
               </button>
-            </div>
-          </motion.div>
 
-          {/* 탭 네비게이션 */}
-          <motion.div
-            className="bg-white rounded-lg p-2 shadow-normal"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <div className="flex gap-2">
-              {[
-                { key: 'overview', label: '개요' },
-                { key: 'posts', label: '채용 공고' },
-                { key: 'settings', label: '설정' }
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${
-                    activeTab === tab.key
-                      ? 'bg-primary-500 text-white shadow-sm'
-                      : 'text-label-700 hover:bg-component-alternative'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </motion.div>
+              {/* 구분선 + 스탯 */}
+              <div className="border-t border-slate-100 pt-4">
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="text-center">
+                    <p className="text-[22px] font-extrabold text-slate-900">{activePosts.length}</p>
+                    <p className="text-[11px] text-slate-400">진행 공고</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-[22px] font-extrabold text-slate-900">{posts.length}</p>
+                    <p className="text-[11px] text-slate-400">전체 공고</p>
+                  </div>
+                </div>
 
-          {/* 탭 컨텐츠 */}
-          <div className="space-y-6">
-            {activeTab === 'overview' && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="grid grid-cols-1 lg:grid-cols-2 gap-6"
-              >
                 {/* 기업 정보 */}
-                <div className="bg-white rounded-lg p-6 shadow-normal">
-                  <h3 className="text-title-4 font-semibold text-label-900 mb-4">
-                    기업 정보
-                  </h3>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-caption-2 text-label-500">이메일</p>
-                      <p className="text-body-3 text-label-900">{profile.email}</p>
-                    </div>
-                    <div>
-                      <p className="text-caption-2 text-label-500">전화번호</p>
-                      <p className="text-body-3 text-label-900">{profile.phone_number}</p>
-                    </div>
-                    <div>
-                      <p className="text-caption-2 text-label-500">웹사이트</p>
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2 text-[12px] text-slate-500">
+                    <MapPin size={12} className="text-slate-300 mt-0.5 shrink-0" />
+                    <span className="leading-relaxed">{profile.address}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[12px] text-slate-500">
+                    <Phone size={12} className="text-slate-300 shrink-0" />
+                    <span>{profile.phone_number}</span>
+                  </div>
+                  {profile.website_url && (
+                    <div className="flex items-center gap-2 text-[12px] text-slate-500">
+                      <Globe size={12} className="text-slate-300 shrink-0" />
                       <a
                         href={profile.website_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-body-3 text-primary-500 hover:underline"
+                        className="text-blue-600 hover:underline truncate"
                       >
                         {profile.website_url}
                       </a>
                     </div>
-                    <div>
-                      <p className="text-caption-2 text-label-500">보험</p>
-                      <p className="text-body-3 text-label-900">{profile.insurance}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 채용 통계 */}
-                <div className="bg-white rounded-lg p-6 shadow-normal">
-                  <h3 className="text-title-4 font-semibold text-label-900 mb-4">
-                    채용 통계
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-primary-50 rounded-lg">
-                      <div>
-                        <p className="text-caption-2 text-label-500">총 공고</p>
-                        <p className="text-title-3 font-bold text-primary-700">{posts?.length || 0}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between p-4 bg-component-alternative rounded-lg">
-                      <div>
-                        <p className="text-caption-2 text-label-500">진행 중인 공고</p>
-                        <p className="text-title-3 font-bold text-label-900">
-                          {posts?.filter(p => new Date(p.end_date) > new Date()).length || 0}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === 'posts' && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <div className="bg-white rounded-lg p-6 shadow-normal">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-title-4 font-semibold text-label-900">
-                      채용 공고 관리
-                    </h3>
-                    <button
-                      onClick={() => router.push('/company/posts/create')}
-                      className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
-                    >
-                      <Plus size={16} />
-                      새 공고 등록
-                    </button>
-                  </div>
-
-                  {postsLoading ? (
-                    <div className="flex items-center justify-center py-12">
-                      <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full"></div>
-                    </div>
-                  ) : postsError ? (
-                    <div className="text-center py-12">
-                      <p className="text-label-900 font-semibold mb-2">공고를 불러올 수 없어요</p>
-                      <p className="text-caption-2 text-label-500 mb-4">
-                        네트워크 연결을 확인하고 다시 시도해주세요
-                      </p>
-                      <button
-                        onClick={() => window.location.reload()}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
-                      >
-                        새로고침
-                      </button>
-                    </div>
-                  ) : posts && posts.length > 0 ? (
-                    <div className="space-y-4">
-                      {posts.map((post) => (
-                        <div
-                          key={post.id}
-                          className="border border-line-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <h4 className="text-body-2 font-semibold text-label-900 mb-2">
-                                {post.title}
-                              </h4>
-                              <div className="flex flex-wrap gap-3 text-caption-2 text-label-600">
-                                <span className="flex items-center gap-1">
-                                  <MapPin size={14} />
-                                  {post.work_location}
-                                </span>
-                                <span>{post.employment_type}</span>
-                                <span>
-                                  {post.salary ? `${post.salary.toLocaleString()}원` : '협의'}
-                                </span>
-                              </div>
-                              <p className="text-caption-2 text-label-500 mt-2">
-                                모집기간: {post.start_date} ~ {post.end_date}
-                              </p>
-                            </div>
-                            <button
-                              onClick={() => router.push(`/company/posts/edit/${post.id}`)}
-                              className="text-primary-500 hover:text-primary-600 transition-colors cursor-pointer"
-                            >
-                              <Edit3 size={18} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-12">
-                      <p className="text-label-600 mb-2">첫 채용 공고를 등록해보세요</p>
-                      <p className="text-caption-2 text-label-500 mb-4">훌륭한 인재를 만날 수 있어요</p>
-                      <button
-                        onClick={() => router.push('/company/posts/create')}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
-                      >
-                        <Plus size={16} />
-                        첫 공고 등록하기
-                      </button>
-                    </div>
                   )}
                 </div>
-              </motion.div>
-            )}
+              </div>
 
-            {activeTab === 'settings' && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+              {/* 프로필 수정 */}
+              <button
+                onClick={() => router.push('/company/profile/edit')}
+                className="mt-4 w-full py-2 border border-slate-200 rounded-lg text-[12px] font-semibold text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
               >
-                <div className="bg-white rounded-lg p-6 shadow-normal">
-                  <h3 className="text-title-4 font-semibold text-label-900 mb-4">
-                    계정 설정
-                  </h3>
-                  <div className="space-y-4">
-                    <button className="w-full text-left p-3 border border-line-400 rounded-lg text-body-3 text-label-700 hover:bg-component-alternative transition-colors cursor-pointer">
-                      비밀번호 변경
-                    </button>
-                    <button className="w-full text-left p-3 border border-status-error rounded-lg text-body-3 text-status-error hover:bg-component-alternative transition-colors cursor-pointer">
-                      계정 삭제
-                    </button>
+                프로필 편집
+              </button>
+            </motion.div>
+
+            {/* 이용중인 상품 */}
+            <motion.div
+              className="bg-white border border-slate-200 rounded-xl p-5"
+              initial={{ opacity: 0, x: 14 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.35, delay: 0.18 }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[13px] font-bold text-slate-900">이용중인 상품</span>
+                <ChevronRight size={15} className="text-slate-300" />
+              </div>
+              <div className="space-y-3">
+                {[
+                  { icon: <FileText size={13} />, label: '채용 광고' },
+                  { icon: <Users size={13} />, label: '인재풀' },
+                  { icon: <Package size={13} />, label: '인적성' },
+                ].map(item => (
+                  <div key={item.label} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-[12px] text-slate-500">
+                      <span className="text-slate-300">{item.icon}</span>
+                      {item.label}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[12px] text-slate-300">-</span>
+                      <button className="px-2.5 py-1 border border-slate-200 rounded text-[11px] font-semibold text-slate-500 hover:bg-slate-50 transition-colors cursor-pointer">
+                        구매
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            )}
+                ))}
+              </div>
+            </motion.div>
+
+            {/* 하단 프로모 */}
+            <motion.div
+              className="bg-blue-50 border border-blue-100 rounded-xl p-5"
+              initial={{ opacity: 0, x: 14 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.35, delay: 0.26 }}
+            >
+              <p className="text-[13px] font-semibold text-slate-700 mb-1.5 leading-snug">
+                적합한 인재를 찾지 못하셨나요?
+              </p>
+              <p className="text-[12px] text-slate-500 mb-3 leading-relaxed">
+                <span className="text-blue-600 font-semibold">인재풀 60건 (30일)</span> 상품으로
+                우수한 인재를 찾아보세요!
+              </p>
+              <button className="w-full py-2 bg-blue-600 text-white text-[12px] font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer">
+                인재풀 이용하기
+              </button>
+            </motion.div>
+
           </div>
         </div>
       </div>

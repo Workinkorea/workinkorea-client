@@ -1,25 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import Layout from '@/shared/components/layout/Layout';
-import Header from '@/shared/components/layout/Header';
+import { Header } from '@/shared/components/layout/Header';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
-import SkillBarChart from '@/features/user/components/SkillBarChart';
-import RadarChart from '@/shared/ui/RadarChart';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/shared/ui/Skeleton';
+
+const SkillBarChart = dynamic(() => import('@/features/user/components/SkillBarChart'), {
+  loading: () => <Skeleton className="h-64 w-full" />,
+  ssr: false,
+});
+const RadarChart = dynamic(() => import('@/shared/ui/RadarChart'), {
+  loading: () => <Skeleton variant="circle" className="w-[350px] h-[350px] mx-auto" />,
+  ssr: false,
+});
+import { Modal } from '@/shared/ui/Modal';
 import { UserProfile, RadarChartData, UserSkill } from '@/features/user/types/user';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { resumeApi } from '@/features/resume/api/resumeApi';
 import { profileApi } from '@/features/profile/api/profileApi';
 import type { CareerHistory, ResumeListItem } from '@/shared/types/api';
 
-const UserProfileClient: React.FC = () => {
+function UserProfileClient() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'resume' | 'skills' | 'career'>('dashboard');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ resumeId: number; title: string } | null>(null);
   const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
 
   const handleLogout = async () => {
@@ -40,25 +52,28 @@ const UserProfileClient: React.FC = () => {
   const uploadImageMutation = useMutation({
     mutationFn: (file: File) => resumeApi.uploadUserImage(file),
     onSuccess: () => {
-      alert('이미지가 업로드되었습니다.');
+      toast.success('이미지가 업로드되었습니다.');
       setSelectedFile(null);
       queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
-    onError: (error) => {
-      console.error('이미지 업로드 실패:', error);
-      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+    onError: () => {
+      toast.error('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
     },
   });
 
-  const handleDeleteResume = async (resumeId: number, resumeTitle: string) => {
-    if (window.confirm(`"${resumeTitle}" 이력서를 삭제하시겠습니까?`)) {
-      try {
-        await deleteResumeMutation.mutateAsync(resumeId);
-        alert('이력서가 삭제되었습니다.');
-      } catch (error) {
-        console.error('이력서 삭제 실패:', error);
-        alert('이력서 삭제에 실패했습니다. 다시 시도해주세요.');
-      }
+  const handleDeleteResume = (resumeId: number, resumeTitle: string) => {
+    setConfirmDelete({ resumeId, title: resumeTitle });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDelete) return;
+    try {
+      await deleteResumeMutation.mutateAsync(confirmDelete.resumeId);
+      toast.success('이력서가 삭제되었습니다.');
+    } catch {
+      toast.error('이력서 삭제에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setConfirmDelete(null);
     }
   };
 
@@ -71,15 +86,10 @@ const UserProfileClient: React.FC = () => {
 
   const handleUploadImage = async () => {
     if (!selectedFile) {
-      alert('파일을 선택해주세요.');
+      toast.error('파일을 선택해주세요.');
       return;
     }
-
-    try {
-      await uploadImageMutation.mutateAsync(selectedFile);
-    } catch (error) {
-      console.error('업로드 오류:', error);
-    }
+    await uploadImageMutation.mutateAsync(selectedFile);
   };
 
   // 프로필 정보 가져오기
@@ -235,13 +245,13 @@ const UserProfileClient: React.FC = () => {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-        <div className="min-h-screen bg-background-alternative py-8">
+        <div className="min-h-screen bg-slate-50 py-8">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="animate-pulse space-y-6">
-              <div className="bg-white rounded-lg h-64"></div>
+            <div className="space-y-6">
+              <div className="skeleton-shimmer rounded-lg h-64"></div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg h-96"></div>
-                <div className="bg-white rounded-lg h-96"></div>
+                <div className="skeleton-shimmer rounded-lg h-96"></div>
+                <div className="skeleton-shimmer rounded-lg h-96"></div>
               </div>
             </div>
           </div>
@@ -259,12 +269,12 @@ const UserProfileClient: React.FC = () => {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-        <div className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-title-3 font-semibold text-label-700 mb-2">
+            <h2 className="text-xl font-semibold text-slate-700 mb-2">
               프로필을 불러올 수 없습니다
             </h2>
-            <p className="text-body-3 text-label-500">
+            <p className="text-sm text-slate-500">
               {!resumeList?.length
                 ? '먼저 이력서를 작성해주세요.'
                 : '잠시 후 다시 시도해주세요.'}
@@ -272,7 +282,7 @@ const UserProfileClient: React.FC = () => {
             {!resumeList?.length && (
               <button
                 onClick={() => router.push('/user/resume/create')}
-                className="mt-4 px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 cursor-pointer"
+                className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
               >
                 이력서 작성하기
               </button>
@@ -288,20 +298,49 @@ const UserProfileClient: React.FC = () => {
 
   return (
     <Layout>
+      {/* 이력서 삭제 확인 모달 */}
+      <Modal
+        isOpen={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        title="이력서 삭제"
+        size="sm"
+      >
+        <p className="text-sm text-slate-700 mb-6">
+          &ldquo;{confirmDelete?.title}&rdquo; 이력서를 삭제하시겠습니까?
+          <br />
+          <span className="text-slate-500 text-xs mt-1 block">삭제 후 복구할 수 없습니다.</span>
+        </p>
+        <div className="flex gap-3 justify-end">
+          <button
+            onClick={() => setConfirmDelete(null)}
+            className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors cursor-pointer"
+          >
+            취소
+          </button>
+          <button
+            onClick={handleConfirmDelete}
+            disabled={deleteResumeMutation.isPending}
+            className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            {deleteResumeMutation.isPending ? '삭제 중...' : '삭제'}
+          </button>
+        </div>
+      </Modal>
+
       <Header
         type={userType === 'company' ? 'business' : 'homepage'}
         isAuthenticated={isAuthenticated}
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-      <div className="min-h-screen bg-background-alternative py-8">
+      <div className="min-h-screen bg-slate-50 py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           {/* 상단 액션 버튼 */}
           {resumeList && resumeList.length > 0 ? (
             <div className="flex justify-end">
               <button
                 onClick={() => router.push(`/user/resume/edit/${resumeList[0].id}`)}
-                className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
               >
                 이력서 수정하기
               </button>
@@ -310,7 +349,7 @@ const UserProfileClient: React.FC = () => {
             <div className="flex justify-end">
               <button
                 onClick={() => router.push('/user/resume/create')}
-                className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
               >
                 이력서 작성하기
               </button>
@@ -324,8 +363,8 @@ const UserProfileClient: React.FC = () => {
           />
 
           {/* 탭 네비게이션 */}
-          <motion.div 
-            className="bg-white rounded-lg p-2 shadow-normal"
+          <motion.div
+            className="bg-white rounded-lg p-2 shadow-sm"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -340,12 +379,20 @@ const UserProfileClient: React.FC = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${
+                  className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                     activeTab === tab.key
-                      ? 'bg-primary-500 text-white shadow-sm'
-                      : 'text-label-700 hover:bg-component-alternative'
+                      ? 'text-white'
+                      : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 >
+                  {activeTab === tab.key && (
+                    <motion.div
+                      layoutId="tab-bg"
+                      className="absolute inset-0 bg-blue-600 rounded-lg shadow-sm"
+                      style={{ zIndex: -1 }}
+                      transition={{ type: 'spring', stiffness: 340, damping: 28 }}
+                    />
+                  )}
                   {tab.label}
                 </button>
               ))}
@@ -353,22 +400,88 @@ const UserProfileClient: React.FC = () => {
           </motion.div>
 
           {/* 탭 컨텐츠 */}
-          <div className="space-y-6">
+          <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            className="space-y-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22 }}
+          >
             {activeTab === 'dashboard' && (
               <>
+                {/* 프로필 완성도 */}
+                {(() => {
+                  const items = [
+                    { label: '프로필 사진', done: !!resumeData.profileImage },
+                    { label: '이름', done: !!profileData?.name },
+                    { label: '거주 지역', done: !!profileData?.location },
+                    { label: '자기소개', done: !!resumeData.introduction },
+                    { label: '학력', done: resumeData.education.length > 0 },
+                    { label: '언어 능력', done: resumeData.languages.length > 0 },
+                    { label: '자격증', done: resumeData.certifications.length > 0 },
+                    { label: '연락처 링크', done: !!(contactData?.github_url || contactData?.linkedin_url || resumeData.portfolioUrl) },
+                  ];
+                  const done = items.filter(i => i.done).length;
+                  const pct = Math.round((done / items.length) * 100);
+
+                  return (
+                    <motion.div
+                      className="bg-white rounded-xl p-6 shadow-sm border border-slate-100"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-[15px] font-semibold text-slate-900">프로필 완성도</h3>
+                        <span className={`text-lg font-extrabold ${pct >= 80 ? 'text-blue-600' : pct >= 50 ? 'text-amber-500' : 'text-slate-400'}`}>
+                          {pct}%
+                        </span>
+                      </div>
+                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden mb-4">
+                        <motion.div
+                          className={`h-full rounded-full ${pct >= 80 ? 'bg-blue-600' : pct >= 50 ? 'bg-amber-500' : 'bg-slate-300'}`}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${pct}%` }}
+                          transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {items.map((item) => (
+                          <div
+                            key={item.label}
+                            className={`flex items-center gap-1.5 text-[12px] font-medium ${item.done ? 'text-slate-700' : 'text-slate-400'}`}
+                          >
+                            <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] shrink-0 ${item.done ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-400'}`}>
+                              {item.done ? '✓' : ''}
+                            </span>
+                            {item.label}
+                          </div>
+                        ))}
+                      </div>
+                      {pct < 100 && (
+                        <p className="mt-3 text-[12px] text-slate-400">
+                          {items.filter(i => !i.done).map(i => i.label).join(', ')}을(를) 완성하면 더 많은 기업에 노출됩니다.
+                        </p>
+                      )}
+                    </motion.div>
+                  );
+                })()}
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* 레이더 차트 */}
-                  <motion.div 
-                    className="bg-white rounded-lg p-6 shadow-normal"
+                  <motion.div
+                    className="bg-white rounded-lg p-6 shadow-sm"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
                   >
-                    <h3 className="text-title-4 font-semibold text-label-900 mb-6 text-center">
+                    <h3 className="text-lg font-semibold text-slate-900 mb-6 text-center">
                       종합 역량 분석
                     </h3>
                     <div className="flex justify-center">
-                      <RadarChart 
+                      <RadarChart
                         data={radarData}
                         averageData={averageRadarData}
                         size={350}
@@ -380,36 +493,33 @@ const UserProfileClient: React.FC = () => {
             )}
 
             {activeTab === 'resume' && (
-              <motion.div
-                className="bg-white rounded-lg p-6 shadow-normal"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+              <div
+                className="bg-white rounded-lg p-6 shadow-sm"
               >
-                <h3 className="text-title-4 font-semibold text-label-900 mb-6">
+                <h3 className="text-lg font-semibold text-slate-900 mb-6">
                   이력서
                 </h3>
 
                 {/* 이미지 업로드 섹션 */}
-                <div className="mb-6 p-4 border border-line-200 rounded-lg bg-background-alternative">
-                  <h4 className="text-body-2 font-semibold text-label-900 mb-3">이력서 파일 업로드</h4>
+                <div className="mb-6 p-4 border border-slate-100 rounded-lg bg-slate-50">
+                  <h4 className="text-base font-semibold text-slate-900 mb-3">이력서 파일 업로드</h4>
                   <div className="flex items-center gap-4">
                     <input
                       type="file"
                       onChange={handleFileChange}
                       accept="image/*,.pdf,.doc,.docx"
-                      className="flex-1 text-body-3 text-label-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-body-3 file:font-medium file:bg-primary-100 file:text-primary-700 hover:file:bg-primary-200 cursor-pointer"
+                      className="flex-1 text-sm text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer"
                     />
                     <button
                       onClick={handleUploadImage}
                       disabled={!selectedFile || uploadImageMutation.isPending}
-                      className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       {uploadImageMutation.isPending ? '업로드 중...' : '업로드'}
                     </button>
                   </div>
                   {selectedFile && (
-                    <p className="mt-2 text-caption-2 text-label-600">
+                    <p className="mt-2 text-[11px] text-slate-600">
                       선택된 파일: {selectedFile.name}
                     </p>
                   )}
@@ -420,14 +530,14 @@ const UserProfileClient: React.FC = () => {
                     {resumeList.map((resume) => (
                       <div
                         key={resume.id}
-                        className="border border-line-200 rounded-lg p-4 hover:border-primary-300 transition-colors cursor-pointer flex justify-between items-center"
+                        className="border border-slate-100 rounded-lg p-4 hover:border-blue-300 transition-colors cursor-pointer flex justify-between items-center"
                         onClick={() => router.push(`/user/resume/edit/${resume.id}`)}
                       >
                         <div>
-                          <h4 className="text-body-2 font-semibold text-label-900 mb-2">
+                          <h4 className="text-base font-semibold text-slate-900 mb-2">
                             {resume.title || '이력서'}
                           </h4>
-                          <p className="text-body-3 text-label-600">
+                          <p className="text-sm text-slate-600">
                             {resume.updated_at ? new Date(resume.updated_at).toLocaleDateString('ko-KR') : '날짜 정보 없음'}
                           </p>
                         </div>
@@ -437,7 +547,7 @@ const UserProfileClient: React.FC = () => {
                             handleDeleteResume(resume.id, resume.title || '이력서');
                           }}
                           disabled={deleteResumeMutation.isPending}
-                          className="px-4 py-2 bg-red-500 text-white rounded-lg text-body-3 font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                          className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         >
                           {deleteResumeMutation.isPending ? '삭제 중...' : '삭제'}
                         </button>
@@ -446,16 +556,16 @@ const UserProfileClient: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-body-3 text-label-600 mb-4">작성된 이력서가 없습니다.</p>
+                    <p className="text-sm text-slate-600 mb-4">작성된 이력서가 없습니다.</p>
                     <button
                       onClick={() => router.push('/user/resume/create')}
-                      className="px-6 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                      className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
                     >
                       이력서 작성하기
                     </button>
                   </div>
                 )}
-              </motion.div>
+              </div>
             )}
 
             {activeTab === 'skills' && (
@@ -468,24 +578,21 @@ const UserProfileClient: React.FC = () => {
             )}
 
             {activeTab === 'career' && (
-              <motion.div 
-                className="bg-white rounded-lg p-6 shadow-normal"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+              <div
+                className="bg-white rounded-lg p-6 shadow-sm"
               >
-                <h3 className="text-title-4 font-semibold text-label-900 mb-6">
+                <h3 className="text-lg font-semibold text-slate-900 mb-6">
                   경력 및 교육
                 </h3>
-                
+
                 {/* 교육 이력 */}
                 <div className="space-y-4">
-                  <h4 className="text-body-2 font-semibold text-label-700">교육 이력</h4>
+                  <h4 className="text-base font-semibold text-slate-700">교육 이력</h4>
                   {resumeData.education.map((edu) => (
-                    <div key={edu.id} className="border-l-4 border-primary-200 pl-4 py-2">
-                      <h5 className="text-body-3 font-semibold text-label-900">{edu.institution}</h5>
-                      <p className="text-body-3 text-label-600">{edu.degree} - {edu.field}</p>
-                      <p className="text-caption-2 text-label-500">
+                    <div key={edu.id} className="border-l-4 border-blue-200 pl-4 py-2">
+                      <h5 className="text-sm font-semibold text-slate-900">{edu.institution}</h5>
+                      <p className="text-sm text-slate-600">{edu.degree} - {edu.field}</p>
+                      <p className="text-[11px] text-slate-500">
                         {edu.startDate} ~ {edu.endDate || '현재'}
                       </p>
                     </div>
@@ -495,12 +602,12 @@ const UserProfileClient: React.FC = () => {
                 {/* 자격증 */}
                 {resumeData.certifications.length > 0 && (
                   <div className="mt-6 space-y-4">
-                    <h4 className="text-body-2 font-semibold text-label-700">자격증</h4>
+                    <h4 className="text-base font-semibold text-slate-700">자격증</h4>
                     <div className="flex flex-wrap gap-2">
                       {resumeData.certifications.map((cert, index) => (
                         <span
                           key={index}
-                          className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-caption-2 border border-primary-200"
+                          className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[11px] border border-blue-200"
                         >
                           {cert}
                         </span>
@@ -508,9 +615,10 @@ const UserProfileClient: React.FC = () => {
                     </div>
                   </div>
                 )}
-              </motion.div>
+              </div>
             )}
-          </div>
+          </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </Layout>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef, MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { Portal } from './Portal';
@@ -10,7 +10,7 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   showCloseButton?: boolean;
   closeOnOverlayClick?: boolean;
@@ -18,7 +18,7 @@ interface ModalProps {
   className?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({
+export function Modal({
   isOpen,
   onClose,
   title,
@@ -27,8 +27,8 @@ const Modal: React.FC<ModalProps> = ({
   showCloseButton = true,
   closeOnOverlayClick = true,
   closeOnEscape = true,
-  className = ''
-}) => {
+  className = '',
+}: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
   // ESC 키로 모달 닫기
@@ -66,7 +66,7 @@ const Modal: React.FC<ModalProps> = ({
   }, [isOpen]);
 
   // 오버레이 클릭으로 모달 닫기
-  const handleOverlayClick = (e: React.MouseEvent) => {
+  const handleOverlayClick = (e: MouseEvent) => {
     if (closeOnOverlayClick && e.target === e.currentTarget) {
       onClose();
     }
@@ -121,7 +121,7 @@ const Modal: React.FC<ModalProps> = ({
           <>
             {/* 오버레이 */}
             <motion.div
-              className="fixed inset-0 z-50 bg-material-dimmed bg-opacity-60 backdrop-blur-sm"
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
               variants={overlayVariants}
               initial="hidden"
               animate="visible"
@@ -135,7 +135,7 @@ const Modal: React.FC<ModalProps> = ({
                 <motion.div
                   ref={modalRef}
                   className={cn(
-                    'relative w-full bg-white rounded-lg shadow-heavy',
+                    'relative w-full bg-white rounded-xl shadow-xl',
                     sizeClasses[size],
                     className
                   )}
@@ -150,24 +150,26 @@ const Modal: React.FC<ModalProps> = ({
                 >
                   {/* 헤더 */}
                   {(title || showCloseButton) && (
-                    <div className="flex items-center justify-between p-6 pb-4 border-b border-line-200">
+                    <div className="flex items-center justify-between p-6 pb-4 border-b border-slate-100">
                       {title && (
-                        <h2 
+                        <h2
                           id="modal-title"
-                          className="text-title-4 font-semibold text-label-900"
+                          className="text-lg font-semibold text-slate-900"
                         >
                           {title}
                         </h2>
                       )}
-                      
+
                       {showCloseButton && (
-                        <button
+                        <motion.button
                           onClick={onClose}
-                          className="p-1 text-label-500 hover:text-label-700 hover:bg-component-alternative rounded-lg transition-colors cursor-pointer"
+                          className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                           aria-label="모달 닫기"
+                          whileHover={{ rotate: 90 }}
+                          transition={{ type: 'spring', stiffness: 320, damping: 20 }}
                         >
                           <X size={20} />
-                        </button>
+                        </motion.button>
                       )}
                     </div>
                   )}
@@ -184,6 +186,4 @@ const Modal: React.FC<ModalProps> = ({
       </AnimatePresence>
     </Portal>
   );
-};
-
-export default Modal;
+}

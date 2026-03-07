@@ -9,19 +9,20 @@ import { Session2CareerSkills } from '@/features/diagnosis/components/Session2Ca
 import { Session3Preferences } from '@/features/diagnosis/components/Session3Preferences';
 import { Session4Matching } from '@/features/diagnosis/components/Session4Matching';
 import Layout from '@/shared/components/layout/Layout';
-import Header from '@/shared/components/layout/Header';
+import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { DiagnosisData } from '@/features/diagnosis/store/diagnosisStore';
 import { diagnosisApi } from '@/features/diagnosis/api/diagnosisApi';
 import { DiagnosisAnswerRequest } from '@/shared/types/api';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const TOTAL_STEPS = 4;
 
 const DiagnosisClient = () => {
   const router = useRouter();
   const { isAuthenticated, isLoading, userType, logout } = useAuth();
-  const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId } = useDiagnosisStore();
+  const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId, reset } = useDiagnosisStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogout = async () => {
@@ -77,14 +78,11 @@ const DiagnosisClient = () => {
 
       const response = await diagnosisApi.submitAnswer(apiRequest);
 
-      // Save diagnosis ID to store
       setDiagnosisId(response.id);
-
-      // Redirect to result page with ID
+      reset(); // sessionStorage 임시 저장 데이터 초기화
       router.push(`/diagnosis/result?id=${response.id}`);
     } catch (error) {
-      console.error('Failed to submit diagnosis:', error);
-      alert('진단 결과 제출에 실패했습니다. 다시 시도해주세요.');
+      toast.error('진단 결과 제출에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsSubmitting(false);
     }
@@ -102,7 +100,7 @@ const DiagnosisClient = () => {
         isLoading={isLoading}
         onLogout={handleLogout}
       />
-      <div className="min-h-screen bg-background-alternative py-12">
+      <div className="min-h-screen bg-slate-50 py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -110,15 +108,15 @@ const DiagnosisClient = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <h1 className="text-title-2 font-bold text-label-900 mb-2">
+            <h1 className="text-[20px] md:text-[28px] font-bold text-slate-900 mb-2">
               한국 취업 자가진단
             </h1>
-            <p className="text-body-2 text-label-500">
+            <p className="text-sm text-slate-500">
               당신에게 딱 맞는 직업을 찾기 위한 몇 가지 질문에 답해주세요
             </p>
           </motion.div>
 
-          <div className="bg-white rounded-lg shadow-normal p-6 md:p-8">
+          <div className="bg-white rounded-lg shadow-sm p-6 md:p-8">
             <DiagnosisStepProgress currentStep={currentStep} totalSteps={TOTAL_STEPS} />
 
             <AnimatePresence mode="wait">

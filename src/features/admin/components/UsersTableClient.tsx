@@ -24,7 +24,6 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
       const data = await adminApi.getUsers(skip, limit);
       setUsers(data);
     } catch (error) {
-      console.error('Failed to fetch users:', error);
       toast.error('사용자 목록을 불러오는데 실패했습니다.');
     }
   }, [page, limit]);
@@ -38,7 +37,6 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
       fetchUsers();
     },
     onError: (error) => {
-      console.error('Failed to save user:', error);
       toast.error('사용자 저장에 실패했습니다.');
     },
   });
@@ -50,7 +48,6 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
       fetchUsers();
     },
     onError: (error) => {
-      console.error('Failed to delete user:', error);
       toast.error('사용자 삭제에 실패했습니다.');
     },
   });

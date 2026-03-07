@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
-import Header from '@/shared/components/layout/Header';
+import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -18,7 +17,7 @@ interface CompanyPostEditClientProps {
   postId: string;
 }
 
-const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId }) => {
+function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
@@ -85,7 +84,7 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
           onLogout={handleLogout}
         />
         <div className="flex justify-center items-center h-screen">
-          <div className="text-label-500">로딩 중...</div>
+          <div className="text-slate-500">로딩 중...</div>
         </div>
       </Layout>
     );
@@ -119,7 +118,7 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-      <div className="min-h-screen bg-bg-100 py-8 px-4">
+      <div className="min-h-screen bg-slate-100 py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -128,13 +127,13 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
           >
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 text-label-600 hover:text-primary-600 transition-colors mb-4"
+              className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors mb-4"
             >
               <ArrowLeft size={20} />
               <span>뒤로 가기</span>
             </button>
-            <h1 className="text-heading-1 font-bold text-label-900">채용 공고 수정</h1>
-            <p className="text-body-2 text-label-600 mt-2">
+            <h1 className="text-[22px] md:text-[32px] font-extrabold text-slate-900">채용 공고 수정</h1>
+            <p className="text-[13px] md:text-[15px] text-slate-600 mt-2">
               채용 공고 정보를 수정해주세요
             </p>
           </motion.div>
@@ -156,6 +155,6 @@ const CompanyPostEditClient: React.FC<CompanyPostEditClientProps> = ({ postId })
       </div>
     </Layout>
   );
-};
+}
 
 export default CompanyPostEditClient;

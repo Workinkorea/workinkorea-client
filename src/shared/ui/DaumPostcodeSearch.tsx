@@ -70,28 +70,28 @@ const DaumPostcodeSearch: React.FC<DaumPostcodeSearchProps> = ({
 
   return (
     <div className={className}>
-      <div className="relative">
+      <div className="flex gap-2">
         <input
           type="text"
           value={address}
           readOnly
           placeholder={placeholder}
           onClick={handleSearchClick}
-          className={`w-full px-3 py-2 pr-24 border ${
-            error ? 'border-status-error' : 'border-line-300'
-          } rounded-lg text-body-3 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer`}
+          className={`flex-1 min-w-0 px-3 py-2 border ${
+            error ? 'border-red-500' : 'border-slate-200'
+          } rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer`}
         />
         <button
           type="button"
           onClick={handleSearchClick}
-          className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-primary-500 text-white rounded hover:bg-primary-600 flex items-center gap-1.5 cursor-pointer"
+          className="shrink-0 px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-1.5 cursor-pointer"
         >
           <Search size={14} />
-          <span className="text-caption-1 font-medium">주소검색</span>
+          <span className="text-xs font-medium">주소검색</span>
         </button>
       </div>
       {error && (
-        <p className="mt-1 text-caption-2 text-status-error">{error}</p>
+        <p className="mt-1 text-[11px] text-red-500">{error}</p>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import { fetchClient, fetchAPI } from '@/shared/api/fetchClient';
+import { fetchClient, fetchAPI, FetchError, API_BASE_URL, SERVER_API_URL } from '@/shared/api/fetchClient';
 import type {
   EmailVerificationResponse,
   LoginRequest,
@@ -12,6 +12,7 @@ import type {
   CompanyLoginResponse,
   BusinessVerificationResponse
 } from '../types/auth.types';
+import { UserInfo } from '@/shared/types/common.types';
 
 /**
  * Authentication API (HttpOnly Cookie 기반)
@@ -46,20 +47,14 @@ export const authApi = {
   },
 
   /**
-   * 일반 사용자 로그인
+   * 일반 사용자 로그인 (Google OAuth)
    *
-   * HttpOnly Cookie 환경:
-   * - 백엔드가 Set-Cookie 헤더로 accessToken, refreshToken 전송
-   * - 응답 body의 token은 optional (legacy 지원)
-   * - userType 쿠키도 함께 설정됨
+   * 서버는 일반 사용자에게 Google OAuth만 제공합니다.
+   * Google 로그인은 window.location.href로 직접 이동합니다.
+   *
+   * @deprecated 일반 사용자는 이메일/비밀번호 로그인을 지원하지 않습니다.
+   * 대신 `${API_BASE_URL}/api/auth/login/google`로 리다이렉트하세요.
    */
-  async login(data: LoginRequest): Promise<LoginResponse> {
-    return fetchClient.post<LoginResponse>(
-      '/api/auth/login',
-      data,
-      { skipAuth: true }
-    );
-  },
 
   /**
    * 로그아웃
@@ -69,7 +64,7 @@ export const authApi = {
    * - 클라이언트는 cookieManager.clearAuth()로 Public Cookie만 정리
    */
   async logout(): Promise<LogoutResponse> {
-    return fetchClient.post<LogoutResponse>('/api/auth/logout');
+    return fetchClient.delete<LogoutResponse>('/api/auth/logout');
   },
 
   /**
@@ -93,23 +88,68 @@ export const authApi = {
   /**
    * 기업 로그인
    *
+   * 서버 응답 형식:
+   * - 200: { "url": "/company" } (성공)
+   * - 401: { "url": "/company-login" } (인증 실패)
+   * - 500: { "url": "/company-login" } (서버 오류)
+   *
+   * 모든 상태 코드에서 JSON 응답을 받아 url을 추출합니다.
+   *
    * OAuth2PasswordRequestForm 형식:
    * - Content-Type: application/x-www-form-urlencoded
    * - body: username=...&password=...
    */
-  async companyLogin(data: CompanyLoginRequest): Promise<CompanyLoginResponse> {
+  async companyLogin(data: CompanyLoginRequest): Promise<string> {
     const formData = new URLSearchParams();
+    formData.append('grant_type', 'password');
     formData.append('username', data.username);
     formData.append('password', data.password);
 
-    return fetchAPI<CompanyLoginResponse>('/api/auth/company/login', {
+    const isServer = typeof window === 'undefined';
+    const baseURL = isServer ? SERVER_API_URL : API_BASE_URL;
+    const requestUrl = `${baseURL}/api/auth/company/login`;
+
+    const response = await fetch(requestUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),
-      skipAuth: true,
+      credentials: 'include',
     });
+
+    const responseData = await response.json().catch(() => ({})) as CompanyLoginResponse;
+
+    if (!response.ok) {
+      const errData = responseData as unknown as Record<string, string>;
+      throw new FetchError(
+        errData.detail || errData.error || errData.message || response.statusText,
+        response.status,
+        responseData
+      );
+    }
+
+    if (responseData && responseData.url) {
+      const url = responseData.url;
+
+      // 백엔드가 200이지만 에러 URL을 반환하는 경우 처리
+      // 예: /login?status=error&message=...
+      if (url.includes('status=error')) {
+        const query = url.split('?')[1] || '';
+        const params = new URLSearchParams(query);
+        const rawMessage = decodeURIComponent(params.get('message') || '');
+
+        const message = rawMessage.toLowerCase().includes('incorrect') || rawMessage.toLowerCase().includes('wrong')
+          ? '이메일 또는 비밀번호가 올바르지 않습니다.'
+          : rawMessage || '로그인에 실패했습니다.';
+
+        throw new FetchError(message, 401, responseData);
+      }
+
+      return url;
+    }
+
+    return '/company';
   },
 
   /**
@@ -132,14 +172,18 @@ export const authApi = {
    * 사업자 등록번호 검증 (국세청 API)
    */
   async verifyBusinessNumber(businessNumber: string): Promise<BusinessVerificationResponse> {
-    try {
-      return await fetchClient.post<BusinessVerificationResponse>(
-        '/api/auth/verify-business',
-        { businessNumber }
-      );
-    } catch (error) {
-      console.error('[authApi] Business verification error:', error);
-      throw error;
-    }
+    return fetchClient.post<BusinessVerificationResponse>(
+      '/api/verify-business',
+      { businessNumber }
+    );
+  },
+  /**
+   * 사용자 프로필 조회 (인증 상태 확인용)
+   * 
+   * HttpOnly Cookie(access_token)가 유효한지 확인하고
+   * 유저 정보를 반환합니다.
+   */
+  async getProfile(): Promise<UserInfo> {
+    return fetchClient.get<UserInfo>('/api/me');
   },
 };

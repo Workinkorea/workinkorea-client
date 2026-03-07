@@ -30,6 +30,10 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Server-side API URL (Docker 내부 네트워크)
+# Docker Compose에서 오버라이드 가능
+ENV API_URL=http://workinkorea-server:8000
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
