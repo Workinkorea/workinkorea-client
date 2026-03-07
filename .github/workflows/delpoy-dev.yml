@@ -57,7 +57,7 @@ jobs:
             -l "traefik.http.routers.$IMAGE_NAME.rule=Host(\`wik-dev.$BASE_URL\`)" \
             -l traefik.http.routers.$IMAGE_NAME.entrypoints=websecure \
             -l traefik.http.routers.$IMAGE_NAME.tls=true \
-            -l traefik.http.routers.$IMAGE_NAME.service=$IMAGE_NAME" \
+            -l "traefik.http.routers.$IMAGE_NAME.service=$IMAGE_NAME" \
             -l traefik.http.services.$IMAGE_NAME.loadbalancer.server.port=$PORT \
             -l "traefik.http.routers.$IMAGE_NAME.middlewares=dashboard@docker" \
             $IMAGE_NAME
