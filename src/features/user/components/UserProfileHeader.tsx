@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Mail, Github, Linkedin, ExternalLink, Calendar, Briefcase } from 'lucide-react';
 import { UserProfile } from '@/features/user/types/user';
@@ -13,37 +12,37 @@ interface UserProfileHeaderProps {
   className?: string;
 }
 
-const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
+function UserProfileHeader({
   profile,
   isOwnProfile = false,
   onEditClick,
   className = ''
-}) => {
+}: UserProfileHeaderProps) {
   // 가용성 상태에 따른 스타일
   const getAvailabilityStyle = (jobStatus: UserProfile['job_status']) => {
       switch (jobStatus) {
         case 'available':
           return {
-            bg: 'bg-status-correct',
+            bg: 'bg-emerald-500',
             text: 'text-white',
             label: '구직중'
           };
         case 'busy':
           return {
-            bg: 'bg-status-caution',
-            text: 'text-white', 
+            bg: 'bg-amber-500',
+            text: 'text-white',
             label: '바쁨'
           };
         case 'not-looking':
           return {
-            bg: 'bg-label-500',
+            bg: 'bg-slate-400',
             text: 'text-white',
             label: '구직안함'
           };
         default:
           return {
-            bg: 'bg-component-alternative',
-            text: 'text-label-700',
+            bg: 'bg-slate-100',
+            text: 'text-slate-700',
             label: '미정'
           };
       }
@@ -63,8 +62,8 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
   };
 
   return (
-    <motion.div 
-      className={cn('bg-white rounded-lg shadow-normal p-6', className)}
+    <motion.div
+      className={cn('bg-white rounded-lg shadow-sm p-6', className)}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -79,10 +78,10 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
         >
           <div className="relative">
             {profile.profileImage ? (
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-primary-100 bg-cover bg-center" style={{backgroundImage: `url(${profile.profileImage})`}} aria-label={`${profile.name}의 프로필`} />
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-blue-100 bg-cover bg-center" style={{backgroundImage: `url(${profile.profileImage})`}} aria-label={`${profile.name}의 프로필`} />
             ) : (
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-component-alternative border-4 border-primary-100 flex items-center justify-center">
-                <span className="text-2xl md:text-3xl font-semibold text-label-500">
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-slate-100 border-4 border-blue-100 flex items-center justify-center">
+                <span className="text-2xl md:text-3xl font-semibold text-slate-400">
                   {profile.name.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -107,11 +106,11 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
             <div className="flex-1">
               {/* 이름과 직책 */}
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-title-2 font-bold text-label-900">
+                <h1 className="text-[28px] font-extrabold text-slate-900">
                   {profile.name}
                 </h1>
                 <span className={cn(
-                  'text-caption-2 px-3 py-1 rounded-full font-medium',
+                  'text-[11px] px-3 py-1 rounded-full font-medium',
                   availabilityStyle.bg,
                   availabilityStyle.text
                 )}>
@@ -120,13 +119,13 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
               </div>
 
               {profile.position && (
-                <p className="text-body-2 text-primary-600 font-medium mb-3">
+                <p className="text-[15px] text-blue-600 font-medium mb-3">
                   {profile.position}
                 </p>
               )}
 
               {/* 기본 정보 */}
-              <div className="flex flex-wrap items-center gap-4 text-body-3 text-label-600 mb-4">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 mb-4">
                 {profile.location && (
                   <div className="flex items-center gap-1">
                     <MapPin size={16} />
@@ -149,7 +148,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
               {/* 소개 */}
               {profile.introduction && (
-                <p className="text-body-3 text-label-700 mb-4 leading-relaxed">
+                <p className="text-sm text-slate-700 mb-4 leading-relaxed">
                   {profile.introduction}
                 </p>
               )}
@@ -157,12 +156,12 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
               {/* 언어 */}
               {profile.languages.length > 0 && (
                 <div className="mb-4">
-                  <span className="text-body-3 text-label-600 font-medium mr-2">언어:</span>
+                  <span className="text-sm text-slate-600 font-medium mr-2">언어:</span>
                   <div className="inline-flex flex-wrap gap-2">
                     {profile.languages.map((lang, index) => (
-                      <span 
+                      <span
                         key={index}
-                        className="text-caption-2 bg-component-alternative text-label-700 px-2 py-1 rounded"
+                        className="text-[11px] bg-slate-100 text-slate-700 px-2 py-1 rounded"
                       >
                         {lang.name} ({getProficiencyLabel(lang.proficiency)})
                       </span>
@@ -179,7 +178,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
                   {onEditClick && (
                     <button
                       onClick={onEditClick}
-                      className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
                     >
                       프로필 편집
                     </button>
@@ -189,10 +188,10 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
               {!isOwnProfile && (
                 <>
-                  <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer">
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
                     연락하기
                   </button>
-                  <button className="px-4 py-2 border border-primary-500 text-primary-500 rounded-lg text-body-3 font-medium hover:bg-primary-50 transition-colors cursor-pointer">
+                  <button className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors cursor-pointer">
                     즐겨찾기
                   </button>
                 </>
@@ -203,8 +202,8 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
       </div>
 
       {/* 연락처 및 링크 */}
-      <motion.div 
-        className="mt-6 pt-6 border-t border-line-200"
+      <motion.div
+        className="mt-6 pt-6 border-t border-slate-100"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.6 }}
@@ -214,7 +213,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
           {profile.email && (
             <a
               href={`mailto:${profile.email}`}
-              className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-500 transition-colors"
+              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
             >
               <Mail size={16} />
               <span>{profile.email}</span>
@@ -223,11 +222,11 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
           {/* GitHub */}
           {profile.githubUrl && (
-            <a 
+            <a
               href={profile.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-500 transition-colors"
+              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
             >
               <Github size={16} />
               <span>GitHub</span>
@@ -237,11 +236,11 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
           {/* LinkedIn */}
           {profile.linkedinUrl && (
-            <a 
+            <a
               href={profile.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-500 transition-colors"
+              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
             >
               <Linkedin size={16} />
               <span>LinkedIn</span>
@@ -251,11 +250,11 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
           {/* Portfolio */}
           {profile.portfolioUrl && (
-            <a 
+            <a
               href={profile.portfolioUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-500 transition-colors"
+              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
             >
               <ExternalLink size={16} />
               <span>Portfolio</span>
@@ -267,13 +266,13 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
       {/* 희망 연봉 (있는 경우) */}
       {/* {profile.preferredSalary && (
-        <motion.div 
-          className="mt-4 p-4 bg-component-alternative rounded-lg"
+        <motion.div
+          className="mt-4 p-4 bg-slate-100 rounded-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.8 }}
         >
-          <div className="text-body-3 text-label-600">
+          <div className="text-sm text-slate-600">
             <span className="font-medium">희망 연봉:</span>
             <span className="ml-2">
               {profile.preferredSalary.min.toLocaleString()} - {profile.preferredSalary.max.toLocaleString()} {profile.preferredSalary.currency}
@@ -283,6 +282,6 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
       )} */}
     </motion.div>
   );
-};
+}
 
 export default UserProfileHeader;

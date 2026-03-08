@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE_NAME = "workinkorea-client"
-        BASE_URL = "byeong98.xyz"
+        BASE_URL = "moon-core.com"
         PORT = 3000
 
         TRAEFIK_BASIC_AUTH_USERS = credentials('traefik-basic-auth-users')
@@ -90,9 +90,9 @@ pipeline {
                         --name ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} \
                         --network core_network \
                         --label 'traefik.enable=false' \
-                        --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.rule=Host(`wik.${env.BASE_URL}`)' \
+                        --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.rule=Host(`wik-dev.${env.BASE_URL}`)' \
                         --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.entrypoints=websecure' \
-                        --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.tls.certresolver=le' \
+                        --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.tls=true' \
                         --label 'traefik.http.services.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.loadbalancer.server.port=${env.PORT}' \
                         --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.middlewares=client-auth@docker' \
                         --label 'traefik.http.middlewares.client-auth.basicauth.users=${env.TRAEFIK_BASIC_AUTH_USERS}' \
@@ -120,9 +120,9 @@ pipeline {
                             --name ${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR} \
                             --network core_network \
                             --label 'traefik.enable=true' \
-                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.rule=Host(`wik.${env.BASE_URL}`)' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.rule=Host(`wik-dev.${env.BASE_URL}`)' \
                             --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.entrypoints=websecure' \
-                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.tls.certresolver=le' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.tls=true' \
                             --label 'traefik.http.services.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.loadbalancer.server.port=${env.PORT}' \
                             --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}.middlewares=client-auth@docker' \
                             --label 'traefik.http.middlewares.client-auth.basicauth.users=${env.TRAEFIK_BASIC_AUTH_USERS}' \
@@ -148,7 +148,7 @@ pipeline {
                 script{
                     def traefikTest = sh(
                         script: """docker run --rm --network core_network curlimages/curl:latest \
-                            curl -s -o /dev/null -w '%{http_code}' -H 'Host: wik.${env.BASE_URL}' \
+                            curl -s -o /dev/null -w '%{http_code}' -H 'Host: wik-dev.${env.BASE_URL}' \
                             http://${env.DOCKER_IMAGE_NAME}-${env.NEW_COLOR}:${env.PORT}""",
                         returnStdout: true
                     ).trim()
@@ -228,9 +228,9 @@ pipeline {
                             --name ${env.DOCKER_IMAGE_NAME}-${env.COLOR} \
                             --network core_network \
                             --label 'traefik.enable=true' \
-                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.rule=Host(`wik.${env.BASE_URL}`)' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.rule=Host(`wik-dev.${env.BASE_URL}`)' \
                             --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.entrypoints=websecure' \
-                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.tls.certresolver=le' \
+                            --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.tls=true' \
                             --label 'traefik.http.services.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.loadbalancer.server.port=${env.PORT}' \
                             --label 'traefik.http.routers.${env.DOCKER_IMAGE_NAME}-${env.COLOR}.middlewares=client-auth@docker' \
                             --label 'traefik.http.middlewares.client-auth.basicauth.users=${env.TRAEFIK_BASIC_AUTH_USERS}' \

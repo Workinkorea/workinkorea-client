@@ -21,6 +21,10 @@ const DEFAULT_LIMIT = 12;
  * - fetch API 사용 (Next.js 캐싱 통합)
  * - revalidate 옵션으로 ISR 가능
  * - Server Components 전용
+ *
+ * TODO: 서버에 공개 목록 엔드포인트 추가 필요
+ * - GET /api/posts/company/list?skip=&limit= 엔드포인트 서버에 없음
+ * - 서버의 GET /api/posts/company/는 company auth 필요 (공개 아님)
  */
 export async function getCompanyPosts(
   page: number = DEFAULT_PAGE,
@@ -60,13 +64,7 @@ export async function getCompanyPosts(
       limit,
       total_pages: isLastPage ? page : page + 1,
     };
-  } catch (error) {
-    console.error('[getCompanyPosts] Error:', {
-      error,
-      message: error instanceof Error ? error.message : 'Unknown error',
-      page,
-      limit,
-    });
+  } catch {
     return { company_posts: [], total: 0, page: 1, limit, total_pages: 0 };
   }
 }
@@ -75,6 +73,10 @@ export const postsApi = {
   /**
    * 공개 API: 인증 없이 공고 목록 조회
    * Client Components에서 사용 (TanStack Query와 함께)
+   *
+   * TODO: 서버에 공개 목록 엔드포인트 추가 필요
+   * - 현재 서버에는 GET /api/posts/company/ (company auth 필요)만 존재
+   * - 공개 목록 엔드포인트 예: GET /api/posts/company/list?skip=&limit=
    */
   async getPublicCompanyPosts(params?: {
     page?: number;
@@ -115,22 +117,18 @@ export const postsApi = {
 
   /**
    * 인증 필요: 내 회사의 공고 목록만 조회 (기업 전용)
+   * 서버: GET /api/posts/company/ (company auth 필요, 페이지네이션 미지원)
    */
-  async getMyCompanyPosts(params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<CompanyPostsResponse> {
-    const page = params?.page || DEFAULT_PAGE;
-    const limit = params?.limit || DEFAULT_LIMIT;
+  async getMyCompanyPosts(): Promise<CompanyPostsResponse> {
+    const data = await fetchClient.get<{ company_posts: CompanyPostsResponse['company_posts'] }>('/api/posts/company/');
 
-    const endpoint = `/api/posts/company?page=${page}&limit=${limit}`;
-
-    const data = await fetchClient.get<CompanyPostsResponse>(endpoint);
-
+    const posts = data.company_posts || [];
     return {
-      ...data,
-      page,
-      total_pages: Math.ceil(data.total / limit),
+      company_posts: posts,
+      total: posts.length,
+      page: 1,
+      limit: posts.length,
+      total_pages: 1,
     };
   },
 

@@ -88,6 +88,7 @@ export interface BusinessVerificationRequest {
 
 export interface BusinessVerificationData {
   b_no: string;
+  b_nm?: string;
   b_stt: string;
   b_stt_cd: string;
   tax_type: string;

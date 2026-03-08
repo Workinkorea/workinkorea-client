@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -66,12 +66,12 @@ type ResumeFormData = {
   }>;
 };
 
-const ResumeEditor: React.FC<ResumeEditorProps> = ({
+function ResumeEditor({
   templateType,
   initialData,
   isEditMode = false,
   resumeId
-}) => {
+}: ResumeEditorProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -234,7 +234,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
         await createResumeMutation.mutateAsync(requestData as CreateResumeRequest);
       }
     } catch (error) {
-      console.error('이력서 저장 실패:', error);
+      // mutation onError handles user-facing error
     }
   };
 
@@ -269,7 +269,6 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
       setValue('profile_url', response.file_name);
       toast.success('이미지가 업로드되었습니다.');
     } catch (error) {
-      console.error('이미지 업로드 실패:', error);
       toast.error('이미지 업로드에 실패했습니다.');
       setPreviewImage(null);
     } finally {
@@ -294,15 +293,15 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
           <button
             type="button"
             onClick={handleBack}
-            className="p-2 text-label-600 hover:text-label-900 hover:bg-component-alternative rounded-lg transition-colors cursor-pointer"
+            className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
           >
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-title-2 font-bold text-label-900">
+            <h1 className="text-[28px] font-bold text-slate-900">
               {isEditMode ? '이력서 편집' : '새 이력서 작성'}
             </h1>
-            <p className="text-body-3 text-label-600">
+            <p className="text-sm text-slate-600">
               {templateType} 템플릿으로 이력서를 작성하고 있습니다
             </p>
           </div>
@@ -312,11 +311,11 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
       <div className="space-y-6">
         {/* 기본 정보 */}
         <motion.div
-          className="bg-white rounded-lg p-6 shadow-normal"
+          className="bg-white rounded-lg p-6 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h3 className="text-body-2 font-semibold text-label-900 mb-4">
+          <h3 className="text-[15px] font-semibold text-slate-900 mb-4">
             기본 정보
           </h3>
 
@@ -332,13 +331,13 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   id={fieldId}
                   type="text"
                   placeholder="예: 프론트엔드 개발자 이력서"
-                  className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               )}
             />
 
             <div>
-              <label className="block text-caption-1 font-medium text-label-700 mb-2">
+              <label className="block text-xs font-medium text-slate-700 mb-2">
                 프로필 이미지
               </label>
               <div className="flex items-start gap-4">
@@ -350,7 +349,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                       alt="프로필 미리보기"
                       width={96}
                       height={96}
-                      className="w-24 h-24 rounded-lg object-cover border border-line-300"
+                      className="w-24 h-24 rounded-lg object-cover border border-slate-200"
                     />
                     <button
                       type="button"
@@ -366,7 +365,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 <div className="flex-1">
                   <label
                     htmlFor="profile-image-upload"
-                    className={`flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-line-300 rounded-lg text-body-3 text-label-600 hover:border-primary-500 hover:text-primary-600 transition-colors cursor-pointer ${
+                    className={`flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-slate-200 rounded-lg text-sm text-slate-600 hover:border-primary-500 hover:text-blue-600 transition-colors cursor-pointer ${
                       uploadingImage ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
@@ -381,7 +380,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                     disabled={uploadingImage}
                     className="hidden"
                   />
-                  <p className="text-caption-2 text-label-500 mt-2">
+                  <p className="text-[11px] text-slate-500 mt-2">
                     JPG, PNG, GIF 파일 (최대 5MB)
                   </p>
                 </div>
@@ -392,28 +391,37 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
 
         {/* 자기소개 */}
         <motion.div
-          className="bg-white rounded-lg p-6 shadow-normal"
+          className="bg-white rounded-lg p-6 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-body-2 font-semibold text-label-900">
+            <h3 className="text-[15px] font-semibold text-slate-900">
               자기소개
             </h3>
             <button
               type="button"
               onClick={() => appendIntro({ title: '자기소개', content: '' })}
-              className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
+              className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-medium cursor-pointer"
             >
               <Plus size={14} />
               추가
             </button>
           </div>
 
+          <AnimatePresence>
           {introFields.map((field, index) => (
-            <div key={field.id} className="mb-4 p-4 border border-line-200 rounded-lg">
+            <motion.div
+              key={field.id}
+              className="mb-4 p-4 border border-slate-100 rounded-lg"
+              initial={{ opacity: 0, height: 0, scale: 0.96 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              exit={{ opacity: 0, height: 0, scale: 0.96 }}
+              transition={{ duration: 0.22 }}
+              style={{ overflow: 'hidden' }}
+            >
               <div className="flex justify-between items-start mb-4">
-                <h4 className="text-body-3 font-semibold">자기소개 {index + 1}</h4>
+                <h4 className="text-sm font-semibold">자기소개 {index + 1}</h4>
                 <button
                   type="button"
                   onClick={() => removeIntro(index)}
@@ -432,7 +440,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
                     />
                   )}
                 />
@@ -445,23 +453,24 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                       {...field}
                       id={fieldId}
                       rows={4}
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 resize-none"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm resize-none"
                     />
                   )}
                 />
               </div>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
 
         {/* 경력 */}
         <motion.div
-          className="bg-white rounded-lg p-6 shadow-normal"
+          className="bg-white rounded-lg p-6 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-body-2 font-semibold text-label-900">
+            <h3 className="text-[15px] font-semibold text-slate-900">
               경력사항
             </h3>
             <button
@@ -475,17 +484,26 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 position_title: '',
                 main_role: ''
               })}
-              className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
+              className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-medium cursor-pointer"
             >
               <Plus size={14} />
               추가
             </button>
           </div>
 
+          <AnimatePresence>
           {careerFields.map((field, index) => (
-            <div key={field.id} className="mb-6 p-4 border border-line-200 rounded-lg">
+            <motion.div
+              key={field.id}
+              className="mb-6 p-4 border border-slate-100 rounded-lg"
+              initial={{ opacity: 0, height: 0, scale: 0.96 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              exit={{ opacity: 0, height: 0, scale: 0.96 }}
+              transition={{ duration: 0.22 }}
+              style={{ overflow: 'hidden' }}
+            >
               <div className="flex justify-between items-start mb-4">
-                <h4 className="text-body-3 font-semibold">경력 {index + 1}</h4>
+                <h4 className="text-sm font-semibold">경력 {index + 1}</h4>
                 <button
                   type="button"
                   onClick={() => removeCareer(index)}
@@ -506,7 +524,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
                     />
                   )}
                 />
@@ -520,7 +538,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
                     />
                   )}
                 />
@@ -533,7 +551,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
                     />
                   )}
                 />
@@ -575,7 +593,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                           onChange={(e) => field.onChange(e.target.checked)}
                           className="w-4 h-4"
                         />
-                        <span className="text-caption-1 text-label-700">재직중</span>
+                        <span className="text-xs text-slate-700">재직중</span>
                       </label>
                     )}
                   />
@@ -590,24 +608,25 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                         {...field}
                         id={fieldId}
                         rows={3}
-                        className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3 resize-none"
+                        className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm resize-none"
                       />
                     )}
                   />
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
 
         {/* 학력 */}
         <motion.div
-          className="bg-white rounded-lg p-6 shadow-normal"
+          className="bg-white rounded-lg p-6 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-body-2 font-semibold text-label-900">
+            <h3 className="text-[15px] font-semibold text-slate-900">
               학력사항
             </h3>
             <button
@@ -619,17 +638,26 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                 end_date: undefined,
                 is_graduated: false
               })}
-              className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
+              className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-medium cursor-pointer"
             >
               <Plus size={14} />
               추가
             </button>
           </div>
 
+          <AnimatePresence>
           {schoolFields.map((field, index) => (
-            <div key={field.id} className="mb-6 p-4 border border-line-200 rounded-lg">
+            <motion.div
+              key={field.id}
+              className="mb-6 p-4 border border-slate-100 rounded-lg"
+              initial={{ opacity: 0, height: 0, scale: 0.96 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              exit={{ opacity: 0, height: 0, scale: 0.96 }}
+              transition={{ duration: 0.22 }}
+              style={{ overflow: 'hidden' }}
+            >
               <div className="flex justify-between items-start mb-4">
-                <h4 className="text-body-3 font-semibold">학력 {index + 1}</h4>
+                <h4 className="text-sm font-semibold">학력 {index + 1}</h4>
                 <button
                   type="button"
                   onClick={() => removeSchool(index)}
@@ -663,7 +691,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
                     />
                   )}
                 />
@@ -704,40 +732,50 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                           onChange={(e) => field.onChange(e.target.checked)}
                           className="w-4 h-4"
                         />
-                        <span className="text-caption-1 text-label-700">졸업</span>
+                        <span className="text-xs text-slate-700">졸업</span>
                       </label>
                     )}
                   />
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
 
         {/* 언어 능력 */}
         <motion.div
-          className="bg-white rounded-lg p-6 shadow-normal"
+          className="bg-white rounded-lg p-6 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-body-2 font-semibold text-label-900">
+            <h3 className="text-[15px] font-semibold text-slate-900">
               언어 능력
             </h3>
             <button
               type="button"
               onClick={() => appendLanguage({ language_type: '', level: '' })}
-              className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
+              className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-medium cursor-pointer"
             >
               <Plus size={14} />
               추가
             </button>
           </div>
 
+          <AnimatePresence>
           {languageFields.map((field, index) => (
-            <div key={field.id} className="mb-4 p-4 border border-line-200 rounded-lg">
+            <motion.div
+              key={field.id}
+              className="mb-4 p-4 border border-slate-100 rounded-lg"
+              initial={{ opacity: 0, height: 0, scale: 0.96 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              exit={{ opacity: 0, height: 0, scale: 0.96 }}
+              transition={{ duration: 0.22 }}
+              style={{ overflow: 'hidden' }}
+            >
               <div className="flex justify-between items-start mb-4">
-                <h4 className="text-body-3 font-semibold">언어 {index + 1}</h4>
+                <h4 className="text-sm font-semibold">언어 {index + 1}</h4>
                 <button
                   type="button"
                   onClick={() => removeLanguage(index)}
@@ -757,7 +795,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                     <select
                       {...field}
                       id={fieldId}
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
                     >
                       <option value="">언어 선택</option>
                       <option value="한국어">한국어</option>
@@ -786,7 +824,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                     <select
                       {...field}
                       id={fieldId}
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
                     >
                       <option value="">선택하세요</option>
                       <option value="beginner">초급</option>
@@ -797,34 +835,44 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   )}
                 />
               </div>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
 
         {/* 자격증 */}
         <motion.div
-          className="bg-white rounded-lg p-6 shadow-normal"
+          className="bg-white rounded-lg p-6 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-body-2 font-semibold text-label-900">
+            <h3 className="text-[15px] font-semibold text-slate-900">
               자격증
             </h3>
             <button
               type="button"
               onClick={() => appendLicense({ license_name: '', license_agency: '', license_date: '' })}
-              className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-1 font-medium cursor-pointer"
+              className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-medium cursor-pointer"
             >
               <Plus size={14} />
               추가
             </button>
           </div>
 
+          <AnimatePresence>
           {licenseFields.map((field, index) => (
-            <div key={field.id} className="mb-4 p-4 border border-line-200 rounded-lg">
+            <motion.div
+              key={field.id}
+              className="mb-4 p-4 border border-slate-100 rounded-lg"
+              initial={{ opacity: 0, height: 0, scale: 0.96 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              exit={{ opacity: 0, height: 0, scale: 0.96 }}
+              transition={{ duration: 0.22 }}
+              style={{ overflow: 'hidden' }}
+            >
               <div className="flex justify-between items-start mb-4">
-                <h4 className="text-body-3 font-semibold">자격증 {index + 1}</h4>
+                <h4 className="text-sm font-semibold">자격증 {index + 1}</h4>
                 <button
                   type="button"
                   onClick={() => removeLicense(index)}
@@ -845,7 +893,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
                     />
                   )}
                 />
@@ -858,7 +906,7 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-300 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
                     />
                   )}
                 />
@@ -875,17 +923,18 @@ const ResumeEditor: React.FC<ResumeEditorProps> = ({
                   )}
                 />
               </div>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
         </motion.div>
       </div>
 
       {/* 하단 저장 버튼 */}
-      <div className="flex justify-end pt-6 border-t border-line-200">
+      <div className="flex justify-end pt-6 border-t border-slate-100">
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex items-center gap-2 px-8 py-3 bg-primary-500 text-white rounded-lg text-body-2 font-semibold hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-sm"
+          className="flex items-center gap-2 px-8 py-3 bg-blue-500 text-white rounded-lg text-[15px] font-semibold hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-sm"
         >
           <Save size={20} />
           {isSubmitting ? '저장중...' : isEditMode ? '수정하기' : '생성하기'}

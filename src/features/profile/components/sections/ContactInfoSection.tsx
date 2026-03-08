@@ -1,9 +1,8 @@
 'use client';
 
-import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { FormField } from '@/shared/ui/FormField';
-import Input from '@/shared/ui/Input';
+import { Input } from '@/shared/ui/Input';
 import type { ContactInfoForm } from '../../validations/profile';
 
 /**
@@ -32,7 +31,7 @@ export interface ContactInfoSectionProps {
   form: UseFormReturn<ContactInfoForm>;
 }
 
-const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ form }) => {
+function ContactInfoSection({ form }: ContactInfoSectionProps) {
   const {
     control,
     formState: { errors },
@@ -113,4 +112,4 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({ form }) => {
  * Export memoized version to prevent unnecessary re-renders
  * when parent state changes but props remain the same
  */
-export default React.memo(ContactInfoSection);
+export default ContactInfoSection;

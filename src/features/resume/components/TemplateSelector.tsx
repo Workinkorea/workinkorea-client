@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import { ResumeTemplate } from '@/features/user/types/user';
@@ -11,11 +10,11 @@ interface TemplateSelectorProps {
   onNext: () => void;
 }
 
-const TemplateSelector: React.FC<TemplateSelectorProps> = ({
+function TemplateSelector({
   selectedTemplate,
   onTemplateSelect,
   onNext
-}) => {
+}: TemplateSelectorProps) {
   const templates = [
     {
       type: 'modern' as ResumeTemplate,
@@ -63,10 +62,10 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
     <div className="space-y-6">
       {/* 헤더 */}
       <div className="text-center">
-        <h2 className="text-title-2 font-bold text-label-900 mb-2">
+        <h2 className="text-[28px] font-bold text-slate-900 mb-2">
           이력서 템플릿 선택
         </h2>
-        <p className="text-body-3 text-label-600">
+        <p className="text-sm text-slate-600">
           나에게 맞는 템플릿을 선택해서 이력서를 작성해보세요
         </p>
       </div>
@@ -77,10 +76,10 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
           <motion.button
             key={template.type}
             onClick={() => onTemplateSelect(template.type)}
-            className={`relative p-6 border-2 rounded-lg text-left transition-all hover:shadow-normal ${
+            className={`relative p-6 border-2 rounded-lg text-left transition-all hover:shadow-sm ${
               selectedTemplate === template.type
-                ? 'border-primary-500 bg-primary-50 shadow-normal'
-                : 'border-line-300 bg-white hover:border-primary-300'
+                ? 'border-blue-500 bg-blue-50 shadow-sm'
+                : 'border-slate-200 bg-white hover:border-blue-300'
             }`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -96,7 +95,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <CheckCircle size={24} className="text-primary-600" />
+                <CheckCircle size={24} className="text-blue-600" />
               </motion.div>
             )}
 
@@ -106,10 +105,10 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                 {template.preview}
               </div>
               <div className="flex-1">
-                <h3 className="text-body-2 font-semibold text-label-900 mb-1">
+                <h3 className="text-[15px] font-semibold text-slate-900 mb-1">
                   {template.name}
                 </h3>
-                <p className="text-caption-1 text-label-600 line-clamp-2">
+                <p className="text-xs text-slate-600 line-clamp-2">
                   {template.description}
                 </p>
               </div>
@@ -117,11 +116,11 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
             {/* 특징 */}
             <div className="space-y-2">
-              <h4 className="text-caption-1 font-semibold text-label-700">주요 특징</h4>
+              <h4 className="text-xs font-semibold text-slate-700">주요 특징</h4>
               <ul className="space-y-1">
                 {template.features.map((feature, idx) => (
-                  <li key={idx} className="text-caption-2 text-label-600 flex items-center gap-2">
-                    <div className="w-1 h-1 bg-primary-500 rounded-full"></div>
+                  <li key={idx} className="text-[11px] text-slate-600 flex items-center gap-2">
+                    <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
                     {feature}
                   </li>
                 ))}
@@ -132,8 +131,8 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
             <motion.div
               className={`absolute inset-0 rounded-lg pointer-events-none ${
                 selectedTemplate === template.type
-                  ? 'bg-primary-500 opacity-5'
-                  : 'bg-primary-500 opacity-0 hover:opacity-3'
+                  ? 'bg-blue-500 opacity-5'
+                  : 'bg-blue-500 opacity-0 hover:opacity-3'
               }`}
               transition={{ duration: 0.2 }}
             />
@@ -146,10 +145,10 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
         <motion.button
           onClick={onNext}
           disabled={!selectedTemplate}
-          className={`flex items-center gap-2 px-6 py-3 rounded-lg text-body-3 font-medium transition-all ${
+          className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all ${
             selectedTemplate
-              ? 'bg-primary-500 text-white hover:bg-primary-600 shadow-sm'
-              : 'bg-line-300 text-label-400 cursor-not-allowed'
+              ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-sm'
+              : 'bg-slate-200 text-slate-400 cursor-not-allowed'
           }`}
           whileHover={selectedTemplate ? { scale: 1.02 } : {}}
           whileTap={selectedTemplate ? { scale: 0.98 } : {}}
@@ -161,7 +160,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
       {/* 안내 메시지 */}
       <div className="text-center">
-        <p className="text-caption-2 text-label-500">
+        <p className="text-[11px] text-slate-500">
           템플릿은 나중에 변경할 수 있습니다
         </p>
       </div>

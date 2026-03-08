@@ -1,8 +1,64 @@
 # Work in Korea - 프로젝트 가이드
 
+## 🤖 Claude AI 작업 지침 및 참조 파일 (필독)
+
+이 프로젝트에서 코드를 작성하거나 수정할 때는, 아래 명시된 에이전트 역할과 스킬 패턴 파일들을 반드시 먼저 읽고 본 가이드의 규칙을 엄격히 준수하세요.
+
+### Agents
+
+- @agents/auth-specialist.md
+- @agents/code-reviewer.md
+- @agents/debugger.md
+- @agents/feature-architect.md
+- @agents/nextjs-specialist.md
+- @agents/planner.md
+- @agents/testing-specialist.md
+- @agents/ui-specialist.md
+
+### Skills (Patterns)
+
+- @skills/api-patterns/SKILL.md
+- @skills/auth-patterns/SKILL.md
+- @skills/design-patterns/SKILL.md
+- @skills/form-patterns/SKILL.md
+- @skills/fsd-patterns/SKILL.md
+- @skills/testing-patterns/SKILL.md
+
 ## 프로젝트 컨텍스트
 
 이 프로젝트는 외국인 근로자를 위한 한국 취업 지원 플랫폼입니다. Next.js 16 App Router, React 19, TypeScript를 기반으로 하며, 일반 회원(외국인 구직자)과 기업 회원을 위한 채용 공고, 이력서 관리, 자가 진단 시스템을 제공합니다. HttpOnly Cookie 기반 인증을 사용하고, Feature-Sliced Design 아키텍처를 따릅니다.
+
+## 디자인 시스템 (Blue Design System)
+
+모든 UI 컴포넌트는 아래 Blue Design System 토큰을 기반으로 구현합니다. 디자인 일관성이 최우선입니다.
+
+### Color Tokens
+
+- **Primary**: blue-50(#EFF6FF) ~ blue-950(#172554), 메인 액션 색상은 **blue-600(#2563EB)**
+- **Neutral**: slate-50(#F8FAFC) ~ slate-900(#0F172A), 본문 기본 색상은 **slate-800(#1E293B)**
+- **Semantic**: success(#10B981), warning(#F59E0B), error(#EF4444), info(#3B82F6)
+
+### Typography
+
+- **기본 폰트**: `Pretendard`, -apple-system, BlinkMacSystemFont, sans-serif
+- **로고/브랜드**: `Plus Jakarta Sans` (font-weight: 800, letter-spacing: -0.5px)
+- **제목 계층**: 44px(hero/900) → 28px(section/800) → 24px(page/800) → 17px(card/700) → 14-16px(body)
+- **캡션**: 11-13px, color slate-400~500
+
+### Spacing & Radius
+
+- **Spacing**: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64 px
+- **Radius**: sm(6), md(8), lg(12), xl(16), 2xl(20), full(9999) px
+- **Shadow**: sm, md, lg, xl, blue(0 4px 14px rgba(37,99,235,0.25))
+
+### 컴포넌트 규칙
+
+- **Button**: primary(blue-600), secondary(blue-50+border), outline(white+border), ghost(transparent) / 크기: sm, md, lg
+- **Input**: border slate-200, focus시 border-blue-500 + ring blue-100 / label 13px 600 slate-700
+- **Card**: white bg, border slate-200, radius-lg / hover시 shadow-lg + border blue-200
+- **Badge**: radius-full, 11px 600 / blue, green, orange, red 변형
+- **Tab**: border-bottom 2px / active: blue-600 indicator
+- **아이콘 버튼 (Header 등)**: `focus:outline-none`만 사용, `focus:ring-*` 미적용
 
 ## 코드 스타일
 
@@ -11,7 +67,7 @@
 - **모듈 시스템**: ES 모듈 사용 (import/export)
 - **TypeScript**: strict mode 활성화, 타입 안정성 최우선
 - **내보내기**: Named export 선호 (default export는 Next.js 페이지/라우트만 사용)
-- **컴포넌트**: 함수형 컴포�트만 사용 (React 19 + React Compiler 활성화)
+- **컴포넌트**: 함수형 컴포넌트만 사용 (React 19 + React Compiler 활성화)
 
 ### Path Alias
 
@@ -27,12 +83,16 @@
 - **TailwindCSS 4** 사용 (`tailwind.config.ts`, `@tailwindcss/postcss`)
 - 인라인 Tailwind 클래스 사용, `clsx`와 `tailwind-merge`로 조건부 스타일 적용
 - CSS 모듈이나 Styled Components 사용 금지
+- **cn() 유틸** 필수 사용: `cn(...inputs)` = `twMerge(clsx(inputs))`
 
 ### 폴더 구조 (Feature-Sliced Design)
 
 ```
 src/
   app/             # Next.js App Router (페이지 라우팅)
+    icon.svg       # favicon (Blue Design System blue-600 기반)
+    layout.tsx     # Root Layout
+    template.tsx   # 페이지 전환 애니메이션 (Framer Motion, 매 라우트마다 재마운트)
   features/        # 도메인별 기능 (auth, jobs, profile, resume, etc.)
     {feature}/
       components/  # 해당 기능 전용 컴포넌트
@@ -41,8 +101,8 @@ src/
       types/       # 타입 정의
       validations/ # Zod 스키마
   shared/          # 공유 리소스
-    components/    # 공통 컴포넌트
-    ui/            # 재사용 가능한 UI 컴포넌트
+    components/    # 공통 컴포넌트 (Header, Footer, Layout)
+    ui/            # 재사용 가능한 UI 컴포넌트 (Button, Input, Card, Badge, Modal 등)
     hooks/         # 공통 훅
     lib/           # 유틸리티 함수
     api/           # API 클라이언트 (fetchClient)
@@ -71,6 +131,44 @@ const result = await fetchClient.post("/api/posts/company", formData);
 - 클라이언트 전용 로직(useState, useEffect 등)이 있으면 파일명에 `Client` 접미사 추가
   - 예: `DiagnosisClient.tsx`, `CompanyPostCreateClient.tsx`
 - Props 타입은 인터페이스로 정의 (`interface ComponentNameProps`)
+
+### Header 구조
+
+- 모바일·데스크탑 동일 레이아웃: **로고 + [검색 아이콘] [User 아이콘] [햄버거 메뉴]**
+- 반응형 분기 없음 (`hidden sm:flex` 데스크탑 전용 nav 없음)
+- **User 아이콘**: 비인증 → `/login-select`, 인증 → `/user/profile`(개인) 또는 `/company`(기업)
+- 로그인/회원가입 텍스트 링크 없음, User 아이콘으로 단일화
+- `src/shared/components/layout/Header.tsx` (Server Component)
+- `src/shared/components/layout/MobileNav.tsx` (Client Component, 슬라이드 패널)
+
+### UI 컴포넌트 작성 규칙 (디자인 시스템 준수)
+
+- **cn() 유틸 필수**: 모든 조건부 스타일링에 `cn()` 사용
+- **디자인 토큰 사용**: 하드코딩된 색상/spacing 금지, Tailwind 클래스로 토큰 참조
+- **variant/size 패턴**: 컴포넌트는 variant, size props로 시각적 변형 제공
+- **접근성 필수**: 시맨틱 HTML, aria-\* 속성 / 일반 버튼은 focus:ring 사용, 아이콘 버튼은 focus:outline-none만
+- **반응형 필수**: 모바일 우선 (기본 → sm → md → lg → xl)
+- **cursor-pointer 필수**: 클릭 가능한 모든 `<button>`, `<Link>`, 이벤트 요소에 반드시 추가
+
+```tsx
+// ✅ Good: 디자인 시스템 준수
+<button className={cn(
+  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors cursor-pointer",
+  "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+  variant === "primary" && "bg-blue-600 text-white hover:bg-blue-700",
+  variant === "outline" && "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
+  size === "sm" && "px-3.5 py-1.5 text-[13px]",
+  size === "lg" && "px-7 py-3.5 text-[15px] rounded-xl",
+)}>
+
+// ✅ Good: 아이콘 버튼 (focus:ring 미사용)
+<button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none rounded-lg cursor-pointer">
+  <SearchIcon />
+</button>
+
+// ❌ Bad: 하드코딩, 토큰 미준수, cursor-pointer 누락
+<button className="bg-[#2563EB] text-white p-2">
+```
 
 ## 명령어
 
@@ -134,6 +232,9 @@ npm run check-all    # check + build 순차 실행
 - `next.config.ts`에 엄격한 Content Security Policy 설정됨
 - 외부 스크립트/이미지 추가 시 CSP 헤더 수정 필요
 - `'unsafe-eval'`, `'unsafe-inline'`은 개발 모드 전용 (프로덕션에서 제거)
+- **외부 스크립트 URL은 반드시 `https://` 명시** — 프로토콜 상대 URL(`//`) 사용 금지 (CSP 위반 원인)
+  - ✅ `<Script src="https://t1.daumcdn.net/...">`
+  - ❌ `<Script src="//t1.daumcdn.net/...">`
 
 ### 5. 수정 금지 파일
 
@@ -156,6 +257,8 @@ npm run check-all    # check + build 순차 실행
 ### 8. 특수 API 엔드포인트
 
 - **Daum Postcode API**: `https://t1.daumcdn.net` (주소 검색, CSP에 등록됨)
+  - `src/app/layout.tsx`에서 `next/script`로 로드, URL은 반드시 `https://` 명시
+  - 컴포넌트: `src/shared/ui/DaumPostcodeSearch.tsx`
 - **MinIO 파일 업로드**: `src/shared/api/minio.ts` 사용
 
 ### 9. 디버깅
@@ -175,3 +278,5 @@ npm run check-all    # check + build 순차 실행
 - [React 19 릴리즈 노트](https://react.dev/blog/2024/12/05/react-19)
 - [TailwindCSS 4 문서](https://tailwindcss.com/docs)
 - [Feature-Sliced Design](https://feature-sliced.design/)
+
+- 디자인 레퍼런스: `file:///Users/apple/Downloads/workinkorea-redesign.html`

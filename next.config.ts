@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/:path*`,
       },
     ];
   },
@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
               // 폰트는 자체 도메인만
               "font-src 'self' data:",
 
-              `connect-src 'self' https://arw.byeong98.xyz https://t1.daumcdn.net`,
+              `connect-src 'self' https://wik-dev.moon-core.com https://t1.daumcdn.net`,
               // iframe 허용 안 함 (frame-ancestors와 함께 사용)
               "frame-src 'none'",
               // 객체 임베드 차단

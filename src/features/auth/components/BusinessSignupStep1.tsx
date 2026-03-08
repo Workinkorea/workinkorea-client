@@ -106,22 +106,22 @@ export default function BusinessSignupStep1({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-display-2 mobile:text-title-2 text-label-900 text-center mb-4 leading-tight">
+          <h1 className="text-[28px] sm:text-[36px] text-slate-900 text-center mb-4 leading-tight">
             <p>회원가입 정보동의</p>
           </h1>
-          <div className="flex items-center justify-between text-body-2 mobile:text-body-3">
+          <div className="flex items-center justify-between text-sm">
             <div />
-            <span className="text-primary-500">{progressPercentage}%</span>
+            <span className="text-blue-600">{progressPercentage}%</span>
           </div>
           <div className="mt-2">
-            <div className="w-full bg-component-alternative rounded-full h-2">
-              <div className="bg-primary-300 h-2 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
+            <div className="w-full bg-slate-100 rounded-full h-2">
+              <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
             </div>
           </div>
         </motion.div>
 
         <motion.div
-          className="pb-4 border-b border-line-400"
+          className="pb-4 border-b border-slate-200"
           whileTap={{ scale: 0.98 }}
         >
           <label className="flex items-center cursor-pointer">
@@ -148,7 +148,7 @@ export default function BusinessSignupStep1({
                 )}
               </div>
             </div>
-            <span className="ml-3 text-title-3 text-label-900">전체 동의</span>
+            <span className="ml-3 text-xl text-slate-900">전체 동의</span>
           </label>
         </motion.div>
 
@@ -183,15 +183,15 @@ export default function BusinessSignupStep1({
                   )}
                 </div>
               </div>
-              <span className="ml-3 text-body-1 text-label-700">
+              <span className="ml-3 text-base text-slate-700">
                 서비스 이용약관 동의 (필수)
               </span>
             </label>
             <button
               onClick={() => handleViewTerms('서비스 이용약관')}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+              className="p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
             >
-              <ChevronRight className="w-6 h-6 text-gray-400" />
+              <ChevronRight className="w-6 h-6 text-slate-400" />
             </button>
           </motion.div>
 
@@ -225,15 +225,15 @@ export default function BusinessSignupStep1({
                   )}
                 </div>
               </div>
-              <span className="ml-3 text-body-1 text-label-700">
+              <span className="ml-3 text-base text-slate-700">
                 개인(신용)정보 수집 및 이용동의 (필수)
               </span>
             </label>
             <button
               onClick={() => handleViewTerms('개인정보 수집 및 이용')}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+              className="p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
             >
-              <ChevronRight className="w-6 h-6 text-gray-400" />
+              <ChevronRight className="w-6 h-6 text-slate-400" />
             </button>
           </motion.div>
 
@@ -267,15 +267,15 @@ export default function BusinessSignupStep1({
                   )}
                 </div>
               </div>
-              <span className="ml-3 text-body-1 text-label-700">
+              <span className="ml-3 text-base text-slate-700">
                 개인(신용)정보 제공 및 위탁동의 (필수)
               </span>
             </label>
             <button
               onClick={() => handleViewTerms('개인정보 제공 및 위탁')}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+              className="p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
             >
-              <ChevronRight className="w-6 h-6 text-gray-400" />
+              <ChevronRight className="w-6 h-6 text-slate-400" />
             </button>
           </motion.div>
 
@@ -309,15 +309,15 @@ export default function BusinessSignupStep1({
                   )}
                 </div>
               </div>
-              <span className="ml-3 text-body-1 text-label-700">
+              <span className="ml-3 text-base text-slate-700">
                 개인(신용)정보 조회 동의 (필수)
               </span>
             </label>
             <button
               onClick={() => handleViewTerms('개인정보 조회')}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+              className="p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
             >
-              <ChevronRight className="w-6 h-6 text-gray-400" />
+              <ChevronRight className="w-6 h-6 text-slate-400" />
             </button>
           </motion.div>
 
@@ -351,7 +351,7 @@ export default function BusinessSignupStep1({
                   )}
                 </div>
               </div>
-              <span className="ml-3 text-body-1 text-label-700">
+              <span className="ml-3 text-base text-slate-700">
                 마케팅 활용 및 광고성 정보 수신동의
               </span>
             </label>
@@ -368,8 +368,8 @@ export default function BusinessSignupStep1({
             onClick={handleNext}
             disabled={!isRequiredAgreementsChecked}
             className={`flex-1 py-4 rounded-xl font-semibold text-white transition-all duration-300 ${isRequiredAgreementsChecked
-              ? 'bg-primary-300 hover:bg-primary-400 shadow-lg cursor-pointer'
-              : 'bg-gray-300 cursor-not-allowed'
+              ? 'bg-blue-600 hover:bg-blue-700 shadow-lg cursor-pointer'
+              : 'bg-slate-200 cursor-not-allowed'
               }`}
             whileTap={{ scale: isRequiredAgreementsChecked ? 0.98 : 1 }}
             whileHover={{ scale: isRequiredAgreementsChecked ? 1.02 : 1 }}

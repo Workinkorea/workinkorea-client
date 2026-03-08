@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Camera } from 'lucide-react';
 
 /**
@@ -42,14 +42,14 @@ export interface ProfileImageUploadProps {
   maxSizeMB?: number;
 }
 
-const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
+function ProfileImageUpload({
   currentImageUrl,
   userName = 'User',
   onImageSelect,
   size = 80,
   maxSizeMB = 5,
-}) => {
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+}: ProfileImageUploadProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   /**
@@ -104,7 +104,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
         {displayImage ? (
           // Image preview (circular)
           <div
-            className="rounded-full bg-cover bg-center border-4 border-primary-100"
+            className="rounded-full bg-cover bg-center border-4 border-blue-100"
             style={{
               width: `${size}px`,
               height: `${size}px`,
@@ -114,13 +114,13 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
         ) : (
           // Fallback: Initials avatar
           <div
-            className="rounded-full bg-component-alternative border-4 border-primary-100 flex items-center justify-center"
+            className="rounded-full bg-slate-100 border-4 border-blue-100 flex items-center justify-center"
             style={{
               width: `${size}px`,
               height: `${size}px`,
             }}
           >
-            <span className="text-2xl font-semibold text-label-500">
+            <span className="text-2xl font-semibold text-slate-500">
               {getInitials(userName)}
             </span>
           </div>
@@ -132,9 +132,9 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
           onClick={handleButtonClick}
           className="
             absolute -bottom-1 -right-1
-            w-8 h-8 bg-primary-500 rounded-full
+            w-8 h-8 bg-blue-500 rounded-full
             flex items-center justify-center
-            text-white hover:bg-primary-600
+            text-white hover:bg-blue-600
             transition-colors cursor-pointer
             shadow-md
           "
@@ -154,8 +154,8 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
       {/* Description text */}
       <div>
-        <h3 className="text-body-2 font-semibold text-label-900">프로필 사진</h3>
-        <p className="text-caption-2 text-label-500">
+        <h3 className="text-[15px] font-semibold text-slate-900">프로필 사진</h3>
+        <p className="text-[11px] text-slate-500">
           JPG, PNG 파일만 업로드 가능 (최대 {maxSizeMB}MB)
         </p>
       </div>

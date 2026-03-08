@@ -65,21 +65,21 @@ export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = f
       transition={{ duration: 0.3 }}
     >
       <div>
-        <h2 className="text-title-3 font-bold text-label-900 mb-2">
+        <h2 className="text-xl font-bold text-slate-900 mb-2">
           마지막 단계 🎯
         </h2>
-        <p className="text-body-2 text-label-500 mb-6">
+        <p className="text-sm text-slate-500 mb-6">
           조금만 더 알려주시면 맞춤 정보를 드릴 수 있어요
         </p>
       </div>
 
       {/* Q12. 어려운 점 */}
       <div>
-        <label className="text-label-900 text-title-3 font-semibold mb-2 block">
+        <label className="text-slate-900 text-xl font-semibold mb-2 block">
           Q12. 한국 취업, 어떤 부분이 가장 막막하신가요? 😓
           <span className="text-red-500 ml-1">*</span>
         </label>
-        <p className="text-body-2 text-label-500 mb-4">여러 개 선택 가능</p>
+        <p className="text-sm text-slate-500 mb-4">여러 개 선택 가능</p>
 
         <div className="space-y-3">
           {CHALLENGES.map((challenge) => (
@@ -87,19 +87,19 @@ export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = f
               key={challenge.value}
               className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                 selectedChallenges.includes(challenge.value)
-                  ? 'border-primary-600 bg-primary-50'
-                  : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
+                  ? 'border-blue-600 bg-blue-50'
+                  : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
               }`}
             >
               <input
                 type="checkbox"
                 checked={selectedChallenges.includes(challenge.value)}
                 onChange={() => toggleChallenge(challenge.value)}
-                className="w-5 h-5 text-primary-600 focus:ring-primary-500 rounded"
+                className="w-5 h-5 text-blue-600 focus:ring-blue-500 rounded"
               />
               <div className="flex items-center gap-2">
                 <span className="text-xl">{challenge.emoji}</span>
-                <span className="text-body-2 text-label-700">{challenge.label}</span>
+                <span className="text-sm text-slate-700">{challenge.label}</span>
               </div>
             </label>
           ))}
@@ -107,11 +107,11 @@ export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = f
       </div>
 
       {/* Q13. 이메일 */}
-      <div className="bg-primary-50 border-2 border-primary-200 rounded-lg p-6">
-        <h3 className="text-body-1 font-semibold text-label-900 mb-2">
+      <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+        <h3 className="text-base font-semibold text-slate-900 mb-2">
           Q13. 결과를 이메일로 받아보시겠어요? 📧
         </h3>
-        <p className="text-body-2 text-label-600 mb-4">
+        <p className="text-sm text-slate-600 mb-4">
           당신에게 딱 맞는 채용 정보와 맞춤 진단 결과를 보내드릴게요!
         </p>
 
@@ -132,7 +132,7 @@ export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = f
               id={fieldId}
               type="email"
               placeholder="example@email.com"
-              className="w-full border-2 border-line-400 rounded-lg px-4 py-3 text-body-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           )}
         />
@@ -142,9 +142,9 @@ export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = f
             type="checkbox"
             checked={receiveInfo}
             onChange={(e) => setValue('receiveInfo', e.target.checked)}
-            className="w-5 h-5 text-primary-600 focus:ring-primary-500 rounded"
+            className="w-5 h-5 text-blue-600 focus:ring-blue-500 rounded"
           />
-          <span className="text-body-2 text-label-700">
+          <span className="text-sm text-slate-700">
             취업 정보 및 혜택 받기 (선택)
           </span>
         </label>
@@ -155,7 +155,7 @@ export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = f
         <motion.button
           type="button"
           onClick={onBack}
-          className="flex-1 py-4 bg-gray-200 hover:bg-gray-300 text-label-700 font-semibold text-body-1 rounded-lg transition-all cursor-pointer"
+          className="flex-1 py-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-base rounded-lg transition-all cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -164,10 +164,10 @@ export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = f
         <motion.button
           type="submit"
           disabled={selectedChallenges.length === 0 || isSubmitting}
-          className={`flex-1 py-4 font-semibold text-body-1 rounded-lg transition-all shadow-sm hover:shadow-md ${
+          className={`flex-1 py-4 font-semibold text-base rounded-lg transition-all shadow-sm hover:shadow-md ${
             selectedChallenges.length === 0 || isSubmitting
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-primary-600 hover:bg-primary-700 text-white cursor-pointer'
+              ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
           }`}
           whileHover={selectedChallenges.length > 0 && !isSubmitting ? { scale: 1.02 } : {}}
           whileTap={selectedChallenges.length > 0 && !isSubmitting ? { scale: 0.98 } : {}}

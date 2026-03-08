@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import type { ApplyToJobRequest } from '@/shared/types/api';
-import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 
 /**
  * Hook: useJobApplication
@@ -34,20 +34,10 @@ export function useJobApplication() {
   return useMutation({
     mutationFn: (data: ApplyToJobRequest) => postsApi.applyToJob(data),
     onSuccess: () => {
-      toast.success('지원이 완료되었습니다!', {
-        duration: 3000,
-        position: 'top-center',
-      });
+      toast.success('지원이 완료되었습니다!');
     },
     onError: (error: Error) => {
-      console.error('[useJobApplication] Error:', error);
-      toast.error(
-        error.message || '지원 중 오류가 발생했습니다. 다시 시도해주세요.',
-        {
-          duration: 4000,
-          position: 'top-center',
-        }
-      );
+      toast.error(error.message || '지원 중 오류가 발생했습니다. 다시 시도해주세요.');
     },
   });
 }
