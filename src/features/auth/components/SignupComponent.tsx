@@ -191,14 +191,25 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
   };
 
   return (
-    <div className="w-full flex">
-      {/* 약관 동의 섹션 */}
-      <div className="w-full bg-slate-50 p-8 border-r border-slate-200">
-        <div className="max-w-[500px] mx-auto space-y-6">
-          <h2 className="text-xl text-slate-900 mb-6">약관 동의</h2>
+    <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row">
+      {/* 약관 동의 섹션 - 모바일: 전체 너비, 데스크탑: 좌측 */}
+      <div className="w-full lg:w-1/2 lg:border-r lg:border-slate-200 px-4 sm:px-6 py-8 sm:py-12 lg:p-12">
+        <div className="max-w-xl mx-auto space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-[15px] font-bold text-slate-900 mb-4">약관 동의</h2>
+          </motion.div>
 
           {/* 모두 동의 */}
-          <div className="bg-white rounded-lg p-4 border-2 border-blue-600">
+          <motion.div
+            className="bg-white border-2 border-blue-600 rounded-xl p-5 sm:p-6 shadow-sm"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
             <label className="flex items-center cursor-pointer group">
               <input
                 type="checkbox"
@@ -210,27 +221,38 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                 전체 동의
               </span>
             </label>
-          </div>
+          </motion.div>
 
           {/* 개별 약관 */}
-          <div className="space-y-3">
-            {TERMS.map(({ key, label }) => (
-              <div key={key} className="bg-white rounded-lg p-4 border border-slate-200">
-                <label className="flex items-start cursor-pointer group">
+          <motion.div
+            className="space-y-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2, staggerChildren: 0.05 }}
+          >
+            {TERMS.map(({ key, label }, index) => (
+              <motion.div
+                key={key}
+                className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-sm hover:border-blue-200 transition-colors"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.05 * index }}
+              >
+                <label className="flex items-start cursor-pointer group gap-3">
                   <input
                     type="checkbox"
                     checked={termsAgreement[key]}
                     onChange={(e) => handleTermChange(key, e.target.checked)}
-                    className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                    className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer flex-shrink-0"
                   />
-                  <div className="ml-3 flex-1">
-                    <div className="flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                       <span className="text-sm text-slate-900 group-hover:text-blue-600 transition-colors">
-                        <span className="text-blue-600">[필수]</span> {label}
+                        <span className="text-blue-600 font-semibold">[필수]</span> {label}
                       </span>
                       <button
                         type="button"
-                        className="text-[11px] text-slate-500 hover:text-blue-600 underline cursor-pointer"
+                        className="text-[11px] text-slate-500 hover:text-blue-600 underline cursor-pointer whitespace-nowrap flex-shrink-0"
                         onClick={(e) => {
                           e.preventDefault();
                           openTermsModal(key);
@@ -241,9 +263,9 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                     </div>
                   </div>
                 </label>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -255,15 +277,16 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
         content={modalState.content}
       />
 
-      {/* 회원가입 폼 섹션 */}
-      <div className="flex justify-center w-full py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[400px] w-full space-y-8">
+      {/* 회원가입 폼 섹션 - 모바일: 전체 너비, 데스크탑: 우측 */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-6 py-8 sm:py-12 lg:p-12 bg-white lg:bg-slate-50">
+        <div className="max-w-xl mx-auto w-full space-y-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-[28px] text-slate-900 mb-8">개인 회원가입</h1>
+            <h1 className="text-[24px] sm:text-[28px] font-bold text-slate-900 mb-2">개인 회원가입</h1>
+            <p className="text-sm text-slate-500">가입 정보를 입력하세요</p>
           </motion.div>
 
           <motion.form
@@ -273,14 +296,19 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="space-y-4">
+            {/* 폼 카드 래퍼 */}
+            <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm space-y-4">
+              <div className="mb-2">
+                <h3 className="text-[15px] font-bold text-slate-900 mb-4">기본 정보</h3>
+              </div>
+
               <div className="mb-6">
                 <FormField
                   name="email"
                   control={control}
                   label="이메일"
                   render={(field, fieldId) => (
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                       <input
                         {...field}
                         id={fieldId}
@@ -293,7 +321,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                           setFormState(prev => ({ ...prev, isEmailSent: false, isEmailVerified: false }));
                           clearErrors('email');
                         }}
-                        className={`flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent ${
+                        className={`flex-1 border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors ${
                           isEmailFromParam ? 'bg-slate-50 cursor-not-allowed' : ''
                         }`}
                       />
@@ -302,9 +330,9 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                           type="button"
                           onClick={() => emailValue && handleSendVerificationCode(emailValue)}
                           disabled={!emailValue || validateEmail(emailValue) !== null || formState.isEmailSent}
-                          className={`relative px-4 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
+                          className={`px-4 sm:px-5 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors cursor-pointer ${
                             emailValue && validateEmail(emailValue) === null && !formState.isEmailSent
-                              ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                              ? 'bg-blue-600 text-white hover:bg-blue-700'
                               : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                           }`}
                           whileTap={
@@ -334,7 +362,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                     label="인증번호"
                     render={(field, fieldId) => (
                       <div className="space-y-2">
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                           <input
                             {...field}
                             id={fieldId}
@@ -349,7 +377,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                               setFormState(prev => ({ ...prev, verificationCode: value }));
                               clearErrors('verificationCode');
                             }}
-                            className={`flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent ${
+                            className={`flex-1 border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors ${
                               formState.isEmailVerified ? 'bg-slate-50 cursor-not-allowed' : ''
                             }`}
                           />
@@ -357,7 +385,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                             type="button"
                             onClick={() => emailValue && codeValue && handleVerifyCode(emailValue, codeValue)}
                             disabled={formState.isEmailVerified || !codeValue || codeValue.length !== 6}
-                            className={`relative px-4 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
+                            className={`px-4 sm:px-5 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors cursor-pointer ${
                               formState.isEmailVerified
                                 ? 'bg-green-500 text-white cursor-not-allowed'
                                 : codeValue && codeValue.length === 6
@@ -378,9 +406,9 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="flex items-center gap-2 text-green-600 text-xs"
+                            className="flex items-center gap-2 text-emerald-600 text-xs"
                           >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                               <path
                                 fillRule="evenodd"
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -407,7 +435,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                     type="text"
                     value={field.value || ''}
                     placeholder="Hong Gildong"
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
                   />
                 )}
               />
@@ -428,7 +456,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                       const value = e.target.value.replace(/\D/g, '');
                       field.onChange(value);
                     }}
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
                   />
                 )}
               />
@@ -448,12 +476,13 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
               />
             </div>
 
-            <div className="space-y-3 mt-6">
+            {/* 제출 버튼 */}
+            <div className="space-y-3">
               <motion.button
                 type="submit"
-                className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
+                className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-colors cursor-pointer ${
                   isFormValid
-                    ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
                     : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                 }`}
                 disabled={!isFormValid}
@@ -462,7 +491,13 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                 회원가입
               </motion.button>
               {!allTermsAgreed && (
-                <p className="text-[11px] text-red-500 text-center">모든 약관에 동의해주세요</p>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-[11px] text-red-500 text-center"
+                >
+                  모든 약관에 동의해주세요
+                </motion.p>
               )}
             </div>
           </motion.form>

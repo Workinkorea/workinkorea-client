@@ -14,32 +14,35 @@ const jobCategories = [
 
 export default function JobCategoriesSection() {
   return (
-    <section id="job-categories" className="py-12 md:py-16 bg-slate-50">
-      <div className="flex flex-col justify-center px-4 sm:px-6 lg:px-8">
+    <section id="job-categories" className="py-12 sm:py-16 lg:py-20 bg-slate-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 섹션 헤더 */}
-        <div className="text-center mx-auto mb-8 md:mb-12">
-          <h2 className="text-[24px] md:text-[28px] font-extrabold text-slate-900 mb-3 md:mb-4">
-            직종별 정보
+        <div className="text-center mb-8 sm:mb-12">
+          <span className="inline-block bg-blue-50 text-blue-600 text-[12px] font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
+            직종 카테고리
+          </span>
+          <h2 className="text-[24px] sm:text-[32px] font-extrabold text-slate-900 mb-3">
+            직종별 채용정보
           </h2>
-          <p className="text-[13px] md:text-base text-slate-500 mx-auto">
-            원하는 분야의 정보를 확인하세요
+          <p className="text-[13px] sm:text-[15px] text-slate-500">
+            원하는 분야의 채용공고를 바로 찾아보세요
           </p>
         </div>
 
         {/* 카테고리 그리드 */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
           {jobCategories.map((category) => {
             const IconComponent = category.icon;
             return (
               <Link
                 key={category.id}
                 href={`/jobs?q=${encodeURIComponent(category.title)}`}
-                className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-3 py-3 md:px-4 md:py-3.5 hover:border-blue-200 hover:shadow-md cursor-pointer group transition-all duration-200"
+                className="flex flex-col items-center gap-2.5 bg-white border border-slate-200 rounded-xl px-3 py-4 sm:py-5 hover:border-blue-200 hover:shadow-md cursor-pointer group transition-all duration-200"
               >
-                <div className={`${category.bgColor} rounded-lg p-2 shrink-0 flex items-center justify-center`}>
-                  <IconComponent className={`w-5 h-5 md:w-6 md:h-6 ${category.iconColor} group-hover:scale-110 transition-transform`} />
+                <div className={`${category.bgColor} rounded-xl p-3 flex items-center justify-center group-hover:scale-105 transition-transform`}>
+                  <IconComponent className={`w-5 h-5 sm:w-6 sm:h-6 ${category.iconColor}`} />
                 </div>
-                <span className="text-sm md:text-[15px] font-semibold text-slate-800 group-hover:text-blue-700 transition-colors">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-slate-700 group-hover:text-blue-700 transition-colors text-center">
                   {category.title}
                 </span>
               </Link>

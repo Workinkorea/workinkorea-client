@@ -102,7 +102,7 @@ export default function PopularJobsSection() {
 
   return (
     <section className="py-12 md:py-16 bg-white" ref={ref}>
-      <div className="flex flex-col justify-center px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 섹션 헤더 */}
         <motion.div
           className="text-center mb-8 md:mb-12"

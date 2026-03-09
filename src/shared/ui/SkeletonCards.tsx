@@ -113,25 +113,30 @@ export function UserProfileSkeleton() {
   );
 }
 
-/** 기업 대시보드 스켈레톤 */
+/** 기업 대시보드 스켈레톤 (탭 기반 레이아웃) */
 export function CompanyDashboardSkeleton() {
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
-      <div className="max-w-6xl mx-auto space-y-5">
-        {/* 배너 */}
-        <Skeleton className="h-20 w-full" />
-
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5">
-          <div className="space-y-5">
-            <Skeleton className="h-56" />
-            <Skeleton className="h-40" />
-            <Skeleton className="h-48" />
+    <div className="min-h-screen bg-slate-50">
+      {/* 헤더 영역: 기업명 + CTA 버튼 */}
+      <div className="bg-white border-b border-slate-100 px-6 py-5">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton variant="text" className="h-3 w-20" />
+            <Skeleton variant="text" className="h-6 w-32" />
           </div>
-          <div className="space-y-4">
-            <Skeleton className="h-72" />
-            <Skeleton className="h-44" />
-          </div>
+          <Skeleton className="h-10 w-36 rounded-lg" />
         </div>
+        {/* 탭 바 */}
+        <div className="max-w-4xl mx-auto mt-4 flex gap-1">
+          <Skeleton variant="text" className="h-10 w-32 rounded-none" />
+          <Skeleton variant="text" className="h-10 w-24 rounded-none" />
+        </div>
+      </div>
+      {/* 콘텐츠 */}
+      <div className="max-w-4xl mx-auto px-6 py-6 space-y-4">
+        <Skeleton className="h-52 rounded-xl" />
+        <Skeleton className="h-36 rounded-xl" />
+        <Skeleton className="h-44 rounded-xl" />
       </div>
     </div>
   );

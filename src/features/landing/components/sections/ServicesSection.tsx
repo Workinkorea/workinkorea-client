@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Target, FileText, MessageSquare } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { cn } from '@/shared/lib/utils/utils';
 
 const services = [
   {
@@ -69,80 +70,146 @@ export default function ServicesSection() {
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section className="py-12 md:py-16 bg-slate-50" ref={ref}>
-      <div className="flex flex-col justify-center px-4 sm:px-6 lg:px-8">
+    <section className="bg-white py-16 sm:py-20 lg:py-24 relative overflow-hidden" ref={ref}>
+      {/* 배경 장식 */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full -mr-48 -mt-48 opacity-40" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-50 rounded-full -ml-32 -mb-32 opacity-30" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 섹션 헤더 */}
         <motion.div
-          className="text-center mb-8 md:mb-12"
+          className="text-center mb-12 sm:mb-14 lg:mb-16"
           variants={headerVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
         >
-          <h2 className="text-[24px] md:text-[28px] font-extrabold text-slate-900 mb-3 md:mb-4">
+          {/* 오버라인 배지 */}
+          <motion.div
+            className="inline-flex items-center px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full bg-blue-50 border border-blue-200 mb-3 sm:mb-4"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+          >
+            <span className="text-[11px] sm:text-[12px] font-bold text-blue-600 uppercase tracking-wider">
+              특별 서비스
+            </span>
+          </motion.div>
+
+          {/* 타이틀 */}
+          <h2 className="text-[24px] sm:text-[28px] lg:text-[36px] font-extrabold text-slate-900 mb-3 sm:mb-4 leading-tight">
             Work In Korea{' '}
             <span className="text-blue-600">특별한 서비스</span>
           </h2>
-          <p className="text-[13px] md:text-base text-slate-500">
+
+          {/* 부제 */}
+          <p className="text-[13px] sm:text-[14px] lg:text-base text-slate-500 max-w-2xl mx-auto leading-relaxed">
             성공적인 한국 취업을 위한 특별한 서비스를 제공합니다
           </p>
         </motion.div>
 
-        {/* 서비스 카드 */}
+        {/* 서비스 카드 그리드 */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8"
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
         >
-          {services.map((service) => {
+          {services.map((service, idx) => {
             const IconComponent = service.icon;
             return (
               <motion.div
                 key={service.id}
                 variants={cardVariants}
-                className={`${service.bgColor} ${service.borderColor} border-2 rounded-xl p-8 text-center group cursor-default`}
+                className={cn(
+                  'group rounded-xl border-2 p-6 sm:p-7 lg:p-8',
+                  'bg-white transition-all duration-300 cursor-pointer relative overflow-hidden',
+                  service.id === 'jobs'
+                    ? 'border-slate-200 hover:border-slate-300'
+                    : 'border-blue-200 hover:border-blue-300'
+                )}
                 whileHover={{
-                  y: -6,
-                  boxShadow: '0 16px 24px -4px rgba(0,0,0,0.10)',
-                  transition: { type: 'spring', stiffness: 300, damping: 22 },
+                  y: -8,
+                  boxShadow: service.id === 'jobs'
+                    ? '0 20px 25px -5px rgba(0,0,0,0.08)'
+                    : '0 20px 25px -5px rgba(37,99,235,0.12)',
+                  transition: { type: 'spring', stiffness: 300, damping: 20 },
                 }}
               >
-                {/* 아이콘 */}
-                <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md">
-                    <motion.div
-                      whileHover={{
-                        scale: 1.2,
-                        rotate: [0, -8, 8, -4, 0],
-                        transition: { duration: 0.4 },
-                      }}
-                    >
-                      <IconComponent className={`w-8 h-8 ${service.iconColor}`} />
-                    </motion.div>
-                  </div>
-                </div>
+                {/* 배경 Gradient Overlay */}
+                <div className={cn(
+                  'absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300',
+                  service.id === 'jobs'
+                    ? 'bg-gradient-to-br from-slate-50 to-slate-100/50'
+                    : 'bg-gradient-to-br from-blue-50/50 to-blue-100/30'
+                )} />
 
-                {/* 제목 */}
-                <h3 className="text-[17px] font-bold text-slate-900 mb-4">
-                  {service.title}
-                </h3>
+                {/* Content */}
+                <div className="relative z-10">
+                  {/* 아이콘 */}
+                  <motion.div
+                    className="flex items-center justify-center mb-6 sm:mb-7"
+                  >
+                    <div className={cn(
+                      'w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-300',
+                      service.id === 'jobs'
+                        ? 'bg-slate-100 group-hover:bg-slate-200'
+                        : 'bg-blue-100 group-hover:bg-blue-200'
+                    )}>
+                      <motion.div
+                        whileHover={{
+                          scale: 1.15,
+                          rotate: [0, -8, 8, -4, 0],
+                          transition: { duration: 0.5 },
+                        }}
+                      >
+                        <IconComponent className={cn(
+                          'w-6 h-6 sm:w-7 sm:h-7 transition-colors',
+                          service.iconColor
+                        )} />
+                      </motion.div>
+                    </div>
+                  </motion.div>
 
-                {/* 설명 */}
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  {service.description}
-                </p>
+                  {/* 타이틀 */}
+                  <h3 className={cn(
+                    'text-[16px] sm:text-[17px] font-bold mb-3 sm:mb-4 transition-colors',
+                    service.id === 'jobs'
+                      ? 'text-slate-900 group-hover:text-slate-900'
+                      : 'text-slate-900 group-hover:text-blue-900'
+                  )}>
+                    {service.title}
+                  </h3>
 
-                {/* 링크 버튼 */}
-                <div className="mt-6">
+                  {/* 설명 */}
+                  <p className={cn(
+                    'text-[13px] sm:text-[14px] leading-relaxed mb-5 sm:mb-6 line-clamp-3',
+                    service.id === 'jobs'
+                      ? 'text-slate-500 group-hover:text-slate-600'
+                      : 'text-slate-500 group-hover:text-slate-600'
+                  )}>
+                    {service.description}
+                  </p>
+
+                  {/* 링크 */}
                   <Link
                     href={service.href}
-                    className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium transition-colors text-sm"
+                    className="inline-flex items-center gap-2 text-[13px] sm:text-[14px] font-semibold transition-all duration-200 group/link"
                   >
-                    {service.linkLabel}
+                    <span className={cn(
+                      service.id === 'jobs'
+                        ? 'text-slate-600 group-hover/link:text-slate-700'
+                        : 'text-blue-600 group-hover/link:text-blue-700'
+                    )}>
+                      {service.linkLabel}
+                    </span>
                     <motion.span
-                      className="inline-block"
-                      whileHover={{ x: 4 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                      className={cn(
+                        'inline-block text-[14px] sm:text-[15px]',
+                        service.id === 'jobs'
+                          ? 'text-slate-600 group-hover/link:text-slate-700'
+                          : 'text-blue-600 group-hover/link:text-blue-700'
+                      )}
+                      whileHover={{ x: 6, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
                     >
                       →
                     </motion.span>

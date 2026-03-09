@@ -4,11 +4,12 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { Edit3, Plus, MapPin } from 'lucide-react';
+import { Edit3, Plus, MapPin, FileText } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
 import { Header } from '@/shared/components/layout/Header';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { cn } from '@/shared/lib/utils/utils';
 
 function CompanyJobsClient() {
   const router = useRouter();
@@ -45,20 +46,20 @@ function CompanyJobsClient() {
           isLoading={authLoading}
           onLogout={handleLogout}
         />
-        <div className="min-h-screen bg-slate-50 py-8">
+        <div className="min-h-screen bg-slate-50 py-8 sm:py-12">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="space-y-2">
                 <div className="skeleton-shimmer h-8 w-40 rounded-lg" />
                 <div className="skeleton-shimmer h-4 w-56 rounded" />
               </div>
-              <div className="skeleton-shimmer h-9 w-28 rounded-lg" />
+              <div className="skeleton-shimmer h-10 w-32 rounded-lg flex-shrink-0" />
             </div>
-            <div className="bg-white rounded-lg p-6 shadow-sm space-y-4">
+            <div className="bg-white rounded-xl p-5 sm:p-6 shadow-sm space-y-4">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="border border-slate-100 rounded-lg p-4 space-y-3">
                   <div className="skeleton-shimmer h-5 w-2/3 rounded" />
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 flex-wrap">
                     <div className="skeleton-shimmer h-3 w-24 rounded" />
                     <div className="skeleton-shimmer h-3 w-16 rounded" />
                     <div className="skeleton-shimmer h-3 w-20 rounded" />
@@ -80,27 +81,33 @@ function CompanyJobsClient() {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-      <div className="min-h-screen bg-slate-50 py-8">
+      <div className="min-h-screen bg-slate-50 py-8 sm:py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           {/* 페이지 헤더 */}
           <motion.div
-            className="flex items-center justify-between"
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
             <div>
-              <h1 className="text-[20px] md:text-[28px] font-extrabold text-slate-900">채용공고 관리</h1>
-              <p className="text-sm text-slate-500 mt-1">
+              <h1 className="text-[24px] sm:text-[28px] font-extrabold text-slate-900">채용공고 관리</h1>
+              <p className="text-[13px] sm:text-sm text-slate-500 mt-1">
                 등록한 채용 공고를 관리하고 수정하세요
               </p>
             </div>
             <button
               onClick={() => router.push('/company/posts/create')}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+              className={cn(
+                'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold',
+                'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
+                'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+                'shadow-[0_4px_14px_rgba(37,99,235,0.25)] flex-shrink-0'
+              )}
             >
-              <Plus size={16} />
-              새 공고 등록
+              <Plus size={18} />
+              <span className="hidden sm:inline">새 공고 등록</span>
+              <span className="sm:hidden">등록</span>
             </button>
           </motion.div>
 
@@ -110,99 +117,137 @@ function CompanyJobsClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              {postsLoading ? (
-                <div className="space-y-4">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="border border-slate-100 rounded-lg p-4 space-y-3">
+            {postsLoading ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm">
+                    <div className="space-y-3">
                       <div className="skeleton-shimmer h-5 w-2/3 rounded" />
-                      <div className="flex gap-3">
+                      <div className="flex gap-3 flex-wrap">
                         <div className="skeleton-shimmer h-3 w-24 rounded" />
                         <div className="skeleton-shimmer h-3 w-16 rounded" />
-                        <div className="skeleton-shimmer h-3 w-20 rounded" />
                       </div>
-                      <div className="skeleton-shimmer h-3 w-48 rounded" />
+                      <div className="skeleton-shimmer h-3 w-full rounded" />
                     </div>
-                  ))}
-                </div>
-              ) : postsError ? (
-                <div className="text-center py-12">
-                  <p className="text-red-500 mb-4">공고를 불러오는 데 실패했습니다.</p>
-                  <p className="text-[11px] text-slate-500 mb-4">
-                    {postsError instanceof Error ? postsError.message : '알 수 없는 오류가 발생했습니다.'}
-                  </p>
-                  <button
-                    onClick={() => window.location.reload()}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
-                  >
-                    다시 시도
-                  </button>
-                </div>
-              ) : posts && posts.length > 0 ? (
-                <div className="space-y-4">
-                  <div className="mb-6">
-                    <h3 className="text-[17px] font-semibold text-slate-900">
-                      전체 공고 ({posts.length}개)
-                    </h3>
                   </div>
+                ))}
+              </div>
+            ) : postsError ? (
+              <div className="bg-white rounded-xl p-8 sm:p-12 shadow-sm text-center">
+                <p className="text-red-500 font-medium mb-2">공고를 불러오는 데 실패했습니다.</p>
+                <p className="text-[13px] text-slate-500 mb-6">
+                  {postsError instanceof Error ? postsError.message : '알 수 없는 오류가 발생했습니다.'}
+                </p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className={cn(
+                    'inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold',
+                    'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
+                    'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+                  )}
+                >
+                  다시 시도
+                </button>
+              </div>
+            ) : posts && posts.length > 0 ? (
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-[17px] font-semibold text-slate-900">
+                    전체 공고 ({posts.length}개)
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                   {posts.map((post) => (
-                    <div
+                    <motion.div
                       key={post.id}
-                      className="border border-slate-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className={cn(
+                        'bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm',
+                        'hover:border-blue-200 hover:shadow-md transition-all duration-200 cursor-pointer'
+                      )}
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className="text-[15px] font-semibold text-slate-900 mb-2">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3 line-clamp-2">
                             {post.title}
                           </h4>
-                          <div className="flex flex-wrap gap-3 text-[11px] text-slate-600">
-                            <span className="flex items-center gap-1">
-                              <MapPin size={14} />
-                              {post.work_location}
-                            </span>
-                            <span>{post.employment_type}</span>
-                            <span>
+                          <div className="space-y-2 mb-3">
+                            <div className="flex flex-wrap gap-2 text-[12px] text-slate-600">
+                              <span className="flex items-center gap-1.5">
+                                <MapPin size={16} className="flex-shrink-0" />
+                                {post.work_location}
+                              </span>
+                              <span className="px-2 py-1 bg-slate-100 rounded text-slate-600 font-medium">
+                                {post.employment_type}
+                              </span>
+                            </div>
+                            <p className="text-[12px] text-slate-500">
                               {post.salary ? `${post.salary.toLocaleString()}원` : '협의'}
-                            </span>
+                            </p>
+                            <p className="text-[12px] text-slate-400">
+                              {post.start_date} ~ {post.end_date}
+                            </p>
                           </div>
-                          <p className="text-[11px] text-slate-500 mt-2">
-                            모집기간: {post.start_date} ~ {post.end_date}
-                          </p>
-                          <div className="mt-2">
+                          <div className="flex items-center gap-2">
                             {new Date(post.end_date) > new Date() ? (
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-[11px] bg-blue-50 text-blue-700">
+                              <span className={cn(
+                                'inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold',
+                                'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                              )}>
                                 모집중
                               </span>
                             ) : (
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-[11px] bg-slate-100 text-slate-500">
+                              <span className={cn(
+                                'inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold',
+                                'bg-slate-100 text-slate-500 border border-slate-200'
+                              )}>
                                 마감
                               </span>
                             )}
                           </div>
                         </div>
-                        <button
+                        <motion.button
                           onClick={() => router.push(`/company/posts/edit/${post.id}`)}
-                          className="text-blue-600 hover:text-blue-700 transition-colors cursor-pointer"
+                          className={cn(
+                            'p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-150',
+                            'rounded-lg flex-shrink-0 focus:outline-none'
+                          )}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
                         >
-                          <Edit3 size={18} />
-                        </button>
+                          <Edit3 size={20} />
+                        </motion.button>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
-              ) : (
-                <div className="text-center py-12">
-                  <p className="text-slate-500 mb-4">등록된 공고가 없습니다.</p>
-                  <button
-                    onClick={() => router.push('/company/posts/create')}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
-                  >
-                    <Plus size={16} />
-                    첫 공고 등록하기
-                  </button>
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl p-8 sm:p-12 shadow-sm text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-blue-50 rounded-full mb-4">
+                  <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
                 </div>
-              )}
-            </div>
+                <p className="text-slate-600 font-medium mb-1">등록된 공고가 없습니다</p>
+                <p className="text-[13px] text-slate-500 mb-6">
+                  첫 번째 채용 공고를 등록하여 인재를 모집해보세요
+                </p>
+                <motion.button
+                  onClick={() => router.push('/company/posts/create')}
+                  className={cn(
+                    'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold',
+                    'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
+                    'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+                  )}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Plus size={18} />
+                  첫 공고 등록하기
+                </motion.button>
+              </div>
+            )}
           </motion.div>
         </div>
       </div>
