@@ -8,38 +8,45 @@ import ReactQueryProvider from "@/shared/lib/providers/QueryProvider";
 import { Toaster } from 'sonner';
 import Script from 'next/script';
 import { BackToTop } from '@/shared/ui/BackToTop';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 
 export const metadata: Metadata = defaultMetadata;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="ko" className={`${pretendard.variable} ${plusJakartaSans.variable}`}>
+    <html lang={locale} className={`${pretendard.variable} ${plusJakartaSans.variable}`}>
       <head>
         <WebsiteSchema />
         <OrganizationSchema />
         <Script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></Script>
       </head>
       <body suppressHydrationWarning={true}>
-        <ReactQueryProvider>
-          {children}
-        </ReactQueryProvider>
-        <div id="modal-root"></div>
-        <BackToTop />
-        <Toaster
-          richColors
-          position='top-center'
-          duration={2000}
-          closeButton={true}
-          toastOptions={{
-            style: {
-              zIndex: 9999,
-            },
-          }}
-        />
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <ReactQueryProvider>
+            {children}
+          </ReactQueryProvider>
+          <div id="modal-root"></div>
+          <BackToTop />
+          <Toaster
+            richColors
+            position='top-center'
+            duration={2000}
+            closeButton={true}
+            toastOptions={{
+              style: {
+                zIndex: 9999,
+              },
+            }}
+          />
+        </NextIntlClientProvider>
       </body>
     </html>
   );
