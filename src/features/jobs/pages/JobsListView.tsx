@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { Search, SlidersHorizontal, Bookmark } from 'lucide-react';
+import { Search, Bookmark, X, ChevronDown, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 import Layout from '@/shared/components/layout/Layout';
 import { HeaderClient } from '@/shared/components/layout/HeaderClient';
@@ -42,6 +42,7 @@ export default function JobsListView({
   const [selectedType, setSelectedType] = useState(initialType);
   const [sortBy, setSortBy] = useState(initialSort);
   const [showBookmarksOnly, setShowBookmarksOnly] = useState(false);
+  const [showSidebarFilters, setShowSidebarFilters] = useState(false);
 
   const { data, isLoading, error } = useCompanyPosts(currentPage, limit, initialData);
   const { bookmarks, isBookmarked } = useBookmarks();
@@ -50,14 +51,17 @@ export default function JobsListView({
   const total = data?.total || 0;
   const totalPages = Math.ceil(total / limit);
 
-  const pushURL = useCallback((q: string, type: string, sort: string) => {
-    const params = new URLSearchParams();
-    if (q) params.set('q', q);
-    if (type !== '전체') params.set('type', type);
-    if (sort !== 'latest') params.set('sort', sort);
-    const qs = params.toString();
-    router.replace(`${pathname}${qs ? `?${qs}` : ''}`, { scroll: false });
-  }, [router, pathname]);
+  const pushURL = useCallback(
+    (q: string, type: string, sort: string) => {
+      const params = new URLSearchParams();
+      if (q) params.set('q', q);
+      if (type !== '전체') params.set('type', type);
+      if (sort !== 'latest') params.set('sort', sort);
+      const qs = params.toString();
+      router.replace(`${pathname}${qs ? `?${qs}` : ''}`, { scroll: false });
+    },
+    [router, pathname]
+  );
 
   const handleSearch = (q: string) => {
     setSearchQuery(q);
@@ -67,6 +71,7 @@ export default function JobsListView({
   const handleType = (type: string) => {
     setSelectedType(type);
     pushURL(searchQuery, type, sortBy);
+    setShowSidebarFilters(false);
   };
 
   const handleSort = (sort: string) => {
@@ -79,6 +84,7 @@ export default function JobsListView({
     setSelectedType('전체');
     setSortBy('latest');
     setShowBookmarksOnly(false);
+    setShowSidebarFilters(false);
     router.replace(pathname, { scroll: false });
   };
 
@@ -116,165 +122,317 @@ export default function JobsListView({
   return (
     <Layout>
       <HeaderClient />
-      <div className="min-h-screen bg-slate-50 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* 헤더 */}
-          <div className="mb-6 flex items-end justify-between">
-            <div>
-              <h1 className="text-[22px] md:text-[32px] font-extrabold text-slate-900 mb-2">
-                채용 공고
-              </h1>
-              <p className="text-[13px] md:text-[15px] text-slate-600">
-                한국에서 외국인을 위한 다양한 채용 기회를 찾아보세요
-              </p>
-            </div>
-            {/* 북마크 모아보기 */}
-            <button
-              onClick={() => setShowBookmarksOnly(v => !v)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer shrink-0 ${
-                showBookmarksOnly
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'
-              }`}
-            >
-              <Bookmark size={15} className={showBookmarksOnly ? 'fill-white' : ''} />
-              저장 {bookmarks.length > 0 && <span>({bookmarks.length})</span>}
-            </button>
-          </div>
 
-          {/* 검색 & 필터 바 */}
-          <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6 space-y-3">
-            <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3 focus-within:border-blue-500 focus-within:ring-[3px] focus-within:ring-blue-100 transition-colors bg-white">
+      <div className="min-h-screen bg-slate-50">
+        {/* Page Header with Search */}
+        <div className="bg-white border-b border-slate-100">
+          <div className="page-container py-6 sm:py-8">
+            {/* Title Section */}
+            <div className="flex items-end justify-between gap-4 mb-6">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-slate-900 mb-2">
+                  채용 공고
+                </h1>
+                <p className="text-caption-1 sm:text-body-3 text-slate-600">
+                  한국에서 외국인을 위한 다양한 채용 기회를 찾아보세요
+                </p>
+              </div>
+
+              {/* Desktop Bookmark Button */}
+              <button
+                onClick={() => setShowBookmarksOnly(v => !v)}
+                className={`hidden sm:flex items-center gap-1.5 px-4 py-2.5 rounded-lg border text-sm font-semibold transition-all cursor-pointer shrink-0 ${
+                  showBookmarksOnly
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-[0_4px_14px_rgba(37,99,235,0.25)]'
+                    : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600'
+                }`}
+              >
+                <Bookmark size={16} className={showBookmarksOnly ? 'fill-white' : ''} />
+                저장 {bookmarks.length > 0 && <span>({bookmarks.length})</span>}
+              </button>
+
+              {/* Mobile Bookmark Button */}
+              <button
+                onClick={() => setShowBookmarksOnly(v => !v)}
+                className={`sm:hidden p-2.5 rounded-lg border transition-colors cursor-pointer ${
+                  showBookmarksOnly
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'bg-white text-slate-400 border-slate-200'
+                }`}
+                aria-label="저장된 공고"
+              >
+                <Bookmark size={18} className={showBookmarksOnly ? 'fill-white' : ''} />
+              </button>
+            </div>
+
+            {/* Search Bar */}
+            <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3.5 py-2.5 focus-within:border-blue-500 focus-within:ring-[3px] focus-within:ring-blue-100 transition-all bg-white">
               <Search size={18} className="text-slate-400 shrink-0" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => handleSearch(e.target.value)}
                 placeholder="직무명, 근무지 검색..."
-                className="flex-1 min-w-0 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none bg-transparent"
+                className="flex-1 min-w-0 text-sm text-slate-800 placeholder:text-slate-400 outline-none bg-transparent"
               />
             </div>
+          </div>
+        </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="flex items-center gap-1.5 text-slate-500 shrink-0">
-                <SlidersHorizontal size={15} />
-                <span className="text-xs font-medium">필터</span>
-              </div>
+        {/* Main Content Area */}
+        <div className="page-container py-6 sm:py-8">
 
-              <div className="flex flex-wrap gap-1.5">
+          {/* Mobile: Horizontal Filter Bar */}
+          <div className="lg:hidden mb-6 space-y-3">
+            {/* Employment Type Chips */}
+            <div className="overflow-x-auto pb-2 -mx-4 px-4">
+              <div className="flex gap-2 w-max">
                 {EMPLOYMENT_TYPES.map(type => (
                   <button
                     key={type}
                     onClick={() => handleType(type)}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-full text-caption-2 font-semibold border whitespace-nowrap transition-all cursor-pointer ${
                       selectedType === type
                         ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600'
+                        : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'
                     }`}
                   >
                     {type}
                   </button>
                 ))}
               </div>
-
-              <div className="hidden sm:block w-px h-5 bg-slate-200 mx-1" />
-
-              <select
-                value={sortBy}
-                onChange={e => handleSort(e.target.value)}
-                className="text-xs font-medium text-slate-600 border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:border-blue-500 cursor-pointer"
-              >
-                {SORT_OPTIONS.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
             </div>
-          </div>
 
-          {/* 결과 수 */}
-          {!isLoading && !error && (
-            <p className="text-sm text-slate-500 mb-4">
-              {isFiltered ? `검색 결과 ${filteredPosts.length}개` : `총 ${total}개의 공고`}
-            </p>
-          )}
-
-          {/* 스켈레톤 로딩 */}
-          {isLoading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl p-6 border border-slate-200 overflow-hidden">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 skeleton-shimmer rounded-lg shrink-0" />
-                    <div className="flex-1 space-y-2">
-                      <div className="h-4 skeleton-shimmer rounded w-3/4" />
-                      <div className="h-3 skeleton-shimmer rounded w-1/2" />
-                    </div>
-                  </div>
-                  <div className="space-y-2 mb-4">
-                    <div className="h-3 skeleton-shimmer rounded w-full" />
-                    <div className="h-3 skeleton-shimmer rounded w-5/6" />
-                  </div>
-                  <div className="flex gap-2">
-                    <div className="h-6 skeleton-shimmer rounded-full w-16" />
-                    <div className="h-6 skeleton-shimmer rounded-full w-20" />
-                  </div>
-                </div>
+            {/* Sort Tabs - Mobile */}
+            <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4">
+              {SORT_OPTIONS.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => handleSort(opt.value)}
+                  className={`px-3.5 py-2 text-caption-2 font-semibold rounded-lg border whitespace-nowrap transition-all cursor-pointer ${
+                    sortBy === opt.value
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white text-slate-600 border-slate-200'
+                  }`}
+                >
+                  {opt.label}
+                </button>
               ))}
             </div>
-          )}
 
-          {/* 에러 상태 */}
-          {error && (
-            <div className="text-center py-20">
-              <p className="text-slate-900 text-base font-semibold mb-2">공고를 불러올 수 없어요</p>
-              <p className="text-slate-600 text-[15px] mb-4">네트워크 연결을 확인하고 다시 시도해주세요</p>
+            {/* Reset Filter Button */}
+            {isFiltered && (
               <button
-                onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
+                onClick={handleReset}
+                className="w-full py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 border border-blue-200 rounded-lg transition-colors cursor-pointer"
               >
-                새로고침
+                필터 초기화
               </button>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* 공고 목록 */}
-          {!isLoading && !error && filteredPosts.length > 0 ? (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredPosts.map((post) => (
-                  <JobCard key={post.id} post={post} />
-                ))}
-              </div>
+          {/* Desktop: Sidebar + Main Grid Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
+            {/* Desktop Sidebar - Hidden on mobile/tablet */}
+            <div className="hidden lg:block">
+              <div className="bg-white rounded-xl border border-slate-200 p-5 sticky top-[calc(65px+73px+20px)] h-fit space-y-5">
+                {/* Employment Type Filter */}
+                <div>
+                  <h3 className="text-caption-1 font-bold text-slate-900 mb-3">고용 형태</h3>
+                  <div className="space-y-1.5">
+                    {EMPLOYMENT_TYPES.map(type => (
+                      <button
+                        key={type}
+                        onClick={() => handleType(type)}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-caption-1 font-medium transition-all cursor-pointer ${
+                          selectedType === type
+                            ? 'bg-blue-50 text-blue-700 font-semibold'
+                            : 'text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-              {!isFiltered && totalPages > 1 && (
-                <JobsPaginationClient currentPage={currentPage} totalPages={totalPages} />
-              )}
-            </>
-          ) : !isLoading && !error ? (
-            <div className="text-center py-20">
-              {showBookmarksOnly && bookmarks.length === 0 ? (
-                <>
-                  <Bookmark size={48} className="mx-auto text-slate-300 mb-3" />
-                  <p className="text-slate-600 text-[15px] mb-2">저장한 공고가 없습니다</p>
-                  <Link href="/jobs" onClick={() => setShowBookmarksOnly(false)} className="text-sm text-blue-600 hover:underline cursor-pointer">
-                    공고 둘러보기
-                  </Link>
-                </>
-              ) : isFiltered ? (
-                <>
-                  <p className="text-slate-600 text-[15px] mb-2">검색 결과가 없습니다</p>
-                  <button onClick={handleReset} className="text-sm text-blue-600 hover:underline cursor-pointer">
-                    필터 초기화
+                {/* Sort Filter */}
+                <div className="pt-4 border-t border-slate-100">
+                  <h3 className="text-caption-1 font-bold text-slate-900 mb-3">정렬</h3>
+                  <select
+                    value={sortBy}
+                    onChange={e => handleSort(e.target.value)}
+                    className="w-full text-caption-1 font-medium text-slate-600 border border-slate-200 rounded-lg px-3 py-2 bg-white appearance-none focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 cursor-pointer"
+                  >
+                    {SORT_OPTIONS.map(opt => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Bookmark Filter */}
+                <div className="pt-4 border-t border-slate-100">
+                  <button
+                    onClick={() => setShowBookmarksOnly(v => !v)}
+                    className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-lg border transition-all cursor-pointer text-sm font-semibold ${
+                      showBookmarksOnly
+                        ? 'bg-blue-50 text-blue-700 border-blue-200'
+                        : 'bg-white text-slate-600 border-slate-200 hover:border-blue-200'
+                    }`}
+                  >
+                    <Bookmark size={16} className={showBookmarksOnly ? 'fill-blue-700' : ''} />
+                    저장한 공고만 보기
                   </button>
-                </>
-              ) : (
-                <>
-                  <p className="text-slate-600 text-[15px] mb-2">새로운 채용 공고를 준비 중이에요</p>
-                  <p className="text-slate-500 text-sm">곧 다양한 기회를 만나보실 수 있어요</p>
-                </>
-              )}
+                </div>
+
+                {/* Reset Button */}
+                {isFiltered && (
+                  <div className="pt-4 border-t border-slate-100">
+                    <button
+                      onClick={handleReset}
+                      className="w-full py-2 text-caption-1 font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                    >
+                      필터 초기화
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          ) : null}
+
+            {/* Main Content Area */}
+            <div>
+              {/* Results Header: Count + Sort Tabs */}
+              {!isLoading && !error && (
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+                  <p className="text-body-2 font-semibold text-slate-900">
+                    <span className="text-blue-600">
+                      {isFiltered ? filteredPosts.length : total}
+                    </span>
+                    <span className="text-slate-600 ml-1">
+                      개의 {isFiltered ? '검색 결과' : '채용공고'}
+                    </span>
+                  </p>
+
+                  {/* Sort Tabs - Desktop */}
+                  <div className="hidden sm:flex items-center gap-2">
+                    {SORT_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => handleSort(opt.value)}
+                        className={`px-3.5 py-2 text-caption-1 font-semibold rounded-lg border transition-all cursor-pointer ${
+                          sortBy === opt.value
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Skeleton Loading */}
+              {isLoading && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 overflow-hidden">
+                      <div className="flex items-start gap-3 mb-4">
+                        <div className="w-12 h-12 skeleton-shimmer rounded-lg shrink-0" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-3 skeleton-shimmer rounded w-3/4" />
+                          <div className="h-2.5 skeleton-shimmer rounded w-1/2" />
+                        </div>
+                      </div>
+                      <div className="space-y-2.5 mb-4">
+                        <div className="h-3 skeleton-shimmer rounded w-full" />
+                        <div className="h-3 skeleton-shimmer rounded w-5/6" />
+                      </div>
+                      <div className="flex gap-2 pt-3 border-t border-slate-100">
+                        <div className="h-5 skeleton-shimmer rounded-full w-16 shrink-0" />
+                        <div className="h-5 skeleton-shimmer rounded-full w-20 shrink-0" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Error State */}
+              {error && (
+                <div className="text-center py-16 sm:py-20">
+                  <p className="text-slate-900 text-base font-semibold mb-2">공고를 불러올 수 없어요</p>
+                  <p className="text-slate-600 text-body-3 mb-6">네트워크 연결을 확인하고 다시 시도해주세요</p>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="px-4 py-2.5 bg-blue-600 text-white rounded-lg font-semibold text-sm hover:bg-blue-700 transition-colors cursor-pointer"
+                  >
+                    새로고침
+                  </button>
+                </div>
+              )}
+
+              {/* Job Grid */}
+              {!isLoading && !error && filteredPosts.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {filteredPosts.map(post => (
+                      <JobCard key={post.id} post={post} />
+                    ))}
+                  </div>
+
+                  {/* Pagination - Only show if not filtered */}
+                  {!isFiltered && totalPages > 1 && (
+                    <div className="mt-8 sm:mt-12">
+                      <JobsPaginationClient currentPage={currentPage} totalPages={totalPages} />
+                    </div>
+                  )}
+                </>
+              ) : !isLoading && !error ? (
+                <div className="text-center py-16 sm:py-24">
+                  {showBookmarksOnly && bookmarks.length === 0 ? (
+                    <>
+                      <div className="mb-4 flex justify-center">
+                        <Bookmark size={56} className="text-slate-300" />
+                      </div>
+                      <h3 className="text-slate-900 text-body-1 font-bold mb-2">저장한 공고가 없습니다</h3>
+                      <p className="text-slate-600 text-body-3 mb-6">관심 있는 공고를 북마크에 저장해보세요</p>
+                      <Link
+                        href="/jobs"
+                        onClick={() => setShowBookmarksOnly(false)}
+                        className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+                      >
+                        공고 둘러보기
+                      </Link>
+                    </>
+                  ) : isFiltered ? (
+                    <>
+                      <div className="mb-4 flex justify-center">
+                        <Search size={56} className="text-slate-300" />
+                      </div>
+                      <h3 className="text-slate-900 text-[16px] font-bold mb-2">검색 결과가 없습니다</h3>
+                      <p className="text-slate-600 text-[14px] mb-6">다른 조건으로 검색해보세요</p>
+                      <button
+                        onClick={handleReset}
+                        className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+                      >
+                        필터 초기화
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="mb-4 flex justify-center">
+                        <Briefcase size={56} className="text-slate-300" />
+                      </div>
+                      <h3 className="text-slate-900 text-body-1 font-bold mb-2">아직 등록된 공고가 없습니다</h3>
+                      <p className="text-slate-600 text-body-3">새로운 채용 기회를 곧 만나보실 수 있어요</p>
+                    </>
+                  )}
+                </div>
+              ) : null}
+            </div>
+          </div>
         </div>
       </div>
     </Layout>

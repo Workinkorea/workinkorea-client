@@ -127,7 +127,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.28, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="fixed top-0 right-0 w-full h-full bg-white z-[110] flex flex-col"
+              className="fixed top-0 right-0 w-full sm:max-w-sm h-full bg-white z-[110] flex flex-col shadow-xl"
               role="dialog"
               aria-modal="true"
               aria-label="네비게이션 메뉴"
@@ -225,7 +225,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                       </Link>
                       <button
                         onClick={() => { onLogout?.(); close(); }}
-                        className="w-full flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group text-left"
+                        className="w-full flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group text-left cursor-pointer"
                       >
                         <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600">로그아웃</span>
                         <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400" />

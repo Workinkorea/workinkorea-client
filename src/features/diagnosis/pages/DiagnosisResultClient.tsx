@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { DiagnosisData } from '@/features/diagnosis/store/diagnosisStore';
 import { diagnosisApi } from '@/features/diagnosis/api/diagnosisApi';
 import { DiagnosisAnswerResponse } from '@/shared/types/api';
+import { cn } from '@/shared/lib/utils/utils';
 
 interface MatchingResult {
   score: number;
@@ -81,13 +82,22 @@ const DiagnosisResultClient = () => {
           isLoading={isLoading}
           onLogout={handleLogout}
         />
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-          <div className="text-center">
-            <AlertCircle className="text-red-500 mx-auto mb-4" size={48} />
-            <p className="text-base text-slate-700">{error}</p>
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-8">
+          <div className="text-center max-w-md">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-50 rounded-full mb-4">
+              <AlertCircle className="text-red-500 w-8 h-8" />
+            </div>
+            <p className="text-base text-slate-700 mb-2">{error}</p>
+            <p className="text-sm text-slate-500 mb-6">
+              진단을 다시 시도하거나 처음부터 시작해보세요
+            </p>
             <motion.button
               onClick={() => router.push('/diagnosis')}
-              className="mt-6 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all cursor-pointer"
+              className={cn(
+                'px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg',
+                'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
+                'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+              )}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -108,17 +118,17 @@ const DiagnosisResultClient = () => {
           isLoading={isLoading}
           onLogout={handleLogout}
         />
-        <div className="min-h-screen bg-slate-50 py-8">
+        <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <div className="bg-white rounded-xl p-8 shadow-sm text-center space-y-4">
-              <div className="skeleton-shimmer rounded-full w-32 h-32 mx-auto" />
+            <div className="bg-white rounded-2xl p-6 sm:p-10 lg:p-12 shadow-sm text-center space-y-4">
+              <div className="skeleton-shimmer rounded-full w-24 h-24 sm:w-32 sm:h-32 mx-auto" />
               <div className="skeleton-shimmer h-8 w-48 rounded mx-auto" />
               <div className="skeleton-shimmer h-4 w-64 rounded mx-auto" />
-              <p className="text-[13px] text-slate-400 mt-2">결과를 분석하는 중...</p>
+              <p className="text-[13px] text-slate-400 mt-4">결과를 분석하는 중...</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl p-6 shadow-sm space-y-3">
+                <div key={i} className="bg-white rounded-xl p-5 sm:p-6 shadow-sm space-y-3">
                   <div className="skeleton-shimmer h-5 w-32 rounded" />
                   {Array.from({ length: 3 }).map((_, j) => (
                     <div key={j} className="skeleton-shimmer h-4 w-full rounded" />
@@ -140,71 +150,79 @@ const DiagnosisResultClient = () => {
         isLoading={isLoading}
         onLogout={handleLogout}
       />
-      <div className="min-h-screen bg-slate-50 py-12">
+      <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* 매칭 점수 */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="bg-white rounded-lg shadow-sm p-8 mb-8 text-center"
+            className={cn(
+              'bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 lg:p-10',
+              'text-center mb-6 sm:mb-8'
+            )}
           >
-            <h1 className="text-[20px] md:text-[28px] font-bold text-slate-900 mb-4">
+            <h1 className="text-[24px] sm:text-[28px] lg:text-[32px] font-extrabold text-slate-900 mb-6">
               진단 결과가 나왔어요! 🎉
             </h1>
-            <div className="inline-grid w-40 h-40">
-              <svg className="col-start-1 row-start-1 transform -rotate-90 w-40 h-40">
+            <div className="inline-grid w-32 h-32 sm:w-40 sm:h-40 mb-6">
+              <svg className="col-start-1 row-start-1 transform -rotate-90 w-32 h-32 sm:w-40 sm:h-40">
                 <circle
-                  cx="80"
-                  cy="80"
-                  r="70"
+                  cx="64"
+                  cy="64"
+                  r="56"
                   stroke="#e5e7eb"
-                  strokeWidth="12"
+                  strokeWidth="10"
                   fill="none"
                 />
                 <motion.circle
-                  cx="80"
-                  cy="80"
-                  r="70"
+                  cx="64"
+                  cy="64"
+                  r="56"
                   stroke="#3b82f6"
-                  strokeWidth="12"
+                  strokeWidth="10"
                   fill="none"
                   strokeLinecap="round"
-                  strokeDasharray={440}
-                  initial={{ strokeDashoffset: 440 }}
-                  animate={{ strokeDashoffset: 440 - (440 * result.score) / 100 }}
+                  strokeDasharray={352}
+                  initial={{ strokeDashoffset: 352 }}
+                  animate={{ strokeDashoffset: 352 - (352 * result.score) / 100 }}
                   transition={{ duration: 1.5, ease: 'easeOut' }}
                 />
               </svg>
               <div className="col-start-1 row-start-1 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-blue-600">{result.score}%</div>
-                  <div className="text-xs text-slate-500">준비도</div>
+                  <div className="text-3xl sm:text-4xl font-bold text-blue-600">{result.score}%</div>
+                  <div className="text-xs text-slate-500 mt-1">준비도</div>
                 </div>
               </div>
             </div>
-            <p className="mt-6 text-base text-slate-700">
+            <p className="text-[14px] sm:text-base text-slate-700">
               당신의 한국 취업 준비도는 <span className="font-bold text-blue-600">{result.score}%</span>입니다!
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {/* 강점 & 개선 사항 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {/* 강점 */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-white rounded-lg shadow-sm p-6"
+              className={cn(
+                'bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6 lg:p-7'
+              )}
             >
-              <div className="flex items-center gap-2 mb-4">
-                <CheckCircle className="text-emerald-500" size={24} />
-                <h2 className="text-[17px] md:text-lg font-bold text-slate-900">당신의 강점</h2>
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="inline-flex items-center justify-center w-8 h-8 bg-emerald-50 rounded-lg">
+                  <CheckCircle className="text-emerald-600" size={20} />
+                </div>
+                <h2 className="text-[16px] sm:text-[17px] font-bold text-slate-900">당신의 강점</h2>
               </div>
-              <ul className="space-y-3">
+              <ul className="space-y-2.5">
                 {result.strengths.map((strength, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="text-emerald-500 text-xl leading-6 flex-shrink-0">✓</span>
-                    <span className="text-sm text-slate-700 leading-6">{strength}</span>
+                    <span className="text-emerald-600 font-bold mt-0.5">✓</span>
+                    <span className="text-[13px] sm:text-sm text-slate-700 leading-relaxed">{strength}</span>
                   </li>
                 ))}
               </ul>
@@ -215,17 +233,21 @@ const DiagnosisResultClient = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-white rounded-lg shadow-sm p-6"
+              className={cn(
+                'bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6 lg:p-7'
+              )}
             >
-              <div className="flex items-center gap-2 mb-4">
-                <AlertCircle className="text-amber-500" size={24} />
-                <h2 className="text-[17px] md:text-lg font-bold text-slate-900">개선할 점</h2>
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="inline-flex items-center justify-center w-8 h-8 bg-amber-50 rounded-lg">
+                  <AlertCircle className="text-amber-600" size={20} />
+                </div>
+                <h2 className="text-[16px] sm:text-[17px] font-bold text-slate-900">개선할 점</h2>
               </div>
-              <ul className="space-y-3">
+              <ul className="space-y-2.5">
                 {result.improvements.map((improvement, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="text-amber-500 text-xl leading-6 flex-shrink-0">!</span>
-                    <span className="text-sm text-slate-700 leading-6">{improvement}</span>
+                    <span className="text-amber-600 font-bold mt-0.5">!</span>
+                    <span className="text-[13px] sm:text-sm text-slate-700 leading-relaxed">{improvement}</span>
                   </li>
                 ))}
               </ul>
@@ -237,52 +259,77 @@ const DiagnosisResultClient = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="bg-white rounded-lg shadow-sm p-6 mb-8"
+            className={cn(
+              'bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6 lg:p-7 mb-6 sm:mb-8'
+            )}
           >
-            <div className="flex items-center gap-2 mb-4">
-              <Briefcase className="text-blue-600" size={24} />
-              <h2 className="text-[17px] md:text-lg font-bold text-slate-900">추천 직무</h2>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="inline-flex items-center justify-center w-8 h-8 bg-blue-50 rounded-lg">
+                <Briefcase className="text-blue-600" size={20} />
+              </div>
+              <h2 className="text-[16px] sm:text-[17px] font-bold text-slate-900">추천 직무</h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
               {result.recommendedJobs.map((job, index) => (
-                <div
+                <motion.div
                   key={index}
-                  className="px-4 py-3 bg-blue-50 border-2 border-blue-200 rounded-lg text-center"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  className={cn(
+                    'px-3 py-2.5 bg-blue-50 border border-blue-100 rounded-lg text-center',
+                    'hover:bg-blue-100 transition-colors duration-150'
+                  )}
                 >
-                  <span className="text-sm font-medium text-blue-700">{job}</span>
-                </div>
+                  <span className="text-[12px] sm:text-[13px] font-semibold text-blue-700 line-clamp-2">
+                    {job}
+                  </span>
+                </motion.div>
               ))}
             </div>
           </motion.div>
 
-          {/* CTA */}
+          {/* CTA Banner */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="bg-gradient-to-r from-blue-600 to-blue-600 rounded-lg shadow-lg p-8 text-center text-white"
+            className={cn(
+              'bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl shadow-lg p-6 sm:p-8 lg:p-10',
+              'text-center text-white mb-6'
+            )}
           >
-            <TrendingUp size={48} className="mx-auto mb-4" />
-            <h2 className="text-[18px] md:text-xl font-bold mb-2">
+            <TrendingUp size={40} className="mx-auto mb-4 sm:mb-5" />
+            <h2 className="text-[20px] sm:text-[22px] font-extrabold mb-2">
               지금 바로 시작하세요!
             </h2>
-            <p className="text-sm mb-6 opacity-90">
-              회원가입하고 맞춤 공고를 받아보세요
+            <p className="text-[13px] sm:text-sm opacity-90 mb-6">
+              회원가입하고 당신에게 맞는 채용 공고를 확인해보세요
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               {!isAuthenticated && (
                 <motion.button
                   onClick={handleSignup}
-                  className="px-8 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-slate-100 transition-all shadow-md cursor-pointer"
+                  className={cn(
+                    'px-6 py-2.5 bg-white text-blue-600 font-semibold rounded-lg',
+                    'hover:bg-slate-50 transition-colors duration-150 cursor-pointer',
+                    'focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2',
+                    'text-sm sm:text-base'
+                  )}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  회원가입하고 맞춤 공고 받기
+                  회원가입하기
                 </motion.button>
               )}
               <motion.button
                 onClick={handleJobSearch}
-                className="px-8 py-3 bg-white/20 backdrop-blur text-white font-semibold rounded-lg hover:bg-white/30 transition-all border-2 border-white cursor-pointer"
+                className={cn(
+                  'px-6 py-2.5 bg-white/20 backdrop-blur text-white font-semibold rounded-lg',
+                  'hover:bg-white/30 transition-colors duration-150 border border-white/50 cursor-pointer',
+                  'focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2',
+                  'text-sm sm:text-base'
+                )}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -292,10 +339,13 @@ const DiagnosisResultClient = () => {
           </motion.div>
 
           {/* 다시 하기 */}
-          <div className="mt-6 text-center">
+          <div className="text-center">
             <motion.button
               onClick={handleRestart}
-              className="text-sm text-slate-500 hover:text-slate-700 underline cursor-pointer"
+              className={cn(
+                'text-[13px] sm:text-sm text-slate-500 hover:text-slate-700',
+                'underline cursor-pointer font-medium'
+              )}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

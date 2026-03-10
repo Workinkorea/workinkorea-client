@@ -9,21 +9,22 @@ const navItems = [
   { name: '일반 회원 관리', path: '/admin/users' },
   { name: '기업 회원 관리', path: '/admin/companies' },
   { name: '공고 관리', path: '/admin/posts' },
+  { name: '이벤트 관리', path: '/admin/events' },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background-alternative">
       {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <header className="bg-background-default shadow-sm">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex h-16 items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">관리자 페이지</h1>
+            <h1 className="text-2xl font-bold text-slate-900">관리자 페이지</h1>
             <Link
               href="/"
-              className="text-sm text-gray-600 hover:text-gray-900"
+              className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
             >
               메인으로 돌아가기
             </Link>
@@ -31,7 +32,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 py-8">
         <div className="flex gap-8">
           {/* Sidebar */}
           <aside className="w-64 shrink-0">
@@ -42,10 +43,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   <Link
                     key={item.path}
                     href={item.path}
-                    className={`block rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                    className={`block rounded-lg px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
                       isActive
                         ? 'bg-blue-50 text-blue-700'
-                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                     }`}
                   >
                     {item.name}
@@ -56,8 +57,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </aside>
 
           {/* Main content */}
-          <main className="flex-1">
-            <div className="rounded-lg bg-white shadow p-6">
+          <main className="flex-1 min-w-0">
+            <div className="rounded-xl bg-background-default shadow-md p-6">
               {children}
             </div>
           </main>

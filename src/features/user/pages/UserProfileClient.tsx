@@ -5,18 +5,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { Edit3, FileText, GraduationCap, Award } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
 import { Header } from '@/shared/components/layout/Header';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/shared/ui/Skeleton';
+import { cn } from '@/shared/lib/utils/utils';
 
 const SkillBarChart = dynamic(() => import('@/features/user/components/SkillBarChart'), {
   loading: () => <Skeleton className="h-64 w-full" />,
   ssr: false,
 });
 const RadarChart = dynamic(() => import('@/shared/ui/RadarChart'), {
-  loading: () => <Skeleton variant="circle" className="w-[350px] h-[350px] mx-auto" />,
+  loading: () => <Skeleton variant="circle" className="w-[280px] sm:w-[350px] h-[280px] sm:h-[350px] mx-auto" />,
   ssr: false,
 });
 import { Modal } from '@/shared/ui/Modal';
@@ -239,19 +241,19 @@ function UserProfileClient() {
   if (authLoading || resumeListLoading || resumeDetailLoading) {
     return (
       <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-        <div className="min-h-screen bg-slate-50 py-8">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="space-y-6">
-              <div className="skeleton-shimmer rounded-lg h-64"></div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="skeleton-shimmer rounded-lg h-96"></div>
-                <div className="skeleton-shimmer rounded-lg h-96"></div>
+        <Header
+          type={userType === 'company' ? 'business' : 'homepage'}
+          isAuthenticated={isAuthenticated}
+          isLoading={authLoading}
+          onLogout={handleLogout}
+        />
+        <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
+          <div className="page-container">
+            <div className="space-y-6 sm:space-y-8">
+              <div className="skeleton-shimmer rounded-xl h-48 sm:h-64" />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+                <div className="skeleton-shimmer rounded-xl h-80 sm:h-96" />
+                <div className="skeleton-shimmer rounded-xl h-80 sm:h-96" />
               </div>
             </div>
           </div>
@@ -263,18 +265,21 @@ function UserProfileClient() {
   if (error || !resumeData) {
     return (
       <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-xl font-semibold text-slate-700 mb-2">
+        <Header
+          type={userType === 'company' ? 'business' : 'homepage'}
+          isAuthenticated={isAuthenticated}
+          isLoading={authLoading}
+          onLogout={handleLogout}
+        />
+        <div className="min-h-screen bg-slate-50 py-16 sm:py-20 lg:py-24 flex items-center justify-center px-4 sm:px-6">
+          <div className="text-center max-w-md mx-auto">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 rounded-full bg-blue-100 flex items-center justify-center">
+              <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
+            </div>
+            <h2 className="text-[18px] sm:text-xl font-extrabold text-slate-900 mb-2">
               프로필을 불러올 수 없습니다
             </h2>
-            <p className="text-sm text-slate-500">
+            <p className="text-[13px] sm:text-sm text-slate-500 mb-6 sm:mb-8">
               {!resumeList?.length
                 ? '먼저 이력서를 작성해주세요.'
                 : '잠시 후 다시 시도해주세요.'}
@@ -282,8 +287,9 @@ function UserProfileClient() {
             {!resumeList?.length && (
               <button
                 onClick={() => router.push('/user/resume/create')}
-                className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-[13px] sm:text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
               >
+                <FileText size={16} />
                 이력서 작성하기
               </button>
             )}
@@ -333,28 +339,42 @@ function UserProfileClient() {
         isLoading={authLoading}
         onLogout={handleLogout}
       />
-      <div className="min-h-screen bg-slate-50 py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          {/* 상단 액션 버튼 */}
-          {resumeList && resumeList.length > 0 ? (
-            <div className="flex justify-end">
-              <button
-                onClick={() => router.push(`/user/resume/edit/${resumeList[0].id}`)}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
-              >
-                이력서 수정하기
-              </button>
-            </div>
-          ) : (
-            <div className="flex justify-end">
-              <button
-                onClick={() => router.push('/user/resume/create')}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
-              >
-                이력서 작성하기
-              </button>
-            </div>
-          )}
+      <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
+        <div className="page-container space-y-6 sm:space-y-8">
+          {/* 상단 제목 및 액션 버튼 */}
+          <div className="flex items-center justify-between gap-4">
+            <motion.h1
+              className="text-[20px] sm:text-[24px] font-extrabold text-slate-900"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              내 프로필
+            </motion.h1>
+            <motion.button
+              onClick={() => {
+                if (resumeList && resumeList.length > 0) {
+                  router.push(`/user/resume/edit/${resumeList[0].id}`);
+                } else {
+                  router.push('/user/resume/create');
+                }
+              }}
+              className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-blue-600 text-white text-[12px] sm:text-[13px] font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
+              <Edit3 size={14} className="sm:size-[16px]" />
+              <span className="hidden sm:inline">
+                {resumeList && resumeList.length > 0 ? '이력서 수정' : '이력서 작성'}
+              </span>
+              <span className="sm:hidden">
+                {resumeList && resumeList.length > 0 ? '수정' : '작성'}
+              </span>
+            </motion.button>
+          </div>
 
           {/* 헤더 */}
           <UserProfileHeader
@@ -362,38 +382,41 @@ function UserProfileClient() {
             isOwnProfile={true}
           />
 
-          {/* 탭 네비게이션 */}
+          {/* 탭 네비게이션 - 모바일 가로 스크롤, 데스크탑 고정 */}
           <motion.div
-            className="bg-white rounded-lg p-2 shadow-sm"
-            initial={{ opacity: 0, y: 20 }}
+            className="overflow-x-auto scrollbar-hide -mx-4 sm:mx-0 px-4 sm:px-0"
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
           >
-            <div className="flex gap-2">
+            <div className="flex gap-1 min-w-max sm:min-w-0 bg-white rounded-xl border border-slate-200 p-1.5 sm:p-2">
               {[
-                { key: 'dashboard', label: '대시보드' },
-                { key: 'resume', label: '이력서' },
-                { key: 'skills', label: '스킬 관리' },
-                { key: 'career', label: '경력 관리' }
+                { key: 'dashboard', label: '대시보드', icon: '📊' },
+                { key: 'resume', label: '이력서', icon: '📄' },
+                { key: 'skills', label: '스킬 관리', icon: '⭐' },
+                { key: 'career', label: '경력 관리', icon: '🎓' }
               ].map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                  className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                  className={cn(
+                    'relative px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-[12px] sm:text-sm font-semibold',
+                    'whitespace-nowrap transition-colors duration-200 cursor-pointer',
                     activeTab === tab.key
                       ? 'text-white'
-                      : 'text-slate-700 hover:bg-slate-100'
-                  }`}
+                      : 'text-slate-600 hover:text-slate-700 hover:bg-slate-50'
+                  )}
                 >
                   {activeTab === tab.key && (
                     <motion.div
                       layoutId="tab-bg"
-                      className="absolute inset-0 bg-blue-600 rounded-lg shadow-sm"
+                      className="absolute inset-0 bg-blue-600 rounded-lg shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
                       style={{ zIndex: -1 }}
                       transition={{ type: 'spring', stiffness: 340, damping: 28 }}
                     />
                   )}
-                  {tab.label}
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="sm:hidden text-[14px]">{tab.icon}</span>
                 </button>
               ))}
             </div>
@@ -428,139 +451,198 @@ function UserProfileClient() {
 
                   return (
                     <motion.div
-                      className="bg-white rounded-xl p-6 shadow-sm border border-slate-100"
+                      className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-slate-200 hover:border-blue-200 hover:shadow-md transition-all duration-200"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.3 }}
                     >
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-[15px] font-semibold text-slate-900">프로필 완성도</h3>
-                        <span className={`text-lg font-extrabold ${pct >= 80 ? 'text-blue-600' : pct >= 50 ? 'text-amber-500' : 'text-slate-400'}`}>
+                      <div className="flex items-center justify-between mb-4 sm:mb-5">
+                        <h3 className="text-[14px] sm:text-[15px] font-bold text-slate-900">프로필 완성도</h3>
+                        <span className={cn(
+                          'text-[18px] sm:text-lg font-extrabold',
+                          pct >= 80 ? 'text-blue-600' : pct >= 50 ? 'text-amber-500' : 'text-slate-400'
+                        )}>
                           {pct}%
                         </span>
                       </div>
-                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden mb-4">
+
+                      {/* 프로그레스 바 */}
+                      <div className="h-2.5 sm:h-3 bg-slate-100 rounded-full overflow-hidden mb-5 sm:mb-6">
                         <motion.div
-                          className={`h-full rounded-full ${pct >= 80 ? 'bg-blue-600' : pct >= 50 ? 'bg-amber-500' : 'bg-slate-300'}`}
+                          className={cn(
+                            'h-full rounded-full',
+                            pct >= 80 ? 'bg-blue-600' : pct >= 50 ? 'bg-amber-500' : 'bg-slate-300'
+                          )}
                           initial={{ width: 0 }}
                           animate={{ width: `${pct}%` }}
                           transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
                         />
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+
+                      {/* 완성 항목 그리드 */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-5">
                         {items.map((item) => (
                           <div
                             key={item.label}
-                            className={`flex items-center gap-1.5 text-[12px] font-medium ${item.done ? 'text-slate-700' : 'text-slate-400'}`}
+                            className={cn(
+                              'flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-[12px] font-medium px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors',
+                              item.done
+                                ? 'text-slate-700 bg-slate-50'
+                                : 'text-slate-400 bg-slate-50/50'
+                            )}
                           >
-                            <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] shrink-0 ${item.done ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-400'}`}>
+                            <span className={cn(
+                              'w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-bold shrink-0',
+                              item.done
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-slate-200 text-slate-400'
+                            )}>
                               {item.done ? '✓' : ''}
                             </span>
-                            {item.label}
+                            <span className="line-clamp-1">{item.label}</span>
                           </div>
                         ))}
                       </div>
+
                       {pct < 100 && (
-                        <p className="mt-3 text-[12px] text-slate-400">
-                          {items.filter(i => !i.done).map(i => i.label).join(', ')}을(를) 완성하면 더 많은 기업에 노출됩니다.
-                        </p>
+                        <motion.p
+                          className="text-[11px] sm:text-[12px] text-slate-400 leading-relaxed"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.6 }}
+                        >
+                          <span className="font-semibold text-slate-600">더 알아보기:</span> {items.filter(i => !i.done).map(i => i.label).join(', ')}을(를) 완성하면 더 많은 기업에 노출됩니다.
+                        </motion.p>
                       )}
                     </motion.div>
                   );
                 })()}
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* 레이더 차트 */}
-                  <motion.div
-                    className="bg-white rounded-lg p-6 shadow-sm"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                  >
-                    <h3 className="text-lg font-semibold text-slate-900 mb-6 text-center">
-                      종합 역량 분석
-                    </h3>
-                    <div className="flex justify-center">
+                <motion.div
+                  className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-slate-200 hover:border-blue-200 hover:shadow-md transition-all duration-200"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                >
+                  <h3 className="text-[15px] sm:text-[16px] font-bold text-slate-900 mb-4 sm:mb-6 text-center">
+                    종합 역량 분석
+                  </h3>
+                  <div className="flex justify-center">
+                    <div className="w-full max-w-sm flex justify-center">
                       <RadarChart
                         data={radarData}
                         averageData={averageRadarData}
-                        size={350}
+                        size={280}
                       />
                     </div>
-                  </motion.div>
-                </div>
+                  </div>
+                </motion.div>
               </>
             )}
 
             {activeTab === 'resume' && (
-              <div
-                className="bg-white rounded-lg p-6 shadow-sm"
-              >
-                <h3 className="text-lg font-semibold text-slate-900 mb-6">
-                  이력서
-                </h3>
+              <div className="space-y-5 sm:space-y-6">
+                {/* 파일 업로드 섹션 */}
+                <motion.div
+                  className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl p-4 sm:p-6 border border-blue-200 hover:border-blue-300 transition-colors"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-5">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/60 flex items-center justify-center flex-shrink-0">
+                      <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="text-[14px] sm:text-[15px] font-bold text-slate-900">프로필 이미지 업로드</h4>
+                      <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5">JPG, PNG 형식, 5MB 이하</p>
+                    </div>
+                  </div>
 
-                {/* 이미지 업로드 섹션 */}
-                <div className="mb-6 p-4 border border-slate-100 rounded-lg bg-slate-50">
-                  <h4 className="text-base font-semibold text-slate-900 mb-3">이력서 파일 업로드</h4>
-                  <div className="flex items-center gap-4">
-                    <input
-                      type="file"
-                      onChange={handleFileChange}
-                      accept="image/*,.pdf,.doc,.docx"
-                      className="flex-1 text-sm text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer"
-                    />
-                    <button
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <label className="flex-1 relative">
+                      <input
+                        type="file"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+                      <div className="px-4 py-2.5 sm:py-3 bg-white border-2 border-dashed border-blue-300 rounded-lg text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-colors">
+                        <p className="text-[12px] sm:text-[13px] font-semibold text-slate-700">
+                          {selectedFile ? selectedFile.name : '클릭하여 파일 선택'}
+                        </p>
+                      </div>
+                    </label>
+                    <motion.button
                       onClick={handleUploadImage}
                       disabled={!selectedFile || uploadImageMutation.isPending}
-                      className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      className="px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-[12px] sm:text-[13px] font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       {uploadImageMutation.isPending ? '업로드 중...' : '업로드'}
-                    </button>
+                    </motion.button>
                   </div>
-                  {selectedFile && (
-                    <p className="mt-2 text-[11px] text-slate-600">
-                      선택된 파일: {selectedFile.name}
-                    </p>
-                  )}
-                </div>
+                </motion.div>
 
+                {/* 이력서 목록 */}
                 {resumeList && resumeList.length > 0 ? (
-                  <div className="space-y-4">
-                    {resumeList.map((resume) => (
-                      <div
+                  <motion.div
+                    className="space-y-3 sm:space-y-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                  >
+                    <h4 className="text-[14px] sm:text-[15px] font-bold text-slate-900 px-2 sm:px-0">작성된 이력서 ({resumeList.length})</h4>
+                    {resumeList.map((resume, idx) => (
+                      <motion.div
                         key={resume.id}
-                        className="border border-slate-100 rounded-lg p-4 hover:border-blue-300 transition-colors cursor-pointer flex justify-between items-center"
+                        className="flex items-center gap-4 p-4 sm:p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-200 hover:shadow-sm transition-all duration-200 cursor-pointer group"
                         onClick={() => router.push(`/user/resume/edit/${resume.id}`)}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: idx * 0.05 }}
+                        whileHover={{ x: 4 }}
                       >
-                        <div>
-                          <h4 className="text-base font-semibold text-slate-900 mb-2">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-100 transition-colors">
+                          <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[13px] sm:text-[14px] font-semibold text-slate-900 truncate">
                             {resume.title || '이력서'}
-                          </h4>
-                          <p className="text-sm text-slate-600">
-                            {resume.updated_at ? new Date(resume.updated_at).toLocaleDateString('ko-KR') : '날짜 정보 없음'}
+                          </p>
+                          <p className="text-[11px] sm:text-[12px] text-slate-400 mt-1">
+                            {resume.updated_at ? new Date(resume.updated_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' }) : '날짜 정보 없음'}
                           </p>
                         </div>
-                        <button
+
+                        <motion.button
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDeleteResume(resume.id, resume.title || '이력서');
                           }}
                           disabled={deleteResumeMutation.isPending}
-                          className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-[12px] font-semibold text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                         >
-                          {deleteResumeMutation.isPending ? '삭제 중...' : '삭제'}
-                        </button>
-                      </div>
+                          {deleteResumeMutation.isPending ? '삭제 중' : '삭제'}
+                        </motion.button>
+                      </motion.div>
                     ))}
-                  </div>
+                  </motion.div>
                 ) : (
-                  <div className="text-center py-12">
-                    <p className="text-sm text-slate-600 mb-4">작성된 이력서가 없습니다.</p>
+                  <div className="text-center py-12 sm:py-16 bg-white rounded-xl border border-slate-200">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-slate-100 flex items-center justify-center">
+                      <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400" />
+                    </div>
+                    <p className="text-[13px] sm:text-sm text-slate-500 mb-4 sm:mb-6">작성된 이력서가 없습니다.</p>
                     <button
                       onClick={() => router.push('/user/resume/create')}
-                      className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-[12px] sm:text-[13px] font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
                     >
+                      <FileText size={16} />
                       이력서 작성하기
                     </button>
                   </div>
@@ -578,42 +660,87 @@ function UserProfileClient() {
             )}
 
             {activeTab === 'career' && (
-              <div
-                className="bg-white rounded-lg p-6 shadow-sm"
-              >
-                <h3 className="text-lg font-semibold text-slate-900 mb-6">
-                  경력 및 교육
-                </h3>
-
-                {/* 교육 이력 */}
-                <div className="space-y-4">
-                  <h4 className="text-base font-semibold text-slate-700">교육 이력</h4>
-                  {resumeData.education.map((edu) => (
-                    <div key={edu.id} className="border-l-4 border-blue-200 pl-4 py-2">
-                      <h5 className="text-sm font-semibold text-slate-900">{edu.institution}</h5>
-                      <p className="text-sm text-slate-600">{edu.degree} - {edu.field}</p>
-                      <p className="text-[11px] text-slate-500">
-                        {edu.startDate} ~ {edu.endDate || '현재'}
-                      </p>
+              <div className="space-y-5 sm:space-y-6">
+                {/* 교육 이력 섹션 */}
+                <motion.div
+                  className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-slate-200"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                      <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                     </div>
-                  ))}
-                </div>
+                    <h3 className="text-[14px] sm:text-[15px] font-bold text-slate-900">교육 이력</h3>
+                  </div>
 
-                {/* 자격증 */}
+                  <div className="space-y-3">
+                    {resumeData.education.length > 0 ? (
+                      <>
+                        {/* 타임라인 */}
+                        <div className="relative pl-6 sm:pl-8">
+                          {resumeData.education.map((edu, idx) => (
+                            <motion.div
+                              key={edu.id}
+                              className="relative pb-5 sm:pb-6 last:pb-0"
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ duration: 0.3, delay: idx * 0.05 }}
+                            >
+                              {/* 타임라인 점 */}
+                              <div className="absolute -left-6 sm:-left-8 top-1 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-blue-600 border-2 border-white shadow-sm" />
+
+                              <div className="bg-slate-50 rounded-lg p-3 sm:p-4 border border-slate-100 hover:border-blue-200 hover:shadow-sm transition-all">
+                                <p className="text-[13px] sm:text-[14px] font-bold text-slate-900">{edu.institution}</p>
+                                <p className="text-[12px] sm:text-[13px] text-slate-600 mt-1">
+                                  {edu.degree} • {edu.field}
+                                </p>
+                                <p className="text-[11px] sm:text-[12px] text-slate-400 mt-2">
+                                  {edu.startDate} ~ {edu.endDate || '현재'}
+                                </p>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-[12px] sm:text-[13px] text-slate-400 text-center py-4">교육 이력이 없습니다.</p>
+                    )}
+                  </div>
+                </motion.div>
+
+                {/* 자격증 섹션 */}
                 {resumeData.certifications.length > 0 && (
-                  <div className="mt-6 space-y-4">
-                    <h4 className="text-base font-semibold text-slate-700">자격증</h4>
-                    <div className="flex flex-wrap gap-2">
+                  <motion.div
+                    className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-slate-200"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                  >
+                    <div className="flex items-center gap-3 mb-4 sm:mb-5">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                        <Award className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
+                      </div>
+                      <h3 className="text-[14px] sm:text-[15px] font-bold text-slate-900">자격증</h3>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 sm:gap-3">
                       {resumeData.certifications.map((cert, index) => (
-                        <span
+                        <motion.span
                           key={index}
-                          className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[11px] border border-blue-200"
+                          className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-br from-amber-50 to-yellow-50 text-amber-700 text-[11px] sm:text-[12px] font-semibold rounded-full border border-amber-200 hover:border-amber-300 hover:shadow-sm transition-all"
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.2, delay: index * 0.05 }}
+                          whileHover={{ y: -2 }}
                         >
+                          <Award size={12} className="mr-1.5 sm:mr-2 flex-shrink-0" />
                           {cert}
-                        </span>
+                        </motion.span>
                       ))}
                     </div>
-                  </div>
+                  </motion.div>
                 )}
               </div>
             )}

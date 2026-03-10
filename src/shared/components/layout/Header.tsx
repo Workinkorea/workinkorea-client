@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { User } from 'lucide-react';
 import { SearchIcon } from '@/shared/ui/AccessibleIcon';
 import { MobileNav } from './MobileNav';
+import { LanguageToggle } from '@/shared/components/LanguageToggle';
 
 interface HeaderProps {
   type: 'homepage' | 'business';
@@ -21,7 +22,7 @@ export function Header({ type, isAuthenticated, onLogout }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-slate-100 shadow-sm">
-      <div className="px-6 md:px-10">
+      <div className="page-container">
         <div className="flex items-center h-16 gap-4">
 
           {/* 로고 */}
@@ -39,6 +40,9 @@ export function Header({ type, isAuthenticated, onLogout }: HeaderProps) {
 
           {/* 우측 아이콘 영역 */}
           <div className="flex items-center gap-1">
+            {/* 언어 전환 */}
+            <LanguageToggle />
+
             {/* 검색 아이콘 */}
             <button
               className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none rounded-lg cursor-pointer"

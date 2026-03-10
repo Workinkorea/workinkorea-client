@@ -148,6 +148,13 @@ body {
   min-width: 360px;
 }
 
+/* ─── Layout Container ─── */
+/* 전역 컨테이너: 이 한 곳만 수정하면 모든 페이지 너비가 바뀜 */
+/* w-full로 바꾸려면: max-width 제거, padding만 남기면 됨 */
+.page-container {
+  @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
 /* ─── Typography Utility Classes ─── */
 .text-display-1 {
   font-size: var(--text-display-1);

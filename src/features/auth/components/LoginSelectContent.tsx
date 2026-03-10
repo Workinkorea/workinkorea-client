@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { User, Building2 } from 'lucide-react';
+import { User, Building2, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
@@ -20,6 +21,31 @@ const LOGIN_OPTIONS = [
   },
 ] as const;
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5 },
+  },
+};
+
 export default function LoginSelectContent() {
   const { isAuthenticated, isLoading, logout } = useAuth();
 
@@ -29,55 +55,94 @@ export default function LoginSelectContent() {
         type="homepage"
         isAuthenticated={isAuthenticated}
         isLoading={isLoading}
-        onLogout={async () => { await logout(); }}
+        onLogout={async () => {
+          await logout();
+        }}
       />
 
-      <div className="flex items-center justify-center px-4 py-12">
-        <div className="max-w-4xl w-full">
-          <div className="text-center mb-12">
-            <h1 className="text-[32px] text-slate-900 mb-4">로그인</h1>
-            <p className="text-sm text-slate-600">회원 유형을 선택해주세요</p>
-          </div>
+      <motion.div
+        className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* 헤더 */}
+        <motion.div variants={itemVariants} className="text-center mb-12 sm:mb-14">
+          <h1 className="text-[26px] sm:text-[32px] lg:text-[40px] font-black text-slate-900 leading-tight tracking-tight mb-3 sm:mb-4">
+            어떤 유형의 회원이신가요?
+          </h1>
+          <p className="text-[14px] sm:text-[15px] text-slate-500 max-w-lg mx-auto">
+            Work In Korea는 개인 구직자와 채용 담당자 모두를 위한 맞춤형 솔루션을 제공합니다.
+          </p>
+        </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {LOGIN_OPTIONS.map(({ href, icon: Icon, title, description }) => (
-              <Link key={href} href={href}>
-                <div className="group bg-white rounded-2xl p-8 border-2 border-slate-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 cursor-pointer h-full">
-                  <div className="flex flex-col items-center text-center space-y-4">
-                    <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                      <Icon className="w-10 h-10 text-blue-600" />
+        {/* 카드 그리드 */}
+        <motion.div
+          variants={containerVariants}
+          className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-10 sm:mb-12"
+        >
+          {LOGIN_OPTIONS.map(({ href, icon: Icon, title, description }) => (
+            <motion.div key={href} variants={cardVariants}>
+              <Link href={href}>
+                <motion.div
+                  className="group relative h-full border-2 border-slate-200 rounded-2xl p-6 sm:p-8 bg-white cursor-pointer transition-all overflow-hidden"
+                  whileHover={{
+                    borderColor: '#2563EB',
+                    backgroundColor: '#F0F9FF',
+                    y: -4,
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                >
+                  {/* 배경 그라데이션 (호버 시 표시) */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                  <div className="relative z-10 flex flex-col h-full">
+                    {/* 아이콘 */}
+                    <div className="mb-5">
+                      <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                        <Icon className="w-7 h-7 text-blue-600" />
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-xl text-slate-900 mb-2">{title}</h2>
-                      <p className="text-sm text-slate-600">{description}</p>
+
+                    {/* 텍스트 */}
+                    <div className="flex-1 mb-6">
+                      <h2 className="text-[18px] font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+                        {title}
+                      </h2>
+                      <p className="text-[13px] text-slate-500 group-hover:text-slate-600 transition-colors">
+                        {description}
+                      </p>
                     </div>
-                    <div className="pt-4 flex items-center text-blue-600 group-hover:text-blue-700 font-medium">
-                      <span className="text-sm">로그인하기</span>
-                      <svg
-                        className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+
+                    {/* CTA */}
+                    <div className="flex items-center text-blue-600 group-hover:text-blue-700 font-semibold text-sm gap-2 transition-colors">
+                      <span>로그인하기</span>
+                      <motion.div
+                        initial={{ x: 0 }}
+                        whileHover={{ x: 4 }}
+                        transition={{ duration: 0.2 }}
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                        <ArrowRight className="w-4 h-4" />
+                      </motion.div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </Link>
-            ))}
-          </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
-          <div className="text-center mt-8">
-            <p className="text-sm text-slate-600">
-              아직 회원이 아니신가요?{' '}
-              <Link href="/signup-select" className="text-blue-600 hover:text-blue-700 font-medium">
-                회원가입
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
+        {/* 회원가입 링크 */}
+        <motion.div variants={itemVariants} className="text-center pt-6 sm:pt-8 border-t border-slate-200">
+          <p className="text-[14px] text-slate-600">
+            아직 회원이 아니신가요?{' '}
+            <Link href="/signup-select" className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+              회원가입하기
+            </Link>
+          </p>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
