@@ -232,7 +232,7 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
               <button
                 type="button"
                 onClick={() => removeLanguage(index)}
-                className="ml-1 hover:text-blue-900"
+                className="ml-1 hover:text-blue-900 cursor-pointer"
               >
                 <X size={16} />
               </button>

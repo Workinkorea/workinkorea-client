@@ -127,13 +127,13 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
           >
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors mb-4"
+              className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors mb-4 cursor-pointer"
             >
               <ArrowLeft size={20} />
               <span>뒤로 가기</span>
             </button>
-            <h1 className="text-[22px] md:text-[32px] font-extrabold text-slate-900">채용 공고 수정</h1>
-            <p className="text-[13px] md:text-[15px] text-slate-600 mt-2">
+            <h1 className="text-[22px] md:text-title-1 font-extrabold text-slate-900">채용 공고 수정</h1>
+            <p className="text-caption-1 md:text-body-2 text-slate-600 mt-2">
               채용 공고 정보를 수정해주세요
             </p>
           </motion.div>

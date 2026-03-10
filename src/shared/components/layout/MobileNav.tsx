@@ -225,7 +225,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                       </Link>
                       <button
                         onClick={() => { onLogout?.(); close(); }}
-                        className="w-full flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group text-left"
+                        className="w-full flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group text-left cursor-pointer"
                       >
                         <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600">로그아웃</span>
                         <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400" />
