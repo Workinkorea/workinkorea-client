@@ -272,6 +272,57 @@ npm run check-all    # check + build 순차 실행
 - **빌드 전 체크**: `npm run check-all` 실행 필수
 - **환경변수 확인**: 프로덕션 환경에서 `NEXT_PUBLIC_API_URL` 올바른지 검증
 
+### 11. 레이아웃 컨테이너 규칙 (중요!)
+
+**`max-w-5xl`, `max-w-6xl`, `max-w-7xl` 등의 클래스를 개별 페이지나 하위 컴포넌트에 직접 사용 금지.**
+
+레이아웃 너비는 반드시 해당 섹션의 **레이아웃 파일(`layout.tsx`)** 에서만 통일 관리합니다.
+
+#### 어드민 영역 컨테이너 표준
+
+```
+w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8
+```
+
+#### 일반(main) 영역 컨테이너 표준
+
+```
+w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8
+```
+
+#### 인증(auth) 영역 컨테이너 표준
+
+- 로그인/회원가입 등 폼 전용: `max-w-[32.5rem]` (Layout.Main의 className으로 주입)
+
+#### 배경 및 카드 래퍼 표준
+
+- **전체 페이지 배경**: `bg-background-alternative` (= `#F1F5F9`, `@theme`에서 자동 생성)
+- **콘텐츠 카드 래퍼**: `rounded-xl bg-background-default shadow-md p-6`
+- 하위 `page.tsx`는 `w-full` 상태 유지 (자체 `max-w-*` 금지)
+
+#### Bad / Good 예시
+
+```tsx
+// ❌ Bad: 하위 페이지에서 직접 max-w 사용
+export default function AdminUsersPage() {
+  return (
+    <div className="max-w-5xl mx-auto"> {/* ← 금지 */}
+      ...
+    </div>
+  );
+}
+
+// ✅ Good: 래퍼 없이 w-full 상태로 layout이 제공하는 너비를 온전히 활용
+export default function AdminUsersPage() {
+  return (
+    <div>
+      <h2>일반 회원 관리</h2>
+      <UsersTableClient />
+    </div>
+  );
+}
+```
+
 ## 추가 참고 자료
 
 - [Next.js 16 문서](https://nextjs.org/docs)

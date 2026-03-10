@@ -161,20 +161,20 @@ const CompanyProfileClient = () => {
         <div className="min-h-screen bg-slate-50">
           {/* 헤더 스켈레톤 */}
           <div className="bg-white border-b border-slate-100 px-6 py-5">
-            <div className="max-w-4xl mx-auto flex items-center justify-between">
+            <div className="max-w-5xl mx-auto flex items-center justify-between">
               <div className="space-y-2">
                 <div className="skeleton-shimmer h-3 w-20 rounded" />
                 <div className="skeleton-shimmer h-6 w-32 rounded" />
               </div>
               <div className="skeleton-shimmer h-10 w-36 rounded-lg" />
             </div>
-            <div className="max-w-4xl mx-auto mt-4 flex gap-0">
+            <div className="max-w-5xl mx-auto mt-4 flex gap-0">
               <div className="skeleton-shimmer h-10 w-32" />
               <div className="skeleton-shimmer h-10 w-24 opacity-60" />
             </div>
           </div>
           {/* 콘텐츠 스켈레톤 */}
-          <div className="max-w-4xl mx-auto px-6 py-6 space-y-4">
+          <div className="max-w-5xl mx-auto px-6 py-6 space-y-4">
             <div className="skeleton-shimmer h-52 rounded-xl" />
             <div className="skeleton-shimmer h-36 rounded-xl" />
             <div className="skeleton-shimmer h-44 rounded-xl" />
@@ -201,7 +201,7 @@ const CompanyProfileClient = () => {
             shadow-blue CTA 버튼은 배경과 대비를 높여 클릭을 유도합니다.
         ──────────────────────────────────────────────────────────────────── */}
         <div className="bg-white border-b border-slate-100 sticky top-0 z-10">
-          <div className="max-w-4xl mx-auto px-6 pt-5 pb-0 flex items-center justify-between">
+          <div className="max-w-5xl mx-auto px-6 pt-5 pb-0 flex items-center justify-between">
             <div>
               {/* 역할 레이블: 현재 컨텍스트를 명시해 방향 감각 제공 */}
               <p className="text-[11px] font-semibold text-blue-600 uppercase tracking-wider mb-1">
@@ -235,7 +235,7 @@ const CompanyProfileClient = () => {
               한 화면에 너무 많은 정보를 표시하지 않습니다 (정보 과부하 방지).
               URL query param 동기화: 뒤로가기·새로고침에도 탭이 유지됩니다.
           ────────────────────────────────────────────────────────────────── */}
-          <div className="max-w-4xl mx-auto px-6 mt-4">
+          <div className="max-w-5xl mx-auto px-6 mt-4">
             <div className="flex border-b-2 border-slate-100">
               {DASHBOARD_TABS.map(tab => (
                 <button
@@ -264,7 +264,7 @@ const CompanyProfileClient = () => {
         </div>
 
         {/* ── 탭 콘텐츠 영역 ──────────────────────────────────────────────── */}
-        <div className="max-w-4xl mx-auto px-6 py-6">
+        <div className="max-w-5xl mx-auto px-6 py-6">
           <AnimatePresence mode="wait">
 
             {/* ────────────────────────────────────────────────────────────

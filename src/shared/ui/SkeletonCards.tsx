@@ -38,7 +38,7 @@ export function JobListSkeleton({ count = 6 }: { count?: number }) {
 export function JobDetailSkeleton() {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* 뒤로가기 */}
         <Skeleton variant="text" className="h-9 w-24" />
 
@@ -81,7 +81,7 @@ export function JobDetailSkeleton() {
 export function UserProfileSkeleton() {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="page-container space-y-6">
         {/* 헤더 */}
         <div className="bg-white rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-5">
@@ -119,7 +119,7 @@ export function CompanyDashboardSkeleton() {
     <div className="min-h-screen bg-slate-50">
       {/* 헤더 영역: 기업명 + CTA 버튼 */}
       <div className="bg-white border-b border-slate-100 px-6 py-5">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="space-y-2">
             <Skeleton variant="text" className="h-3 w-20" />
             <Skeleton variant="text" className="h-6 w-32" />
@@ -127,13 +127,13 @@ export function CompanyDashboardSkeleton() {
           <Skeleton className="h-10 w-36 rounded-lg" />
         </div>
         {/* 탭 바 */}
-        <div className="max-w-4xl mx-auto mt-4 flex gap-1">
+        <div className="max-w-5xl mx-auto mt-4 flex gap-1">
           <Skeleton variant="text" className="h-10 w-32 rounded-none" />
           <Skeleton variant="text" className="h-10 w-24 rounded-none" />
         </div>
       </div>
       {/* 콘텐츠 */}
-      <div className="max-w-4xl mx-auto px-6 py-6 space-y-4">
+      <div className="max-w-5xl mx-auto px-6 py-6 space-y-4">
         <Skeleton className="h-52 rounded-xl" />
         <Skeleton className="h-36 rounded-xl" />
         <Skeleton className="h-44 rounded-xl" />
@@ -146,7 +146,7 @@ export function CompanyDashboardSkeleton() {
 export function CompanyJobsSkeleton() {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="page-container space-y-6">
         <div className="flex items-center justify-between">
           <Skeleton variant="text" className="h-8 w-40" />
           <Skeleton className="h-10 w-28" />
@@ -197,7 +197,7 @@ export function TableSkeleton({ rows = 8 }: { rows?: number }) {
 export function DiagnosisResultSkeleton() {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* 상단 점수 카드 */}
         <div className="bg-white rounded-xl p-8 shadow-sm text-center space-y-4">
           <Skeleton variant="circle" className="w-32 h-32 mx-auto" />

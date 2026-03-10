@@ -15,7 +15,7 @@ const jobCategories = [
 export default function JobCategoriesSection() {
   return (
     <section id="job-categories" className="py-12 sm:py-16 lg:py-20 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="page-container">
         {/* 섹션 헤더 */}
         <div className="text-center mb-8 sm:mb-12">
           <span className="inline-block bg-blue-50 text-blue-600 text-[12px] font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">

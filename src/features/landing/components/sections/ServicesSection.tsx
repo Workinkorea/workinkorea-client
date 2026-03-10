@@ -75,7 +75,7 @@ export default function ServicesSection() {
       <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full -mr-48 -mt-48 opacity-40" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-50 rounded-full -ml-32 -mb-32 opacity-30" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 page-container">
         {/* 섹션 헤더 */}
         <motion.div
           className="text-center mb-12 sm:mb-14 lg:mb-16"

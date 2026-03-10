@@ -33,7 +33,7 @@ export default function CompanyJobsLoading() {
     <Layout>
       {/* Header skeleton */}
       <div className="sticky top-0 z-50 bg-white border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="page-container h-16 flex items-center justify-between">
           <Skeleton variant="text" className="h-7 w-32" />
           <div className="flex gap-2">
             <Skeleton variant="circle" className="w-9 h-9" />
@@ -43,7 +43,7 @@ export default function CompanyJobsLoading() {
       </div>
 
       <div className="min-h-screen bg-slate-50 py-8 sm:py-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="page-container space-y-6">
 
           {/* Page header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

@@ -47,7 +47,7 @@ function CompanyJobsClient() {
           onLogout={handleLogout}
         />
         <div className="min-h-screen bg-slate-50 py-8 sm:py-12">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <div className="page-container space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="space-y-2">
                 <div className="skeleton-shimmer h-8 w-40 rounded-lg" />
@@ -82,7 +82,7 @@ function CompanyJobsClient() {
         onLogout={handleLogout}
       />
       <div className="min-h-screen bg-slate-50 py-8 sm:py-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="page-container space-y-6">
           {/* 페이지 헤더 */}
           <motion.div
             className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
@@ -212,7 +212,7 @@ function CompanyJobsClient() {
                           onClick={() => router.push(`/company/posts/edit/${post.id}`)}
                           className={cn(
                             'p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-150',
-                            'rounded-lg flex-shrink-0 focus:outline-none'
+                            'rounded-lg flex-shrink-0 focus:outline-none cursor-pointer'
                           )}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}

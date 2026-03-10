@@ -6,7 +6,7 @@ export default function UserProfileLoading() {
     <Layout>
       {/* Header skeleton */}
       <div className="sticky top-0 z-50 bg-white border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="page-container h-16 flex items-center justify-between">
           <Skeleton variant="text" className="h-7 w-32" />
           <div className="flex gap-2">
             <Skeleton variant="circle" className="w-9 h-9" />
@@ -16,7 +16,7 @@ export default function UserProfileLoading() {
       </div>
 
       <div className="min-h-screen bg-slate-50 py-6 sm:py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
+        <div className="page-container space-y-5">
 
           {/* Profile Header Card */}
           <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">

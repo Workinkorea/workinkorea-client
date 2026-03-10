@@ -234,6 +234,73 @@ Glassmorphism:  bg-white/[0.12] backdrop-blur-[10px] border-white/[0.15]
 Text Gradient:  bg-gradient-to-br from-blue-300 to-blue-400 bg-clip-text text-transparent
 ```
 
+---
+
+## 레이아웃 컨테이너 패턴
+
+### ⚠️ max-w-* 사용 제한 규칙
+
+**하위 `page.tsx` 또는 개별 컴포넌트에서 `max-w-5xl`, `max-w-6xl`, `max-w-7xl` 등을 직접 사용하는 것은 금지.**
+
+너비는 **해당 영역의 `layout.tsx`에서만** 한 곳에서 관리합니다.
+
+### 영역별 표준 컨테이너
+
+| 영역 | 컨테이너 클래스 | 최대 너비 |
+|------|---------------|---------|
+| 어드민 (`/admin`) | `w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8` | 1600px |
+| 일반 메인 (`/`) | `w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8` | 1280px |
+| 인증 폼 (`/login`, `/signup`) | `max-w-[32.5rem] w-full` (Layout.Main className 주입) | 520px |
+
+### 배경 및 콘텐츠 카드 표준
+
+```tsx
+// ✅ 레이아웃 배경
+<div className="min-h-screen bg-background-alternative">
+
+// ✅ 콘텐츠 카드 래퍼 (메인 콘텐츠 영역)
+<div className="rounded-xl bg-background-default shadow-md p-6">
+  {children}
+</div>
+```
+
+### CSS 변수 → Tailwind 자동 생성 유틸리티
+
+TailwindCSS 4는 `@theme` 블록의 `--color-{name}` 변수를 자동으로 `bg-{name}`, `text-{name}`, `border-{name}` 유틸리티로 변환합니다.
+
+| `@theme` CSS 변수 | 자동 생성 클래스 | 값 |
+|---------|-----|------|
+| `--color-background-default` | `bg-background-default` | `#FFFFFF` |
+| `--color-background-subtle` | `bg-background-subtle` | `#F8FAFC` |
+| `--color-background-alternative` | `bg-background-alternative` | `#F1F5F9` |
+
+**`bg-[var(--color-background-alternative)]` 형태는 사용 금지** — `@theme` 등록된 변수는 항상 짧은 유틸리티 클래스로 사용합니다.
+
+### Bad / Good 예시
+
+```tsx
+// ❌ Bad: 하위 페이지에서 max-w 직접 사용
+<div className="max-w-7xl mx-auto px-8">
+
+// ❌ Bad: CSS 변수 대신 bg-gray-* 사용 (디자인 토큰 미준수)
+<div className="bg-gray-50">
+
+// ✅ Good: 페이지는 래퍼 없이 콘텐츠만 렌더링
+export default function AdminUsersPage() {
+  return (
+    <div>
+      <h2 className="text-2xl font-bold text-slate-900 mb-6">회원 관리</h2>
+      <UsersTableClient />
+    </div>
+  );
+}
+
+// ✅ Good: 배경은 layout.tsx에서 @theme 유틸리티로 처리
+<div className="min-h-screen bg-background-alternative">
+```
+
+---
+
 ## 체크리스트
 
 - [ ] 모든 색상이 디자인 토큰 기반인가?
@@ -243,3 +310,6 @@ Text Gradient:  bg-gradient-to-br from-blue-300 to-blue-400 bg-clip-text text-tr
 - [ ] 그라데이션 방향과 색상이 패턴을 따르는가?
 - [ ] 호버/포커스 상태가 정의되어 있는가?
 - [ ] 반응형 breakpoint가 적용되어 있는가?
+- [ ] 하위 page.tsx에 max-w-* 클래스를 직접 사용하지 않았는가?
+- [ ] 페이지 배경에 bg-gray-* 대신 CSS 변수(`--color-background-*`)를 사용했는가?
+- [ ] 레이아웃 컨테이너는 layout.tsx에서만 관리하고 있는가?

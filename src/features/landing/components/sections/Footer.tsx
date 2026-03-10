@@ -12,7 +12,7 @@ export default function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-400">
       {/* 메인 콘텐츠 */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="page-container py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-8">
           {/* 컬럼 1: 브랜드 */}
           <div className="space-y-3">

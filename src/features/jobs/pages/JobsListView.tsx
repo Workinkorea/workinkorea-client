@@ -126,14 +126,14 @@ export default function JobsListView({
       <div className="min-h-screen bg-slate-50">
         {/* Page Header with Search */}
         <div className="bg-white border-b border-slate-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="page-container py-6 sm:py-8">
             {/* Title Section */}
             <div className="flex items-end justify-between gap-4 mb-6">
               <div className="min-w-0 flex-1">
-                <h1 className="text-[24px] sm:text-[28px] lg:text-[32px] font-extrabold text-slate-900 mb-2">
+                <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-slate-900 mb-2">
                   채용 공고
                 </h1>
-                <p className="text-[13px] sm:text-[14px] text-slate-600">
+                <p className="text-caption-1 sm:text-body-3 text-slate-600">
                   한국에서 외국인을 위한 다양한 채용 기회를 찾아보세요
                 </p>
               </div>
@@ -180,7 +180,7 @@ export default function JobsListView({
         </div>
 
         {/* Main Content Area */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="page-container py-6 sm:py-8">
 
           {/* Mobile: Horizontal Filter Bar */}
           <div className="lg:hidden mb-6 space-y-3">
@@ -191,7 +191,7 @@ export default function JobsListView({
                   <button
                     key={type}
                     onClick={() => handleType(type)}
-                    className={`px-3 py-1.5 rounded-full text-[12px] font-semibold border whitespace-nowrap transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-full text-caption-2 font-semibold border whitespace-nowrap transition-all cursor-pointer ${
                       selectedType === type
                         ? 'bg-blue-600 text-white border-blue-600'
                         : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'
@@ -209,7 +209,7 @@ export default function JobsListView({
                 <button
                   key={opt.value}
                   onClick={() => handleSort(opt.value)}
-                  className={`px-3.5 py-2 text-[12px] font-semibold rounded-lg border whitespace-nowrap transition-all cursor-pointer ${
+                  className={`px-3.5 py-2 text-caption-2 font-semibold rounded-lg border whitespace-nowrap transition-all cursor-pointer ${
                     sortBy === opt.value
                       ? 'bg-blue-600 text-white border-blue-600'
                       : 'bg-white text-slate-600 border-slate-200'
@@ -238,13 +238,13 @@ export default function JobsListView({
               <div className="bg-white rounded-xl border border-slate-200 p-5 sticky top-[calc(65px+73px+20px)] h-fit space-y-5">
                 {/* Employment Type Filter */}
                 <div>
-                  <h3 className="text-[13px] font-bold text-slate-900 mb-3">고용 형태</h3>
+                  <h3 className="text-caption-1 font-bold text-slate-900 mb-3">고용 형태</h3>
                   <div className="space-y-1.5">
                     {EMPLOYMENT_TYPES.map(type => (
                       <button
                         key={type}
                         onClick={() => handleType(type)}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-[13px] font-medium transition-all cursor-pointer ${
+                        className={`w-full text-left px-3 py-2 rounded-lg text-caption-1 font-medium transition-all cursor-pointer ${
                           selectedType === type
                             ? 'bg-blue-50 text-blue-700 font-semibold'
                             : 'text-slate-600 hover:bg-slate-50'
@@ -258,11 +258,11 @@ export default function JobsListView({
 
                 {/* Sort Filter */}
                 <div className="pt-4 border-t border-slate-100">
-                  <h3 className="text-[13px] font-bold text-slate-900 mb-3">정렬</h3>
+                  <h3 className="text-caption-1 font-bold text-slate-900 mb-3">정렬</h3>
                   <select
                     value={sortBy}
                     onChange={e => handleSort(e.target.value)}
-                    className="w-full text-[13px] font-medium text-slate-600 border border-slate-200 rounded-lg px-3 py-2 bg-white appearance-none focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 cursor-pointer"
+                    className="w-full text-caption-1 font-medium text-slate-600 border border-slate-200 rounded-lg px-3 py-2 bg-white appearance-none focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 cursor-pointer"
                   >
                     {SORT_OPTIONS.map(opt => (
                       <option key={opt.value} value={opt.value}>
@@ -292,7 +292,7 @@ export default function JobsListView({
                   <div className="pt-4 border-t border-slate-100">
                     <button
                       onClick={handleReset}
-                      className="w-full py-2 text-[13px] font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                      className="w-full py-2 text-caption-1 font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                     >
                       필터 초기화
                     </button>
@@ -306,7 +306,7 @@ export default function JobsListView({
               {/* Results Header: Count + Sort Tabs */}
               {!isLoading && !error && (
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
-                  <p className="text-[15px] font-semibold text-slate-900">
+                  <p className="text-body-2 font-semibold text-slate-900">
                     <span className="text-blue-600">
                       {isFiltered ? filteredPosts.length : total}
                     </span>
@@ -321,7 +321,7 @@ export default function JobsListView({
                       <button
                         key={opt.value}
                         onClick={() => handleSort(opt.value)}
-                        className={`px-3.5 py-2 text-[13px] font-semibold rounded-lg border transition-all cursor-pointer ${
+                        className={`px-3.5 py-2 text-caption-1 font-semibold rounded-lg border transition-all cursor-pointer ${
                           sortBy === opt.value
                             ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                             : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600'
@@ -363,7 +363,7 @@ export default function JobsListView({
               {error && (
                 <div className="text-center py-16 sm:py-20">
                   <p className="text-slate-900 text-base font-semibold mb-2">공고를 불러올 수 없어요</p>
-                  <p className="text-slate-600 text-[14px] mb-6">네트워크 연결을 확인하고 다시 시도해주세요</p>
+                  <p className="text-slate-600 text-body-3 mb-6">네트워크 연결을 확인하고 다시 시도해주세요</p>
                   <button
                     onClick={() => window.location.reload()}
                     className="px-4 py-2.5 bg-blue-600 text-white rounded-lg font-semibold text-sm hover:bg-blue-700 transition-colors cursor-pointer"
@@ -396,8 +396,8 @@ export default function JobsListView({
                       <div className="mb-4 flex justify-center">
                         <Bookmark size={56} className="text-slate-300" />
                       </div>
-                      <h3 className="text-slate-900 text-[16px] font-bold mb-2">저장한 공고가 없습니다</h3>
-                      <p className="text-slate-600 text-[14px] mb-6">관심 있는 공고를 북마크에 저장해보세요</p>
+                      <h3 className="text-slate-900 text-body-1 font-bold mb-2">저장한 공고가 없습니다</h3>
+                      <p className="text-slate-600 text-body-3 mb-6">관심 있는 공고를 북마크에 저장해보세요</p>
                       <Link
                         href="/jobs"
                         onClick={() => setShowBookmarksOnly(false)}
@@ -425,8 +425,8 @@ export default function JobsListView({
                       <div className="mb-4 flex justify-center">
                         <Briefcase size={56} className="text-slate-300" />
                       </div>
-                      <h3 className="text-slate-900 text-[16px] font-bold mb-2">아직 등록된 공고가 없습니다</h3>
-                      <p className="text-slate-600 text-[14px]">새로운 채용 기회를 곧 만나보실 수 있어요</p>
+                      <h3 className="text-slate-900 text-body-1 font-bold mb-2">아직 등록된 공고가 없습니다</h3>
+                      <p className="text-slate-600 text-body-3">새로운 채용 기회를 곧 만나보실 수 있어요</p>
                     </>
                   )}
                 </div>

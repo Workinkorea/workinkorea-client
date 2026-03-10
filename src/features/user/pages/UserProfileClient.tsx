@@ -248,7 +248,7 @@ function UserProfileClient() {
           onLogout={handleLogout}
         />
         <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="page-container">
             <div className="space-y-6 sm:space-y-8">
               <div className="skeleton-shimmer rounded-xl h-48 sm:h-64" />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
@@ -340,7 +340,7 @@ function UserProfileClient() {
         onLogout={handleLogout}
       />
       <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+        <div className="page-container space-y-6 sm:space-y-8">
           {/* 상단 제목 및 액션 버튼 */}
           <div className="flex items-center justify-between gap-4">
             <motion.h1

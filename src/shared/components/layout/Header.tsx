@@ -22,7 +22,7 @@ export function Header({ type, isAuthenticated, onLogout }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-slate-100 shadow-sm">
-      <div className="px-6 md:px-10">
+      <div className="page-container">
         <div className="flex items-center h-16 gap-4">
 
           {/* 로고 */}

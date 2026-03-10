@@ -34,7 +34,7 @@ export default function JobsLoading() {
 
       {/* Page Header with Search (bg-white border-b) */}
       <div className="bg-white border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="page-container py-6 sm:py-8">
           <div className="flex items-end justify-between gap-4 mb-6">
             <div className="space-y-2 flex-1">
               <Skeleton variant="text" className="h-8 w-36" />
@@ -49,7 +49,7 @@ export default function JobsLoading() {
 
       {/* Main Content */}
       <div className="min-h-screen bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="page-container py-6 sm:py-8">
 
           {/* Mobile: horizontal filter chips */}
           <div className="lg:hidden mb-6 space-y-3">

@@ -158,7 +158,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
       )}
 
       <div className="min-h-screen bg-slate-50 py-4 sm:py-6 pb-24 lg:pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="page-container">
           {/* Back Button */}
           <button
             onClick={() => router.back()}
