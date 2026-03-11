@@ -3,6 +3,7 @@
 import { useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { consumeCallbackUrl } from '@/shared/lib/callbackUrl';
 
 function CallbackContent() {
   const searchParams = useSearchParams();
@@ -29,7 +30,9 @@ function CallbackContent() {
 
         login('user');
 
-        window.location.href = '/';
+        // 로그인 전 방문 중이던 페이지로 복귀 (없으면 메인)
+        const callbackUrl = consumeCallbackUrl();
+        window.location.href = callbackUrl ?? '/';
         return;
       }
 

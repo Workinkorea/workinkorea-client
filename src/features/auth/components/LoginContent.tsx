@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { GoogleIcon } from '@/shared/ui/AccessibleIcon';
 import { API_BASE_URL } from '@/shared/api/fetchClient';
+import { saveCallbackUrl } from '@/shared/lib/callbackUrl';
 
 const containerVariants = {
   hidden: {},
@@ -27,13 +28,29 @@ const features = [
   '자가진단 및 커리어 상담',
 ];
 
-export default function LoginContent() {
+interface LoginContentProps {
+  callbackUrl?: string;
+}
+
+export default function LoginContent({ callbackUrl }: LoginContentProps) {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const handleGoogleLogin = () => {
+    // OAuth 외부 도메인 이동 전에 callbackUrl을 sessionStorage에 보존
+    if (callbackUrl) {
+      saveCallbackUrl(callbackUrl);
+    }
     setIsGoogleLoading(true);
     window.location.href = `${API_BASE_URL}/api/auth/login/google`;
   };
+
+  const companyLoginHref = callbackUrl
+    ? `/company-login?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : '/company-login';
+
+  const signupHref = callbackUrl
+    ? `/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : '/signup';
 
   return (
     <div className="flex min-h-screen">
@@ -158,7 +175,7 @@ export default function LoginContent() {
 
             {/* 기업 로그인 */}
             <motion.a
-              href="/company-login"
+              href={companyLoginHref}
               className="block w-full py-3.5 px-5 text-center border-2 border-slate-200 text-slate-700 rounded-xl font-semibold text-base hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
@@ -171,7 +188,7 @@ export default function LoginContent() {
           <motion.div variants={itemVariants} className="mt-8 pt-6 border-t border-slate-200">
             <p className="text-center text-[14px] text-slate-600">
               아직 회원이 아니신가요?{' '}
-              <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-semibold transition-colors inline-flex items-center gap-1">
+              <Link href={signupHref} className="text-blue-600 hover:text-blue-700 font-semibold transition-colors inline-flex items-center gap-1">
                 회원가입
                 <ArrowRight className="w-4 h-4" />
               </Link>
