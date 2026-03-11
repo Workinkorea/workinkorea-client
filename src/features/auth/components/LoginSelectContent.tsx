@@ -6,20 +6,30 @@ import { motion } from 'framer-motion';
 import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
-const LOGIN_OPTIONS = [
-  {
-    href: '/login',
-    icon: User,
-    title: '개인회원',
-    description: '구직자 및 일반 회원',
-  },
-  {
-    href: '/company-login',
-    icon: Building2,
-    title: '기업회원',
-    description: '채용 담당자 및 기업 회원',
-  },
-] as const;
+interface LoginOption {
+  href: string;
+  icon: typeof User;
+  title: string;
+  description: string;
+}
+
+function buildLoginOptions(callbackUrl?: string): LoginOption[] {
+  const qs = callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : '';
+  return [
+    {
+      href: `/login${qs}`,
+      icon: User,
+      title: '개인회원',
+      description: '구직자 및 일반 회원',
+    },
+    {
+      href: `/company-login${qs}`,
+      icon: Building2,
+      title: '기업회원',
+      description: '채용 담당자 및 기업 회원',
+    },
+  ];
+}
 
 const containerVariants = {
   hidden: {},
@@ -46,8 +56,16 @@ const cardVariants = {
   },
 };
 
-export default function LoginSelectContent() {
+interface LoginSelectContentProps {
+  callbackUrl?: string;
+}
+
+export default function LoginSelectContent({ callbackUrl }: LoginSelectContentProps) {
   const { isAuthenticated, isLoading, logout } = useAuth();
+  const loginOptions = buildLoginOptions(callbackUrl);
+  const signupHref = callbackUrl
+    ? `/signup-select?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : '/signup-select';
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -81,7 +99,7 @@ export default function LoginSelectContent() {
           variants={containerVariants}
           className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-10 sm:mb-12"
         >
-          {LOGIN_OPTIONS.map(({ href, icon: Icon, title, description }) => (
+          {loginOptions.map(({ href, icon: Icon, title, description }) => (
             <motion.div key={href} variants={cardVariants}>
               <Link href={href}>
                 <motion.div
@@ -137,7 +155,7 @@ export default function LoginSelectContent() {
         <motion.div variants={itemVariants} className="text-center pt-6 sm:pt-8 border-t border-slate-200">
           <p className="text-[14px] text-slate-600">
             아직 회원이 아니신가요?{' '}
-            <Link href="/signup-select" className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+            <Link href={signupHref} className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
               회원가입하기
             </Link>
           </p>

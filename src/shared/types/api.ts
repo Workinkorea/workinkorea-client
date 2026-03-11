@@ -507,6 +507,47 @@ export interface DiagnosisAnswerResponse {
   q15_answer: string;
 }
 
+// Event API types
+export type EventType = 'notice' | 'event' | 'promotion';
+export type EventTarget = 'all' | 'user' | 'company';
+export type EventStatus = 'active' | 'inactive';
+
+export interface AdminEvent {
+  id: number;
+  title: string;
+  type: EventType;
+  target: EventTarget;
+  status: EventStatus;
+  start_date: string;
+  end_date: string;
+  content: string;
+  banner_url?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateAdminEventRequest {
+  title: string;
+  type: EventType;
+  target: EventTarget;
+  status: EventStatus;
+  start_date: string;
+  end_date: string;
+  content: string;
+  banner_url?: string;
+}
+
+export interface UpdateAdminEventRequest {
+  title?: string;
+  type?: EventType;
+  target?: EventTarget;
+  status?: EventStatus;
+  start_date?: string;
+  end_date?: string;
+  content?: string;
+  banner_url?: string;
+}
+
 // Business Verification API types (National Tax Service)
 export interface BusinessVerificationRequest {
   b_no: string[];

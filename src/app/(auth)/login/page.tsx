@@ -7,8 +7,11 @@ export const metadata: Metadata = createMetadata({
   description: '워크인코리아 개인회원 로그인 페이지입니다. 한국 취업 기회를 찾고 이력서를 관리하세요.',
 });
 
-export default function Login () {
-  return (
-    <LoginContent />
-  )
+export default async function Login({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}) {
+  const { callbackUrl } = await searchParams;
+  return <LoginContent callbackUrl={callbackUrl} />;
 }

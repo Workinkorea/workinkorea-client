@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Container } from '@/shared/components/layout/Container';
 import { cn } from '@/shared/lib/utils/utils';
+import { adminApi } from '@/features/admin/api/adminApi';
 
 type EventType = 'notice' | 'event' | 'promotion';
 type EventTarget = 'all' | 'user' | 'company';
@@ -94,8 +95,16 @@ export function EventCreateClient() {
 
     setIsSubmitting(true);
     try {
-      // TODO: adminApi.createEvent(form) — 백엔드 API 연동 후 교체
-      await new Promise((r) => setTimeout(r, 600));
+      await adminApi.createEvent({
+        title: form.title,
+        type: form.type,
+        target: form.target,
+        status: form.status,
+        start_date: form.start_date,
+        end_date: form.end_date,
+        content: form.content,
+        banner_url: form.banner_url || undefined,
+      });
       toast.success('이벤트가 생성되었습니다.');
       router.push('/admin/events');
     } catch {
