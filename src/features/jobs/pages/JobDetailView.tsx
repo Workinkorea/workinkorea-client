@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { MapPin, DollarSign, Briefcase, GraduationCap, Languages, Calendar, Building2, FileText, Bookmark, Share2, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
@@ -12,6 +12,7 @@ import { HeaderClient } from '@/shared/components/layout/HeaderClient';
 import { Modal } from '@/shared/ui/Modal';
 import { useJobApplication } from '@/features/jobs/hooks/useJobApplication';
 import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { resumeApi } from '@/features/resume/api/resumeApi';
 import type { CompanyPostDetailResponse } from '@/shared/types/api';
 
@@ -26,6 +27,8 @@ function getDaysLeft(endDate: string): number | null {
 
 export default function JobDetailView({ job }: JobDetailViewProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { mutate: applyToJob, isPending } = useJobApplication();
   const { toggle, isBookmarked } = useBookmarks();
   const [showApplyModal, setShowApplyModal] = useState(false);
@@ -44,9 +47,25 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
   const isExpired = daysLeft !== null && daysLeft < 0;
   const language = job.language ? job.language.split(',').map(l => l.trim()) : [];
 
+  const redirectToLogin = () => {
+    router.push(`/login-select?callbackUrl=${encodeURIComponent(pathname)}`);
+  };
+
   const handleApply = () => {
+    if (!isAuthLoading && !isAuthenticated) {
+      redirectToLogin();
+      return;
+    }
     setSelectedResumeId(null);
     setShowApplyModal(true);
+  };
+
+  const handleBookmarkToggle = () => {
+    if (!isAuthLoading && !isAuthenticated) {
+      redirectToLogin();
+      return;
+    }
+    toggle(job.id);
   };
 
   const handleConfirmApply = () => {
@@ -214,7 +233,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                     {/* Desktop: Action Buttons */}
                     <div className="hidden lg:flex items-center gap-2 shrink-0">
                       <motion.button
-                        onClick={() => toggle(job.id)}
+                        onClick={handleBookmarkToggle}
                         className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer focus:outline-none"
                         whileTap={{ scale: 0.9 }}
                         aria-label={bookmarked ? '북마크 해제' : '북마크'}
@@ -357,7 +376,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
 
                 {/* Bookmark Button */}
                 <motion.button
-                  onClick={() => toggle(job.id)}
+                  onClick={handleBookmarkToggle}
                   className="w-full flex items-center justify-center gap-2 py-3 border border-slate-200 text-slate-700 rounded-lg font-semibold text-[13px] hover:bg-slate-50 transition-colors cursor-pointer"
                   whileTap={{ scale: 0.98 }}
                 >
