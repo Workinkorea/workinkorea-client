@@ -12,6 +12,7 @@ import { DiagnosisData } from '@/features/diagnosis/store/diagnosisStore';
 import { diagnosisApi } from '@/features/diagnosis/api/diagnosisApi';
 import { DiagnosisAnswerResponse } from '@/shared/types/api';
 import { cn } from '@/shared/lib/utils/utils';
+import { RecommendedJobsSection } from '@/features/diagnosis/components/RecommendedJobsSection';
 
 interface MatchingResult {
   score: number;
@@ -26,6 +27,7 @@ const DiagnosisResultClient = () => {
   const { isAuthenticated, isLoading, userType, logout } = useAuth();
   const { diagnosisId } = useDiagnosisStore();
   const [result, setResult] = useState<MatchingResult | null>(null);
+  const [diagnosisData, setDiagnosisData] = useState<Partial<DiagnosisData> | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -44,10 +46,11 @@ const DiagnosisResultClient = () => {
         const response: DiagnosisAnswerResponse = await diagnosisApi.getDiagnosisAnswer(id);
 
         // 응답 데이터를 DiagnosisData 형태로 변환
-        const diagnosisData = convertResponseToDiagnosisData(response);
+        const converted = convertResponseToDiagnosisData(response);
 
         // 매칭 점수 계산
-        const calculatedResult = calculateMatchingScore(diagnosisData);
+        const calculatedResult = calculateMatchingScore(converted);
+        setDiagnosisData(converted);
         setResult(calculatedResult);
       } catch (err) {
         setError('진단 결과를 불러오는데 실패했습니다.');
@@ -288,6 +291,9 @@ const DiagnosisResultClient = () => {
               ))}
             </div>
           </motion.div>
+
+          {/* 추천 채용 공고 */}
+          <RecommendedJobsSection diagnosisData={diagnosisData ?? undefined} />
 
           {/* CTA Banner */}
           <motion.div
