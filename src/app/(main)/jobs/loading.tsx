@@ -1,5 +1,3 @@
-import { HeaderClient } from '@/shared/components/layout/HeaderClient';
-import Layout from '@/shared/components/layout/Layout';
 import { Skeleton } from '@/shared/ui/Skeleton';
 
 function JobCardSkeleton() {
@@ -29,10 +27,8 @@ function JobCardSkeleton() {
 
 export default function JobsLoading() {
   return (
-    <Layout>
-      <HeaderClient />
-
-      {/* Page Header with Search (bg-white border-b) */}
+    <div>
+      {/* 페이지 헤더 + 검색바 */}
       <div className="bg-white border-b border-slate-100">
         <div className="page-container py-6 sm:py-8">
           <div className="flex items-end justify-between gap-4 mb-6">
@@ -42,16 +38,15 @@ export default function JobsLoading() {
             </div>
             <Skeleton className="h-10 w-28 rounded-lg hidden sm:block" />
           </div>
-          {/* Search bar */}
           <Skeleton className="h-11 w-full rounded-lg" />
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* 메인 콘텐츠 */}
       <div className="min-h-screen bg-slate-50">
         <div className="page-container py-6 sm:py-8">
 
-          {/* Mobile: horizontal filter chips */}
+          {/* 모바일: 필터 칩 */}
           <div className="lg:hidden mb-6 space-y-3">
             <div className="flex gap-2 overflow-x-auto pb-1">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -65,10 +60,10 @@ export default function JobsLoading() {
             </div>
           </div>
 
-          {/* Desktop: sidebar + main grid */}
+          {/* 데스크탑: 사이드바 + 그리드 */}
           <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
 
-            {/* Sidebar (desktop only) */}
+            {/* 사이드바 */}
             <div className="hidden lg:block">
               <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-5">
                 <div className="space-y-3">
@@ -89,7 +84,7 @@ export default function JobsLoading() {
               </div>
             </div>
 
-            {/* Main jobs area */}
+            {/* 공고 목록 */}
             <div className="space-y-4">
               <Skeleton variant="text" className="h-4 w-32" />
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
@@ -101,6 +96,6 @@ export default function JobsLoading() {
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 }
