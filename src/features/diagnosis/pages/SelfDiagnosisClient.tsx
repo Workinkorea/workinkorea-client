@@ -5,9 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
 import { FormField } from '@/shared/ui/FormField';
-import { useAuth } from '@/features/auth/hooks/useAuth';
 
 interface SelfDiagnosisFormData {
   gender: 'male' | 'female' | '';
@@ -17,7 +15,6 @@ interface SelfDiagnosisFormData {
 
 const SelfDiagnosisClient = () => {
   const router = useRouter();
-  const { isAuthenticated, isLoading, userType, logout } = useAuth();
   const {
     control,
     handleSubmit,
@@ -30,10 +27,6 @@ const SelfDiagnosisClient = () => {
       desiredSalary: '',
     }
   });
-
-  const handleLogout = async () => {
-    await logout();
-  };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = async (_data: SelfDiagnosisFormData) => {
@@ -48,13 +41,7 @@ const SelfDiagnosisClient = () => {
 
   return (
     <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={isLoading}
-        onLogout={handleLogout}
-      />
-      <div className="min-h-screen bg-slate-50 py-12">
+      <div className="min-h-screen bg-white py-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

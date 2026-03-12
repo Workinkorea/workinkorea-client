@@ -6,14 +6,13 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Edit3, Plus, MapPin, FileText } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/shared/lib/utils/utils';
 
 function CompanyJobsClient() {
   const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   // 인증 체크 및 리다이렉트
   useEffect(() => {
@@ -21,10 +20,6 @@ function CompanyJobsClient() {
       router.push('/company-login');
     }
   }, [isAuthenticated, authLoading, router]);
-
-  const handleLogout = async () => {
-    await logout();
-  };
 
   // 기업 공고 목록 조회
   const { data: posts, isLoading: postsLoading, error: postsError } = useQuery({
@@ -40,13 +35,7 @@ function CompanyJobsClient() {
   if (authLoading) {
     return (
       <Layout>
-        <Header
-          type={userType === 'company' ? 'business' : 'homepage'}
-          isAuthenticated={isAuthenticated}
-          isLoading={authLoading}
-          onLogout={handleLogout}
-        />
-        <div className="min-h-screen bg-slate-50 py-8 sm:py-12">
+        <div className="min-h-screen bg-white py-8 sm:py-12">
           <div className="page-container space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="space-y-2">
@@ -75,13 +64,7 @@ function CompanyJobsClient() {
 
   return (
     <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-      <div className="min-h-screen bg-slate-50 py-8 sm:py-12">
+      <div className="min-h-screen bg-white py-8 sm:py-12">
         <div className="page-container space-y-6">
           {/* 페이지 헤더 */}
           <motion.div

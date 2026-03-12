@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { profileApi } from '../api/profileCompany';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -20,7 +19,7 @@ import { ContactPersonSection } from '@/features/company/components/ContactPerso
 const CompanyProfileEditClient = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   const [formData, setFormData] = useState<CompanyProfileRequest>({
     industry_type: '',
@@ -43,10 +42,6 @@ const CompanyProfileEditClient = () => {
   const [originalData, setOriginalData] = useState<CompanyProfileRequest | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
-
-  const handleLogout = async () => {
-    await logout();
-  };
 
   // 기존 프로필 조회
   const { data: profile, isLoading: profileLoading } = useQuery({
@@ -211,13 +206,7 @@ const CompanyProfileEditClient = () => {
   if (authLoading || (profileLoading && !profile)) {
     return (
       <Layout>
-        <Header
-          type={userType === 'company' ? 'business' : 'homepage'}
-          isAuthenticated={isAuthenticated}
-          isLoading={authLoading}
-          onLogout={handleLogout}
-        />
-        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
         </div>
       </Layout>
@@ -226,14 +215,7 @@ const CompanyProfileEditClient = () => {
 
   return (
     <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-
-      <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
+      <div className="min-h-screen bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="mb-8"

@@ -4,7 +4,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useDiagnosisStore } from '@/features/diagnosis/store/diagnosisStore';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { CheckCircle, AlertCircle, Briefcase, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -24,7 +23,7 @@ interface MatchingResult {
 const DiagnosisResultClient = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAuthenticated, isLoading, userType, logout } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { diagnosisId } = useDiagnosisStore();
   const [result, setResult] = useState<MatchingResult | null>(null);
   const [diagnosisData, setDiagnosisData] = useState<Partial<DiagnosisData> | null>(null);
@@ -60,10 +59,6 @@ const DiagnosisResultClient = () => {
     fetchDiagnosisResult();
   }, [searchParams, diagnosisId]);
 
-  const handleLogout = async () => {
-    await logout();
-  };
-
   const handleRestart = () => {
     router.push('/diagnosis');
   };
@@ -79,13 +74,7 @@ const DiagnosisResultClient = () => {
   if (error) {
     return (
       <Layout>
-        <Header
-          type={userType === 'company' ? 'business' : 'homepage'}
-          isAuthenticated={isAuthenticated}
-          isLoading={isLoading}
-          onLogout={handleLogout}
-        />
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-8">
+        <div className="min-h-screen bg-white flex items-center justify-center px-4 py-8">
           <div className="text-center max-w-md">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-red-50 rounded-full mb-4">
               <AlertCircle className="text-red-500 w-8 h-8" />
@@ -115,13 +104,7 @@ const DiagnosisResultClient = () => {
   if (!result) {
     return (
       <Layout>
-        <Header
-          type={userType === 'company' ? 'business' : 'homepage'}
-          isAuthenticated={isAuthenticated}
-          isLoading={isLoading}
-          onLogout={handleLogout}
-        />
-        <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
+        <div className="min-h-screen bg-white py-8 sm:py-12 lg:py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             <div className="bg-white rounded-2xl p-6 sm:p-10 lg:p-12 shadow-sm text-center space-y-4">
               <div className="skeleton-shimmer rounded-full w-24 h-24 sm:w-32 sm:h-32 mx-auto" />
@@ -147,13 +130,7 @@ const DiagnosisResultClient = () => {
 
   return (
     <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={isLoading}
-        onLogout={handleLogout}
-      />
-      <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
+      <div className="min-h-screen bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* 매칭 점수 */}
           <motion.div

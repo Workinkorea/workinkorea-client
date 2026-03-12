@@ -16,7 +16,6 @@ import { ArrowLeft, FileText } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import { CreateCompanyPostRequest, UpdateCompanyPostRequest } from '@/shared/types/api';
@@ -26,9 +25,7 @@ import { extractErrorMessage, logError } from '@/shared/lib/utils/errorHandler';
 function CompanyPostCreateClient() {
   const router       = useRouter();
   const queryClient  = useQueryClient();
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
-
-  const handleLogout = async () => { await logout(); };
+  const { isAuthenticated, isLoading: authLoading, userType } = useAuth();
 
   const createPostMutation = useMutation({
     mutationFn: (data: CreateCompanyPostRequest) => postsApi.createCompanyPost(data),
@@ -54,13 +51,7 @@ function CompanyPostCreateClient() {
   if (authLoading) {
     return (
       <Layout>
-        <Header
-          type={userType === 'company' ? 'business' : 'homepage'}
-          isAuthenticated={isAuthenticated}
-          isLoading={authLoading}
-          onLogout={handleLogout}
-        />
-        <div className="min-h-screen bg-slate-50 py-8 px-4">
+        <div className="min-h-screen bg-white py-8 px-4">
           <div className="max-w-4xl mx-auto space-y-4">
             <div className="skeleton-shimmer h-6 w-40 rounded" />
             <div className="skeleton-shimmer h-8 w-64 rounded" />
@@ -88,14 +79,7 @@ function CompanyPostCreateClient() {
 
   return (
     <Layout>
-      <Header
-        type="business"
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-
-      <div className="min-h-screen bg-slate-50 py-8 px-4">
+      <div className="min-h-screen bg-white py-8 px-4">
         <div className="max-w-4xl mx-auto">
 
           {/* ── 페이지 헤더 ────────────────────────────────────────────────

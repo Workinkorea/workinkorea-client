@@ -21,7 +21,6 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '@/shared/components/layout/Layout';
-import { HeaderClient } from '@/shared/components/layout/HeaderClient';
 import { FormField } from '@/shared/ui/FormField';
 import { Input } from '@/shared/ui/Input';
 import {
@@ -550,8 +549,7 @@ function ProfileEditClient() {
   if (isLoading) {
     return (
       <Layout>
-        <HeaderClient />
-        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="animate-pulse text-center">
             <div className="w-16 h-16 bg-blue-200 rounded-full mx-auto mb-4"></div>
             <p className="text-slate-500">프로필 정보를 불러오는 중...</p>
@@ -564,8 +562,7 @@ function ProfileEditClient() {
   if (error || !profile) {
     return (
       <Layout>
-        <HeaderClient />
-        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="text-center">
             <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
             <h2 className="text-[24px] font-semibold text-slate-900 mb-2">
@@ -1158,8 +1155,7 @@ function ProfileEditClient() {
 
   return (
     <Layout>
-      <HeaderClient />
-      <div className="min-h-screen bg-slate-50 py-8">
+      <div className="min-h-screen bg-white py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* 헤더 */}
           <motion.div

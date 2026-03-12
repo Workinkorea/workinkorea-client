@@ -9,8 +9,6 @@ import { Session2CareerSkills } from '@/features/diagnosis/components/Session2Ca
 import { Session3Preferences } from '@/features/diagnosis/components/Session3Preferences';
 import { Session4Matching } from '@/features/diagnosis/components/Session4Matching';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
-import { useAuth } from '@/features/auth/hooks/useAuth';
 import { DiagnosisData } from '@/features/diagnosis/store/diagnosisStore';
 import { diagnosisApi } from '@/features/diagnosis/api/diagnosisApi';
 import { DiagnosisAnswerRequest } from '@/shared/types/api';
@@ -22,13 +20,8 @@ const TOTAL_STEPS = 4;
 
 const DiagnosisClient = () => {
   const router = useRouter();
-  const { isAuthenticated, isLoading, userType, logout } = useAuth();
   const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId, reset } = useDiagnosisStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleLogout = async () => {
-    await logout();
-  };
 
   const handleSession1Next = (data: Partial<DiagnosisData>) => {
     updateData(data);
@@ -95,13 +88,7 @@ const DiagnosisClient = () => {
 
   return (
     <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={isLoading}
-        onLogout={handleLogout}
-      />
-      <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
+      <div className="min-h-screen bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Page Header */}
           <motion.div

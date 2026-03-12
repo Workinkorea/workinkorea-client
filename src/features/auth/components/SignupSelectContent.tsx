@@ -2,8 +2,6 @@
 
 import Link from 'next/link';
 import { User, Building2, CheckCircle2 } from 'lucide-react';
-import { Header } from '@/shared/components/layout/Header';
-import { useAuth } from '@/features/auth/hooks/useAuth';
 import { motion } from 'framer-motion';
 import { cn } from '@/shared/lib/utils/utils';
 
@@ -39,17 +37,8 @@ const itemVariants = {
 };
 
 export default function SignupSelectContent() {
-  const { isAuthenticated, isLoading, logout } = useAuth();
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
-      <Header
-        type="homepage"
-        isAuthenticated={isAuthenticated}
-        isLoading={isLoading}
-        onLogout={async () => { await logout(); }}
-      />
-
       <div className="flex items-center justify-center px-4 py-8 sm:py-12 lg:py-16">
         <motion.div
           className="w-full max-w-3xl"

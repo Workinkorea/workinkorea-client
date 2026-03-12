@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { Edit3 } from 'lucide-react';
 import { toast } from 'sonner';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/shared/ui/Skeleton';
@@ -91,7 +90,7 @@ const mockMySkillStats = {
 
 function MyProfileClient() {
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience' | 'resume'>('overview');
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -193,10 +192,6 @@ function MyProfileClient() {
     }
   }, [isAuthenticated, authLoading, router]);
 
-  const handleLogout = async () => {
-    await logout();
-  };
-
   const handleEditClick = () => {
     // 편집 페이지로 이동
     router.push('/user/profile/edit');
@@ -225,13 +220,7 @@ function MyProfileClient() {
   if (authLoading || isLoading) {
     return (
       <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-        <div className="min-h-screen bg-slate-50 py-8">
+        <div className="min-h-screen bg-white py-8">
           <div className="page-container">
             <div className="animate-pulse space-y-6">
               <div className="bg-white rounded-lg h-64"></div>
@@ -249,13 +238,7 @@ function MyProfileClient() {
   if (error || !profile) {
     return (
       <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-[24px] font-semibold text-slate-700 mb-2">
               프로필을 불러올 수 없습니다
@@ -273,13 +256,7 @@ function MyProfileClient() {
 
   return (
     <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-      <div className="min-h-screen bg-slate-50 py-8">
+      <div className="min-h-screen bg-white py-8">
         <div className="page-container space-y-6">
           {/* 페이지 헤더 */}
           <motion.div 

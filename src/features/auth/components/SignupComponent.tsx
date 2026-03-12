@@ -191,7 +191,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-white flex flex-col lg:flex-row">
       {/* 약관 동의 섹션 - 모바일: 전체 너비, 데스크탑: 좌측 */}
       <div className="w-full lg:w-1/2 lg:border-r lg:border-slate-200 px-4 sm:px-6 py-8 sm:py-12 lg:p-12">
         <div className="max-w-xl mx-auto space-y-6">
@@ -278,7 +278,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
       />
 
       {/* 회원가입 폼 섹션 - 모바일: 전체 너비, 데스크탑: 우측 */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-6 py-8 sm:py-12 lg:p-12 bg-white lg:bg-slate-50">
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-6 py-8 sm:py-12 lg:p-12 bg-white">
         <div className="max-w-xl mx-auto w-full space-y-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
