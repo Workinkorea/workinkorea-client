@@ -33,7 +33,6 @@ import {
 import { cn } from '@/shared/lib/utils/utils';
 import { FetchError } from '@/shared/api/fetchClient';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
 import { profileApi } from '../api/profileCompany';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -83,7 +82,7 @@ const CompanyProfileClient = () => {
 
   const [activeTodoTab, setActiveTodoTab] = useState<TodoTab>('unread');
 
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   // 기업 프로필 조회
   const { data: profile, isLoading: profileLoading, error, isError } = useQuery({
@@ -117,8 +116,6 @@ const CompanyProfileClient = () => {
     }
   }, [isError, error, router]);
 
-  const handleLogout = async () => { await logout(); };
-
   // URL 쿼리 파라미터를 업데이트해 탭 전환합니다.
   // scroll: false → 탭 전환 시 스크롤 위치를 유지해 UX 안정성 확보
   const setTab = (tab: DashboardTab) => {
@@ -132,13 +129,7 @@ const CompanyProfileClient = () => {
   if (isError && error instanceof FetchError && error.status === 403) {
     return (
       <Layout>
-        <Header
-          type={userType === 'company' ? 'business' : 'homepage'}
-          isAuthenticated={isAuthenticated}
-          isLoading={authLoading}
-          onLogout={handleLogout}
-        />
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="min-h-screen bg-white flex items-center justify-center">
           <div className="bg-white rounded-xl border border-slate-200 p-8 text-center max-w-sm">
             <p className="text-slate-900 font-semibold mb-2">접근 권한이 없습니다</p>
             <p className="text-sm text-slate-500">{error.message}</p>
@@ -152,13 +143,7 @@ const CompanyProfileClient = () => {
   if (authLoading || profileLoading || !profile) {
     return (
       <Layout>
-        <Header
-          type={userType === 'company' ? 'business' : 'homepage'}
-          isAuthenticated={isAuthenticated}
-          isLoading={authLoading}
-          onLogout={handleLogout}
-        />
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-white">
           {/* 헤더 스켈레톤 */}
           <div className="bg-white border-b border-slate-100 px-6 py-5">
             <div className="max-w-5xl mx-auto flex items-center justify-between">
@@ -187,14 +172,7 @@ const CompanyProfileClient = () => {
   // ── 메인 렌더링 ──────────────────────────────────────────────────────────
   return (
     <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-white">
 
         {/* ── 대시보드 헤더: 기업명 + CTA + 탭 ─────────────────────────────
             UX 근거: 페이지의 최상단(시선이 처음 닿는 곳)에 핵심 액션을 배치합니다.

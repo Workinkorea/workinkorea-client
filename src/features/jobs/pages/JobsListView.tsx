@@ -5,7 +5,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Search, Bookmark, X, ChevronDown, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 import Layout from '@/shared/components/layout/Layout';
-import { HeaderClient } from '@/shared/components/layout/HeaderClient';
 import JobCard from '@/features/jobs/components/JobCard';
 import JobsPaginationClient from '@/features/jobs/components/JobsPaginationClient';
 import { useCompanyPosts } from '@/features/jobs/hooks/useCompanyPosts';
@@ -121,9 +120,7 @@ export default function JobsListView({
 
   return (
     <Layout>
-      <HeaderClient />
-
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-white">
         {/* Page Header with Search */}
         <div className="bg-white border-b border-slate-100">
           <div className="page-container py-6 sm:py-8">

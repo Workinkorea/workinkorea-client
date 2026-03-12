@@ -8,7 +8,6 @@ import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import Layout from '@/shared/components/layout/Layout';
-import { HeaderClient } from '@/shared/components/layout/HeaderClient';
 import { Modal } from '@/shared/ui/Modal';
 import { useJobApplication } from '@/features/jobs/hooks/useJobApplication';
 import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
@@ -91,8 +90,6 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
 
   return (
     <Layout>
-      <HeaderClient type="homepage" />
-
       {/* Resume Selection Modal */}
       <Modal isOpen={showApplyModal} onClose={() => setShowApplyModal(false)} title="이력서 선택" size="sm">
         <div className="space-y-4">
@@ -176,7 +173,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
         </div>
       )}
 
-      <div className="min-h-screen bg-slate-50 py-4 sm:py-6 pb-24 lg:pb-8">
+      <div className="min-h-screen bg-white py-4 sm:py-6 pb-24 lg:pb-8">
         <div className="page-container">
           {/* Back Button */}
           <button

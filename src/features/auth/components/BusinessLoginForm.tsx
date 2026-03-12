@@ -185,7 +185,7 @@ export default function BusinessLoginForm() {
 
       {/* ── 좌측 그라데이션 패널 ──────────────────────────────────── */}
       <motion.div
-        className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-600 to-blue-900 flex-col justify-center p-16 relative overflow-hidden"
+        className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-400 to-blue-600 flex-col justify-center p-16 relative overflow-hidden"
         initial={{ opacity: 0, x: -24 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}
@@ -241,16 +241,6 @@ export default function BusinessLoginForm() {
           ))}
         </motion.ul>
 
-        {/* 글래스모피즘 배지 */}
-        <motion.div
-          className="mt-14 inline-flex items-center gap-2 bg-white/[0.12] backdrop-blur-[10px] border border-white/[0.15] rounded-full px-4 py-2 self-start"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.4 }}
-        >
-          <div className="w-2 h-2 rounded-full bg-emerald-400" />
-          <span className="text-blue-100 text-[12px] font-medium">현재 3,200+ 기업이 이용 중</span>
-        </motion.div>
       </motion.div>
 
       {/* ── 우측 폼 패널 ─────────────────────────────────────────── */}
@@ -260,16 +250,6 @@ export default function BusinessLoginForm() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        {/* 모바일 로고 */}
-        <div className="flex items-center gap-2 mb-8 lg:hidden">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-            <Building2 size={16} className="text-white" />
-          </div>
-          <span className="text-slate-900 font-['Plus_Jakarta_Sans'] text-lg font-extrabold tracking-[-0.5px]">
-            WorkInKorea
-          </span>
-        </div>
-
         <div className="w-full max-w-[400px] mx-auto">
           <motion.div
             variants={stagger}

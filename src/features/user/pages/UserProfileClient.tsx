@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Edit3, FileText, GraduationCap, Award } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/shared/ui/Skeleton';
@@ -34,11 +33,7 @@ function UserProfileClient() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'resume' | 'skills' | 'career'>('dashboard');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{ resumeId: number; title: string } | null>(null);
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
-
-  const handleLogout = async () => {
-    await logout();
-  };
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   // 이력서 삭제 mutation
   const deleteResumeMutation = useMutation({
@@ -241,13 +236,7 @@ function UserProfileClient() {
   if (authLoading || resumeListLoading || resumeDetailLoading) {
     return (
       <Layout>
-        <Header
-          type={userType === 'company' ? 'business' : 'homepage'}
-          isAuthenticated={isAuthenticated}
-          isLoading={authLoading}
-          onLogout={handleLogout}
-        />
-        <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
+        <div className="min-h-screen bg-white py-8 sm:py-12 lg:py-16">
           <div className="page-container">
             <div className="space-y-6 sm:space-y-8">
               <div className="skeleton-shimmer rounded-xl h-48 sm:h-64" />
@@ -265,13 +254,7 @@ function UserProfileClient() {
   if (error || !resumeData) {
     return (
       <Layout>
-        <Header
-          type={userType === 'company' ? 'business' : 'homepage'}
-          isAuthenticated={isAuthenticated}
-          isLoading={authLoading}
-          onLogout={handleLogout}
-        />
-        <div className="min-h-screen bg-slate-50 py-16 sm:py-20 lg:py-24 flex items-center justify-center px-4 sm:px-6">
+        <div className="min-h-screen bg-white py-16 sm:py-20 lg:py-24 flex items-center justify-center px-4 sm:px-6">
           <div className="text-center max-w-md mx-auto">
             <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 rounded-full bg-blue-100 flex items-center justify-center">
               <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
@@ -333,13 +316,7 @@ function UserProfileClient() {
         </div>
       </Modal>
 
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-      <div className="min-h-screen bg-slate-50 py-8 sm:py-12 lg:py-16">
+      <div className="min-h-screen bg-white py-8 sm:py-12 lg:py-16">
         <div className="page-container space-y-6 sm:space-y-8">
           {/* 상단 제목 및 액션 버튼 */}
           <div className="flex items-center justify-between gap-4">

@@ -3,8 +3,6 @@
 import Link from 'next/link';
 import { User, Building2, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Header } from '@/shared/components/layout/Header';
-import { useAuth } from '@/features/auth/hooks/useAuth';
 
 interface LoginOption {
   href: string;
@@ -61,23 +59,13 @@ interface LoginSelectContentProps {
 }
 
 export default function LoginSelectContent({ callbackUrl }: LoginSelectContentProps) {
-  const { isAuthenticated, isLoading, logout } = useAuth();
   const loginOptions = buildLoginOptions(callbackUrl);
   const signupHref = callbackUrl
     ? `/signup-select?callbackUrl=${encodeURIComponent(callbackUrl)}`
     : '/signup-select';
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Header
-        type="homepage"
-        isAuthenticated={isAuthenticated}
-        isLoading={isLoading}
-        onLogout={async () => {
-          await logout();
-        }}
-      />
-
+    <div className="min-h-screen bg-white">
       <motion.div
         className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24"
         variants={containerVariants}

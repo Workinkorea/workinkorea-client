@@ -53,10 +53,10 @@ export default function LoginContent({ callbackUrl }: LoginContentProps) {
     : '/signup';
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-[calc(100vh-4rem)] flex-1">
       {/* 좌측 패널 - 데스크탑만 표시 */}
       <motion.div
-        className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-600 to-blue-900 flex-col justify-center items-center relative px-12 overflow-hidden"
+        className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-400 to-blue-600 flex-col justify-center items-center relative px-12 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -109,17 +109,6 @@ export default function LoginContent({ callbackUrl }: LoginContentProps) {
             ))}
           </motion.div>
 
-          {/* 글래스모피즘 배지 */}
-          <motion.div
-            className="px-4 py-3 rounded-xl bg-white/[0.12] backdrop-blur-[10px] border border-white/[0.15] mt-8"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            <p className="text-[13px] text-blue-200 font-medium">
-              현재 <span className="font-bold">12,000+</span> 구직자가 이용 중
-            </p>
-          </motion.div>
         </div>
       </motion.div>
 

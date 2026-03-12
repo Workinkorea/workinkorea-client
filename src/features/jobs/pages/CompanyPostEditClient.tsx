@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -20,11 +19,7 @@ interface CompanyPostEditClientProps {
 function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
-
-  const handleLogout = async () => {
-    await logout();
-  };
+  const { isAuthenticated, isLoading: authLoading, userType } = useAuth();
 
   // 공고 데이터 로드
   const { data: post, isLoading: postLoading } = useQuery({
@@ -77,12 +72,6 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
   if (authLoading || postLoading) {
     return (
       <Layout>
-        <Header
-          type={userType === 'company' ? 'business' : 'homepage'}
-          isAuthenticated={isAuthenticated}
-          isLoading={authLoading}
-          onLogout={handleLogout}
-        />
         <div className="flex justify-center items-center h-screen">
           <div className="text-slate-500">로딩 중...</div>
         </div>
@@ -112,13 +101,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
 
   return (
     <Layout>
-      <Header
-        type="business"
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-      <div className="min-h-screen bg-slate-100 py-8 px-4">
+      <div className="min-h-screen bg-white py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
