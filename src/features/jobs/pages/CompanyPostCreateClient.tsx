@@ -12,10 +12,11 @@
 
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, FileText } from 'lucide-react';
+import { FileText, Lightbulb } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import Layout from '@/shared/components/layout/Layout';
+import { Button } from '@/shared/ui/Button';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import { CreateCompanyPostRequest, UpdateCompanyPostRequest } from '@/shared/types/api';
@@ -47,27 +48,35 @@ function CompanyPostCreateClient() {
     createPostMutation.mutate(data as CreateCompanyPostRequest);
   };
 
+  const handleCancel = () => {
+    router.push('/company?tab=posts');
+  };
+
   // ── 인증 로딩 중 스켈레톤 ──────────────────────────────────────────────────
   if (authLoading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-white py-8 px-4">
-          <div className="max-w-4xl mx-auto space-y-4">
-            <div className="skeleton-shimmer h-6 w-40 rounded" />
-            <div className="skeleton-shimmer h-8 w-64 rounded" />
-            {/* 폼 섹션 스켈레톤 4개 */}
-            {[180, 140, 220, 120].map((h, i) => (
-              <div key={i} className="bg-white rounded-xl border border-slate-200 p-6">
-                <div className="skeleton-shimmer h-5 w-32 rounded mb-5" />
-                <div className="space-y-3">
-                  <div className="skeleton-shimmer h-10 w-full rounded-lg" />
-                  {h > 150 && <div className="skeleton-shimmer h-10 w-full rounded-lg" />}
-                  {h > 200 && <div className="skeleton-shimmer h-24 w-full rounded-lg" />}
-                </div>
+        <main className="min-h-screen bg-background-alternative py-8">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
+              <div className="space-y-4">
+                <div className="skeleton-shimmer h-6 w-40 rounded" />
+                <div className="skeleton-shimmer h-8 w-64 rounded" />
+                {/* 폼 섹션 스켈레톤 4개 */}
+                {[180, 140, 220, 120].map((h, i) => (
+                  <div key={i} className="bg-white rounded-xl border border-slate-200 p-6">
+                    <div className="skeleton-shimmer h-5 w-32 rounded mb-5" />
+                    <div className="space-y-3">
+                      <div className="skeleton-shimmer h-10 w-full rounded-lg" />
+                      {h > 150 && <div className="skeleton-shimmer h-10 w-full rounded-lg" />}
+                      {h > 200 && <div className="skeleton-shimmer h-24 w-full rounded-lg" />}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
-        </div>
+        </main>
       </Layout>
     );
   }
@@ -79,8 +88,8 @@ function CompanyPostCreateClient() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-white py-8 px-4">
-        <div className="max-w-4xl mx-auto">
+      <main className="min-h-screen bg-background-alternative py-8">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* ── 페이지 헤더 ────────────────────────────────────────────────
               UX 근거: 브레드크럼 + 제목으로 현재 위치와 컨텍스트를 명시합니다.
@@ -92,15 +101,6 @@ function CompanyPostCreateClient() {
             transition={{ duration: 0.3 }}
             className="mb-6"
           >
-            {/* 브레드크럼 */}
-            <button
-              onClick={() => router.push('/company?tab=posts')}
-              className="flex items-center gap-1.5 text-[13px] text-slate-500 hover:text-blue-600 transition-colors mb-4 cursor-pointer focus:outline-none"
-            >
-              <ArrowLeft size={15} />
-              대시보드로 돌아가기
-            </button>
-
             {/* 페이지 제목 */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
@@ -115,25 +115,78 @@ function CompanyPostCreateClient() {
             </div>
           </motion.div>
 
-          {/* ── 폼 영역 ───────────────────────────────────────────────────
-              UX 근거: 제출 중(isSubmitting) 폼 전체에 오버레이를 표시해
-              중복 제출을 방지하고 진행 중임을 명확히 알립니다.
-          ──────────────────────────────────────────────────────────────── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.08 }}
-            className="relative"
-          >
-            <CompanyPostForm
-              mode="create"
-              onSubmit={handleSubmit}
-              isSubmitting={createPostMutation.isPending}
-            />
-          </motion.div>
+          {/* ── 2-column layout ────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
+
+            {/* ── 좌측: 폼 ── */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.08 }}
+              className="relative"
+            >
+              <CompanyPostForm
+                mode="create"
+                onSubmit={handleSubmit}
+                isSubmitting={createPostMutation.isPending}
+              />
+            </motion.div>
+
+            {/* ── 우측: 사이드바 (sticky) ── */}
+            <aside className="hidden lg:flex flex-col gap-4 sticky top-6">
+
+              {/* 등록 버튼 */}
+              <Button
+                type="submit"
+                size="lg"
+                form="company-post-form"
+                isLoading={createPostMutation.isPending}
+                className="w-full shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
+              >
+                공고 등록하기
+              </Button>
+
+              {/* 취소 버튼 */}
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="w-full"
+                onClick={handleCancel}
+              >
+                취소
+              </Button>
+
+              {/* 작성 팁 카드 */}
+              <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                <div className="flex items-start gap-3">
+                  <Lightbulb size={16} className="text-blue-600 shrink-0 mt-1" />
+                  <div>
+                    <h3 className="text-[13px] font-bold text-slate-900 mb-2">작성 팁</h3>
+                    <ul className="space-y-1.5 text-[12px] text-slate-600">
+                      <li className="flex gap-2">
+                        <span className="text-blue-600 shrink-0">•</span>
+                        <span>명확하고 구체적인 직무 제목을 사용하세요</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-blue-600 shrink-0">•</span>
+                        <span>필수 자격사항과 우대사항을 명확히 구분하세요</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-blue-600 shrink-0">•</span>
+                        <span>정확한 급여 정보를 제공하면 지원율이 높아집니다</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+            </aside>
+
+          </div>
 
         </div>
-      </div>
+      </main>
     </Layout>
   );
 }

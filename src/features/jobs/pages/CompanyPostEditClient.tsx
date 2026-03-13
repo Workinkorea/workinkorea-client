@@ -2,8 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
+import { Button } from '@/shared/ui/Button';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -69,12 +70,33 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
     }
   };
 
+  const handleCancel = () => {
+    router.back();
+  };
+
   if (authLoading || postLoading) {
     return (
       <Layout>
-        <div className="flex justify-center items-center h-screen">
-          <div className="text-slate-500">로딩 중...</div>
-        </div>
+        <main className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
+              <div className="space-y-4">
+                <div className="skeleton-shimmer h-6 w-40 rounded" />
+                <div className="skeleton-shimmer h-8 w-64 rounded" />
+                {[180, 140, 220, 120].map((h, i) => (
+                  <div key={i} className="bg-white rounded-xl border border-slate-200 p-6">
+                    <div className="skeleton-shimmer h-5 w-32 rounded mb-5" />
+                    <div className="space-y-3">
+                      <div className="skeleton-shimmer h-10 w-full rounded-lg" />
+                      {h > 150 && <div className="skeleton-shimmer h-10 w-full rounded-lg" />}
+                      {h > 200 && <div className="skeleton-shimmer h-24 w-full rounded-lg" />}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
       </Layout>
     );
   }
@@ -101,41 +123,90 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-white py-8 px-4">
-        <div className="max-w-4xl mx-auto">
+      <main className="min-h-screen bg-background-alternative py-8">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* ── 페이지 헤더 ──────────────────────────────────────────────── */}
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
             className="mb-6"
           >
-            <button
-              onClick={() => router.back()}
-              className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors mb-4 cursor-pointer"
-            >
-              <ArrowLeft size={20} />
-              <span>뒤로 가기</span>
-            </button>
-            <h1 className="text-[22px] md:text-title-1 font-extrabold text-slate-900">채용 공고 수정</h1>
-            <p className="text-caption-1 md:text-body-2 text-slate-600 mt-2">
-              채용 공고 정보를 수정해주세요
-            </p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+                <FileText size={20} className="text-blue-600" />
+              </div>
+              <div>
+                <h1 className="text-[22px] font-extrabold text-slate-900">채용 공고 수정</h1>
+                <p className="text-[13px] text-slate-500 mt-0.5">
+                  채용 공고 정보를 수정해주세요
+                </p>
+              </div>
+            </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <CompanyPostForm
-              mode="edit"
-              initialData={initialData}
-              onSubmit={handleSubmit}
-              onDelete={handleDelete}
-              isSubmitting={updatePostMutation.isPending}
-            />
-          </motion.div>
+          {/* ── 2-column layout ────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
+
+            {/* ── 좌측: 폼 ── */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.08 }}
+              className="relative"
+            >
+              <CompanyPostForm
+                mode="edit"
+                initialData={initialData}
+                onSubmit={handleSubmit}
+                onDelete={handleDelete}
+                isSubmitting={updatePostMutation.isPending}
+              />
+            </motion.div>
+
+            {/* ── 우측: 사이드바 (sticky) ── */}
+            <aside className="hidden lg:flex flex-col gap-4 sticky top-6">
+
+              {/* 수정 버튼 */}
+              <Button
+                type="submit"
+                size="lg"
+                form="company-post-form"
+                isLoading={updatePostMutation.isPending}
+                className="w-full shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
+              >
+                공고 수정하기
+              </Button>
+
+              {/* 취소 버튼 */}
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="w-full"
+                onClick={handleCancel}
+              >
+                취소
+              </Button>
+
+              {/* 삭제 버튼 */}
+              <Button
+                type="button"
+                size="lg"
+                className="w-full border border-red-200 text-red-500 hover:bg-red-50 bg-white"
+                onClick={handleDelete}
+                disabled={deletePostMutation.isPending}
+              >
+                공고 삭제
+              </Button>
+
+            </aside>
+
+          </div>
+
         </div>
-      </div>
+      </main>
     </Layout>
   );
 }

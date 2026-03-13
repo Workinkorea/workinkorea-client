@@ -7,19 +7,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import {
-  Save,
-  ArrowLeft,
   User,
   Mail,
   Settings,
   AlertCircle,
   CheckCircle,
-  Menu,
-  X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '@/shared/components/layout/Layout';
+import { Button } from '@/shared/ui/Button';
 import BasicInfoSection from './sections/BasicInfoSection';
 import ContactInfoSection from './sections/ContactInfoSection';
 import AccountSettingsSection from './sections/AccountSettingsSection';
@@ -433,12 +430,9 @@ function ProfileEditContainer() {
   if (isLoading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-white py-8 flex items-center justify-center">
-          <div className="animate-pulse text-center">
-            <div className="w-16 h-16 bg-blue-200 rounded-full mx-auto mb-4"></div>
-            <p className="text-slate-500">프로필 정보를 불러오는 중...</p>
-          </div>
-        </div>
+        <main className="flex-1 bg-background-alternative flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full" />
+        </main>
       </Layout>
     );
   }
@@ -449,7 +443,7 @@ function ProfileEditContainer() {
   if (error || !profile) {
     return (
       <Layout>
-        <div className="min-h-screen bg-white py-8 flex items-center justify-center">
+        <main className="flex-1 bg-background-alternative flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
             <h2 className="text-[24px] font-semibold text-slate-900 mb-2">
@@ -460,12 +454,12 @@ function ProfileEditContainer() {
             </p>
             <button
               onClick={handleBack}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
             >
               돌아가기
             </button>
           </div>
-        </div>
+        </main>
       </Layout>
     );
   }
@@ -475,61 +469,21 @@ function ProfileEditContainer() {
    */
   return (
     <Layout>
-      <div className="min-h-screen bg-white pb-24 lg:pb-0">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 bg-background-alternative">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Page Header */}
           <motion.div
-            className="flex items-center justify-between mb-8"
+            className="mb-6"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="flex items-center gap-4 flex-1 min-w-0">
-              <button
-                onClick={handleBack}
-                className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors cursor-pointer flex-shrink-0"
-              >
-                <ArrowLeft size={20} />
-                <span className="hidden sm:inline">돌아가기</span>
-              </button>
-              <div className="min-w-0">
-                <h1 className="text-[24px] lg:text-[28px] font-bold text-slate-900">프로필 편집</h1>
-                <p className="text-[12px] sm:text-sm text-slate-500">
-                  개인 정보를 수정하여 프로필을 최신 상태로 유지하세요
-                </p>
-              </div>
-            </div>
-
-            <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
-              {hasUnsavedChanges && (
-                <div className="flex items-center gap-2 text-amber-500 text-[11px]">
-                  <AlertCircle size={16} />
-                  <span>저장 필요</span>
-                </div>
-              )}
-
-              <button
-                onClick={handleSave}
-                disabled={updateProfileMutation.isPending || updateContactMutation.isPending || updateAccountConfigMutation.isPending}
-                className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 cursor-pointer"
-              >
-                {updateProfileMutation.isPending || updateContactMutation.isPending || updateAccountConfigMutation.isPending ? (
-                  <>
-                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                    저장 중...
-                  </>
-                ) : (
-                  <>
-                    <Save size={16} />
-                    저장하기
-                  </>
-                )}
-              </button>
-            </div>
+            <h1 className="text-2xl font-bold text-slate-900">프로필 편집</h1>
+            <p className="text-sm text-slate-500 mt-1">개인 정보를 수정하여 프로필을 최신 상태로 유지하세요.</p>
           </motion.div>
 
           {/* Mobile Tab Navigation */}
-          <div className="lg:hidden flex overflow-x-auto gap-2 pb-2 mb-6 scrollbar-hide">
+          <div className="lg:hidden flex overflow-x-auto gap-2 pb-2 mb-6">
             {sections.map((section) => {
               const Icon = section.icon;
               return (
@@ -543,7 +497,7 @@ function ProfileEditContainer() {
                     'flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer',
                     activeSection === section.key
                       ? 'bg-blue-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
                   )}
                 >
                   <Icon size={15} />
@@ -553,44 +507,11 @@ function ProfileEditContainer() {
             })}
           </div>
 
-          <div className="flex gap-8">
-            {/* Sidebar Navigation - Desktop only */}
+          {/* 2-column layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
+            {/* ─── 좌측: 폼 ─── */}
             <motion.div
-              className="hidden lg:block w-64 flex-shrink-0"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <div className="bg-white border border-slate-200 rounded-xl p-4">
-                <nav className="space-y-2">
-                  {sections.map((section) => {
-                    const Icon = section.icon;
-                    return (
-                      <button
-                        key={section.key}
-                        onClick={() => setActiveSection(section.key as SectionType)}
-                        className={cn(
-                          'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer',
-                          activeSection === section.key
-                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                            : 'text-slate-700 hover:bg-slate-100'
-                        )}
-                      >
-                        <Icon size={18} />
-                        <span className="text-sm font-medium">{section.label}</span>
-                        {updateProfileMutation.isSuccess && activeSection === section.key && (
-                          <CheckCircle size={16} className="text-emerald-500 ml-auto" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </nav>
-              </div>
-            </motion.div>
-
-            {/* Main Content */}
-            <motion.div
-              className="flex-1"
+              className="space-y-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -627,39 +548,96 @@ function ProfileEditContainer() {
 
                 {activeSection === 'account' && <AccountSettingsSection form={accountForm} />}
               </motion.div>
-            </motion.div>
-          </div>
-        </div>
 
-        {/* Mobile Sticky Bottom Save Bar */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 px-4 py-3 shadow-lg">
-          <div className="flex items-center justify-between">
-            {hasUnsavedChanges && (
-              <div className="flex items-center gap-1.5 text-amber-600 text-[12px]">
-                <AlertCircle size={14} />
-                <span>저장되지 않은 변경사항</span>
+              {/* 모바일 저장 버튼 (lg 이하에서만 표시) */}
+              <div className="flex gap-3 lg:hidden">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  className="flex-1"
+                  onClick={handleBack}
+                >
+                  취소
+                </Button>
+                <Button
+                  type="button"
+                  size="lg"
+                  className="flex-1"
+                  isLoading={updateProfileMutation.isPending || updateContactMutation.isPending || updateAccountConfigMutation.isPending}
+                  disabled={!hasUnsavedChanges}
+                  onClick={handleSave}
+                >
+                  {updateProfileMutation.isPending || updateContactMutation.isPending || updateAccountConfigMutation.isPending ? '저장 중...' : '저장하기'}
+                </Button>
               </div>
-            )}
-            <button
-              onClick={handleSave}
-              disabled={updateProfileMutation.isPending || updateContactMutation.isPending || updateAccountConfigMutation.isPending}
-              className="ml-auto flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 cursor-pointer transition-colors"
+            </motion.div>
+
+            {/* ─── 우측: 사이드바 ─── */}
+            <motion.aside
+              className="hidden lg:flex flex-col gap-4 sticky top-20"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
             >
-              {updateProfileMutation.isPending || updateContactMutation.isPending || updateAccountConfigMutation.isPending ? (
-                <>
-                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                  저장 중...
-                </>
-              ) : (
-                <>
-                  <Save size={16} />
-                  저장하기
-                </>
-              )}
-            </button>
+              {/* 저장 버튼 */}
+              <Button
+                type="button"
+                size="lg"
+                className="w-full shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
+                isLoading={updateProfileMutation.isPending || updateContactMutation.isPending || updateAccountConfigMutation.isPending}
+                disabled={!hasUnsavedChanges}
+                onClick={handleSave}
+              >
+                {updateProfileMutation.isPending || updateContactMutation.isPending || updateAccountConfigMutation.isPending ? '저장 중...' : '저장하기'}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="w-full"
+                onClick={handleBack}
+              >
+                취소
+              </Button>
+
+              {/* 섹션 네비게이션 */}
+              <div className="bg-white border border-slate-200 rounded-xl p-5">
+                <nav className="space-y-2">
+                  {sections.map((section) => {
+                    const Icon = section.icon;
+                    return (
+                      <button
+                        key={section.key}
+                        onClick={() => setActiveSection(section.key as SectionType)}
+                        className={cn(
+                          'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer text-sm font-medium',
+                          activeSection === section.key
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                            : 'text-slate-700 hover:bg-slate-100'
+                        )}
+                      >
+                        <Icon size={18} />
+                        <span>{section.label}</span>
+                        {updateProfileMutation.isSuccess && activeSection === section.key && (
+                          <CheckCircle size={16} className="text-emerald-500 ml-auto" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </nav>
+
+                {hasUnsavedChanges && (
+                  <p className="mt-4 text-[11px] text-amber-600 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                    저장되지 않은 변경사항이 있습니다.
+                  </p>
+                )}
+              </div>
+            </motion.aside>
           </div>
         </div>
-      </div>
+      </main>
     </Layout>
   );
 };
