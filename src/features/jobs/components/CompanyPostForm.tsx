@@ -250,9 +250,9 @@ export function CompanyPostForm({
           UX: 전체 폼 dim + 스피너 → 중복 제출 방지 + 진행 상태 명시 */}
       {isSubmitting && (
         <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 rounded-xl flex items-center justify-center pointer-events-none">
-          <div className="flex items-center gap-3 bg-background-default border border-line-400 rounded-xl px-5 py-3 shadow-lg">
+          <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-5 py-3 shadow-lg">
             <Loader2 size={18} className="text-blue-600 animate-spin" />
-            <span className="text-sm font-semibold text-label-700">
+            <span className="text-sm font-semibold text-slate-700">
               {mode === 'create' ? '공고를 등록하는 중...' : '공고를 수정하는 중...'}
             </span>
           </div>
@@ -320,7 +320,7 @@ export function CompanyPostForm({
         className={cn(
           'md:hidden fixed bottom-0 left-0 right-0 z-20',
           'flex items-center gap-3 px-4 py-3',
-          'bg-background-default border-t border-line-400',
+          'bg-white border-t border-slate-200',
           'shadow-[0_-4px_20px_rgba(0,0,0,0.08)]',
         )}
       >

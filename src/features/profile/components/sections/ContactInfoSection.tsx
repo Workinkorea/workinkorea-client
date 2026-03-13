@@ -1,8 +1,7 @@
 'use client';
 
-import { UseFormReturn } from 'react-hook-form';
+import { UseFormReturn, Controller } from 'react-hook-form';
 import { Phone, Github, Linkedin, Globe } from 'lucide-react';
-import { FormField } from '@/shared/ui/FormField';
 import { Input } from '@/shared/ui/Input';
 import { cn } from '@/shared/lib/utils/utils';
 import type { ContactInfoForm } from '../../validations/profile';
@@ -33,6 +32,20 @@ export interface ContactInfoSectionProps {
   form: UseFormReturn<ContactInfoForm>;
 }
 
+// FieldRow 헬퍼 컴포넌트
+const FieldRow = ({ label, required, optional, children }: {
+  label: string; required?: boolean; optional?: boolean; children: React.ReactNode;
+}) => (
+  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0 items-start">
+    <span className="text-[13px] font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
+      {label}
+      {required && <span className="text-red-500">*</span>}
+      {optional && <span className="text-[11px] font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">선택</span>}
+    </span>
+    <div>{children}</div>
+  </div>
+);
+
 function ContactInfoSection({ form }: ContactInfoSectionProps) {
   const {
     control,
@@ -40,103 +53,97 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
   } = form;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-6">
-      <div className="mb-6 flex items-start gap-3">
-        <Phone size={20} className="text-blue-600 mt-0.5 flex-shrink-0" />
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
+        <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+          <Phone size={16} className="text-blue-600" />
+        </span>
         <div>
-          <h3 className="text-[17px] font-bold text-slate-900">연락처 정보</h3>
-          <p className="text-[13px] text-slate-500 mt-0.5">채용 담당자가 연락할 수 있는 정보를 입력하세요</p>
+          <h2 className="text-[15px] font-bold text-slate-900">연락처 정보</h2>
+          <p className="text-[11px] text-slate-400 mt-0.5">채용 담당자가 연락할 수 있는 정보를 입력하세요</p>
         </div>
       </div>
 
-      <div className="space-y-4">
-        {/* Phone Number & GitHub - 2 columns on md+ */}
-        <div className="md:grid md:grid-cols-2 md:gap-4">
-          {/* Phone Number */}
-          <FormField
-            name="phone_number"
-            control={control}
-            label="전화번호"
-            error={errors.phone_number?.message}
-            render={(field, fieldId) => (
-              <div className="relative">
-                <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
-                <Input
-                  {...field}
-                  id={fieldId}
-                  type="tel"
-                  placeholder="010-1234-5678"
-                  error={!!errors.phone_number}
-                  className="pl-10"
-                />
-              </div>
-            )}
-          />
+      {/* Phone Number */}
+      <FieldRow label="전화번호" optional>
+        <Controller
+          name="phone_number"
+          control={control}
+          render={({ field }) => (
+            <div className="relative">
+              <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
+              <Input
+                {...field}
+                type="tel"
+                placeholder="010-1234-5678"
+                error={!!errors.phone_number}
+                className="pl-10"
+              />
+            </div>
+          )}
+        />
+        {errors.phone_number && <p className="text-xs text-red-500 mt-1">{errors.phone_number.message}</p>}
+      </FieldRow>
 
-          {/* GitHub URL */}
-          <FormField
-            name="github_url"
-            control={control}
-            label="GitHub URL"
-            error={errors.github_url?.message}
-            render={(field, fieldId) => (
-              <div className="relative">
-                <Github size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
-                <Input
-                  {...field}
-                  id={fieldId}
-                  placeholder="https://github.com/username"
-                  error={!!errors.github_url}
-                  className="pl-10"
-                />
-              </div>
-            )}
-          />
-        </div>
+      {/* GitHub URL */}
+      <FieldRow label="GitHub URL" optional>
+        <Controller
+          name="github_url"
+          control={control}
+          render={({ field }) => (
+            <div className="relative">
+              <Github size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
+              <Input
+                {...field}
+                placeholder="https://github.com/username"
+                error={!!errors.github_url}
+                className="pl-10"
+              />
+            </div>
+          )}
+        />
+        {errors.github_url && <p className="text-xs text-red-500 mt-1">{errors.github_url.message}</p>}
+      </FieldRow>
 
-        {/* LinkedIn URL & Website - 2 columns on md+ */}
-        <div className="md:grid md:grid-cols-2 md:gap-4">
-          {/* LinkedIn URL */}
-          <FormField
-            name="linkedin_url"
-            control={control}
-            label="LinkedIn URL"
-            error={errors.linkedin_url?.message}
-            render={(field, fieldId) => (
-              <div className="relative">
-                <Linkedin size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
-                <Input
-                  {...field}
-                  id={fieldId}
-                  placeholder="https://linkedin.com/in/username"
-                  error={!!errors.linkedin_url}
-                  className="pl-10"
-                />
-              </div>
-            )}
-          />
+      {/* LinkedIn URL */}
+      <FieldRow label="LinkedIn URL" optional>
+        <Controller
+          name="linkedin_url"
+          control={control}
+          render={({ field }) => (
+            <div className="relative">
+              <Linkedin size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
+              <Input
+                {...field}
+                placeholder="https://linkedin.com/in/username"
+                error={!!errors.linkedin_url}
+                className="pl-10"
+              />
+            </div>
+          )}
+        />
+        {errors.linkedin_url && <p className="text-xs text-red-500 mt-1">{errors.linkedin_url.message}</p>}
+      </FieldRow>
 
-          {/* Website URL */}
-          <FormField
-            name="website_url"
-            control={control}
-            label="웹사이트 URL"
-            error={errors.website_url?.message}
-            render={(field, fieldId) => (
-              <div className="relative">
-                <Globe size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
-                <Input
-                  {...field}
-                  id={fieldId}
-                  placeholder="https://yourportfolio.com"
-                  error={!!errors.website_url}
-                  className="pl-10"
-                />
-              </div>
-            )}
-          />
-        </div>
-      </div>
+      {/* Website URL */}
+      <FieldRow label="웹사이트 URL" optional>
+        <Controller
+          name="website_url"
+          control={control}
+          render={({ field }) => (
+            <div className="relative">
+              <Globe size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
+              <Input
+                {...field}
+                placeholder="https://yourportfolio.com"
+                error={!!errors.website_url}
+                className="pl-10"
+              />
+            </div>
+          )}
+        />
+        {errors.website_url && <p className="text-xs text-red-500 mt-1">{errors.website_url.message}</p>}
+      </FieldRow>
     </div>
   );
 };

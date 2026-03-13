@@ -1,8 +1,7 @@
 'use client';
 
-import { UseFormReturn } from 'react-hook-form';
+import { UseFormReturn, Controller } from 'react-hook-form';
 import { Bell, AlertTriangle } from 'lucide-react';
-import { FormField } from '@/shared/ui/FormField';
 import { cn } from '@/shared/lib/utils/utils';
 import type { AccountSettingsForm } from '../../validations/profile';
 
@@ -35,27 +34,28 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
   const { control } = form;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Card: Notification Settings */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
-        <div className="mb-6 flex items-start gap-3">
-          <Bell size={20} className="text-blue-600 mt-0.5 flex-shrink-0" />
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
+          <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+            <Bell size={16} className="text-blue-600" />
+          </span>
           <div>
-            <h3 className="text-[17px] font-bold text-slate-900">알림 설정</h3>
-            <p className="text-[13px] text-slate-500 mt-0.5">받고 싶은 알림을 선택하세요</p>
+            <h2 className="text-[15px] font-bold text-slate-900">알림 설정</h2>
+            <p className="text-[11px] text-slate-400 mt-0.5">받고 싶은 알림을 선택하세요</p>
           </div>
         </div>
 
-        <div className="space-y-3">
-          {/* SNS Message Notifications */}
-          <FormField
+        {/* SNS Message Notifications */}
+        <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100">
+          <Controller
             name="notifications.contactRequestNotifications"
             control={control}
-            label=""
-            render={(field, fieldId) => {
+            render={({ field }) => {
               const { value, ...fieldWithoutValue } = field;
               return (
-                <label className="flex items-center justify-between p-4 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors">
+                <label className="flex items-center justify-between cursor-pointer">
                   <div className="flex-1">
                     <span className="text-[13px] font-semibold text-slate-900">
                       SNS 메시지 알림
@@ -79,7 +79,6 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
                     />
                     <input
                       {...fieldWithoutValue}
-                      id={fieldId}
                       type="checkbox"
                       checked={value}
                       onChange={(e) => field.onChange(e.target.checked)}
@@ -90,16 +89,17 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
               );
             }}
           />
+        </div>
 
-          {/* Email Notifications */}
-          <FormField
+        {/* Email Notifications */}
+        <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100">
+          <Controller
             name="notifications.emailNotifications"
             control={control}
-            label=""
-            render={(field, fieldId) => {
+            render={({ field }) => {
               const { value, ...fieldWithoutValue } = field;
               return (
-                <label className="flex items-center justify-between p-4 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors">
+                <label className="flex items-center justify-between cursor-pointer">
                   <div className="flex-1">
                     <span className="text-[13px] font-semibold text-slate-900">
                       이메일 알림
@@ -123,7 +123,6 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
                     />
                     <input
                       {...fieldWithoutValue}
-                      id={fieldId}
                       type="checkbox"
                       checked={value}
                       onChange={(e) => field.onChange(e.target.checked)}
@@ -138,24 +137,28 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
       </div>
 
       {/* Card: Account Management (Danger Zone) */}
-      <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-        <div className="mb-6 flex items-start gap-3">
-          <AlertTriangle size={20} className="text-red-600 mt-0.5 flex-shrink-0" />
+      <div className="bg-red-50 border border-red-200 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-red-200">
+          <span className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
+            <AlertTriangle size={16} className="text-red-600" />
+          </span>
           <div>
-            <h3 className="text-[17px] font-bold text-red-600">계정 관리</h3>
-            <p className="text-[13px] text-slate-500 mt-0.5">주의가 필요한 계정 관리 옵션입니다</p>
+            <h2 className="text-[15px] font-bold text-red-600">계정 관리</h2>
+            <p className="text-[11px] text-slate-500 mt-0.5">주의가 필요한 계정 관리 옵션입니다</p>
           </div>
         </div>
 
-        <button
-          type="button"
-          className="w-full px-4 py-2.5 border border-red-300 text-red-600 rounded-lg text-sm font-semibold hover:bg-red-100 transition-colors cursor-pointer"
-          onClick={() => {
-            alert('계정 삭제 기능은 준비 중입니다.');
-          }}
-        >
-          계정 삭제 요청
-        </button>
+        <div className="px-5 sm:px-7 py-5">
+          <button
+            type="button"
+            className="w-full px-4 py-2.5 border border-red-300 text-red-600 rounded-lg text-sm font-semibold hover:bg-red-100 transition-colors cursor-pointer"
+            onClick={() => {
+              alert('계정 삭제 기능은 준비 중입니다.');
+            }}
+          >
+            계정 삭제 요청
+          </button>
+        </div>
       </div>
     </div>
   );

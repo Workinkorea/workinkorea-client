@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { cookieManager, UserType } from '@/shared/lib/utils/cookieManager';
 
+// 로컬 개발 테스트용 인증 우회
+const BYPASS_AUTH = process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true';
+const BYPASS_AUTH_TYPE = (process.env.NEXT_PUBLIC_BYPASS_AUTH_TYPE ?? 'user') as UserType;
+
 interface AuthState {
   // State
   isAuthenticated: boolean;
@@ -81,6 +85,16 @@ export const useAuthStore = create<AuthState>((set) => ({
    */
   initialize: async () => {
     if (typeof window === 'undefined') return;
+
+    // 로컬 개발 테스트 모드: 인증 우회
+    if (BYPASS_AUTH) {
+      set({
+        isAuthenticated: true,
+        userType: BYPASS_AUTH_TYPE,
+        isInitialized: true,
+      });
+      return;
+    }
 
     const userType = cookieManager.getUserType();
 

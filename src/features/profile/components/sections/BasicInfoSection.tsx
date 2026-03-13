@@ -1,8 +1,7 @@
 'use client';
 
-import { UseFormReturn } from 'react-hook-form';
+import { UseFormReturn, Controller } from 'react-hook-form';
 import { X, FileText, Briefcase, Globe } from 'lucide-react';
-import { FormField } from '@/shared/ui/FormField';
 import { Input } from '@/shared/ui/Input';
 import ProfileImageUpload from '../shared/ProfileImageUpload';
 import FileUploadButton from '../shared/FileUploadButton';
@@ -85,6 +84,20 @@ export interface BasicInfoSectionProps {
   onRemovePortfolio: () => void;
 }
 
+// FieldRow 헬퍼 컴포넌트
+const FieldRow = ({ label, required, optional, children }: {
+  label: string; required?: boolean; optional?: boolean; children: React.ReactNode;
+}) => (
+  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0 items-start">
+    <span className="text-[13px] font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
+      {label}
+      {required && <span className="text-red-500">*</span>}
+      {optional && <span className="text-[11px] font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">선택</span>}
+    </span>
+    <div>{children}</div>
+  </div>
+);
+
 function BasicInfoSection({
   form,
   profile,
@@ -102,277 +115,278 @@ function BasicInfoSection({
   const positionHierarchy = getPositionsByHierarchy();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Card 1: Profile Image */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
-        <div className="mb-6">
-          <h3 className="text-[17px] font-bold text-slate-900">프로필 사진</h3>
-          <p className="text-[13px] text-slate-500 mt-0.5">채용 담당자에게 보여질 사진을 등록하세요</p>
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
+          <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+            <FileText size={16} className="text-blue-600" />
+          </span>
+          <div>
+            <h2 className="text-[15px] font-bold text-slate-900">프로필 사진</h2>
+            <p className="text-[11px] text-slate-400 mt-0.5">채용 담당자에게 보여질 사진을 등록하세요</p>
+          </div>
         </div>
-        <ProfileImageUpload
-          currentImageUrl={profile.profile_image_url}
-          userName={profile.name}
-          onImageSelect={onImageSelect}
-          maxSizeMB={5}
-        />
+        <div className="px-5 sm:px-7 py-5">
+          <ProfileImageUpload
+            currentImageUrl={profile.profile_image_url}
+            userName={profile.name}
+            onImageSelect={onImageSelect}
+            maxSizeMB={5}
+          />
+        </div>
       </div>
 
       {/* Card 2: Basic Information */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
-        <div className="mb-6">
-          <h3 className="text-[17px] font-bold text-slate-900">기본 정보</h3>
-          <p className="text-[13px] text-slate-500 mt-0.5">개인 정보를 입력해주세요</p>
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
+          <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+            <Briefcase size={16} className="text-blue-600" />
+          </span>
+          <div>
+            <h2 className="text-[15px] font-bold text-slate-900">기본 정보</h2>
+            <p className="text-[11px] text-slate-400 mt-0.5">개인 정보를 입력해주세요</p>
+          </div>
         </div>
 
-        <div className="space-y-4">
-          {/* Name - Full width required */}
-          <FormField
+        {/* Name */}
+        <FieldRow label="이름" required>
+          <Controller
             name="name"
             control={control}
-            label="이름"
-            rules={{ required: true }}
-            error={errors.name?.message}
-            render={(field, fieldId) => (
+            render={({ field }) => (
               <Input
                 {...field}
-                id={fieldId}
                 placeholder="이름을 입력하세요"
                 error={!!errors.name}
+                aria-describedby={errors.name ? 'name-error' : undefined}
               />
             )}
           />
+          {errors.name && <p id="name-error" className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
+        </FieldRow>
 
-          {/* Location & Address - 2 columns on md+ */}
-          <div className="md:grid md:grid-cols-2 md:gap-4">
-            <FormField
-              name="location"
-              control={control}
-              label="위치"
-              error={errors.location?.message}
-              render={(field, fieldId) => (
-                <Input
-                  {...field}
-                  id={fieldId}
-                  placeholder="예: 서울시 강남구"
-                  error={!!errors.location}
-                />
-              )}
-            />
+        {/* Location & Address */}
+        <FieldRow label="위치" optional>
+          <Controller
+            name="location"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                placeholder="예: 서울시 강남구"
+                error={!!errors.location}
+              />
+            )}
+          />
+          {errors.location && <p className="text-xs text-red-500 mt-1">{errors.location.message}</p>}
+        </FieldRow>
 
-            <FormField
-              name="address"
-              control={control}
-              label="주소"
-              error={errors.address?.message}
-              render={(field, fieldId) => (
-                <Input
-                  {...field}
-                  id={fieldId}
-                  placeholder="예: 서울특별시 강남구"
-                  error={!!errors.address}
-                />
-              )}
-            />
-          </div>
+        <FieldRow label="주소" optional>
+          <Controller
+            name="address"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                placeholder="예: 서울특별시 강남구"
+                error={!!errors.address}
+              />
+            )}
+          />
+          {errors.address && <p className="text-xs text-red-500 mt-1">{errors.address.message}</p>}
+        </FieldRow>
 
-          {/* Job Status & Career - 2 columns on md+ */}
-          <div className="md:grid md:grid-cols-2 md:gap-4">
-            <FormField
-              name="job_status"
-              control={control}
-              label="구직 상태"
-              error={errors.job_status?.message}
-              render={(field, fieldId) => (
-                <select
-                  {...field}
-                  id={fieldId}
-                  className={cn(
-                    'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800',
-                    'transition-colors focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
-                    'border-slate-200',
-                    errors.job_status && 'border-red-500 focus:ring-red-100'
-                  )}
-                >
-                  <option value="">상태를 선택하세요</option>
-                  <option value="available">구직중</option>
-                  <option value="busy">바쁨</option>
-                  <option value="not-looking">구직안함</option>
-                </select>
-              )}
-            />
+        {/* Job Status & Career */}
+        <FieldRow label="구직 상태" optional>
+          <Controller
+            name="job_status"
+            control={control}
+            render={({ field }) => (
+              <select
+                {...field}
+                className={cn(
+                  'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800 bg-white transition-colors appearance-none cursor-pointer',
+                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                  'border-slate-200',
+                  errors.job_status && 'border-red-500 focus:ring-red-100'
+                )}
+              >
+                <option value="">상태를 선택하세요</option>
+                <option value="available">구직중</option>
+                <option value="busy">바쁨</option>
+                <option value="not-looking">구직안함</option>
+              </select>
+            )}
+          />
+          {errors.job_status && <p className="text-xs text-red-500 mt-1">{errors.job_status.message}</p>}
+        </FieldRow>
 
-            <FormField
-              name="career"
-              control={control}
-              label="경력"
-              error={errors.career?.message}
-              render={(field, fieldId) => (
-                <select
-                  {...field}
-                  id={fieldId}
-                  className={cn(
-                    'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800',
-                    'transition-colors focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
-                    'border-slate-200',
-                    errors.career && 'border-red-500 focus:ring-red-100'
-                  )}
-                >
-                  <option value="">경력을 선택하세요</option>
-                  {CAREER_OPTIONS.map((option) => (
-                    <option key={option.key} value={option.key}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              )}
-            />
-          </div>
-        </div>
+        <FieldRow label="경력" optional>
+          <Controller
+            name="career"
+            control={control}
+            render={({ field }) => (
+              <select
+                {...field}
+                className={cn(
+                  'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800 bg-white transition-colors appearance-none cursor-pointer',
+                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                  'border-slate-200',
+                  errors.career && 'border-red-500 focus:ring-red-100'
+                )}
+              >
+                <option value="">경력을 선택하세요</option>
+                {CAREER_OPTIONS.map((option) => (
+                  <option key={option.key} value={option.key}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
+          {errors.career && <p className="text-xs text-red-500 mt-1">{errors.career.message}</p>}
+        </FieldRow>
       </div>
 
       {/* Card 3: Professional Information */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
-        <div className="mb-6 flex items-start gap-3">
-          <Briefcase size={20} className="text-blue-600 mt-0.5 flex-shrink-0" />
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
+          <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+            <Briefcase size={16} className="text-blue-600" />
+          </span>
           <div>
-            <h3 className="text-[17px] font-bold text-slate-900">직무 정보</h3>
-            <p className="text-[13px] text-slate-500 mt-0.5">커리어 정보를 입력해주세요</p>
+            <h2 className="text-[15px] font-bold text-slate-900">직무 정보</h2>
+            <p className="text-[11px] text-slate-400 mt-0.5">커리어 정보를 입력해주세요</p>
           </div>
         </div>
 
-        <div className="space-y-4">
-          {/* Position & Country - 2 columns on md+ */}
-          <div className="md:grid md:grid-cols-2 md:gap-4">
-            <FormField
-              name="position_id"
-              control={control}
-              label="직무 선택"
-              error={errors.position_id?.message}
-              render={(field, fieldId) => (
-                <select
-                  {...field}
-                  id={fieldId}
-                  value={field.value ?? ''}
-                  onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
-                  className={cn(
-                    'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800',
-                    'transition-colors focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
-                    'border-slate-200',
-                    errors.position_id && 'border-red-500 focus:ring-red-100'
-                  )}
-                >
-                  <option value="">직무를 선택하세요</option>
-                  {positionHierarchy.map((category) => (
-                    <optgroup key={category.categoryCode} label={category.category}>
-                      {category.subcategories.map((subcategory) =>
-                        subcategory.positions.map((position) => (
-                          <option key={position.id} value={position.id}>
-                            {subcategory.name} - {position.name}
-                          </option>
-                        ))
-                      )}
-                    </optgroup>
-                  ))}
-                </select>
-              )}
-            />
-
-            <FormField
-              name="country_id"
-              control={control}
-              label="국적"
-              error={errors.country_id?.message}
-              render={(field, fieldId) => (
-                <select
-                  {...field}
-                  id={fieldId}
-                  value={field.value ?? 122}
-                  onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 122)}
-                  className={cn(
-                    'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800',
-                    'transition-colors focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
-                    'border-slate-200',
-                    errors.country_id && 'border-red-500 focus:ring-red-100'
-                  )}
-                >
-                  {COUNTRIES_FULL.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-            />
-          </div>
-
-          {/* Portfolio Upload */}
-          <div>
-            <label className="block text-[13px] font-semibold text-slate-700 mb-2">포트폴리오</label>
-            <div className="border-2 border-dashed border-slate-200 rounded-xl p-5 flex items-center gap-4 hover:border-blue-300 transition-colors">
-              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                <FileText size={20} className="text-blue-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                {selectedPortfolioFileName || profile.portfolio_url ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-[13px] text-slate-700 font-medium truncate">
-                      {selectedPortfolioFileName || profile.portfolio_url}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={onRemovePortfolio}
-                      className="text-red-500 hover:text-red-600 cursor-pointer flex-shrink-0"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ) : (
-                  <p className="text-[13px] text-slate-600">파일을 선택하거나 드래그하세요</p>
+        {/* Position */}
+        <FieldRow label="직무 선택" optional>
+          <Controller
+            name="position_id"
+            control={control}
+            render={({ field }) => (
+              <select
+                value={field.value ?? ''}
+                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                className={cn(
+                  'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800 bg-white transition-colors appearance-none cursor-pointer',
+                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                  'border-slate-200',
+                  errors.position_id && 'border-red-500 focus:ring-red-100'
                 )}
-                <p className="text-[11px] text-slate-400 mt-0.5">PDF, DOCX, 이미지 (최대 10MB)</p>
-              </div>
-              <FileUploadButton
-                fileType="portfolio"
-                maxSizeMB={10}
-                acceptedTypes={[
-                  'application/pdf',
-                  'application/msword',
-                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                  'image/jpeg',
-                  'image/png',
-                  'image/jpg',
-                ]}
-                onFileSelect={(file) => onPortfolioSelect(file)}
-                buttonLabel="선택"
-                hint=""
-              />
+              >
+                <option value="">직무를 선택하세요</option>
+                {positionHierarchy.map((category) => (
+                  <optgroup key={category.categoryCode} label={category.category}>
+                    {category.subcategories.map((subcategory) =>
+                      subcategory.positions.map((position) => (
+                        <option key={position.id} value={position.id}>
+                          {subcategory.name} - {position.name}
+                        </option>
+                      ))
+                    )}
+                  </optgroup>
+                ))}
+              </select>
+            )}
+          />
+          {errors.position_id && <p className="text-xs text-red-500 mt-1">{errors.position_id.message}</p>}
+        </FieldRow>
+
+        {/* Country */}
+        <FieldRow label="국적" optional>
+          <Controller
+            name="country_id"
+            control={control}
+            render={({ field }) => (
+              <select
+                value={field.value ?? 122}
+                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 122)}
+                className={cn(
+                  'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800 bg-white transition-colors appearance-none cursor-pointer',
+                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                  'border-slate-200',
+                  errors.country_id && 'border-red-500 focus:ring-red-100'
+                )}
+              >
+                {COUNTRIES_FULL.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
+          {errors.country_id && <p className="text-xs text-red-500 mt-1">{errors.country_id.message}</p>}
+        </FieldRow>
+
+        {/* Portfolio Upload */}
+        <FieldRow label="포트폴리오" optional>
+          <div className="border-2 border-dashed border-slate-200 rounded-xl p-5 flex items-center gap-4 hover:border-blue-300 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+              <FileText size={20} className="text-blue-600" />
             </div>
+            <div className="flex-1 min-w-0">
+              {selectedPortfolioFileName || profile.portfolio_url ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-[13px] text-slate-700 font-medium truncate">
+                    {selectedPortfolioFileName || profile.portfolio_url}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={onRemovePortfolio}
+                    className="text-red-500 hover:text-red-600 cursor-pointer flex-shrink-0"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : (
+                <p className="text-[13px] text-slate-600">파일을 선택하거나 드래그하세요</p>
+              )}
+              <p className="text-[11px] text-slate-400 mt-0.5">PDF, DOCX, 이미지 (최대 10MB)</p>
+            </div>
+            <FileUploadButton
+              fileType="portfolio"
+              maxSizeMB={10}
+              acceptedTypes={[
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'image/jpeg',
+                'image/png',
+                'image/jpg',
+              ]}
+              onFileSelect={(file) => onPortfolioSelect(file)}
+              buttonLabel="선택"
+              hint=""
+            />
           </div>
-        </div>
+        </FieldRow>
       </div>
 
       {/* Card 4: Introduction & Language Skills */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
-        <div className="mb-6 flex items-start gap-3">
-          <Globe size={20} className="text-blue-600 mt-0.5 flex-shrink-0" />
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
+          <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+            <Globe size={16} className="text-blue-600" />
+          </span>
           <div>
-            <h3 className="text-[17px] font-bold text-slate-900">자기소개 & 언어 스킬</h3>
-            <p className="text-[13px] text-slate-500 mt-0.5">전문성을 표현해주세요</p>
+            <h2 className="text-[15px] font-bold text-slate-900">자기소개 & 언어 스킬</h2>
+            <p className="text-[11px] text-slate-400 mt-0.5">전문성을 표현해주세요</p>
           </div>
         </div>
 
-        <div className="space-y-4">
-          {/* Introduction (Textarea with character count) */}
-          <FormField
+        {/* Introduction */}
+        <FieldRow label="자기소개" optional>
+          <Controller
             name="introduction"
             control={control}
-            label="자기소개"
-            error={errors.introduction?.message}
-            render={(field, fieldId) => (
+            render={({ field }) => (
               <div>
                 <textarea
                   {...field}
-                  id={fieldId}
                   placeholder="자신에 대해 간단히 소개해주세요"
                   rows={4}
                   maxLength={500}
@@ -389,8 +403,12 @@ function BasicInfoSection({
               </div>
             )}
           />
+          {errors.introduction && <p className="text-xs text-red-500 mt-1">{errors.introduction.message}</p>}
+        </FieldRow>
 
-          {/* Language Skills (Complex nested field array) */}
+        {/* Language Skills */}
+        <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0">
+          <span className="text-[13px] font-semibold text-slate-700 mb-4 block">언어 스킬</span>
           <LanguageSkillsInput control={control} errors={errors} />
         </div>
       </div>
