@@ -108,13 +108,25 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (response.ok) {
         const data = await response.json();
         const token: string | undefined = data.access_token;
+        const userTypeFromBody: UserType | undefined = data.user_type;
 
         if (token) {
+          // Legacy path: backend returns token in body
           tokenStore.set(token);
           const userType = decodeUserType(token);
           set({
             isAuthenticated: true,
             userType,
+            isInitialized: true,
+          });
+          return;
+        }
+
+        if (userTypeFromBody) {
+          // Current path: backend sets token as cookie, returns user_type in body
+          set({
+            isAuthenticated: true,
+            userType: userTypeFromBody,
             isInitialized: true,
           });
           return;
