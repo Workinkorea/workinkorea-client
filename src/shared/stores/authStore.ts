@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { cookieManager, UserType } from '@/shared/lib/utils/cookieManager';
+import { tokenStore, decodeUserType } from '@/shared/api/tokenStore';
 
 // 로컬 개발 테스트용 인증 우회
 const BYPASS_AUTH = process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true';
@@ -52,7 +53,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     // 1. userType 먼저 읽기 (쿠키 삭제 전)
     const currentUserType = cookieManager.getUserType();
 
-    // 2. State 즉시 업데이트 (UI 반영)
+    // 2. State 즉시 업데이트 (UI 반영) + 토큰 삭제
+    tokenStore.clear();
     set({
       isAuthenticated: false,
       userType: null,
@@ -80,8 +82,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   /**
    * 앱 시작 시 인증 상태 초기화
    *
-   * 백엔드가 userType 쿠키를 httponly=false로 설정하므로
-   * 클라이언트에서 직접 읽어서 초기화
+   * refresh_token (HttpOnly Cookie)으로 access_token을 재발급받고
+   * JWT payload에서 userType을 추출하여 인증 상태 결정
    */
   initialize: async () => {
     if (typeof window === 'undefined') return;
@@ -96,17 +98,42 @@ export const useAuthStore = create<AuthState>((set) => ({
       return;
     }
 
-    const userType = cookieManager.getUserType();
+    try {
+      const response = await fetch('/api/auth/refresh', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
 
+      if (response.ok) {
+        const data = await response.json();
+        const token: string | undefined = data.access_token;
+
+        if (token) {
+          tokenStore.set(token);
+          const userType = decodeUserType(token);
+          set({
+            isAuthenticated: true,
+            userType,
+            isInitialized: true,
+          });
+          return;
+        }
+      }
+    } catch {
+      // 네트워크 오류 등 — 비인증 상태로 처리
+    }
+
+    tokenStore.clear();
     set({
-      isAuthenticated: !!userType,
-      userType,
+      isAuthenticated: false,
+      userType: null,
       isInitialized: true,
     });
   },
 
   /**
-   * 인증 상태 재확인 (쿠키 기반)
+   * 인증 상태 재확인 (token 기반)
    *
    * 사용 시점:
    * - 로그인 성공 후
@@ -115,12 +142,13 @@ export const useAuthStore = create<AuthState>((set) => ({
   checkAuth: async () => {
     if (typeof window === 'undefined') return;
 
-    const userType = cookieManager.getUserType();
-
-    set({
-      isAuthenticated: !!userType,
-      userType,
-    });
+    const token = tokenStore.get();
+    if (token) {
+      const userType = decodeUserType(token);
+      set({ isAuthenticated: true, userType });
+    } else {
+      set({ isAuthenticated: false, userType: null });
+    }
   },
 }));
 
