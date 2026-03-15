@@ -28,6 +28,7 @@ import { profileApi } from '../api/profileApi';
 import { resumeApi } from '@/features/resume/api/resumeApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ResumeListItem } from '@/shared/types/api';
+import { FetchError } from '@/shared/api/fetchClient';
 
 // Mock data for dashboard, skill management, and career management
 const mockMyProfile: UserProfile = {
@@ -235,7 +236,13 @@ function MyProfileClient() {
     );
   }
 
-  if (error || !profile) {
+  if (error) {
+    // 프로필 미생성 상태 → 프로필 작성 페이지로 리다이렉트
+    if (error instanceof FetchError && error.status === 404) {
+      router.replace('/user/resume/create');
+      return null;
+    }
+
     return (
       <Layout>
         <div className="min-h-screen bg-white py-8 flex items-center justify-center">
@@ -251,6 +258,8 @@ function MyProfileClient() {
       </Layout>
     );
   }
+
+  if (!profile) return null;
 
   const radarData = generateRadarData(profile.skills);
 
