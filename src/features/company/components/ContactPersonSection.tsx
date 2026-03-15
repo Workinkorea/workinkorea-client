@@ -1,9 +1,6 @@
 import { ReactNode } from 'react';
 import { CompanyProfileRequest } from '@/shared/types/api';
 import { Input } from '@/shared/ui/Input';
-import { cn } from '@/shared/lib/utils/utils';
-import { COUNTRIES_FULL } from '@/shared/constants/countries';
-import { POSITIONS_L3 } from '@/shared/constants/positions';
 
 interface ContactPersonSectionProps {
   formData: CompanyProfileRequest;
@@ -30,14 +27,6 @@ const FieldRow = ({
     <div>{children}</div>
   </div>
 );
-
-const selectCls = (error: boolean, touched: boolean, hasValue: boolean) =>
-  cn(
-    'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800 bg-white transition-colors appearance-none cursor-pointer',
-    'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
-    error ? 'border-red-500 focus:ring-red-100' : 'border-slate-200',
-    !error && touched && hasValue && 'border-emerald-500',
-  );
 
 const FieldHint = ({
   error,
@@ -113,63 +102,6 @@ export const ContactPersonSection = ({
         />
       </FieldRow>
 
-      {/* 국가 */}
-      <FieldRow label="국가" required>
-        <select
-          id="country_id"
-          name="country_id"
-          value={formData.country_id || ''}
-          onChange={onChange}
-          onBlur={onBlur}
-          className={selectCls(
-            !!errors.country_id,
-            touchedFields.country_id,
-            formData.country_id > 0,
-          )}
-        >
-          <option value="">선택하세요</option>
-          {COUNTRIES_FULL.map((country) => (
-            <option key={country.id} value={country.id}>
-              {country.name}
-            </option>
-          ))}
-        </select>
-        <FieldHint
-          error={errors.country_id}
-          touched={touchedFields.country_id}
-          hasValue={formData.country_id > 0}
-          hint="담당자의 국가를 선택해주세요."
-        />
-      </FieldRow>
-
-      {/* 직무 */}
-      <FieldRow label="직무" required>
-        <select
-          id="position_id"
-          name="position_id"
-          value={formData.position_id || ''}
-          onChange={onChange}
-          onBlur={onBlur}
-          className={selectCls(
-            !!errors.position_id,
-            touchedFields.position_id,
-            formData.position_id > 0,
-          )}
-        >
-          <option value="">선택하세요</option>
-          {POSITIONS_L3.map((position) => (
-            <option key={position.id} value={position.id}>
-              {position.name}
-            </option>
-          ))}
-        </select>
-        <FieldHint
-          error={errors.position_id}
-          touched={touchedFields.position_id}
-          hasValue={formData.position_id > 0}
-          hint="담당자의 직무를 선택해주세요."
-        />
-      </FieldRow>
     </div>
   );
 };

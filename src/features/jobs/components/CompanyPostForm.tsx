@@ -136,7 +136,7 @@ export function CompanyPostForm({
     try {
       const profile = await fetchClient.get<CompanyProfileResponse>('/api/company-profile');
       setManagerInfo({
-        manager_name:  profile.representative_name ?? '',
+        manager_name:  '',
         manager_phone: profile.phone_number ?? '',
         manager_email: profile.email ?? '',
       });

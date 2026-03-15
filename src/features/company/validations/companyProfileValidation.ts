@@ -32,22 +32,10 @@ export const companyProfileValidationRules: Record<string, ValidationRule> = {
     }
   },
 
-  company_phone: (value: string | number) => {
-    const strValue = String(value);
-    if (!strValue || !strValue.trim()) return '일반전화를 입력해주세요.';
-    return validatePhoneType(strValue, 'LANDLINE');
-  },
-
   phone_number: (value: string | number) => {
     const strValue = String(value);
     if (!strValue || !strValue.trim()) return '휴대전화를 입력해주세요.';
     return validatePhoneType(strValue, 'MOBILE');
-  },
-
-  phone_type: (value: string | number) => {
-    const strValue = String(value);
-    if (!strValue || strValue.trim() === '') return '전화번호 타입을 선택해주세요.';
-    return '';
   },
 
   employee_count: (value: string | number) => {
@@ -82,15 +70,6 @@ export const companyProfileValidationRules: Record<string, ValidationRule> = {
     return '';
   },
 
-  country_id: (value: string | number) => {
-    if (!value || Number(value) === 0) return '국가를 선택해주세요.';
-    return '';
-  },
-
-  position_id: (value: string | number) => {
-    if (!value || Number(value) === 0) return '직무를 선택해주세요.';
-    return '';
-  },
 };
 
 /**

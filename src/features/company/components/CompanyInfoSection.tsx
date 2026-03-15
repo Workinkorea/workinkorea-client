@@ -80,33 +80,6 @@ export const CompanyInfoSection = ({
 }: CompanyInfoSectionProps) => {
   return (
     <div>
-      {/* 사업자등록번호 */}
-      <FieldRow label="사업자등록번호" optional>
-        <Input
-          id="company_number"
-          name="company_number"
-          value={formData.company_number || ''}
-          onChange={onChange}
-          onBlur={onBlur}
-          placeholder="000-00-00000"
-          maxLength={12}
-          success={!!formData.company_number}
-        />
-      </FieldRow>
-
-      {/* 대표자명 */}
-      <FieldRow label="대표자명" optional>
-        <Input
-          id="representative_name"
-          name="representative_name"
-          value={formData.representative_name || ''}
-          onChange={onChange}
-          onBlur={onBlur}
-          placeholder="홍길동"
-          success={!!formData.representative_name}
-        />
-      </FieldRow>
-
       {/* 업종 */}
       <FieldRow label="업종" required>
         <Input
@@ -221,28 +194,6 @@ export const CompanyInfoSection = ({
         {!formData.insurance && (
           <p className="mt-1.5 text-[11px] text-slate-400">제공하는 보험 정보를 입력해주세요.</p>
         )}
-      </FieldRow>
-
-      {/* 일반전화 */}
-      <FieldRow label="일반전화" required>
-        <Input
-          id="company_phone"
-          name="company_phone"
-          value={formData.company_phone || ''}
-          onChange={onChange}
-          onBlur={onBlur}
-          placeholder="02-1234-5678 (지역번호 포함)"
-          error={!!errors.company_phone}
-          success={
-            !errors.company_phone && touchedFields.company_phone && !!formData.company_phone
-          }
-        />
-        <FieldHint
-          error={errors.company_phone}
-          touched={touchedFields.company_phone}
-          hasValue={!!formData.company_phone}
-          hint="지역번호(02, 031, 051 등)를 포함해주세요."
-        />
       </FieldRow>
 
       {/* 주소 */}

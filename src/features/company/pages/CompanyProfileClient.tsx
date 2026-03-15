@@ -441,14 +441,6 @@ const CompanyProfileClient = () => {
                     </div>
                   </div>
 
-                  {/* 담당자 */}
-                  {profile.representative_name && (
-                    <p className="text-[13px] text-slate-500 mb-4">
-                      담당자{' '}
-                      <span className="font-semibold text-slate-700">{profile.representative_name}</span>
-                    </p>
-                  )}
-
                   {/* 통계 */}
                   <div className="grid grid-cols-2 gap-3 mb-5 p-4 bg-slate-50 rounded-lg">
                     <div className="text-center">
