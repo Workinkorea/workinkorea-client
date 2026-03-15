@@ -10,8 +10,8 @@ export const metadata: Metadata = createMetadata({
 export default async function Login({
   searchParams,
 }: {
-  searchParams: Promise<{ callbackUrl?: string }>;
+  searchParams: Promise<{ callbackUrl?: string; error?: string }>;
 }) {
-  const { callbackUrl } = await searchParams;
-  return <LoginContent callbackUrl={callbackUrl} />;
+  const { callbackUrl, error } = await searchParams;
+  return <LoginContent callbackUrl={callbackUrl} error={error} />;
 }

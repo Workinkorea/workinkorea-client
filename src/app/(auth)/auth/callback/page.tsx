@@ -42,14 +42,18 @@ function CallbackContent() {
 
       // 에러
       if (status === 'error') {
-        console.error('Google login failed:', message || 'Authentication failed');
-        router.push('/login');
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Google login failed:', message || 'Authentication failed');
+        }
+        router.push(`/login?error=oauth_failed`);
         return;
       }
 
       // 예상치 못한 상태
-      console.error('Invalid callback parameters');
-      router.push('/login');
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Invalid callback parameters');
+      }
+      router.push('/login?error=unknown');
     };
 
     handleCallback();

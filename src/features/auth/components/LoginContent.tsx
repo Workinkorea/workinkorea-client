@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import { GoogleIcon } from '@/shared/ui/AccessibleIcon';
 import { API_BASE_URL } from '@/shared/api/fetchClient';
 import { saveCallbackUrl } from '@/shared/lib/callbackUrl';
@@ -28,12 +28,19 @@ const features = [
   '자가진단 및 커리어 상담',
 ];
 
+const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+  oauth_failed: 'Google 로그인에 실패했습니다. 다시 시도해주세요.',
+  unknown:      '인증 처리 중 문제가 발생했습니다. 다시 시도해주세요.',
+};
+
 interface LoginContentProps {
   callbackUrl?: string;
+  error?: string;
 }
 
-export default function LoginContent({ callbackUrl }: LoginContentProps) {
+export default function LoginContent({ callbackUrl, error }: LoginContentProps) {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const errorMessage = error ? (OAUTH_ERROR_MESSAGES[error] ?? OAUTH_ERROR_MESSAGES.unknown) : null;
 
   const handleGoogleLogin = () => {
     // OAuth 외부 도메인 이동 전에 callbackUrl을 sessionStorage에 보존
@@ -136,6 +143,19 @@ export default function LoginContent({ callbackUrl }: LoginContentProps) {
               Google 계정으로 간편하게 시작하세요
             </p>
           </motion.div>
+
+          {/* 에러 배너 */}
+          {errorMessage && (
+            <motion.div
+              variants={itemVariants}
+              className="flex items-start gap-2.5 px-4 py-3 mb-6 rounded-lg bg-red-50 border border-red-200 text-[13px] font-medium text-red-600"
+              role="alert"
+              aria-live="polite"
+            >
+              <AlertCircle size={15} className="mt-0.5 shrink-0" />
+              <span>{errorMessage}</span>
+            </motion.div>
+          )}
 
           {/* Google 버튼 */}
           <motion.div variants={itemVariants} className="space-y-4">
