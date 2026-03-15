@@ -10,7 +10,7 @@ import { validatePassword } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { FetchError } from '@/shared/api/fetchClient';
-import { Building2, CheckCircle2, Users, FileText, Loader2 } from 'lucide-react';
+import { Building2, CheckCircle2, Users, FileText, Loader2, AlertCircle, WifiOff } from 'lucide-react';
 
 interface BusinessLoginFormData {
   email: string;
@@ -35,11 +35,19 @@ const getDefaultValues = (): BusinessLoginFormData => {
   }
 };
 
-const STATUS_ERRORS: Record<number, { field: 'email' | 'password'; message: string }> = {
-  401: { field: 'password', message: '비밀번호가 일치하지 않습니다.' },
-  403: { field: 'email', message: '기업 계정이 비활성화되었거나 접근 권한이 없습니다.' },
-  404: { field: 'email', message: '등록되지 않은 기업 계정입니다.' },
-  429: { field: 'password', message: '로그인 시도 횟수가 초과되었습니다. 잠시 후 다시 시도해주세요.' },
+type LoginErrorType = 'credential' | 'account' | 'permission' | 'rateLimit' | 'server' | 'network';
+
+interface LoginErrorInfo {
+  type: LoginErrorType;
+  field: 'email' | 'password' | null;
+  message: string;
+}
+
+const STATUS_ERRORS: Record<number, LoginErrorInfo> = {
+  401: { type: 'credential', field: 'password', message: '비밀번호가 일치하지 않습니다. 다시 확인해주세요.' },
+  403: { type: 'permission', field: 'email',    message: '기업 계정이 비활성화되었거나 접근 권한이 없습니다.' },
+  404: { type: 'account',    field: 'email',    message: '등록되지 않은 기업 계정입니다. 이메일을 확인해주세요.' },
+  429: { type: 'rateLimit',  field: null,       message: '로그인 시도 횟수가 초과되었습니다. 잠시 후 다시 시도해주세요.' },
 };
 
 const FEATURES = [
@@ -63,6 +71,7 @@ export default function BusinessLoginForm() {
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState<LoginErrorInfo | null>(null);
 
   const {
     control,
@@ -111,6 +120,7 @@ export default function BusinessLoginForm() {
     if (isLoading) return;
 
     setIsLoading(true);
+    setLoginError(null);
     clearErrors();
 
     try {
@@ -135,8 +145,11 @@ export default function BusinessLoginForm() {
         console.error('Company login error:', error);
       }
 
-      let errorMessage = '로그인 중 오류가 발생했습니다.';
-      let errorField: 'email' | 'password' = 'password';
+      let errorInfo: LoginErrorInfo = {
+        type: 'server',
+        field: null,
+        message: '로그인 중 오류가 발생했습니다.',
+      };
 
       if (error instanceof FetchError) {
         const { status, data } = error;
@@ -149,33 +162,35 @@ export default function BusinessLoginForm() {
             : '';
 
         if (STATUS_ERRORS[status]) {
-          errorField   = STATUS_ERRORS[status].field;
-          errorMessage = STATUS_ERRORS[status].message;
+          errorInfo = STATUS_ERRORS[status];
         } else if (status === 400) {
           const msg = serverError.toLowerCase();
           if (msg.includes('email')) {
-            errorField   = 'email';
-            errorMessage = '올바른 이메일 형식을 입력해주세요.';
+            errorInfo = { type: 'credential', field: 'email', message: '올바른 이메일 형식을 입력해주세요.' };
           } else if (msg.includes('password')) {
-            errorMessage = '올바른 비밀번호를 입력해주세요.';
+            errorInfo = { type: 'credential', field: 'password', message: '올바른 비밀번호를 입력해주세요.' };
           } else {
-            errorMessage = serverError || '입력 정보를 확인해주세요.';
+            errorInfo = { type: 'credential', field: null, message: serverError || '아이디 또는 비밀번호를 확인해주세요.' };
           }
         } else if (status >= 500) {
-          errorMessage = '서버에 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+          errorInfo = { type: 'server', field: null, message: '서버에 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' };
         } else if (serverError) {
-          errorMessage = serverError;
+          errorInfo = { type: 'server', field: null, message: serverError };
         }
       } else if (error instanceof Error) {
         const msg = error.message.toLowerCase();
         if (msg.includes('network') || msg.includes('fetch')) {
-          errorMessage = '네트워크 연결을 확인해주세요.';
+          errorInfo = { type: 'network', field: null, message: '네트워크 연결을 확인해주세요.' };
         } else if (msg.includes('timeout')) {
-          errorMessage = '요청 시간이 초과되었습니다. 다시 시도해주세요.';
+          errorInfo = { type: 'network', field: null, message: '요청 시간이 초과되었습니다. 다시 시도해주세요.' };
         }
       }
 
-      setError(errorField, { type: 'manual', message: errorMessage });
+      setLoginError(errorInfo);
+      // 특정 필드에도 포커스 표시
+      if (errorInfo.field) {
+        setError(errorInfo.field, { type: 'manual', message: '' });
+      }
       setIsLoading(false);
     }
   };
@@ -287,9 +302,9 @@ export default function BusinessLoginForm() {
                     id={fieldId}
                     type="email"
                     placeholder="example@company.com"
-                    onChange={(e) => { field.onChange(e.target.value); clearErrors('email'); }}
+                    onChange={(e) => { field.onChange(e.target.value); clearErrors('email'); setLoginError(null); }}
                     onBlur={(e) => handleEmailBlur(e.target.value)}
-                    error={!!errors.email}
+                    error={!!errors.email || loginError?.field === 'email'}
                   />
                 )}
               />
@@ -307,10 +322,10 @@ export default function BusinessLoginForm() {
                     id={fieldId}
                     variant="password"
                     placeholder="••••••••••"
-                    error={!!errors.password}
+                    error={!!errors.password || loginError?.field === 'password'}
                     showPassword={showPassword}
                     onTogglePassword={() => setShowPassword(prev => !prev)}
-                    onChange={(e) => { field.onChange(e.target.value); clearErrors('password'); }}
+                    onChange={(e) => { field.onChange(e.target.value); clearErrors('password'); setLoginError(null); }}
                     onBlur={(e) => handlePasswordBlur(e.target.value)}
                     maxLength={15}
                   />
@@ -356,6 +371,33 @@ export default function BusinessLoginForm() {
                 {isLoading && <Loader2 size={15} className="animate-spin" />}
                 {isLoading ? '로그인 중...' : '기업 로그인'}
               </motion.button>
+
+              {/* 로그인 에러 배너 */}
+              {loginError && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className={`flex items-start gap-2.5 px-4 py-3 rounded-lg text-[13px] font-medium ${
+                    loginError.type === 'network'
+                      ? 'bg-slate-50 border border-slate-200 text-slate-600'
+                      : loginError.type === 'server'
+                        ? 'bg-amber-50 border border-amber-200 text-amber-700'
+                        : loginError.type === 'rateLimit'
+                          ? 'bg-amber-50 border border-amber-200 text-amber-700'
+                          : 'bg-red-50 border border-red-200 text-red-600'
+                  }`}
+                  role="alert"
+                  aria-live="polite"
+                >
+                  {loginError.type === 'network'
+                    ? <WifiOff size={15} className="mt-0.5 shrink-0" />
+                    : <AlertCircle size={15} className="mt-0.5 shrink-0" />
+                  }
+                  <span>{loginError.message}</span>
+                </motion.div>
+              )}
 
               <motion.button
                 type="button"
