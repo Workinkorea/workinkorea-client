@@ -3,7 +3,7 @@ import { Skeleton } from '@/shared/ui/Skeleton';
 export default function JobDetailLoading() {
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="page-container py-6 sm:py-8">
         {/* 뒤로가기 버튼 */}
         <Skeleton variant="text" className="h-9 w-28 mb-6 rounded-lg" />
 

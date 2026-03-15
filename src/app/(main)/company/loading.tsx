@@ -27,7 +27,7 @@ export default function CompanyLoading() {
     <div className="min-h-screen bg-slate-50">
       {/* 기업 정보 헤더 */}
       <div className="bg-white border-b border-slate-100 px-4 sm:px-6 py-5 sm:py-6">
-        <div className="max-w-5xl mx-auto">
+        <div className="page-container">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
               <Skeleton className="w-14 h-14 rounded-xl shrink-0" />
@@ -55,7 +55,7 @@ export default function CompanyLoading() {
       </div>
 
       {/* 탭 콘텐츠: 공고 목록 */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-5">
+      <div className="page-container py-6 sm:py-8 space-y-5">
         <div className="flex items-center justify-between">
           <Skeleton variant="text" className="h-5 w-28" />
         </div>

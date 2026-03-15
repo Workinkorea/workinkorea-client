@@ -4,6 +4,7 @@ import { useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { consumeCallbackUrl } from '@/shared/lib/callbackUrl';
+import { tokenStore } from '@/shared/api/tokenStore';
 
 function CallbackContent() {
   const searchParams = useSearchParams();
@@ -25,6 +26,9 @@ function CallbackContent() {
       // 로그인 성공
       if (status === 'success' && token) {
         // HttpOnly Cookie는 백엔드가 이미 설정함
+        // access_token을 메모리에 저장 (인증 상태 복원용)
+        tokenStore.set(token);
+
         // rememberMe 처리
         localStorage.removeItem('googleLoginRememberMe');
 
