@@ -97,10 +97,10 @@ const DiagnosisClient = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <h1 className="text-[24px] sm:text-[28px] lg:text-[32px] font-extrabold text-slate-900 mb-2">
+            <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-slate-900 mb-2">
               한국 취업 자가진단
             </h1>
-            <p className="text-[13px] sm:text-sm text-slate-500">
+            <p className="text-caption-1 sm:text-sm text-slate-500">
               당신에게 딱 맞는 직업을 찾기 위한 맞춤형 진단을 시작해보세요
             </p>
           </motion.div>

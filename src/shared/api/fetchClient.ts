@@ -112,7 +112,7 @@ export async function fetchAPI<T>(
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new FetchError(
-        errorData.message || response.statusText,
+        errorData.error || errorData.message || errorData.detail || response.statusText,
         response.status,
         errorData
       );

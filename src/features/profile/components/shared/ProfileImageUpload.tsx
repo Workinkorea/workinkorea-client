@@ -136,7 +136,7 @@ function ProfileImageUpload({
     <div className="space-y-4">
       {/* Avatar Preview Section */}
       <div className="flex items-center gap-6">
-        <div className="relative flex-shrink-0">
+        <div className="relative shrink-0">
           {displayImage ? (
             // Image preview (circular)
             <div
@@ -150,7 +150,7 @@ function ProfileImageUpload({
           ) : (
             // Fallback: Initials avatar
             <div
-              className="rounded-full bg-gradient-to-br from-blue-100 to-blue-50 border-4 border-blue-100 flex items-center justify-center"
+              className="rounded-full bg-linear-to-br from-blue-100 to-blue-50 border-4 border-blue-100 flex items-center justify-center"
               style={{
                 width: `${size}px`,
                 height: `${size}px`,
@@ -207,7 +207,7 @@ function ProfileImageUpload({
         onClick={handleButtonClick}
       >
         <UploadCloud size={32} className="text-slate-400 mx-auto mb-2" />
-        <p className="text-[13px] font-semibold text-slate-800 mb-1">
+        <p className="text-caption-1 font-semibold text-slate-800 mb-1">
           사진을 드래그하거나 클릭하여 업로드
         </p>
         <p className="text-[11px] text-slate-500">

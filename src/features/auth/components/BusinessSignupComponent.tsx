@@ -258,7 +258,7 @@ export default function BusinessSignupComponent() {
                     type="checkbox"
                     checked={terms[key]}
                     onChange={(e) => handleTermChange(key, e.target.checked)}
-                    className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer flex-shrink-0"
+                    className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -271,7 +271,7 @@ export default function BusinessSignupComponent() {
                       </span>
                       <button
                         type="button"
-                        className="text-[11px] text-slate-500 hover:text-blue-600 underline cursor-pointer whitespace-nowrap flex-shrink-0"
+                        className="text-[11px] text-slate-500 hover:text-blue-600 underline cursor-pointer whitespace-nowrap shrink-0"
                         onClick={(e) => { e.preventDefault(); openTermsModal(key); }}
                       >
                         보기
@@ -291,7 +291,7 @@ export default function BusinessSignupComponent() {
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-6 py-8 sm:py-12 lg:p-12 bg-white">
         <div className="max-w-xl mx-auto w-full space-y-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <h1 className="text-[24px] sm:text-[28px] font-bold text-slate-900 mb-2">기업 회원가입</h1>
+            <h1 className="text-title-3 sm:text-title-2 font-bold text-slate-900 mb-2">기업 회원가입</h1>
             <p className="text-sm text-slate-500">기업 정보를 입력해 주세요</p>
           </motion.div>
 

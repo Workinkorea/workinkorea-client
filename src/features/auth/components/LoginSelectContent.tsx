@@ -74,10 +74,10 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
       >
         {/* 헤더 */}
         <motion.div variants={itemVariants} className="text-center mb-12 sm:mb-14">
-          <h1 className="text-[26px] sm:text-[32px] lg:text-[40px] font-black text-slate-900 leading-tight tracking-tight mb-3 sm:mb-4">
+          <h1 className="text-[26px] sm:text-title-1 lg:text-[40px] font-black text-slate-900 leading-tight tracking-tight mb-3 sm:mb-4">
             어떤 유형의 회원이신가요?
           </h1>
-          <p className="text-[14px] sm:text-[15px] text-slate-500 max-w-lg mx-auto">
+          <p className="text-body-3 sm:text-[15px] text-slate-500 max-w-lg mx-auto">
             Work In Korea는 개인 구직자와 채용 담당자 모두를 위한 맞춤형 솔루션을 제공합니다.
           </p>
         </motion.div>
@@ -101,7 +101,7 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
                   transition={{ type: 'spring', stiffness: 300 }}
                 >
                   {/* 배경 그라데이션 (호버 시 표시) */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-linear-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                   <div className="relative z-10 flex flex-col h-full">
                     {/* 아이콘 */}
@@ -116,7 +116,7 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
                       <h2 className="text-[18px] font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
                         {title}
                       </h2>
-                      <p className="text-[13px] text-slate-500 group-hover:text-slate-600 transition-colors">
+                      <p className="text-caption-1 text-slate-500 group-hover:text-slate-600 transition-colors">
                         {description}
                       </p>
                     </div>
@@ -141,7 +141,7 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
 
         {/* 회원가입 링크 */}
         <motion.div variants={itemVariants} className="text-center pt-6 sm:pt-8 border-t border-slate-200">
-          <p className="text-[14px] text-slate-600">
+          <p className="text-body-3 text-slate-600">
             아직 회원이 아니신가요?{' '}
             <Link href={signupHref} className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
               회원가입하기

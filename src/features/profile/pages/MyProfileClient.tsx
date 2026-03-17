@@ -247,7 +247,7 @@ function MyProfileClient() {
       <Layout>
         <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-[24px] font-semibold text-slate-700 mb-2">
+            <h2 className="text-title-3 font-semibold text-slate-700 mb-2">
               프로필을 불러올 수 없습니다
             </h2>
             <p className="text-sm text-slate-500">
@@ -275,7 +275,7 @@ function MyProfileClient() {
             transition={{ duration: 0.5 }}
           >
             <div>
-              <h1 className="text-[28px] font-bold text-slate-900">내 프로필</h1>
+              <h1 className="text-title-2 font-bold text-slate-900">내 프로필</h1>
               <p className="text-sm text-slate-500 mt-1">
                 프로필을 관리하고 스킬 분석을 확인하세요
               </p>

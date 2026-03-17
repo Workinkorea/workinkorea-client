@@ -84,7 +84,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
         <div className="px-6 py-5 space-y-4">
           {/* 제목 */}
           <div>
-            <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">
+            <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">
               제목 <span className="text-red-500">*</span>
             </label>
             <input
@@ -98,7 +98,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
           {/* 유형 + 대상 */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">유형</label>
+              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">유형</label>
               <select
                 value={form.type}
                 onChange={(e) => set('type', e.target.value as AdminEvent['type'])}
@@ -110,7 +110,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
               </select>
             </div>
             <div>
-              <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">대상</label>
+              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">대상</label>
               <select
                 value={form.target}
                 onChange={(e) => set('target', e.target.value as AdminEvent['target'])}
@@ -126,7 +126,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
           {/* 날짜 */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">시작일</label>
+              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">시작일</label>
               <input
                 type="date"
                 value={form.start_date}
@@ -135,7 +135,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
               />
             </div>
             <div>
-              <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">종료일</label>
+              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">종료일</label>
               <input
                 type="date"
                 value={form.end_date}
@@ -148,7 +148,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
 
           {/* 게시 상태 */}
           <div>
-            <label className="block text-[13px] font-semibold text-slate-700 mb-2">게시 상태</label>
+            <label className="block text-caption-1 font-semibold text-slate-700 mb-2">게시 상태</label>
             <div className="flex gap-3">
               {(['active', 'inactive'] as const).map((s) => (
                 <label
@@ -184,7 +184,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
 
           {/* 본문 */}
           <div>
-            <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">본문</label>
+            <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">본문</label>
             <textarea
               value={form.content}
               onChange={(e) => set('content', e.target.value)}
@@ -195,7 +195,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
 
           {/* 배너 URL */}
           <div>
-            <label className="block text-[13px] font-semibold text-slate-700 mb-1.5">배너 이미지 URL</label>
+            <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">배너 이미지 URL</label>
             <input
               type="url"
               value={form.banner_url ?? ''}
@@ -287,8 +287,8 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-[12px] font-semibold text-blue-600 uppercase tracking-widest mb-1">Admin</p>
-          <h2 className="text-[24px] font-extrabold text-slate-900">이벤트 관리</h2>
+          <p className="text-caption-2 font-semibold text-blue-600 uppercase tracking-widest mb-1">Admin</p>
+          <h2 className="text-title-3 font-extrabold text-slate-900">이벤트 관리</h2>
         </div>
         <Link
           href="/admin/events/create"
@@ -307,25 +307,25 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
-              <th className="px-4 py-3 text-left text-[12px] font-semibold text-slate-500 uppercase tracking-wider w-12">
+              <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-12">
                 ID
               </th>
-              <th className="px-4 py-3 text-left text-[12px] font-semibold text-slate-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider">
                 제목
               </th>
-              <th className="px-4 py-3 text-left text-[12px] font-semibold text-slate-500 uppercase tracking-wider w-24">
+              <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-24">
                 유형
               </th>
-              <th className="px-4 py-3 text-left text-[12px] font-semibold text-slate-500 uppercase tracking-wider w-24">
+              <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-24">
                 대상
               </th>
-              <th className="px-4 py-3 text-left text-[12px] font-semibold text-slate-500 uppercase tracking-wider w-20">
+              <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-20">
                 상태
               </th>
-              <th className="px-4 py-3 text-left text-[12px] font-semibold text-slate-500 uppercase tracking-wider w-48">
+              <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-48">
                 기간
               </th>
-              <th className="px-4 py-3 text-right text-[12px] font-semibold text-slate-500 uppercase tracking-wider w-28">
+              <th className="px-4 py-3 text-right text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-28">
                 관리
               </th>
             </tr>
@@ -361,13 +361,13 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
                   <td className="px-4 py-3.5">
                     <TypeBadge type={ev.type} />
                   </td>
-                  <td className="px-4 py-3.5 text-slate-600 text-[13px]">
+                  <td className="px-4 py-3.5 text-slate-600 text-caption-1">
                     {EVENT_TARGET_LABEL[ev.target]}
                   </td>
                   <td className="px-4 py-3.5">
                     <StatusBadge status={ev.status} />
                   </td>
-                  <td className="px-4 py-3.5 text-[13px] text-slate-600 whitespace-nowrap">
+                  <td className="px-4 py-3.5 text-caption-1 text-slate-600 whitespace-nowrap">
                     {ev.start_date} ~ {ev.end_date}
                   </td>
                   <td className="px-4 py-3.5 text-right">
@@ -375,7 +375,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
                       <button
                         onClick={() => setSelectedEvent(ev)}
                         className={cn(
-                          'px-3 py-1.5 text-[12px] font-semibold rounded-lg transition-colors cursor-pointer',
+                          'px-3 py-1.5 text-caption-2 font-semibold rounded-lg transition-colors cursor-pointer',
                           'border border-slate-200 text-slate-600 hover:bg-slate-50',
                           'focus:outline-none',
                         )}
@@ -386,7 +386,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
                         onClick={() => handleDelete(ev)}
                         disabled={deleteMutation.isPending}
                         className={cn(
-                          'px-3 py-1.5 text-[12px] font-semibold rounded-lg transition-colors cursor-pointer',
+                          'px-3 py-1.5 text-caption-2 font-semibold rounded-lg transition-colors cursor-pointer',
                           'bg-red-50 text-red-500 hover:bg-red-100',
                           'focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
                         )}

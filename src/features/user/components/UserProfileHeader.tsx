@@ -71,7 +71,7 @@ function UserProfileHeader({
       <div className="flex flex-col md:flex-row gap-6">
         {/* 프로필 이미지 */}
         <motion.div 
-          className="flex-shrink-0"
+          className="shrink-0"
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.3, delay: 0.2 }}
@@ -106,7 +106,7 @@ function UserProfileHeader({
             <div className="flex-1">
               {/* 이름과 직책 */}
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-[28px] font-extrabold text-slate-900">
+                <h1 className="text-title-2 font-extrabold text-slate-900">
                   {profile.name}
                 </h1>
                 <span className={cn(

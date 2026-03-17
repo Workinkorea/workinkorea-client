@@ -263,7 +263,7 @@ const CompanyProfileClient = () => {
                     {/* 공고 목록 전체 보기 링크 */}
                     <button
                       onClick={() => router.push('/company/jobs')}
-                      className="flex items-center gap-1.5 text-[14px] font-bold text-slate-900 hover:text-blue-600 transition-colors group cursor-pointer"
+                      className="flex items-center gap-1.5 text-body-3 font-bold text-slate-900 hover:text-blue-600 transition-colors group cursor-pointer"
                     >
                       진행중 공고
                       <span className="text-blue-600 font-extrabold">{activePosts.length}</span>
@@ -274,7 +274,7 @@ const CompanyProfileClient = () => {
                       onClick={() => router.push('/company/posts/create')}
                       className={cn(
                         'inline-flex items-center gap-1.5 px-3.5 py-1.5',
-                        'bg-blue-600 text-white text-[12px] font-semibold rounded-lg',
+                        'bg-blue-600 text-white text-caption-2 font-semibold rounded-lg',
                         'hover:bg-blue-700 transition-colors cursor-pointer',
                       )}
                     >
@@ -310,7 +310,7 @@ const CompanyProfileClient = () => {
                             whileHover={{ y: -2 }}
                             transition={{ type: 'spring', stiffness: 400 }}
                           >
-                            <p className="text-[13px] font-semibold text-slate-900 leading-snug line-clamp-2 mb-3 group-hover:text-blue-600 transition-colors">
+                            <p className="text-caption-1 font-semibold text-slate-900 leading-snug line-clamp-2 mb-3 group-hover:text-blue-600 transition-colors">
                               {post.title}
                             </p>
                             <div className="flex items-center justify-between">
@@ -330,14 +330,14 @@ const CompanyProfileClient = () => {
                         <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
                           <FileText size={22} className="text-slate-300" />
                         </div>
-                        <p className="text-[13px] text-slate-500 mb-4">
+                        <p className="text-caption-1 text-slate-500 mb-4">
                           진행중인 공고가 없어요
                         </p>
                         <button
                           onClick={() => router.push('/company/posts/create')}
                           className={cn(
                             'inline-flex items-center gap-1.5 px-4 py-2',
-                            'bg-blue-600 text-white text-[13px] font-semibold rounded-lg',
+                            'bg-blue-600 text-white text-caption-1 font-semibold rounded-lg',
                             'hover:bg-blue-700 transition-colors cursor-pointer',
                           )}
                         >
@@ -352,7 +352,7 @@ const CompanyProfileClient = () => {
                 {/* 인재풀 섹션 */}
                 <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
                   <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
-                    <div className="flex items-center gap-1.5 text-[14px] font-bold text-slate-900">
+                    <div className="flex items-center gap-1.5 text-body-3 font-bold text-slate-900">
                       진행중 인재풀
                       <span className="text-blue-600 font-extrabold">0</span>
                       <ChevronRight size={15} className="text-slate-300" />
@@ -360,10 +360,10 @@ const CompanyProfileClient = () => {
                   </div>
                   <div className="p-4">
                     <div className="bg-blue-50 rounded-lg flex flex-col items-center justify-center py-7 text-center">
-                      <p className="text-[13px] text-slate-500 mb-2 leading-relaxed">
+                      <p className="text-caption-1 text-slate-500 mb-2 leading-relaxed">
                         딱 맞는 우수한<br />인재를 찾아보세요!
                       </p>
-                      <button className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-blue-600 hover:underline transition-colors cursor-pointer">
+                      <button className="inline-flex items-center gap-1.5 text-caption-2 font-semibold text-blue-600 hover:underline transition-colors cursor-pointer">
                         <Search size={13} />
                         인재 검색
                       </button>
@@ -375,7 +375,7 @@ const CompanyProfileClient = () => {
                     UX 근거: pill 탭으로 채용 프로세스 단계를 시각적으로 분리 */}
                 <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
                   <div className="px-5 py-3.5 border-b border-slate-100">
-                    <span className="text-[14px] font-bold text-slate-900">내 할일</span>
+                    <span className="text-body-3 font-bold text-slate-900">내 할일</span>
                   </div>
                   {/* 상태별 pill 탭 */}
                   <div className="flex items-center gap-2 px-5 pt-4 flex-wrap">
@@ -384,7 +384,7 @@ const CompanyProfileClient = () => {
                         key={tab.key}
                         onClick={() => setActiveTodoTab(tab.key)}
                         className={cn(
-                          'px-3.5 py-1.5 rounded-full text-[12px] font-semibold border transition-colors cursor-pointer',
+                          'px-3.5 py-1.5 rounded-full text-caption-2 font-semibold border transition-colors cursor-pointer',
                           activeTodoTab === tab.key
                             ? 'border-blue-500 bg-blue-50 text-blue-600'
                             : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50',
@@ -397,10 +397,10 @@ const CompanyProfileClient = () => {
                   <div className="px-5 pb-5 pt-4">
                     <div className="flex flex-col items-center justify-center py-8 text-center">
                       <Users size={28} className="text-slate-200 mb-3" />
-                      <p className="text-[13px] text-slate-400 mb-4">{EMPTY_TODO[activeTodoTab]}</p>
+                      <p className="text-caption-1 text-slate-400 mb-4">{EMPTY_TODO[activeTodoTab]}</p>
                       <button className={cn(
                         'inline-flex items-center gap-1.5 px-4 py-1.5',
-                        'border border-slate-200 text-[12px] font-semibold text-slate-600 rounded-lg',
+                        'border border-slate-200 text-caption-2 font-semibold text-slate-600 rounded-lg',
                         'hover:bg-slate-50 transition-colors cursor-pointer',
                       )}>
                         <Users size={13} />
@@ -430,24 +430,16 @@ const CompanyProfileClient = () => {
                 <div className="bg-white border border-slate-200 rounded-xl p-6">
                   {/* 로고 + 기업명 */}
                   <div className="flex items-center gap-3 mb-5">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shrink-0">
+                    <div className="w-12 h-12 bg-linear-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shrink-0">
                       <Building2 size={22} className="text-white" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-[15px] font-bold text-slate-900 truncate">
                         기업 #{profile.company_id}
                       </p>
-                      <p className="text-[12px] text-slate-400 truncate">{profile.industry_type}</p>
+                      <p className="text-caption-2 text-slate-400 truncate">{profile.industry_type}</p>
                     </div>
                   </div>
-
-                  {/* 담당자 */}
-                  {profile.representative_name && (
-                    <p className="text-[13px] text-slate-500 mb-4">
-                      담당자{' '}
-                      <span className="font-semibold text-slate-700">{profile.representative_name}</span>
-                    </p>
-                  )}
 
                   {/* 통계 */}
                   <div className="grid grid-cols-2 gap-3 mb-5 p-4 bg-slate-50 rounded-lg">
@@ -463,16 +455,16 @@ const CompanyProfileClient = () => {
 
                   {/* 기업 상세 정보 */}
                   <div className="space-y-2.5 pb-5 border-b border-slate-100">
-                    <div className="flex items-start gap-2 text-[13px] text-slate-600">
+                    <div className="flex items-start gap-2 text-caption-1 text-slate-600">
                       <MapPin size={14} className="text-slate-400 mt-0.5 shrink-0" />
                       <span className="leading-relaxed">{profile.address}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-[13px] text-slate-600">
+                    <div className="flex items-center gap-2 text-caption-1 text-slate-600">
                       <Phone size={14} className="text-slate-400 shrink-0" />
                       <span>{profile.phone_number}</span>
                     </div>
                     {profile.website_url && (
-                      <div className="flex items-center gap-2 text-[13px] text-slate-600">
+                      <div className="flex items-center gap-2 text-caption-1 text-slate-600">
                         <Globe size={14} className="text-slate-400 shrink-0" />
                         <a
                           href={profile.website_url}
@@ -491,7 +483,7 @@ const CompanyProfileClient = () => {
                     onClick={() => router.push('/company/profile/edit')}
                     className={cn(
                       'mt-4 w-full py-2.5 border border-slate-200 rounded-lg',
-                      'text-[13px] font-semibold text-slate-600',
+                      'text-caption-1 font-semibold text-slate-600',
                       'hover:bg-slate-50 transition-colors cursor-pointer',
                     )}
                   >
@@ -502,7 +494,7 @@ const CompanyProfileClient = () => {
                 {/* 이용중인 상품 */}
                 <div className="bg-white border border-slate-200 rounded-xl p-5">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-[14px] font-bold text-slate-900">이용중인 상품</span>
+                    <span className="text-body-3 font-bold text-slate-900">이용중인 상품</span>
                     <ChevronRight size={15} className="text-slate-300" />
                   </div>
                   <div className="space-y-3">
@@ -512,12 +504,12 @@ const CompanyProfileClient = () => {
                       { icon: <Package  size={13} />, label: '인적성'   },
                     ].map(item => (
                       <div key={item.label} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-[12px] text-slate-500">
+                        <div className="flex items-center gap-2 text-caption-2 text-slate-500">
                           <span className="text-slate-300">{item.icon}</span>
                           {item.label}
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[12px] text-slate-300">-</span>
+                          <span className="text-caption-2 text-slate-300">-</span>
                           <button className={cn(
                             'px-2.5 py-1 border border-slate-200 rounded',
                             'text-[11px] font-semibold text-slate-500',
@@ -533,15 +525,15 @@ const CompanyProfileClient = () => {
 
                 {/* 하단 프로모 배너 */}
                 <div className="bg-blue-50 border border-blue-100 rounded-xl p-5">
-                  <p className="text-[13px] font-semibold text-slate-700 mb-1.5 leading-snug">
+                  <p className="text-caption-1 font-semibold text-slate-700 mb-1.5 leading-snug">
                     적합한 인재를 찾지 못하셨나요?
                   </p>
-                  <p className="text-[12px] text-slate-500 mb-3 leading-relaxed">
+                  <p className="text-caption-2 text-slate-500 mb-3 leading-relaxed">
                     <span className="text-blue-600 font-semibold">인재풀 60건 (30일)</span> 상품으로
                     우수한 인재를 찾아보세요!
                   </p>
                   <button className={cn(
-                    'w-full py-2 bg-blue-600 text-white text-[12px] font-semibold rounded-lg',
+                    'w-full py-2 bg-blue-600 text-white text-caption-2 font-semibold rounded-lg',
                     'hover:bg-blue-700 transition-colors cursor-pointer',
                   )}>
                     인재풀 이용하기

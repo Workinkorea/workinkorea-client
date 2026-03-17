@@ -565,7 +565,7 @@ function ProfileEditClient() {
         <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="text-center">
             <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
-            <h2 className="text-[24px] font-semibold text-slate-900 mb-2">
+            <h2 className="text-title-3 font-semibold text-slate-900 mb-2">
               프로필을 불러올 수 없습니다
             </h2>
             <p className="text-sm text-slate-500 mb-4">
@@ -1173,7 +1173,7 @@ function ProfileEditClient() {
                 <span>돌아가기</span>
               </button>
               <div>
-                <h1 className="text-[28px] font-bold text-slate-900">프로필 편집</h1>
+                <h1 className="text-title-2 font-bold text-slate-900">프로필 편집</h1>
                 <p className="text-sm text-slate-500">개인 정보를 수정하여 프로필을 최신 상태로 유지하세요</p>
               </div>
             </div>
@@ -1209,7 +1209,7 @@ function ProfileEditClient() {
           <div className="flex gap-8">
             {/* 사이드바 네비게이션 */}
             <motion.div
-              className="w-64 flex-shrink-0"
+              className="w-64 shrink-0"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}

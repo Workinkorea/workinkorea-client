@@ -10,7 +10,7 @@ import { profileApi } from '../api/profileCompany';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CompanyProfileRequest } from '@/shared/types/api';
 import toast from 'react-hot-toast';
-import { detectPhoneType, formatPhoneByType, PhoneType } from '@/shared/lib/utils/phoneUtils';
+import { formatPhoneByType } from '@/shared/lib/utils/phoneUtils';
 import { extractErrorMessage, logError } from '@/shared/lib/utils/errorHandler';
 import { validateCompanyProfileField, validateCompanyProfileForm } from '../validations/companyProfileValidation';
 import { CompanyInfoSection } from '@/features/company/components/CompanyInfoSection';
@@ -23,12 +23,9 @@ const REQUIRED_FIELDS: { key: keyof CompanyProfileRequest; label: string; sectio
   { key: 'company_type',        label: '기업 형태',  section: '기업 정보' },
   { key: 'employee_count',      label: '직원 수',    section: '기업 정보' },
   { key: 'establishment_date',  label: '설립일',     section: '기업 정보' },
-  { key: 'company_phone',       label: '일반전화',   section: '기업 정보' },
   { key: 'address',             label: '주소',       section: '기업 정보' },
   { key: 'email',               label: '이메일',     section: '담당자 정보' },
-  { key: 'phone_number',        label: '휴대전화',   section: '담당자 정보' },
-  { key: 'country_id',          label: '국가',       section: '담당자 정보' },
-  { key: 'position_id',         label: '직무',       section: '담당자 정보' },
+  { key: 'phone_number',        label: '전화번호',   section: '담당자 정보' },
 ];
 
 const CompanyProfileEditClient = () => {
@@ -42,16 +39,10 @@ const CompanyProfileEditClient = () => {
     establishment_date: '',
     company_type: '',
     insurance: '',
-    company_phone: '',
     phone_number: '',
-    phone_type: 'MOBILE',
     address: '',
     website_url: '',
     email: '',
-    country_id: 0,
-    position_id: 0,
-    company_number: '',
-    representative_name: '',
   });
 
   const [originalData, setOriginalData] = useState<CompanyProfileRequest | null>(null);
@@ -65,25 +56,16 @@ const CompanyProfileEditClient = () => {
 
   useEffect(() => {
     if (profile) {
-      const phoneNum = String(profile.phone_number || '');
-      const detectedType = detectPhoneType(phoneNum) || 'MOBILE';
-
-      const data = {
+      const data: CompanyProfileRequest = {
         industry_type: profile.industry_type || '',
         employee_count: profile.employee_count || 0,
         establishment_date: profile.establishment_date || '',
         company_type: profile.company_type || '',
         insurance: profile.insurance || '',
-        company_phone: profile.company_phone || '',
-        phone_number: phoneNum,
-        phone_type: (profile.phone_type as PhoneType) || detectedType,
+        phone_number: String(profile.phone_number || ''),
         address: profile.address || '',
         website_url: profile.website_url || '',
         email: profile.email || '',
-        country_id: profile.country_id || 0,
-        position_id: profile.position_id || 0,
-        company_number: profile.company_number || '',
-        representative_name: profile.representative_name || '',
       };
 
       setFormData(data);
@@ -126,13 +108,11 @@ const CompanyProfileEditClient = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    let processedValue: string | number | PhoneType = value;
+    let processedValue: string | number = value;
 
-    if (name === 'company_phone') {
-      processedValue = formatPhoneByType(value, 'LANDLINE');
-    } else if (name === 'phone_number') {
+    if (name === 'phone_number') {
       processedValue = formatPhoneByType(value, 'MOBILE');
-    } else if (name === 'employee_count' || name === 'country_id' || name === 'position_id') {
+    } else if (name === 'employee_count') {
       processedValue = value ? Number(value) : 0;
     }
 
@@ -151,7 +131,7 @@ const CompanyProfileEditClient = () => {
     const { name } = e.target;
     setTouchedFields((prev) => ({ ...prev, [name]: true }));
     const val =
-      name === 'employee_count' || name === 'country_id' || name === 'position_id'
+      name === 'employee_count'
         ? formData[name as keyof CompanyProfileRequest]
         : e.target.value;
     const error = validateCompanyProfileField(name, val as string | number, formData);
@@ -321,7 +301,7 @@ const CompanyProfileEditClient = () => {
                     </span>
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-slate-900">
+                    <p className="text-caption-1 font-bold text-slate-900">
                       프로필 완성도{' '}
                       <span className="text-blue-600">{progress}%</span>
                     </p>
@@ -358,7 +338,7 @@ const CompanyProfileEditClient = () => {
                         </span>
                         <span
                           className={cn(
-                            'text-[12px]',
+                            'text-caption-2',
                             filled ? 'text-slate-700 font-medium' : 'text-slate-400',
                           )}
                         >
@@ -389,7 +369,7 @@ const CompanyProfileEditClient = () => {
                         </span>
                         <span
                           className={cn(
-                            'text-[12px]',
+                            'text-caption-2',
                             filled ? 'text-slate-700 font-medium' : 'text-slate-400',
                           )}
                         >

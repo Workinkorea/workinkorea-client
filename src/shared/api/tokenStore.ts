@@ -30,7 +30,7 @@ export function decodeUserType(token: string): 'user' | 'company' | 'admin' | nu
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     if (payload.type === 'access_company') return 'company';
-    if (payload.type === 'access_admin') return 'admin';
+    if (payload.type === 'admin_access') return 'admin';
     if (payload.type === 'access') return 'user';
     return null;
   } catch {

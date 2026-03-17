@@ -42,7 +42,7 @@ function CompanyJobsClient() {
                 <div className="skeleton-shimmer h-8 w-40 rounded-lg" />
                 <div className="skeleton-shimmer h-4 w-56 rounded" />
               </div>
-              <div className="skeleton-shimmer h-10 w-32 rounded-lg flex-shrink-0" />
+              <div className="skeleton-shimmer h-10 w-32 rounded-lg shrink-0" />
             </div>
             <div className="bg-white rounded-xl p-5 sm:p-6 shadow-sm space-y-4">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -74,8 +74,8 @@ function CompanyJobsClient() {
             transition={{ duration: 0.5 }}
           >
             <div>
-              <h1 className="text-[24px] sm:text-[28px] font-extrabold text-slate-900">채용공고 관리</h1>
-              <p className="text-[13px] sm:text-sm text-slate-500 mt-1">
+              <h1 className="text-title-3 sm:text-title-2 font-extrabold text-slate-900">채용공고 관리</h1>
+              <p className="text-caption-1 sm:text-sm text-slate-500 mt-1">
                 등록한 채용 공고를 관리하고 수정하세요
               </p>
             </div>
@@ -85,7 +85,7 @@ function CompanyJobsClient() {
                 'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold',
                 'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
                 'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-                'shadow-[0_4px_14px_rgba(37,99,235,0.25)] flex-shrink-0'
+                'shadow-[0_4px_14px_rgba(37,99,235,0.25)] shrink-0'
               )}
             >
               <Plus size={18} />
@@ -118,7 +118,7 @@ function CompanyJobsClient() {
             ) : postsError ? (
               <div className="bg-white rounded-xl p-8 sm:p-12 shadow-sm text-center">
                 <p className="text-red-500 font-medium mb-2">공고를 불러오는 데 실패했습니다.</p>
-                <p className="text-[13px] text-slate-500 mb-6">
+                <p className="text-caption-1 text-slate-500 mb-6">
                   {postsError instanceof Error ? postsError.message : '알 수 없는 오류가 발생했습니다.'}
                 </p>
                 <button
@@ -157,19 +157,19 @@ function CompanyJobsClient() {
                             {post.title}
                           </h4>
                           <div className="space-y-2 mb-3">
-                            <div className="flex flex-wrap gap-2 text-[12px] text-slate-600">
+                            <div className="flex flex-wrap gap-2 text-caption-2 text-slate-600">
                               <span className="flex items-center gap-1.5">
-                                <MapPin size={16} className="flex-shrink-0" />
+                                <MapPin size={16} className="shrink-0" />
                                 {post.work_location}
                               </span>
                               <span className="px-2 py-1 bg-slate-100 rounded text-slate-600 font-medium">
                                 {post.employment_type}
                               </span>
                             </div>
-                            <p className="text-[12px] text-slate-500">
+                            <p className="text-caption-2 text-slate-500">
                               {post.salary ? `${post.salary.toLocaleString()}원` : '협의'}
                             </p>
-                            <p className="text-[12px] text-slate-400">
+                            <p className="text-caption-2 text-slate-400">
                               {post.start_date} ~ {post.end_date}
                             </p>
                           </div>
@@ -195,7 +195,7 @@ function CompanyJobsClient() {
                           onClick={() => router.push(`/company/posts/edit/${post.id}`)}
                           className={cn(
                             'p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-150',
-                            'rounded-lg flex-shrink-0 focus:outline-none cursor-pointer'
+                            'rounded-lg shrink-0 focus:outline-none cursor-pointer'
                           )}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
@@ -213,7 +213,7 @@ function CompanyJobsClient() {
                   <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
                 </div>
                 <p className="text-slate-600 font-medium mb-1">등록된 공고가 없습니다</p>
-                <p className="text-[13px] text-slate-500 mb-6">
+                <p className="text-caption-1 text-slate-500 mb-6">
                   첫 번째 채용 공고를 등록하여 인재를 모집해보세요
                 </p>
                 <motion.button

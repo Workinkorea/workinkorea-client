@@ -38,7 +38,7 @@ function EventCard({ event }: { event: Event }) {
           />
         </div>
       ) : (
-        <div className="h-40 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+        <div className="h-40 bg-linear-to-br from-blue-50 to-blue-100 flex items-center justify-center">
           <span className="text-4xl select-none">
             {event.type === 'notice' ? '📢' : event.type === 'event' ? '🎉' : '🎁'}
           </span>
@@ -55,7 +55,7 @@ function EventCard({ event }: { event: Event }) {
           {event.title}
         </h3>
 
-        <p className="text-[12px] text-slate-400 mt-3">
+        <p className="text-caption-2 text-slate-400 mt-3">
           {event.start_date} ~ {event.end_date}
         </p>
       </div>
@@ -84,10 +84,10 @@ export default async function EventBannerSection() {
         {/* 섹션 헤더 */}
         <div className="flex items-end justify-between mb-8">
           <div>
-            <p className="text-[12px] font-bold text-blue-600 uppercase tracking-[1.5px] mb-2">
+            <p className="text-caption-2 font-bold text-blue-600 uppercase tracking-[1.5px] mb-2">
               Events &amp; Notices
             </p>
-            <h2 className="text-[28px] font-extrabold text-slate-900">
+            <h2 className="text-title-2 font-extrabold text-slate-900">
               이벤트 &amp; 공지사항
             </h2>
             <p className="text-sm text-slate-500 mt-1.5">
@@ -98,7 +98,7 @@ export default async function EventBannerSection() {
           {events.length > 4 && (
             <Link
               href="/events"
-              className="text-[13px] font-semibold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1"
+              className="text-caption-1 font-semibold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1"
             >
               전체 보기
               <span aria-hidden="true">→</span>

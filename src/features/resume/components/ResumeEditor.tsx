@@ -299,7 +299,7 @@ function ResumeEditor({
             <h1 className="text-[22px] font-extrabold text-slate-900">
               {isEditMode ? '이력서 편집' : '새 이력서 작성'}
             </h1>
-            <p className="text-[13px] text-slate-500 mt-0.5">
+            <p className="text-caption-1 text-slate-500 mt-0.5">
               {templateType} 템플릿으로 이력서를 작성하고 있습니다
             </p>
           </div>
@@ -324,7 +324,7 @@ function ResumeEditor({
                 <h3 className="text-[15px] font-bold text-slate-900">
                   기본 정보
                 </h3>
-                <p className="text-[12px] text-slate-500 mt-0.5">
+                <p className="text-caption-2 text-slate-500 mt-0.5">
                   이력서 제목과 프로필 사진을 설정하세요
                 </p>
               </div>
@@ -417,7 +417,7 @@ function ResumeEditor({
                   <h3 className="text-[15px] font-bold text-slate-900">
                     자기소개
                   </h3>
-                  <p className="text-[12px] text-slate-500 mt-0.5">
+                  <p className="text-caption-2 text-slate-500 mt-0.5">
                     자신을 소개하는 글을 작성하세요
                   </p>
                 </div>
@@ -503,7 +503,7 @@ function ResumeEditor({
                   <h3 className="text-[15px] font-bold text-slate-900">
                     경력사항
                   </h3>
-                  <p className="text-[12px] text-slate-500 mt-0.5">
+                  <p className="text-caption-2 text-slate-500 mt-0.5">
                     회사 경력을 입력하세요
                   </p>
                 </div>
@@ -671,7 +671,7 @@ function ResumeEditor({
                   <h3 className="text-[15px] font-bold text-slate-900">
                     학력사항
                   </h3>
-                  <p className="text-[12px] text-slate-500 mt-0.5">
+                  <p className="text-caption-2 text-slate-500 mt-0.5">
                     학력 정보를 입력하세요
                   </p>
                 </div>
@@ -807,7 +807,7 @@ function ResumeEditor({
                   <h3 className="text-[15px] font-bold text-slate-900">
                     언어 능력
                   </h3>
-                  <p className="text-[12px] text-slate-500 mt-0.5">
+                  <p className="text-caption-2 text-slate-500 mt-0.5">
                     구사 가능한 언어를 입력하세요
                   </p>
                 </div>
@@ -916,7 +916,7 @@ function ResumeEditor({
                   <h3 className="text-[15px] font-bold text-slate-900">
                     자격증
                   </h3>
-                  <p className="text-[12px] text-slate-500 mt-0.5">
+                  <p className="text-caption-2 text-slate-500 mt-0.5">
                     보유한 자격증을 입력하세요
                   </p>
                 </div>

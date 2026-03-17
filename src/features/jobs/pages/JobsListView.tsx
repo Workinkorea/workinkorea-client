@@ -409,7 +409,7 @@ export default function JobsListView({
                         <Search size={56} className="text-slate-300" />
                       </div>
                       <h3 className="text-slate-900 text-[16px] font-bold mb-2">검색 결과가 없습니다</h3>
-                      <p className="text-slate-600 text-[14px] mb-6">다른 조건으로 검색해보세요</p>
+                      <p className="text-slate-600 text-body-3 mb-6">다른 조건으로 검색해보세요</p>
                       <button
                         onClick={handleReset}
                         className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"

@@ -108,7 +108,7 @@ function CompanyPostCreateClient() {
               </div>
               <div>
                 <h1 className="text-[22px] font-extrabold text-slate-900">채용 공고 등록</h1>
-                <p className="text-[13px] text-slate-500 mt-0.5">
+                <p className="text-caption-1 text-slate-500 mt-0.5">
                   외국인 인재를 위한 채용 공고를 작성해주세요
                 </p>
               </div>
@@ -162,8 +162,8 @@ function CompanyPostCreateClient() {
                 <div className="flex items-start gap-3">
                   <Lightbulb size={16} className="text-blue-600 shrink-0 mt-1" />
                   <div>
-                    <h3 className="text-[13px] font-bold text-slate-900 mb-2">작성 팁</h3>
-                    <ul className="space-y-1.5 text-[12px] text-slate-600">
+                    <h3 className="text-caption-1 font-bold text-slate-900 mb-2">작성 팁</h3>
+                    <ul className="space-y-1.5 text-caption-2 text-slate-600">
                       <li className="flex gap-2">
                         <span className="text-blue-600 shrink-0">•</span>
                         <span>명확하고 구체적인 직무 제목을 사용하세요</span>

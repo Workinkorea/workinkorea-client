@@ -110,7 +110,7 @@ const DiagnosisResultClient = () => {
               <div className="skeleton-shimmer rounded-full w-24 h-24 sm:w-32 sm:h-32 mx-auto" />
               <div className="skeleton-shimmer h-8 w-48 rounded mx-auto" />
               <div className="skeleton-shimmer h-4 w-64 rounded mx-auto" />
-              <p className="text-[13px] text-slate-400 mt-4">결과를 분석하는 중...</p>
+              <p className="text-caption-1 text-slate-400 mt-4">결과를 분석하는 중...</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -142,7 +142,7 @@ const DiagnosisResultClient = () => {
               'text-center mb-6 sm:mb-8'
             )}
           >
-            <h1 className="text-[24px] sm:text-[28px] lg:text-[32px] font-extrabold text-slate-900 mb-6">
+            <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-slate-900 mb-6">
               진단 결과가 나왔어요! 🎉
             </h1>
             <div className="inline-grid w-32 h-32 sm:w-40 sm:h-40 mb-6">
@@ -176,7 +176,7 @@ const DiagnosisResultClient = () => {
                 </div>
               </div>
             </div>
-            <p className="text-[14px] sm:text-base text-slate-700">
+            <p className="text-body-3 sm:text-base text-slate-700">
               당신의 한국 취업 준비도는 <span className="font-bold text-blue-600">{result.score}%</span>입니다!
             </p>
           </motion.div>
@@ -202,7 +202,7 @@ const DiagnosisResultClient = () => {
                 {result.strengths.map((strength, index) => (
                   <li key={index} className="flex items-start gap-3">
                     <span className="text-emerald-600 font-bold mt-0.5">✓</span>
-                    <span className="text-[13px] sm:text-sm text-slate-700 leading-relaxed">{strength}</span>
+                    <span className="text-caption-1 sm:text-sm text-slate-700 leading-relaxed">{strength}</span>
                   </li>
                 ))}
               </ul>
@@ -227,7 +227,7 @@ const DiagnosisResultClient = () => {
                 {result.improvements.map((improvement, index) => (
                   <li key={index} className="flex items-start gap-3">
                     <span className="text-amber-600 font-bold mt-0.5">!</span>
-                    <span className="text-[13px] sm:text-sm text-slate-700 leading-relaxed">{improvement}</span>
+                    <span className="text-caption-1 sm:text-sm text-slate-700 leading-relaxed">{improvement}</span>
                   </li>
                 ))}
               </ul>
@@ -261,7 +261,7 @@ const DiagnosisResultClient = () => {
                     'hover:bg-blue-100 transition-colors duration-150'
                   )}
                 >
-                  <span className="text-[12px] sm:text-[13px] font-semibold text-blue-700 line-clamp-2">
+                  <span className="text-caption-2 sm:text-caption-1 font-semibold text-blue-700 line-clamp-2">
                     {job}
                   </span>
                 </motion.div>
@@ -278,7 +278,7 @@ const DiagnosisResultClient = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
             className={cn(
-              'bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl shadow-lg p-6 sm:p-8 lg:p-10',
+              'bg-linear-to-br from-blue-600 to-blue-800 rounded-2xl shadow-lg p-6 sm:p-8 lg:p-10',
               'text-center text-white mb-6'
             )}
           >
@@ -286,7 +286,7 @@ const DiagnosisResultClient = () => {
             <h2 className="text-[20px] sm:text-[22px] font-extrabold mb-2">
               지금 바로 시작하세요!
             </h2>
-            <p className="text-[13px] sm:text-sm opacity-90 mb-6">
+            <p className="text-caption-1 sm:text-sm opacity-90 mb-6">
               회원가입하고 당신에게 맞는 채용 공고를 확인해보세요
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -326,7 +326,7 @@ const DiagnosisResultClient = () => {
             <motion.button
               onClick={handleRestart}
               className={cn(
-                'text-[13px] sm:text-sm text-slate-500 hover:text-slate-700',
+                'text-caption-1 sm:text-sm text-slate-500 hover:text-slate-700',
                 'underline cursor-pointer font-medium'
               )}
               whileHover={{ scale: 1.05 }}

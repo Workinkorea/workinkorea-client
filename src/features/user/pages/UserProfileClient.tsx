@@ -262,7 +262,7 @@ function UserProfileClient() {
             <h2 className="text-[18px] sm:text-xl font-extrabold text-slate-900 mb-2">
               프로필을 불러올 수 없습니다
             </h2>
-            <p className="text-[13px] sm:text-sm text-slate-500 mb-6 sm:mb-8">
+            <p className="text-caption-1 sm:text-sm text-slate-500 mb-6 sm:mb-8">
               {!resumeList?.length
                 ? '먼저 이력서를 작성해주세요.'
                 : '잠시 후 다시 시도해주세요.'}
@@ -270,7 +270,7 @@ function UserProfileClient() {
             {!resumeList?.length && (
               <button
                 onClick={() => router.push('/user/resume/create')}
-                className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-[13px] sm:text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+                className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-1 sm:text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
               >
                 <FileText size={16} />
                 이력서 작성하기
@@ -321,7 +321,7 @@ function UserProfileClient() {
           {/* 상단 제목 및 액션 버튼 */}
           <div className="flex items-center justify-between gap-4">
             <motion.h1
-              className="text-[20px] sm:text-[24px] font-extrabold text-slate-900"
+              className="text-[20px] sm:text-title-3 font-extrabold text-slate-900"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
@@ -336,7 +336,7 @@ function UserProfileClient() {
                   router.push('/user/resume/create');
                 }
               }}
-              className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-blue-600 text-white text-[12px] sm:text-[13px] font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
+              className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0, x: 20 }}
@@ -377,7 +377,7 @@ function UserProfileClient() {
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
                   className={cn(
-                    'relative px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-[12px] sm:text-sm font-semibold',
+                    'relative px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-caption-2 sm:text-sm font-semibold',
                     'whitespace-nowrap transition-colors duration-200 cursor-pointer',
                     activeTab === tab.key
                       ? 'text-white'
@@ -393,7 +393,7 @@ function UserProfileClient() {
                     />
                   )}
                   <span className="hidden sm:inline">{tab.label}</span>
-                  <span className="sm:hidden text-[14px]">{tab.icon}</span>
+                  <span className="sm:hidden text-body-3">{tab.icon}</span>
                 </button>
               ))}
             </div>
@@ -434,7 +434,7 @@ function UserProfileClient() {
                       transition={{ duration: 0.5, delay: 0.3 }}
                     >
                       <div className="flex items-center justify-between mb-4 sm:mb-5">
-                        <h3 className="text-[14px] sm:text-[15px] font-bold text-slate-900">프로필 완성도</h3>
+                        <h3 className="text-body-3 sm:text-[15px] font-bold text-slate-900">프로필 완성도</h3>
                         <span className={cn(
                           'text-[18px] sm:text-lg font-extrabold',
                           pct >= 80 ? 'text-blue-600' : pct >= 50 ? 'text-amber-500' : 'text-slate-400'
@@ -462,7 +462,7 @@ function UserProfileClient() {
                           <div
                             key={item.label}
                             className={cn(
-                              'flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-[12px] font-medium px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors',
+                              'flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-caption-2 font-medium px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors',
                               item.done
                                 ? 'text-slate-700 bg-slate-50'
                                 : 'text-slate-400 bg-slate-50/50'
@@ -483,7 +483,7 @@ function UserProfileClient() {
 
                       {pct < 100 && (
                         <motion.p
-                          className="text-[11px] sm:text-[12px] text-slate-400 leading-relaxed"
+                          className="text-[11px] sm:text-caption-2 text-slate-400 leading-relaxed"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.6 }}
@@ -521,18 +521,18 @@ function UserProfileClient() {
               <div className="space-y-5 sm:space-y-6">
                 {/* 파일 업로드 섹션 */}
                 <motion.div
-                  className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl p-4 sm:p-6 border border-blue-200 hover:border-blue-300 transition-colors"
+                  className="bg-linear-to-br from-blue-50 to-blue-100/50 rounded-xl p-4 sm:p-6 border border-blue-200 hover:border-blue-300 transition-colors"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
                 >
                   <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-5">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/60 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/60 flex items-center justify-center shrink-0">
                       <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h4 className="text-[14px] sm:text-[15px] font-bold text-slate-900">프로필 이미지 업로드</h4>
-                      <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5">JPG, PNG 형식, 5MB 이하</p>
+                      <h4 className="text-body-3 sm:text-[15px] font-bold text-slate-900">프로필 이미지 업로드</h4>
+                      <p className="text-caption-2 sm:text-caption-1 text-slate-500 mt-0.5">JPG, PNG 형식, 5MB 이하</p>
                     </div>
                   </div>
 
@@ -545,7 +545,7 @@ function UserProfileClient() {
                         className="absolute inset-0 opacity-0 cursor-pointer"
                       />
                       <div className="px-4 py-2.5 sm:py-3 bg-white border-2 border-dashed border-blue-300 rounded-lg text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-colors">
-                        <p className="text-[12px] sm:text-[13px] font-semibold text-slate-700">
+                        <p className="text-caption-2 sm:text-caption-1 font-semibold text-slate-700">
                           {selectedFile ? selectedFile.name : '클릭하여 파일 선택'}
                         </p>
                       </div>
@@ -553,7 +553,7 @@ function UserProfileClient() {
                     <motion.button
                       onClick={handleUploadImage}
                       disabled={!selectedFile || uploadImageMutation.isPending}
-                      className="px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-[12px] sm:text-[13px] font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+                      className="px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -570,7 +570,7 @@ function UserProfileClient() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.4, delay: 0.1 }}
                   >
-                    <h4 className="text-[14px] sm:text-[15px] font-bold text-slate-900 px-2 sm:px-0">작성된 이력서 ({resumeList.length})</h4>
+                    <h4 className="text-body-3 sm:text-[15px] font-bold text-slate-900 px-2 sm:px-0">작성된 이력서 ({resumeList.length})</h4>
                     {resumeList.map((resume, idx) => (
                       <motion.div
                         key={resume.id}
@@ -581,15 +581,15 @@ function UserProfileClient() {
                         transition={{ duration: 0.3, delay: idx * 0.05 }}
                         whileHover={{ x: 4 }}
                       >
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-100 transition-colors">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors">
                           <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <p className="text-[13px] sm:text-[14px] font-semibold text-slate-900 truncate">
+                          <p className="text-caption-1 sm:text-body-3 font-semibold text-slate-900 truncate">
                             {resume.title || '이력서'}
                           </p>
-                          <p className="text-[11px] sm:text-[12px] text-slate-400 mt-1">
+                          <p className="text-[11px] sm:text-caption-2 text-slate-400 mt-1">
                             {resume.updated_at ? new Date(resume.updated_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' }) : '날짜 정보 없음'}
                           </p>
                         </div>
@@ -600,7 +600,7 @@ function UserProfileClient() {
                             handleDeleteResume(resume.id, resume.title || '이력서');
                           }}
                           disabled={deleteResumeMutation.isPending}
-                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-[12px] font-semibold text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
+                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-caption-2 font-semibold text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
@@ -614,10 +614,10 @@ function UserProfileClient() {
                     <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-slate-100 flex items-center justify-center">
                       <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400" />
                     </div>
-                    <p className="text-[13px] sm:text-sm text-slate-500 mb-4 sm:mb-6">작성된 이력서가 없습니다.</p>
+                    <p className="text-caption-1 sm:text-sm text-slate-500 mb-4 sm:mb-6">작성된 이력서가 없습니다.</p>
                     <button
                       onClick={() => router.push('/user/resume/create')}
-                      className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-[12px] sm:text-[13px] font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+                      className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
                     >
                       <FileText size={16} />
                       이력서 작성하기
@@ -646,10 +646,10 @@ function UserProfileClient() {
                   transition={{ duration: 0.4 }}
                 >
                   <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
                       <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                     </div>
-                    <h3 className="text-[14px] sm:text-[15px] font-bold text-slate-900">교육 이력</h3>
+                    <h3 className="text-body-3 sm:text-[15px] font-bold text-slate-900">교육 이력</h3>
                   </div>
 
                   <div className="space-y-3">
@@ -669,11 +669,11 @@ function UserProfileClient() {
                               <div className="absolute -left-6 sm:-left-8 top-1 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-blue-600 border-2 border-white shadow-sm" />
 
                               <div className="bg-slate-50 rounded-lg p-3 sm:p-4 border border-slate-100 hover:border-blue-200 hover:shadow-sm transition-all">
-                                <p className="text-[13px] sm:text-[14px] font-bold text-slate-900">{edu.institution}</p>
-                                <p className="text-[12px] sm:text-[13px] text-slate-600 mt-1">
+                                <p className="text-caption-1 sm:text-body-3 font-bold text-slate-900">{edu.institution}</p>
+                                <p className="text-caption-2 sm:text-caption-1 text-slate-600 mt-1">
                                   {edu.degree} • {edu.field}
                                 </p>
-                                <p className="text-[11px] sm:text-[12px] text-slate-400 mt-2">
+                                <p className="text-[11px] sm:text-caption-2 text-slate-400 mt-2">
                                   {edu.startDate} ~ {edu.endDate || '현재'}
                                 </p>
                               </div>
@@ -682,7 +682,7 @@ function UserProfileClient() {
                         </div>
                       </>
                     ) : (
-                      <p className="text-[12px] sm:text-[13px] text-slate-400 text-center py-4">교육 이력이 없습니다.</p>
+                      <p className="text-caption-2 sm:text-caption-1 text-slate-400 text-center py-4">교육 이력이 없습니다.</p>
                     )}
                   </div>
                 </motion.div>
@@ -696,23 +696,23 @@ function UserProfileClient() {
                     transition={{ duration: 0.4, delay: 0.1 }}
                   >
                     <div className="flex items-center gap-3 mb-4 sm:mb-5">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                         <Award className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
                       </div>
-                      <h3 className="text-[14px] sm:text-[15px] font-bold text-slate-900">자격증</h3>
+                      <h3 className="text-body-3 sm:text-[15px] font-bold text-slate-900">자격증</h3>
                     </div>
 
                     <div className="flex flex-wrap gap-2 sm:gap-3">
                       {resumeData.certifications.map((cert, index) => (
                         <motion.span
                           key={index}
-                          className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-br from-amber-50 to-yellow-50 text-amber-700 text-[11px] sm:text-[12px] font-semibold rounded-full border border-amber-200 hover:border-amber-300 hover:shadow-sm transition-all"
+                          className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-linear-to-br from-amber-50 to-yellow-50 text-amber-700 text-[11px] sm:text-caption-2 font-semibold rounded-full border border-amber-200 hover:border-amber-300 hover:shadow-sm transition-all"
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ duration: 0.2, delay: index * 0.05 }}
                           whileHover={{ y: -2 }}
                         >
-                          <Award size={12} className="mr-1.5 sm:mr-2 flex-shrink-0" />
+                          <Award size={12} className="mr-1.5 sm:mr-2 shrink-0" />
                           {cert}
                         </motion.span>
                       ))}

@@ -55,13 +55,13 @@ export default function JobCard({ post }: JobCardProps) {
           {/* Top Section: Icon + Type + Badges + Bookmark */}
           <div className="flex items-start gap-3 mb-4">
             {/* Company Icon */}
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shrink-0 shadow-sm">
+            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shrink-0 shadow-sm">
               <Building2 className="w-6 h-6" />
             </div>
 
             {/* Type Label + Badges */}
             <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-semibold text-slate-400 mb-1">기업 채용공고</p>
+              <p className="text-caption-2 font-semibold text-slate-400 mb-1">기업 채용공고</p>
               <div className="flex items-center gap-1.5 flex-wrap">
                 {isRecent && !isExpired && (
                   <span className="inline-flex items-center px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-md tracking-wide">
@@ -111,7 +111,7 @@ export default function JobCard({ post }: JobCardProps) {
           </h3>
 
           {/* Location & Employment Type */}
-          <div className="flex items-center gap-1.5 text-[12px] sm:text-[13px] text-slate-500 mb-2">
+          <div className="flex items-center gap-1.5 text-caption-2 sm:text-caption-1 text-slate-500 mb-2">
             <MapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />
             <span className="truncate">{post.work_location || '미정'}</span>
             {post.employment_type && (
@@ -147,7 +147,7 @@ export default function JobCard({ post }: JobCardProps) {
                 )}
               </div>
             ) : (
-              <p className="text-[12px] text-slate-400">기술스택 정보 없음</p>
+              <p className="text-caption-2 text-slate-400">기술스택 정보 없음</p>
             )}
           </div>
         </div>

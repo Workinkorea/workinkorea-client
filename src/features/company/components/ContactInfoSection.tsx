@@ -1,6 +1,6 @@
 import { Phone, Mail, Globe, MapPin } from 'lucide-react';
 import { CompanyProfileRequest } from '@/shared/types/api';
-import { getPhonePlaceholder } from '@/shared/lib/utils/phoneUtils';
+import { Input } from '@/shared/ui/Input';
 
 interface ContactInfoSectionProps {
   formData: CompanyProfileRequest;
@@ -30,15 +30,16 @@ export const ContactInfoSection = ({
             <Mail size={16} />
             이메일 <span className="text-red-500 text-lg ml-1">*</span>
           </label>
-          <input
+          <Input
             type="email"
             id="email"
             name="email"
             value={formData.email}
             onChange={onChange}
             onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.email ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.email && touchedFields.email && formData.email ? 'border-emerald-500' : ''}`}
             placeholder="hr@example.com"
+            error={!!errors.email}
+            success={!errors.email && touchedFields.email && !!formData.email}
           />
           {errors.email && (
             <p className="mt-1 text-[11px] text-red-500">{errors.email}</p>
@@ -60,42 +61,16 @@ export const ContactInfoSection = ({
             전화번호 <span className="text-red-500 text-lg ml-1">*</span>
           </label>
 
-          {/* Phone Type Selection */}
-          <div className="flex gap-4 mb-3">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="phone_type"
-                value="MOBILE"
-                checked={formData.phone_type === 'MOBILE'}
-                onChange={onChange}
-                className="w-4 h-4 text-blue-500 focus:ring-blue-500 cursor-pointer"
-              />
-              <span className="text-sm text-slate-700">휴대전화</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="phone_type"
-                value="LANDLINE"
-                checked={formData.phone_type === 'LANDLINE'}
-                onChange={onChange}
-                className="w-4 h-4 text-blue-500 focus:ring-blue-500 cursor-pointer"
-              />
-              <span className="text-sm text-slate-700">일반전화</span>
-            </label>
-          </div>
-
-          {/* Phone Number Input */}
-          <input
+          <Input
             type="text"
             id="phone_number"
             name="phone_number"
             value={formData.phone_number || ''}
             onChange={onChange}
             onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.phone_number ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.phone_number && touchedFields.phone_number && formData.phone_number ? 'border-emerald-500' : ''}`}
-            placeholder={getPhonePlaceholder(formData.phone_type)}
+            placeholder="010-1234-5678"
+            error={!!errors.phone_number}
+            success={!errors.phone_number && touchedFields.phone_number && !!formData.phone_number}
           />
           {errors.phone_number && (
             <p className="mt-1 text-[11px] text-red-500">{errors.phone_number}</p>
@@ -106,11 +81,7 @@ export const ContactInfoSection = ({
             </p>
           )}
           {!touchedFields.phone_number && (
-            <p className="mt-1 text-[11px] text-slate-500">
-              {formData.phone_type === 'MOBILE'
-                ? '휴대전화: 010, 011, 016-019로 시작하는 번호'
-                : '일반전화: 지역번호(예: 02, 031, 051) 포함'}
-            </p>
+            <p className="mt-1 text-[11px] text-slate-500">010, 011, 016~019로 시작하는 번호를 입력하세요.</p>
           )}
         </div>
 
@@ -120,15 +91,16 @@ export const ContactInfoSection = ({
             <Globe size={16} />
             웹사이트 <span className="text-[11px] px-2 py-0.5 bg-slate-100 text-slate-600 rounded ml-2">선택</span>
           </label>
-          <input
+          <Input
             type="url"
             id="website_url"
             name="website_url"
             value={formData.website_url}
             onChange={onChange}
             onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.website_url ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.website_url && formData.website_url ? 'border-emerald-500' : ''}`}
             placeholder="https://example.com"
+            error={!!errors.website_url}
+            success={!errors.website_url && !!formData.website_url}
           />
           {errors.website_url && (
             <p className="mt-1 text-[11px] text-red-500">{errors.website_url}</p>
@@ -149,15 +121,16 @@ export const ContactInfoSection = ({
             <MapPin size={16} />
             주소 <span className="text-red-500 text-lg ml-1">*</span>
           </label>
-          <input
+          <Input
             type="text"
             id="address"
             name="address"
             value={formData.address}
             onChange={onChange}
             onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.address ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.address && touchedFields.address && formData.address ? 'border-emerald-500' : ''}`}
             placeholder="서울특별시 강남구 테헤란로 427"
+            error={!!errors.address}
+            success={!errors.address && touchedFields.address && !!formData.address}
           />
           {errors.address && (
             <p className="mt-1 text-[11px] text-red-500">{errors.address}</p>

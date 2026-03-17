@@ -446,7 +446,7 @@ function ProfileEditContainer() {
         <main className="flex-1 bg-background-alternative flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
-            <h2 className="text-[24px] font-semibold text-slate-900 mb-2">
+            <h2 className="text-title-3 font-semibold text-slate-900 mb-2">
               프로필을 불러올 수 없습니다
             </h2>
             <p className="text-sm text-slate-500 mb-4">
@@ -494,7 +494,7 @@ function ProfileEditContainer() {
                     setIsMobileNavOpen(false);
                   }}
                   className={cn(
-                    'flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer',
+                    'shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer',
                     activeSection === section.key
                       ? 'bg-blue-600 text-white'
                       : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'

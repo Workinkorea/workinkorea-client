@@ -18,7 +18,7 @@ export default function Footer() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-[13px] text-slate-400 hover:text-slate-600 transition-colors"
+              className="text-caption-1 text-slate-400 hover:text-slate-600 transition-colors"
             >
               {link.name}
             </Link>
@@ -26,7 +26,7 @@ export default function Footer() {
         </nav>
 
         {/* 저작권 */}
-        <p className="text-[12px] text-slate-400">
+        <p className="text-caption-2 text-slate-400">
           © 2026 Work In Korea. All rights reserved.
         </p>
       </div>

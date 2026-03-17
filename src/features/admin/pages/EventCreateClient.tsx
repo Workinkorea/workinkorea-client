@@ -47,7 +47,7 @@ const INITIAL_FORM: EventFormData = {
 
 function FormLabel({ required, children }: { required?: boolean; children: React.ReactNode }) {
   return (
-    <label className="block text-[13px] font-semibold text-label-700 mb-1.5">
+    <label className="block text-caption-1 font-semibold text-label-700 mb-1.5">
       {children}
       {required && <span className="text-status-error ml-0.5">*</span>}
     </label>
@@ -119,15 +119,15 @@ export function EventCreateClient() {
       {/* 페이지 헤더 */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-[12px] font-semibold text-blue-600 uppercase tracking-widest mb-1">
+          <p className="text-caption-2 font-semibold text-blue-600 uppercase tracking-widest mb-1">
             Admin
           </p>
-          <h2 className="text-[24px] font-extrabold text-label-900">이벤트 생성</h2>
+          <h2 className="text-title-3 font-extrabold text-label-900">이벤트 생성</h2>
         </div>
         <button
           type="button"
           onClick={() => router.back()}
-          className="text-[13px] text-label-500 hover:text-label-900 transition-colors cursor-pointer"
+          className="text-caption-1 text-label-500 hover:text-label-900 transition-colors cursor-pointer"
         >
           ← 목록으로
         </button>

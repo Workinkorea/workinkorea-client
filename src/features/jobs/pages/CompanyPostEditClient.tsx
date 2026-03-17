@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { FileText } from 'lucide-react';
 import Layout from '@/shared/components/layout/Layout';
 import { Button } from '@/shared/ui/Button';
@@ -22,11 +23,19 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
   const queryClient = useQueryClient();
   const { isAuthenticated, isLoading: authLoading, userType } = useAuth();
 
+  // 인증 완료 후 권한 체크 — 비인증 또는 기업 회원이 아닌 경우 로그인 페이지로 리다이렉트
+  useEffect(() => {
+    if (!authLoading && (!isAuthenticated || userType !== 'company')) {
+      router.replace('/company-login');
+    }
+  }, [authLoading, isAuthenticated, userType, router]);
+
   // 공고 데이터 로드
   const { data: post, isLoading: postLoading } = useQuery({
     queryKey: ['companyPost', postId],
     queryFn: () => postsApi.getCompanyPostById(Number(postId)),
-    enabled: !!postId && isAuthenticated,
+    enabled: !!postId && isAuthenticated && userType === 'company',
+    retry: false,
   });
 
   // 수정 mutation
@@ -101,9 +110,30 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
     );
   }
 
-  if (!isAuthenticated || userType !== 'company' || !post) {
-    return null;
+  if (!isAuthenticated || userType !== 'company') {
+    return null; // useEffect가 redirect 처리
   }
+
+  if (!post) {
+    return (
+      <Layout>
+        <main className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-slate-500 text-[15px]">공고를 찾을 수 없습니다.</p>
+            <button
+              onClick={() => router.push('/company')}
+              className="mt-4 text-blue-600 hover:text-blue-700 text-body-3 font-medium cursor-pointer"
+            >
+              기업 대시보드로 돌아가기
+            </button>
+          </div>
+        </main>
+      </Layout>
+    );
+  }
+
+  // ISO datetime → YYYY-MM-DD 변환 유틸
+  const toDateOnly = (iso: string) => iso.split('T')[0];
 
   // 초기 데이터 변환
   const initialData = {
@@ -117,8 +147,8 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
     work_location: post.work_location,
     working_hours: post.working_hours,
     salary: post.salary,
-    start_date: post.start_date,
-    end_date: post.end_date,
+    start_date: toDateOnly(post.start_date),
+    end_date: toDateOnly(post.end_date),
   };
 
   return (
@@ -139,7 +169,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
               </div>
               <div>
                 <h1 className="text-[22px] font-extrabold text-slate-900">채용 공고 수정</h1>
-                <p className="text-[13px] text-slate-500 mt-0.5">
+                <p className="text-caption-1 text-slate-500 mt-0.5">
                   채용 공고 정보를 수정해주세요
                 </p>
               </div>

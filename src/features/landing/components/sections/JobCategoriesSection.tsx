@@ -18,13 +18,13 @@ export default function JobCategoriesSection() {
       <div className="page-container">
         {/* 섹션 헤더 */}
         <div className="text-center mb-8 sm:mb-12">
-          <span className="inline-block bg-blue-50 text-blue-600 text-[12px] font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
+          <span className="inline-block bg-blue-50 text-blue-600 text-caption-2 font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
             직종 카테고리
           </span>
-          <h2 className="text-[24px] sm:text-[32px] font-extrabold text-slate-900 mb-3">
+          <h2 className="text-title-3 sm:text-title-1 font-extrabold text-slate-900 mb-3">
             직종별 채용정보
           </h2>
-          <p className="text-[13px] sm:text-[15px] text-slate-500">
+          <p className="text-caption-1 sm:text-[15px] text-slate-500">
             원하는 분야의 채용공고를 바로 찾아보세요
           </p>
         </div>
@@ -42,7 +42,7 @@ export default function JobCategoriesSection() {
                 <div className={`${category.bgColor} rounded-xl p-3 flex items-center justify-center group-hover:scale-105 transition-transform`}>
                   <IconComponent className={`w-5 h-5 sm:w-6 sm:h-6 ${category.iconColor}`} />
                 </div>
-                <span className="text-[12px] sm:text-[13px] font-semibold text-slate-700 group-hover:text-blue-700 transition-colors text-center">
+                <span className="text-caption-2 sm:text-caption-1 font-semibold text-slate-700 group-hover:text-blue-700 transition-colors text-center">
                   {category.title}
                 </span>
               </Link>

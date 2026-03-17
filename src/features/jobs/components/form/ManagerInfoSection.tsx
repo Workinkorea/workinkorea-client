@@ -63,7 +63,7 @@ export function ManagerInfoSection({
           disabled={isSubmitting}
           className={cn(
             'inline-flex items-center gap-1.5 shrink-0',
-            'px-3 py-1.5 text-[12px] font-semibold rounded-lg transition-colors cursor-pointer',
+            'px-3 py-1.5 text-caption-2 font-semibold rounded-lg transition-colors cursor-pointer',
             'border border-blue-200 text-blue-600 bg-blue-50',
             'hover:bg-blue-100 hover:border-blue-300',
             'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
