@@ -89,7 +89,7 @@ const FieldRow = ({ label, required, optional, children }: {
   label: string; required?: boolean; optional?: boolean; children: React.ReactNode;
 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0 items-start">
-    <span className="text-[13px] font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
+    <span className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
       {label}
       {required && <span className="text-red-500">*</span>}
       {optional && <span className="text-[11px] font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">선택</span>}
@@ -325,25 +325,25 @@ function BasicInfoSection({
         {/* Portfolio Upload */}
         <FieldRow label="포트폴리오" optional>
           <div className="border-2 border-dashed border-slate-200 rounded-xl p-5 flex items-center gap-4 hover:border-blue-300 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
               <FileText size={20} className="text-blue-600" />
             </div>
             <div className="flex-1 min-w-0">
               {selectedPortfolioFileName || profile.portfolio_url ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-[13px] text-slate-700 font-medium truncate">
+                  <span className="text-caption-1 text-slate-700 font-medium truncate">
                     {selectedPortfolioFileName || profile.portfolio_url}
                   </span>
                   <button
                     type="button"
                     onClick={onRemovePortfolio}
-                    className="text-red-500 hover:text-red-600 cursor-pointer flex-shrink-0"
+                    className="text-red-500 hover:text-red-600 cursor-pointer shrink-0"
                   >
                     <X size={16} />
                   </button>
                 </div>
               ) : (
-                <p className="text-[13px] text-slate-600">파일을 선택하거나 드래그하세요</p>
+                <p className="text-caption-1 text-slate-600">파일을 선택하거나 드래그하세요</p>
               )}
               <p className="text-[11px] text-slate-400 mt-0.5">PDF, DOCX, 이미지 (최대 10MB)</p>
             </div>
@@ -408,7 +408,7 @@ function BasicInfoSection({
 
         {/* Language Skills */}
         <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0">
-          <span className="text-[13px] font-semibold text-slate-700 mb-4 block">언어 스킬</span>
+          <span className="text-caption-1 font-semibold text-slate-700 mb-4 block">언어 스킬</span>
           <LanguageSkillsInput control={control} errors={errors} />
         </div>
       </div>

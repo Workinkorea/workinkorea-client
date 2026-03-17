@@ -26,7 +26,7 @@ export function Header({ type, isAuthenticated, onLogout }: HeaderProps) {
         <div className="flex items-center h-16 gap-4">
 
           {/* 로고 */}
-          <Link href="/" className="flex items-center flex-shrink-0">
+          <Link href="/" className="flex items-center shrink-0">
             <span className="font-['Plus_Jakarta_Sans'] text-xl font-extrabold text-blue-600 tracking-tight">
               WorkInKorea
             </span>

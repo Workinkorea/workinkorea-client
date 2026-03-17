@@ -38,7 +38,7 @@ const itemVariants = {
 
 export default function SignupSelectContent() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-blue-50/30">
       <div className="flex items-center justify-center px-4 py-8 sm:py-12 lg:py-16">
         <motion.div
           className="w-full max-w-3xl"
@@ -49,17 +49,17 @@ export default function SignupSelectContent() {
           {/* Top Badge */}
           <motion.div className="text-center mb-8" variants={itemVariants}>
             <div className="inline-flex items-center justify-center px-3 py-1.5 bg-blue-50 rounded-full mb-6">
-              <span className="text-[12px] font-bold text-blue-600 uppercase tracking-wide">회원 유형 선택</span>
+              <span className="text-caption-2 font-bold text-blue-600 uppercase tracking-wide">회원 유형 선택</span>
             </div>
           </motion.div>
 
           {/* Title */}
           <motion.div className="text-center mb-10 sm:mb-12" variants={itemVariants}>
-            <h1 className="text-[28px] sm:text-[32px] lg:text-[36px] font-extrabold text-slate-900 mb-2">
+            <h1 className="text-title-2 sm:text-title-1 lg:text-[36px] font-extrabold text-slate-900 mb-2">
               <span className="font-black">개인</span> 또는 <span className="font-black">기업</span>
               <br className="hidden sm:inline" /> 회원가입
             </h1>
-            <p className="text-[13px] sm:text-sm text-slate-600 mt-3">
+            <p className="text-caption-1 sm:text-sm text-slate-600 mt-3">
               당신의 신분에 맞게 회원가입을 진행해주세요
             </p>
           </motion.div>
@@ -99,14 +99,14 @@ export default function SignupSelectContent() {
                         <h2 className="text-[20px] sm:text-[22px] font-extrabold text-slate-900 mb-1">
                           {title}
                         </h2>
-                        <p className="text-[13px] text-slate-600">{description}</p>
+                        <p className="text-caption-1 text-slate-600">{description}</p>
                       </div>
 
                       {/* Features List */}
-                      <ul className="text-left text-[13px] text-slate-600 space-y-2.5 w-full">
+                      <ul className="text-left text-caption-1 text-slate-600 space-y-2.5 w-full">
                         {features.map((feature) => (
                           <li key={feature} className="flex items-start gap-2.5">
-                            <CheckCircle2 className="w-4.5 h-4.5 text-blue-600 mt-0.5 flex-shrink-0" />
+                            <CheckCircle2 className="w-4.5 h-4.5 text-blue-600 mt-0.5 shrink-0" />
                             <span className="leading-relaxed">{feature}</span>
                           </li>
                         ))}
@@ -133,7 +133,7 @@ export default function SignupSelectContent() {
 
           {/* Login Link */}
           <motion.div className="text-center" variants={itemVariants}>
-            <p className="text-[13px] sm:text-sm text-slate-600">
+            <p className="text-caption-1 sm:text-sm text-slate-600">
               이미 계정이 있으신가요?{' '}
               <Link href="/login-select" className="text-blue-600 hover:text-blue-700 font-semibold">
                 로그인하기

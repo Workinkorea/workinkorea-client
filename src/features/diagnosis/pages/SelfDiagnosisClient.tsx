@@ -48,7 +48,7 @@ const SelfDiagnosisClient = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-[20px] md:text-[28px] font-bold text-slate-900 mb-4">
+            <h1 className="text-[20px] md:text-title-2 font-bold text-slate-900 mb-4">
               자가진단
             </h1>
             <p className="text-sm text-slate-500 mb-8">

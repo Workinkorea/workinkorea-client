@@ -134,7 +134,7 @@ export function WorkConditionsSection({
                 disabled={isSubmitting}
                 className="w-4 h-4 accent-blue-600 cursor-pointer rounded"
               />
-              <span className="text-[13px] text-label-600 select-none group-hover:text-label-800 transition-colors">
+              <span className="text-caption-1 text-label-600 select-none group-hover:text-label-800 transition-colors">
                 급여 협의 가능
               </span>
             </label>

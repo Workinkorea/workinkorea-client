@@ -90,19 +90,19 @@ export default function ServicesSection() {
             animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            <span className="text-[11px] sm:text-[12px] font-bold text-blue-600 uppercase tracking-wider">
+            <span className="text-[11px] sm:text-caption-2 font-bold text-blue-600 uppercase tracking-wider">
               특별 서비스
             </span>
           </motion.div>
 
           {/* 타이틀 */}
-          <h2 className="text-[24px] sm:text-[28px] lg:text-[36px] font-extrabold text-slate-900 mb-3 sm:mb-4 leading-tight">
+          <h2 className="text-title-3 sm:text-title-2 lg:text-[36px] font-extrabold text-slate-900 mb-3 sm:mb-4 leading-tight">
             Work In Korea{' '}
             <span className="text-blue-600">특별한 서비스</span>
           </h2>
 
           {/* 부제 */}
-          <p className="text-[13px] sm:text-[14px] lg:text-base text-slate-500 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-caption-1 sm:text-body-3 lg:text-base text-slate-500 max-w-2xl mx-auto leading-relaxed">
             성공적인 한국 취업을 위한 특별한 서비스를 제공합니다
           </p>
         </motion.div>
@@ -139,8 +139,8 @@ export default function ServicesSection() {
                 <div className={cn(
                   'absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300',
                   service.id === 'jobs'
-                    ? 'bg-gradient-to-br from-slate-50 to-slate-100/50'
-                    : 'bg-gradient-to-br from-blue-50/50 to-blue-100/30'
+                    ? 'bg-linear-to-br from-slate-50 to-slate-100/50'
+                    : 'bg-linear-to-br from-blue-50/50 to-blue-100/30'
                 )} />
 
                 {/* Content */}
@@ -182,7 +182,7 @@ export default function ServicesSection() {
 
                   {/* 설명 */}
                   <p className={cn(
-                    'text-[13px] sm:text-[14px] leading-relaxed mb-5 sm:mb-6 line-clamp-3',
+                    'text-caption-1 sm:text-body-3 leading-relaxed mb-5 sm:mb-6 line-clamp-3',
                     service.id === 'jobs'
                       ? 'text-slate-500 group-hover:text-slate-600'
                       : 'text-slate-500 group-hover:text-slate-600'
@@ -193,7 +193,7 @@ export default function ServicesSection() {
                   {/* 링크 */}
                   <Link
                     href={service.href}
-                    className="inline-flex items-center gap-2 text-[13px] sm:text-[14px] font-semibold transition-all duration-200 group/link"
+                    className="inline-flex items-center gap-2 text-caption-1 sm:text-body-3 font-semibold transition-all duration-200 group/link"
                   >
                     <span className={cn(
                       service.id === 'jobs'
@@ -204,7 +204,7 @@ export default function ServicesSection() {
                     </span>
                     <motion.span
                       className={cn(
-                        'inline-block text-[14px] sm:text-[15px]',
+                        'inline-block text-body-3 sm:text-[15px]',
                         service.id === 'jobs'
                           ? 'text-slate-600 group-hover/link:text-slate-700'
                           : 'text-blue-600 group-hover/link:text-blue-700'

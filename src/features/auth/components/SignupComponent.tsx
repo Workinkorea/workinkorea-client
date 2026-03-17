@@ -243,7 +243,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                     type="checkbox"
                     checked={termsAgreement[key]}
                     onChange={(e) => handleTermChange(key, e.target.checked)}
-                    className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer flex-shrink-0"
+                    className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -252,7 +252,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                       </span>
                       <button
                         type="button"
-                        className="text-[11px] text-slate-500 hover:text-blue-600 underline cursor-pointer whitespace-nowrap flex-shrink-0"
+                        className="text-[11px] text-slate-500 hover:text-blue-600 underline cursor-pointer whitespace-nowrap shrink-0"
                         onClick={(e) => {
                           e.preventDefault();
                           openTermsModal(key);
@@ -285,7 +285,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-[24px] sm:text-[28px] font-bold text-slate-900 mb-2">개인 회원가입</h1>
+            <h1 className="text-title-3 sm:text-title-2 font-bold text-slate-900 mb-2">개인 회원가입</h1>
             <p className="text-sm text-slate-500">가입 정보를 입력하세요</p>
           </motion.div>
 
@@ -356,7 +356,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                   transition={{ duration: 0.3 }}
                   className="flex items-center gap-2 text-emerald-600 text-xs -mt-2"
                 >
-                  <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fillRule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -426,7 +426,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                             transition={{ duration: 0.3 }}
                             className="flex items-center gap-2 text-emerald-600 text-xs"
                           >
-                            <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                               <path
                                 fillRule="evenodd"
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"

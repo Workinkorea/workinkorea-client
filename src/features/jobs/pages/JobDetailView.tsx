@@ -195,12 +195,12 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   <div className="flex items-start gap-4 justify-between">
                     <div className="flex items-start gap-4 flex-1 min-w-0">
                       {/* Company Icon */}
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm">
                         <Building2 className="w-8 h-8 sm:w-10 sm:h-10" />
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-semibold text-slate-400 mb-2">기업 채용공고</p>
+                        <p className="text-caption-2 font-semibold text-slate-400 mb-2">기업 채용공고</p>
 
                         {/* Badges */}
                         <div className="flex items-center gap-2 mb-3 flex-wrap">
@@ -221,7 +221,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                         </div>
 
                         {/* Title */}
-                        <h1 className="text-[20px] sm:text-[24px] lg:text-[28px] font-extrabold text-slate-900 leading-tight line-clamp-3">
+                        <h1 className="text-[20px] sm:text-title-3 lg:text-title-2 font-extrabold text-slate-900 leading-tight line-clamp-3">
                           {job.title}
                         </h1>
                       </div>
@@ -252,28 +252,28 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-blue-50 border border-blue-100 rounded-lg">
                     <div className="flex flex-col">
                       <p className="text-[11px] font-semibold text-slate-400 mb-1">연봉</p>
-                      <p className="text-[14px] font-extrabold text-blue-600">
+                      <p className="text-body-3 font-extrabold text-blue-600">
                         {job.salary ? `${job.salary.toLocaleString()}` : '협의'}
                       </p>
                     </div>
                     <div className="flex flex-col">
                       <p className="text-[11px] font-semibold text-slate-400 mb-1">근무지</p>
-                      <p className="text-[14px] font-bold text-slate-900 line-clamp-2">{job.work_location}</p>
+                      <p className="text-body-3 font-bold text-slate-900 line-clamp-2">{job.work_location}</p>
                     </div>
                     <div className="flex flex-col">
                       <p className="text-[11px] font-semibold text-slate-400 mb-1">고용형태</p>
-                      <p className="text-[14px] font-bold text-slate-900">{job.employment_type}</p>
+                      <p className="text-body-3 font-bold text-slate-900">{job.employment_type}</p>
                     </div>
                     <div className="flex flex-col">
                       <p className="text-[11px] font-semibold text-slate-400 mb-1">근무시간</p>
-                      <p className="text-[14px] font-bold text-slate-900">{job.working_hours}시간</p>
+                      <p className="text-body-3 font-bold text-slate-900">{job.working_hours}시간</p>
                     </div>
                   </div>
 
                   {/* Recruitment Period */}
                   <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-100 rounded-lg">
                     <Calendar className="text-amber-600 shrink-0" size={18} />
-                    <p className="text-[13px] text-slate-900">
+                    <p className="text-caption-1 text-slate-900">
                       <span className="font-semibold">모집기간:</span> {job.start_date} ~ {job.end_date}
                     </p>
                   </div>
@@ -286,33 +286,33 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
 
                 {/* Job Content Section */}
                 <div className="space-y-3">
-                  <h3 className="text-[14px] font-bold text-slate-900 flex items-center gap-2">
+                  <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
                     <FileText size={16} className="text-blue-600" />
                     직무 내용
                   </h3>
-                  <p className="text-[13px] text-slate-700 leading-relaxed whitespace-pre-wrap">{job.content}</p>
+                  <p className="text-caption-1 text-slate-700 leading-relaxed whitespace-pre-wrap">{job.content}</p>
                 </div>
 
                 <div className="border-t border-slate-100" />
 
                 {/* Experience Section */}
                 <div className="space-y-3">
-                  <h3 className="text-[14px] font-bold text-slate-900 flex items-center gap-2">
+                  <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
                     <Briefcase size={16} className="text-blue-600" />
                     경력
                   </h3>
-                  <p className="text-[13px] text-slate-700 leading-relaxed">{job.work_experience}</p>
+                  <p className="text-caption-1 text-slate-700 leading-relaxed">{job.work_experience}</p>
                 </div>
 
                 <div className="border-t border-slate-100" />
 
                 {/* Education Section */}
                 <div className="space-y-3">
-                  <h3 className="text-[14px] font-bold text-slate-900 flex items-center gap-2">
+                  <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
                     <GraduationCap size={16} className="text-blue-600" />
                     학력
                   </h3>
-                  <p className="text-[13px] text-slate-700 leading-relaxed">{job.education}</p>
+                  <p className="text-caption-1 text-slate-700 leading-relaxed">{job.education}</p>
                 </div>
 
                 {/* Languages Section */}
@@ -321,7 +321,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                     <div className="border-t border-slate-100" />
 
                     <div className="space-y-3">
-                      <h3 className="text-[14px] font-bold text-slate-900 flex items-center gap-2">
+                      <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
                         <Languages size={16} className="text-blue-600" />
                         필요 언어
                       </h3>
@@ -329,7 +329,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                         {language.map((lang, index) => (
                           <span
                             key={index}
-                            className="inline-flex px-3 py-1.5 bg-blue-50 text-blue-700 text-[12px] font-semibold rounded-lg border border-blue-200"
+                            className="inline-flex px-3 py-1.5 bg-blue-50 text-blue-700 text-caption-2 font-semibold rounded-lg border border-blue-200"
                           >
                             {lang}
                           </span>
@@ -351,7 +351,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                 {/* Salary Display */}
                 <div className="space-y-1">
                   <p className="text-[11px] font-semibold text-slate-400">연봉</p>
-                  <p className="text-[32px] font-extrabold text-blue-600 leading-tight">
+                  <p className="text-title-1 font-extrabold text-blue-600 leading-tight">
                     {job.salary ? `${job.salary.toLocaleString()}` : '협의'}
                   </p>
                 </div>
@@ -374,7 +374,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                 {/* Bookmark Button */}
                 <motion.button
                   onClick={handleBookmarkToggle}
-                  className="w-full flex items-center justify-center gap-2 py-3 border border-slate-200 text-slate-700 rounded-lg font-semibold text-[13px] hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-3 border border-slate-200 text-slate-700 rounded-lg font-semibold text-caption-1 hover:bg-slate-50 transition-colors cursor-pointer"
                   whileTap={{ scale: 0.98 }}
                 >
                   <Bookmark size={16} className={bookmarked ? 'fill-blue-600 text-blue-600' : ''} />
@@ -384,7 +384,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                 {/* Share Button */}
                 <motion.button
                   onClick={handleShare}
-                  className="w-full flex items-center justify-center gap-2 py-3 border border-slate-200 text-slate-700 rounded-lg font-semibold text-[13px] hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-3 border border-slate-200 text-slate-700 rounded-lg font-semibold text-caption-1 hover:bg-slate-50 transition-colors cursor-pointer"
                   whileTap={{ scale: 0.98 }}
                 >
                   <Share2 size={16} />
@@ -394,8 +394,8 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                 {/* Recruitment Info */}
                 <div className="p-4 bg-slate-50 rounded-lg border border-slate-100 space-y-2 mt-6 pt-6 border-t">
                   <p className="text-[11px] font-semibold text-slate-400">모집기간</p>
-                  <p className="text-[13px] font-semibold text-slate-900">{job.start_date}</p>
-                  <p className="text-[13px] text-slate-600">~ {job.end_date}</p>
+                  <p className="text-caption-1 font-semibold text-slate-900">{job.start_date}</p>
+                  <p className="text-caption-1 text-slate-600">~ {job.end_date}</p>
                 </div>
               </motion.div>
             </div>

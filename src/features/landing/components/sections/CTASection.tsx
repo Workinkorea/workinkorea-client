@@ -30,7 +30,7 @@ export default function CTASection() {
       className="relative py-16 sm:py-20 lg:py-28 overflow-hidden"
     >
       {/* 배경 그래디언트 */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900" />
+      <div className="absolute inset-0 bg-linear-to-br from-blue-600 via-blue-700 to-blue-900" />
 
       {/* 장식 원 1 */}
       <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400/20 rounded-full -mr-36 sm:-mr-48 -mt-36 sm:-mt-48 blur-3xl" />
@@ -46,7 +46,7 @@ export default function CTASection() {
       >
         {/* 메인 제목 */}
         <motion.h2
-          className="text-[28px] sm:text-[32px] lg:text-[44px] font-black text-white mb-4 sm:mb-5 lg:mb-6 tracking-tight leading-tight"
+          className="text-title-2 sm:text-title-1 lg:text-[44px] font-black text-white mb-4 sm:mb-5 lg:mb-6 tracking-tight leading-tight"
           variants={itemVariants}
         >
           지금 시작하세요!
@@ -54,7 +54,7 @@ export default function CTASection() {
 
         {/* 부제 */}
         <motion.p
-          className="text-[14px] sm:text-[15px] lg:text-[18px] text-blue-100 mb-8 sm:mb-10 lg:mb-12 max-w-2xl mx-auto leading-relaxed"
+          className="text-body-3 sm:text-[15px] lg:text-[18px] text-blue-100 mb-8 sm:mb-10 lg:mb-12 max-w-2xl mx-auto leading-relaxed"
           variants={itemVariants}
         >
           수많은 기업과 함께 새로운 미래를 시작하세요
@@ -77,7 +77,7 @@ export default function CTASection() {
                 'inline-flex items-center justify-center gap-2',
                 'px-5 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4',
                 'bg-white text-blue-600',
-                'text-[13px] sm:text-[14px] lg:text-base font-semibold',
+                'text-caption-1 sm:text-body-3 lg:text-base font-semibold',
                 'rounded-lg lg:rounded-xl',
                 'hover:bg-blue-50 transition-all duration-200',
                 'shadow-lg hover:shadow-xl',
@@ -101,7 +101,7 @@ export default function CTASection() {
                 'inline-flex items-center justify-center gap-2',
                 'px-5 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4',
                 'bg-transparent text-white',
-                'text-[13px] sm:text-[14px] lg:text-base font-semibold',
+                'text-caption-1 sm:text-body-3 lg:text-base font-semibold',
                 'rounded-lg lg:rounded-xl',
                 'border-2 border-white/50 hover:border-white',
                 'hover:bg-white/10 transition-all duration-200',
@@ -117,7 +117,7 @@ export default function CTASection() {
 
         {/* 보충 텍스트 */}
         <motion.p
-          className="mt-6 sm:mt-8 lg:mt-10 text-[11px] sm:text-[12px] text-blue-200"
+          className="mt-6 sm:mt-8 lg:mt-10 text-[11px] sm:text-caption-2 text-blue-200"
           variants={itemVariants}
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}

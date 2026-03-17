@@ -51,7 +51,7 @@ export function RecommendedJobsSection({ diagnosisData }: RecommendedJobsSection
         </div>
         <Link
           href="/jobs"
-          className="text-[12px] sm:text-[13px] text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 transition-colors"
+          className="text-caption-2 sm:text-caption-1 text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 transition-colors"
         >
           전체 보기
           <ArrowRight size={14} />

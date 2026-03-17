@@ -59,7 +59,7 @@ export default function HeroSection() {
         {/* 설명 */}
         <motion.p
           variants={item}
-          className="text-[13px] sm:text-[14px] text-slate-500 mb-8"
+          className="text-caption-1 sm:text-body-3 text-slate-500 mb-8"
         >
           맞춤형 채용공고 추천을 확인하려면 로그인하세요.
         </motion.p>

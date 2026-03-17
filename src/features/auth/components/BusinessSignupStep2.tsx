@@ -259,7 +259,7 @@ export default function BusinessSignupStep2({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-[28px] sm:text-[36px] text-slate-900 text-center mb-4 leading-tight">
+          <h1 className="text-title-2 sm:text-[36px] text-slate-900 text-center mb-4 leading-tight">
             <p>기업 회원가입</p>
           </h1>
           <div className="flex items-center justify-between text-sm">

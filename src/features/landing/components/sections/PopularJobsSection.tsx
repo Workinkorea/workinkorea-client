@@ -110,10 +110,10 @@ export default function PopularJobsSection() {
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
         >
-          <h2 className="text-[24px] md:text-[28px] font-extrabold text-slate-900 mb-3 md:mb-4">
+          <h2 className="text-title-3 md:text-title-2 font-extrabold text-slate-900 mb-3 md:mb-4">
             인기 공고
           </h2>
-          <p className="text-[13px] md:text-base text-slate-500">
+          <p className="text-caption-1 md:text-base text-slate-500">
             지금 가장 주목받는 기업들의 채용공고입니다
           </p>
         </motion.div>
@@ -170,7 +170,7 @@ export default function PopularJobsSection() {
                       {/* 회사명과 시간 */}
                       <div className="flex items-start justify-between mb-3 md:mb-4">
                         <div className="flex items-center gap-2 md:gap-3">
-                          <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white font-bold text-sm md:text-base shrink-0">
+                          <div className="w-10 h-10 md:w-12 md:h-12 bg-linear-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white font-bold text-sm md:text-base shrink-0">
                             {post.company_id}
                           </div>
                           <div>

@@ -63,24 +63,24 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
     <div className="flex min-h-[calc(100vh-4rem)] flex-1">
       {/* 좌측 패널 - 데스크탑만 표시 */}
       <motion.div
-        className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-400 to-blue-600 flex-col justify-center items-center relative px-12 overflow-hidden"
+        className="hidden lg:flex flex-1 bg-linear-to-br from-blue-400 to-blue-600 flex-col justify-center items-center relative px-12 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
       >
         {/* 장식 원 */}
-        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-white/[0.04] blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full bg-white/[0.06] blur-3xl pointer-events-none" />
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-white/4 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full bg-white/6 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 max-w-md text-center">
           {/* 배지 */}
           <motion.div
-            className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full bg-white/[0.12] backdrop-blur-[10px] border border-white/[0.15]"
+            className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full bg-white/12 backdrop-blur-[10px] border border-white/15"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            <span className="text-[13px] font-semibold text-blue-200">개인 구직 파트너</span>
+            <span className="text-caption-1 font-semibold text-blue-200">개인 구직 파트너</span>
           </motion.div>
 
           {/* 타이틀 */}
@@ -110,8 +110,8 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
               >
-                <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
-                <span className="text-[14px] font-medium">{feature}</span>
+                <CheckCircle2 className="w-5 h-5 shrink-0" />
+                <span className="text-body-3 font-medium">{feature}</span>
               </motion.div>
             ))}
           </motion.div>
@@ -136,10 +136,10 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
 
           {/* 타이틀 */}
           <motion.div variants={itemVariants} className="mb-8">
-            <h1 className="text-[28px] sm:text-[32px] font-black text-slate-900 mb-2 tracking-tight">
+            <h1 className="text-title-2 sm:text-title-1 font-black text-slate-900 mb-2 tracking-tight">
               개인 로그인
             </h1>
-            <p className="text-[14px] text-slate-500">
+            <p className="text-body-3 text-slate-500">
               Google 계정으로 간편하게 시작하세요
             </p>
           </motion.div>
@@ -148,7 +148,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
           {errorMessage && (
             <motion.div
               variants={itemVariants}
-              className="flex items-start gap-2.5 px-4 py-3 mb-6 rounded-lg bg-red-50 border border-red-200 text-[13px] font-medium text-red-600"
+              className="flex items-start gap-2.5 px-4 py-3 mb-6 rounded-lg bg-red-50 border border-red-200 text-caption-1 font-medium text-red-600"
               role="alert"
               aria-live="polite"
             >
@@ -178,7 +178,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
                 <div className="w-full border-t border-slate-200" />
               </div>
               <div className="relative flex justify-center">
-                <span className="px-3 bg-white text-[13px] text-slate-500 font-medium">또는</span>
+                <span className="px-3 bg-white text-caption-1 text-slate-500 font-medium">또는</span>
               </div>
             </div>
 
@@ -195,7 +195,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
 
           {/* 회원가입 */}
           <motion.div variants={itemVariants} className="mt-8 pt-6 border-t border-slate-200">
-            <p className="text-center text-[14px] text-slate-600">
+            <p className="text-center text-body-3 text-slate-600">
               아직 회원이 아니신가요?{' '}
               <Link href={signupHref} className="text-blue-600 hover:text-blue-700 font-semibold transition-colors inline-flex items-center gap-1">
                 회원가입
@@ -207,7 +207,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
           {/* 하단 텍스트 */}
           <motion.p
             variants={itemVariants}
-            className="text-center text-[12px] text-slate-400 mt-6"
+            className="text-center text-caption-2 text-slate-400 mt-6"
           >
             로그인함으로써 이용약관 및 개인정보처리방침에 동의합니다.
           </motion.p>

@@ -62,7 +62,7 @@ function TemplateSelector({
     <div className="space-y-6">
       {/* 헤더 */}
       <div className="text-center">
-        <h2 className="text-[28px] font-bold text-slate-900 mb-2">
+        <h2 className="text-title-2 font-bold text-slate-900 mb-2">
           이력서 템플릿 선택
         </h2>
         <p className="text-sm text-slate-600">

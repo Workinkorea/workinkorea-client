@@ -33,7 +33,7 @@ export function FormField({
       transition={{ duration: 0.35 }}
     >
       {/* 레이블: text-label-700 = #334155(slate-700), 13px semibold */}
-      <label className="block text-[13px] font-semibold text-label-700 mb-1.5">
+      <label className="block text-caption-1 font-semibold text-label-700 mb-1.5">
         {label}
         {/* 필수 표시: text-status-error = #EF4444(red-500) */}
         {required && <span className="text-status-error ml-0.5">*</span>}

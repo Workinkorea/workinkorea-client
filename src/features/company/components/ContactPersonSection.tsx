@@ -20,7 +20,7 @@ const FieldRow = ({
   children: ReactNode;
 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0 items-start">
-    <span className="text-[13px] font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1">
+    <span className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1">
       {label}
       {required && <span className="text-red-500">*</span>}
     </span>

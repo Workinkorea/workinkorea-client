@@ -200,18 +200,18 @@ export default function BusinessLoginForm() {
 
       {/* ── 좌측 그라데이션 패널 ──────────────────────────────────── */}
       <motion.div
-        className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-400 to-blue-600 flex-col justify-center p-16 relative overflow-hidden"
+        className="hidden lg:flex flex-1 bg-linear-to-br from-blue-400 to-blue-600 flex-col justify-center p-16 relative overflow-hidden"
         initial={{ opacity: 0, x: -24 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}
       >
         {/* 배경 장식 원 */}
-        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-white/[0.05] pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-white/[0.07] pointer-events-none" />
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-white/5 pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-white/7 pointer-events-none" />
 
         {/* 로고 */}
         <div className="flex items-center gap-3 mb-12">
-          <div className="w-10 h-10 rounded-xl bg-white/[0.15] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center">
             <Building2 size={20} className="text-white" />
           </div>
           <span className="text-white font-['Plus_Jakarta_Sans'] text-xl font-extrabold tracking-[-0.5px]">
@@ -226,7 +226,7 @@ export default function BusinessLoginForm() {
           animate="visible"
           className="space-y-4 mb-12"
         >
-          <motion.p variants={fadeUp} className="text-blue-200 text-[13px] font-semibold uppercase tracking-[1.5px]">
+          <motion.p variants={fadeUp} className="text-blue-200 text-caption-1 font-semibold uppercase tracking-[1.5px]">
             기업 채용 파트너
           </motion.p>
           <motion.h2 variants={fadeUp} className="text-white text-[34px] font-extrabold leading-tight">
@@ -248,10 +248,10 @@ export default function BusinessLoginForm() {
         >
           {FEATURES.map(({ icon: Icon, text }) => (
             <motion.li key={text} variants={fadeUp} className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white/[0.12] flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-white/12 flex items-center justify-center shrink-0">
                 <Icon size={15} className="text-white" />
               </div>
-              <span className="text-blue-100 text-[13px] font-medium">{text}</span>
+              <span className="text-blue-100 text-caption-1 font-medium">{text}</span>
             </motion.li>
           ))}
         </motion.ul>
@@ -272,13 +272,13 @@ export default function BusinessLoginForm() {
             animate="visible"
             className="space-y-1 mb-8"
           >
-            <motion.p variants={fadeUp} className="text-[12px] font-bold text-blue-600 uppercase tracking-[1.5px]">
+            <motion.p variants={fadeUp} className="text-caption-2 font-bold text-blue-600 uppercase tracking-[1.5px]">
               기업 전용
             </motion.p>
             <motion.h1 variants={fadeUp} className="text-[26px] font-extrabold text-slate-900">
               기업 로그인
             </motion.h1>
-            <motion.p variants={fadeUp} className="text-[13px] text-slate-500">
+            <motion.p variants={fadeUp} className="text-caption-1 text-slate-500">
               등록된 기업 계정으로 로그인하세요
             </motion.p>
           </motion.div>
@@ -349,7 +349,7 @@ export default function BusinessLoginForm() {
                       onChange={(e) => field.onChange(e.target.checked)}
                       onBlur={field.onBlur}
                     />
-                    <label htmlFor={fieldId} className="ml-2 block text-[13px] text-slate-700 cursor-pointer">
+                    <label htmlFor={fieldId} className="ml-2 block text-caption-1 text-slate-700 cursor-pointer">
                       이메일 저장
                     </label>
                   </div>
@@ -379,7 +379,7 @@ export default function BusinessLoginForm() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.25 }}
-                  className={`flex items-start gap-2.5 px-4 py-3 rounded-lg text-[13px] font-medium ${
+                  className={`flex items-start gap-2.5 px-4 py-3 rounded-lg text-caption-1 font-medium ${
                     loginError.type === 'network'
                       ? 'bg-slate-50 border border-slate-200 text-slate-600'
                       : loginError.type === 'server'
@@ -412,7 +412,7 @@ export default function BusinessLoginForm() {
 
           {/* 개인 회원 로그인 링크 */}
           <motion.p
-            className="mt-8 text-center text-[13px] text-slate-400"
+            className="mt-8 text-center text-caption-1 text-slate-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}

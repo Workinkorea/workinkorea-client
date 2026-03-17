@@ -57,17 +57,17 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
               return (
                 <label className="flex items-center justify-between cursor-pointer">
                   <div className="flex-1">
-                    <span className="text-[13px] font-semibold text-slate-900">
+                    <span className="text-caption-1 font-semibold text-slate-900">
                       SNS 메시지 알림
                     </span>
-                    <p className="text-[12px] text-slate-500 mt-1">
+                    <p className="text-caption-2 text-slate-500 mt-1">
                       중요한 활동을 SNS 메시지로 알림 받습니다
                     </p>
                   </div>
                   {/* Toggle Switch */}
                   <div
                     className={cn(
-                      'relative w-11 h-6 rounded-full transition-colors cursor-pointer flex-shrink-0 ml-4',
+                      'relative w-11 h-6 rounded-full transition-colors cursor-pointer shrink-0 ml-4',
                       value ? 'bg-blue-600' : 'bg-slate-200'
                     )}
                   >
@@ -101,17 +101,17 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
               return (
                 <label className="flex items-center justify-between cursor-pointer">
                   <div className="flex-1">
-                    <span className="text-[13px] font-semibold text-slate-900">
+                    <span className="text-caption-1 font-semibold text-slate-900">
                       이메일 알림
                     </span>
-                    <p className="text-[12px] text-slate-500 mt-1">
+                    <p className="text-caption-2 text-slate-500 mt-1">
                       중요한 활동을 이메일로 알림 받습니다
                     </p>
                   </div>
                   {/* Toggle Switch */}
                   <div
                     className={cn(
-                      'relative w-11 h-6 rounded-full transition-colors cursor-pointer flex-shrink-0 ml-4',
+                      'relative w-11 h-6 rounded-full transition-colors cursor-pointer shrink-0 ml-4',
                       value ? 'bg-blue-600' : 'bg-slate-200'
                     )}
                   >

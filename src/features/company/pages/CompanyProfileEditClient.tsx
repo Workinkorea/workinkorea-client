@@ -301,7 +301,7 @@ const CompanyProfileEditClient = () => {
                     </span>
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-slate-900">
+                    <p className="text-caption-1 font-bold text-slate-900">
                       프로필 완성도{' '}
                       <span className="text-blue-600">{progress}%</span>
                     </p>
@@ -338,7 +338,7 @@ const CompanyProfileEditClient = () => {
                         </span>
                         <span
                           className={cn(
-                            'text-[12px]',
+                            'text-caption-2',
                             filled ? 'text-slate-700 font-medium' : 'text-slate-400',
                           )}
                         >
@@ -369,7 +369,7 @@ const CompanyProfileEditClient = () => {
                         </span>
                         <span
                           className={cn(
-                            'text-[12px]',
+                            'text-caption-2',
                             filled ? 'text-slate-700 font-medium' : 'text-slate-400',
                           )}
                         >
