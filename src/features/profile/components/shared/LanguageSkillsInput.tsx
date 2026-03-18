@@ -90,7 +90,7 @@ function LanguageSkillsInput({
     <div className="space-y-3">
       {/* Header with Add button */}
       <div className="flex items-center justify-between">
-        <label className="text-[11px] font-medium text-slate-900">
+        <label className="text-caption-1 font-semibold text-slate-900">
           언어 스킬
         </label>
         <button
@@ -99,7 +99,7 @@ function LanguageSkillsInput({
           className="
             flex items-center gap-1
             text-blue-500 hover:text-blue-600
-            text-[11px] cursor-pointer
+            text-caption-3 cursor-pointer
             transition-colors
           "
         >
@@ -110,7 +110,7 @@ function LanguageSkillsInput({
 
       {/* Empty state */}
       {fields.length === 0 && (
-        <p className="text-[11px] text-slate-400">
+        <p className="text-caption-3 text-slate-400">
           언어 스킬을 추가해주세요
         </p>
       )}
@@ -124,7 +124,7 @@ function LanguageSkillsInput({
           >
             {/* Item header with remove button */}
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-medium text-slate-700">
+              <span className="text-caption-2 font-medium text-slate-700">
                 언어 {index + 1}
               </span>
               <button
@@ -150,11 +150,11 @@ function LanguageSkillsInput({
                   {...fieldProps}
                   id={fieldId}
                   className={cn(
-                    'w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm',
-                    'transition-colors focus:ring-2 focus:border-transparent',
-                    'border-slate-200 focus:ring-blue-500',
+                    'w-full border rounded-lg px-3.5 py-2.5 text-body-3',
+                    'transition-colors focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                    'border-slate-200',
                     errors?.language_skills?.[index]?.language_type &&
-                      'border-red-500 focus:ring-red-500'
+                      'border-red-500 focus:ring-red-100'
                   )}
                 >
                   <option value="">언어를 선택하세요</option>
@@ -178,11 +178,11 @@ function LanguageSkillsInput({
                   {...fieldProps}
                   id={fieldId}
                   className={cn(
-                    'w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm',
-                    'transition-colors focus:ring-2 focus:border-transparent',
-                    'border-slate-200 focus:ring-blue-500',
+                    'w-full border rounded-lg px-3.5 py-2.5 text-body-3',
+                    'transition-colors focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                    'border-slate-200',
                     errors?.language_skills?.[index]?.level &&
-                      'border-red-500 focus:ring-red-500'
+                      'border-red-500 focus:ring-red-100'
                   )}
                 >
                   <option value="">수준을 선택하세요</option>

@@ -76,23 +76,23 @@ export function ResumeSection({
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-slate-900">
+          <h3 className="text-title-5 font-semibold text-slate-900">
             이력서 관리
           </h3>
-          <p className="text-sm text-slate-600 mt-1">
+          <p className="text-body-3 text-slate-600 mt-1">
             이력서를 작성하고 관리하세요
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowUpload(!showUpload)}
-            className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-caption-1 font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
           >
             파일 업로드
           </button>
           <button
             onClick={handleCreateResume}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-caption-1 font-medium hover:bg-blue-700 transition-colors cursor-pointer"
           >
             <Plus size={16} />
             새 이력서 작성
@@ -110,7 +110,7 @@ export function ResumeSection({
           transition={{ duration: 0.3 }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm font-semibold text-slate-900">
+            <h4 className="text-caption-1 font-semibold text-slate-900">
               새 이력서 추가
             </h4>
             <button
@@ -166,10 +166,10 @@ export function ResumeSection({
                 <FileText size={24} className="text-blue-600" />
               </div>
               <div className="space-y-2">
-                <h4 className="text-sm font-semibold text-slate-900">
+                <h4 className="text-caption-1 font-semibold text-slate-900">
                   아직 작성한 이력서가 없습니다
                 </h4>
-                <p className="text-sm text-slate-600">
+                <p className="text-body-3 text-slate-600">
                   새 이력서를 작성하거나 기존 파일을 업로드해보세요
                 </p>
               </div>
@@ -195,10 +195,10 @@ export function ResumeSection({
                 <Search size={24} className="text-slate-400" />
               </div>
               <div className="space-y-2">
-                <h4 className="text-sm font-semibold text-slate-900">
+                <h4 className="text-caption-1 font-semibold text-slate-900">
                   검색 결과가 없습니다
                 </h4>
-                <p className="text-sm text-slate-600">
+                <p className="text-body-3 text-slate-600">
                   다른 검색어나 필터를 시도해보세요
                 </p>
               </div>
@@ -227,22 +227,22 @@ export function ResumeSection({
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-lg font-bold text-blue-600">
+              <div className="text-title-5 font-bold text-blue-600">
                 {statusCounts.all}
               </div>
-              <div className="text-[11px] text-slate-600">총 이력서</div>
+              <div className="text-caption-3 text-slate-600">총 이력서</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-bold text-amber-500">
+              <div className="text-title-5 font-bold text-amber-500">
                 {statusCounts.draft}
               </div>
-              <div className="text-[11px] text-slate-600">작성중</div>
+              <div className="text-caption-3 text-slate-600">작성중</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-bold text-emerald-500">
+              <div className="text-title-5 font-bold text-emerald-500">
                 {statusCounts.completed}
               </div>
-              <div className="text-[11px] text-slate-600">완료</div>
+              <div className="text-caption-3 text-slate-600">완료</div>
             </div>
           </div>
         </div>

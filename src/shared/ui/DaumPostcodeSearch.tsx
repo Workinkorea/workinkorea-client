@@ -79,7 +79,7 @@ const DaumPostcodeSearch: React.FC<DaumPostcodeSearchProps> = ({
           onClick={handleSearchClick}
           className={`flex-1 min-w-0 px-3 py-2 border ${
             error ? 'border-red-500' : 'border-slate-200'
-          } rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer`}
+          } rounded-lg text-body-3 bg-white focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 cursor-pointer`}
         />
         <button
           type="button"
@@ -87,11 +87,11 @@ const DaumPostcodeSearch: React.FC<DaumPostcodeSearchProps> = ({
           className="shrink-0 px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-1.5 cursor-pointer"
         >
           <Search size={14} />
-          <span className="text-xs font-medium">주소검색</span>
+          <span className="text-caption-2 font-medium">주소검색</span>
         </button>
       </div>
       {error && (
-        <p className="mt-1 text-[11px] text-red-500">{error}</p>
+        <p className="mt-1 text-caption-3 text-red-500">{error}</p>
       )}
     </div>
   );

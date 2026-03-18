@@ -110,7 +110,7 @@ function UserProfileHeader({
                   {profile.name}
                 </h1>
                 <span className={cn(
-                  'text-[11px] px-3 py-1 rounded-full font-medium',
+                  'text-caption-3 px-3 py-1 rounded-full font-medium',
                   availabilityStyle.bg,
                   availabilityStyle.text
                 )}>
@@ -119,13 +119,13 @@ function UserProfileHeader({
               </div>
 
               {profile.position && (
-                <p className="text-[15px] text-blue-600 font-medium mb-3">
+                <p className="text-body-2 text-blue-600 font-medium mb-3">
                   {profile.position}
                 </p>
               )}
 
               {/* 기본 정보 */}
-              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 mb-4">
+              <div className="flex flex-wrap items-center gap-4 text-body-3 text-slate-600 mb-4">
                 {profile.location && (
                   <div className="flex items-center gap-1">
                     <MapPin size={16} />
@@ -148,7 +148,7 @@ function UserProfileHeader({
 
               {/* 소개 */}
               {profile.introduction && (
-                <p className="text-sm text-slate-700 mb-4 leading-relaxed">
+                <p className="text-body-3 text-slate-700 mb-4 leading-relaxed">
                   {profile.introduction}
                 </p>
               )}
@@ -156,12 +156,12 @@ function UserProfileHeader({
               {/* 언어 */}
               {profile.languages.length > 0 && (
                 <div className="mb-4">
-                  <span className="text-sm text-slate-600 font-medium mr-2">언어:</span>
+                  <span className="text-caption-1 text-slate-600 font-medium mr-2">언어:</span>
                   <div className="inline-flex flex-wrap gap-2">
                     {profile.languages.map((lang, index) => (
                       <span
                         key={index}
-                        className="text-[11px] bg-slate-100 text-slate-700 px-2 py-1 rounded"
+                        className="text-caption-3 bg-slate-100 text-slate-700 px-2 py-1 rounded"
                       >
                         {lang.name} ({getProficiencyLabel(lang.proficiency)})
                       </span>
@@ -178,7 +178,7 @@ function UserProfileHeader({
                   {onEditClick && (
                     <button
                       onClick={onEditClick}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg text-caption-1 font-medium hover:bg-blue-700 transition-colors cursor-pointer"
                     >
                       프로필 편집
                     </button>
@@ -188,10 +188,10 @@ function UserProfileHeader({
 
               {!isOwnProfile && (
                 <>
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-caption-1 font-medium hover:bg-blue-700 transition-colors cursor-pointer">
                     연락하기
                   </button>
-                  <button className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors cursor-pointer">
+                  <button className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg text-caption-1 font-medium hover:bg-blue-50 transition-colors cursor-pointer">
                     즐겨찾기
                   </button>
                 </>
@@ -213,7 +213,7 @@ function UserProfileHeader({
           {profile.email && (
             <a
               href={`mailto:${profile.email}`}
-              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-body-3 text-slate-600 hover:text-blue-600 transition-colors"
             >
               <Mail size={16} />
               <span>{profile.email}</span>
@@ -226,7 +226,7 @@ function UserProfileHeader({
               href={profile.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-body-3 text-slate-600 hover:text-blue-600 transition-colors"
             >
               <Github size={16} />
               <span>GitHub</span>
@@ -240,7 +240,7 @@ function UserProfileHeader({
               href={profile.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-body-3 text-slate-600 hover:text-blue-600 transition-colors"
             >
               <Linkedin size={16} />
               <span>LinkedIn</span>
@@ -254,7 +254,7 @@ function UserProfileHeader({
               href={profile.portfolioUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-body-3 text-slate-600 hover:text-blue-600 transition-colors"
             >
               <ExternalLink size={16} />
               <span>Portfolio</span>

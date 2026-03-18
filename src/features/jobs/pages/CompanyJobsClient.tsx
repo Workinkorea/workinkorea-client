@@ -135,7 +135,7 @@ function CompanyJobsClient() {
             ) : posts && posts.length > 0 ? (
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-[17px] font-semibold text-slate-900">
+                  <h3 className="text-title-5 font-semibold text-slate-900">
                     전체 공고 ({posts.length}개)
                   </h3>
                 </div>
@@ -153,7 +153,7 @@ function CompanyJobsClient() {
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
-                          <h4 className="text-[16px] sm:text-[17px] font-bold text-slate-900 mb-3 line-clamp-2">
+                          <h4 className="text-body-1 sm:text-title-5 font-bold text-slate-900 mb-3 line-clamp-2">
                             {post.title}
                           </h4>
                           <div className="space-y-2 mb-3">
@@ -176,14 +176,14 @@ function CompanyJobsClient() {
                           <div className="flex items-center gap-2">
                             {new Date(post.end_date) > new Date() ? (
                               <span className={cn(
-                                'inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold',
+                                'inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold',
                                 'bg-emerald-50 text-emerald-600 border border-emerald-100'
                               )}>
                                 모집중
                               </span>
                             ) : (
                               <span className={cn(
-                                'inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold',
+                                'inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold',
                                 'bg-slate-100 text-slate-500 border border-slate-200'
                               )}>
                                 마감

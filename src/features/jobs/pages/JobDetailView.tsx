@@ -166,7 +166,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
           <motion.button
             onClick={handleApply}
             whileTap={{ scale: 0.97 }}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-[15px] shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-body-2 shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
           >
             지원하기
           </motion.button>
@@ -206,7 +206,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                         <div className="flex items-center gap-2 mb-3 flex-wrap">
                           {isUrgent && (
                             <motion.span
-                              className="inline-flex px-2.5 py-1 bg-red-500 text-white text-[11px] font-bold rounded-md"
+                              className="inline-flex px-2.5 py-1 bg-red-500 text-white text-caption-3 font-bold rounded-md"
                               animate={{ opacity: [1, 0.6, 1] }}
                               transition={{ duration: 1.5, repeat: Infinity }}
                             >
@@ -214,14 +214,14 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                             </motion.span>
                           )}
                           {isExpired && (
-                            <span className="inline-flex px-2.5 py-1 bg-slate-200 text-slate-500 text-[11px] font-bold rounded-md">
+                            <span className="inline-flex px-2.5 py-1 bg-slate-200 text-slate-500 text-caption-3 font-bold rounded-md">
                               마감
                             </span>
                           )}
                         </div>
 
                         {/* Title */}
-                        <h1 className="text-[20px] sm:text-title-3 lg:text-title-2 font-extrabold text-slate-900 leading-tight line-clamp-3">
+                        <h1 className="text-title-4 sm:text-title-3 lg:text-title-2 font-extrabold text-slate-900 leading-tight line-clamp-3">
                           {job.title}
                         </h1>
                       </div>
@@ -251,21 +251,21 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   {/* Key Info Banner */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-blue-50 border border-blue-100 rounded-lg">
                     <div className="flex flex-col">
-                      <p className="text-[11px] font-semibold text-slate-400 mb-1">연봉</p>
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">연봉</p>
                       <p className="text-body-3 font-extrabold text-blue-600">
                         {job.salary ? `${job.salary.toLocaleString()}` : '협의'}
                       </p>
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-[11px] font-semibold text-slate-400 mb-1">근무지</p>
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">근무지</p>
                       <p className="text-body-3 font-bold text-slate-900 line-clamp-2">{job.work_location}</p>
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-[11px] font-semibold text-slate-400 mb-1">고용형태</p>
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">고용형태</p>
                       <p className="text-body-3 font-bold text-slate-900">{job.employment_type}</p>
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-[11px] font-semibold text-slate-400 mb-1">근무시간</p>
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">근무시간</p>
                       <p className="text-body-3 font-bold text-slate-900">{job.working_hours}시간</p>
                     </div>
                   </div>
@@ -282,7 +282,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
 
               {/* Details Card */}
               <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-7 lg:p-8 space-y-6">
-                <h2 className="text-[18px] sm:text-[20px] font-extrabold text-slate-900">공고 상세</h2>
+                <h2 className="text-[18px] sm:text-title-4 font-extrabold text-slate-900">공고 상세</h2>
 
                 {/* Job Content Section */}
                 <div className="space-y-3">
@@ -350,7 +350,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
               >
                 {/* Salary Display */}
                 <div className="space-y-1">
-                  <p className="text-[11px] font-semibold text-slate-400">연봉</p>
+                  <p className="text-caption-3 font-semibold text-slate-400">연봉</p>
                   <p className="text-title-1 font-extrabold text-blue-600 leading-tight">
                     {job.salary ? `${job.salary.toLocaleString()}` : '협의'}
                   </p>
@@ -358,13 +358,13 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
 
                 {/* Apply Button */}
                 {isExpired ? (
-                  <button className="w-full py-4 bg-slate-100 text-slate-400 text-center rounded-lg font-bold text-[15px] cursor-not-allowed">
+                  <button className="w-full py-4 bg-slate-100 text-slate-400 text-center rounded-lg font-bold text-body-2 cursor-not-allowed">
                     마감된 공고
                   </button>
                 ) : (
                   <motion.button
                     onClick={handleApply}
-                    className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-[15px] shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
+                    className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-body-2 shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
                     whileTap={{ scale: 0.98 }}
                   >
                     지원하기
@@ -393,7 +393,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
 
                 {/* Recruitment Info */}
                 <div className="p-4 bg-slate-50 rounded-lg border border-slate-100 space-y-2 mt-6 pt-6 border-t">
-                  <p className="text-[11px] font-semibold text-slate-400">모집기간</p>
+                  <p className="text-caption-3 font-semibold text-slate-400">모집기간</p>
                   <p className="text-caption-1 font-semibold text-slate-900">{job.start_date}</p>
                   <p className="text-caption-1 text-slate-600">~ {job.end_date}</p>
                 </div>

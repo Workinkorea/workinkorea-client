@@ -47,10 +47,10 @@ export function ManagerInfoSection({
           </div>
           <div>
             <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded tracking-wide">
+              <span className="text-caption-3 font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded tracking-wide">
                 STEP 4
               </span>
-              <h2 className="text-[15px] font-bold text-label-900">담당자 정보</h2>
+              <h2 className="text-body-2 font-bold text-label-900">담당자 정보</h2>
             </div>
             <p className="text-xs text-label-400">지원자가 문의할 담당자 정보를 입력하세요</p>
           </div>

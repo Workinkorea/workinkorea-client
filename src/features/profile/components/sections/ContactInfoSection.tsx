@@ -40,7 +40,7 @@ const FieldRow = ({ label, required, optional, children }: {
     <span className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
       {label}
       {required && <span className="text-red-500">*</span>}
-      {optional && <span className="text-[11px] font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">선택</span>}
+      {optional && <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">선택</span>}
     </span>
     <div>{children}</div>
   </div>
@@ -59,8 +59,8 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
           <Phone size={16} className="text-blue-600" />
         </span>
         <div>
-          <h2 className="text-[15px] font-bold text-slate-900">연락처 정보</h2>
-          <p className="text-[11px] text-slate-400 mt-0.5">채용 담당자가 연락할 수 있는 정보를 입력하세요</p>
+          <h2 className="text-body-2 font-bold text-slate-900">연락처 정보</h2>
+          <p className="text-caption-3 text-slate-400 mt-0.5">채용 담당자가 연락할 수 있는 정보를 입력하세요</p>
         </div>
       </div>
 
@@ -82,7 +82,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
             </div>
           )}
         />
-        {errors.phone_number && <p className="text-xs text-red-500 mt-1">{errors.phone_number.message}</p>}
+        {errors.phone_number && <p className="text-caption-2 text-red-500 mt-1">{errors.phone_number.message}</p>}
       </FieldRow>
 
       {/* GitHub URL */}
@@ -102,7 +102,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
             </div>
           )}
         />
-        {errors.github_url && <p className="text-xs text-red-500 mt-1">{errors.github_url.message}</p>}
+        {errors.github_url && <p className="text-caption-2 text-red-500 mt-1">{errors.github_url.message}</p>}
       </FieldRow>
 
       {/* LinkedIn URL */}
@@ -122,7 +122,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
             </div>
           )}
         />
-        {errors.linkedin_url && <p className="text-xs text-red-500 mt-1">{errors.linkedin_url.message}</p>}
+        {errors.linkedin_url && <p className="text-caption-2 text-red-500 mt-1">{errors.linkedin_url.message}</p>}
       </FieldRow>
 
       {/* Website URL */}
@@ -142,7 +142,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
             </div>
           )}
         />
-        {errors.website_url && <p className="text-xs text-red-500 mt-1">{errors.website_url.message}</p>}
+        {errors.website_url && <p className="text-caption-2 text-red-500 mt-1">{errors.website_url.message}</p>}
       </FieldRow>
     </div>
   );

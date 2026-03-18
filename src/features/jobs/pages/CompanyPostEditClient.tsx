@@ -119,7 +119,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
       <Layout>
         <main className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-slate-500 text-[15px]">공고를 찾을 수 없습니다.</p>
+            <p className="text-slate-500 text-body-2">공고를 찾을 수 없습니다.</p>
             <button
               onClick={() => router.push('/company')}
               className="mt-4 text-blue-600 hover:text-blue-700 text-body-3 font-medium cursor-pointer"

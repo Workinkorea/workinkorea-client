@@ -27,7 +27,7 @@ export default function Error({
           <h2 className="text-[22px] font-extrabold text-slate-900 mb-3">
             문제가 발생했습니다
           </h2>
-          <p className="text-[15px] text-slate-500">
+          <p className="text-body-2 text-slate-500">
             일시적인 오류가 발생했습니다.<br />잠시 후 다시 시도해주세요.
           </p>
         </div>

@@ -174,7 +174,7 @@ export default function PopularJobsSection() {
                             {post.company_id}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-sm md:text-[17px] text-slate-900 group-hover:text-blue-600 transition-colors">
+                            <h3 className="font-semibold text-sm md:text-title-5 text-slate-900 group-hover:text-blue-600 transition-colors">
                               회사 #{post.company_id}
                             </h3>
                             {isRecent && (
@@ -188,7 +188,7 @@ export default function PopularJobsSection() {
                       </div>
 
                       {/* 포지션 */}
-                      <h4 className="text-sm md:text-[17px] font-medium text-slate-900 mb-2 md:mb-3 line-clamp-2">
+                      <h4 className="text-sm md:text-title-5 font-medium text-slate-900 mb-2 md:mb-3 line-clamp-2">
                         {post.title}
                       </h4>
 
@@ -199,7 +199,7 @@ export default function PopularJobsSection() {
                           <span className="text-xs md:text-sm">{post.work_location}</span>
                           <span className="text-xs md:text-sm">• {post.employment_type}</span>
                         </div>
-                        <p className="text-blue-600 font-semibold text-sm md:text-[15px]">
+                        <p className="text-blue-600 font-semibold text-sm md:text-body-2">
                           {post.salary ? `${post.salary.toLocaleString()}원` : '연봉 협의'}
                         </p>
                       </div>
@@ -209,7 +209,7 @@ export default function PopularJobsSection() {
                         {language.slice(0, 3).map((lang, index) => (
                           <span
                             key={index}
-                            className="px-2 py-0.5 md:py-1 bg-slate-100 text-slate-600 text-[11px] md:text-xs rounded-md"
+                            className="px-2 py-0.5 md:py-1 bg-slate-100 text-slate-600 text-caption-3 md:text-xs rounded-md"
                           >
                             {lang}
                           </span>

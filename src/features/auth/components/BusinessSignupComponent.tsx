@@ -228,7 +228,7 @@ export default function BusinessSignupComponent() {
       <div className="w-full lg:w-1/2 lg:border-r lg:border-slate-200 px-4 sm:px-6 py-8 sm:py-12 lg:p-12">
         <div className="max-w-xl mx-auto space-y-6">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <h2 className="text-[15px] font-bold text-slate-900 mb-4">약관 동의</h2>
+            <h2 className="text-body-2 font-bold text-slate-900 mb-4">약관 동의</h2>
           </motion.div>
 
           <motion.div
@@ -271,7 +271,7 @@ export default function BusinessSignupComponent() {
                       </span>
                       <button
                         type="button"
-                        className="text-[11px] text-slate-500 hover:text-blue-600 underline cursor-pointer whitespace-nowrap shrink-0"
+                        className="text-caption-3 text-slate-500 hover:text-blue-600 underline cursor-pointer whitespace-nowrap shrink-0"
                         onClick={(e) => { e.preventDefault(); openTermsModal(key); }}
                       >
                         보기
@@ -318,7 +318,7 @@ export default function BusinessSignupComponent() {
           >
             {/* 사업자 정보 */}
             <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
-              <h3 className="text-[15px] font-bold text-slate-900">사업자 정보</h3>
+              <h3 className="text-body-2 font-bold text-slate-900">사업자 정보</h3>
               <FormField
                 name="businessNumber" control={control} label="사업자등록번호 (ID)" error={errors.businessNumber?.message}
                 render={(field, fieldId) => (
@@ -352,7 +352,7 @@ export default function BusinessSignupComponent() {
                       </motion.button>
                     </div>
                     {formState.isBusinessNumberVerified && formState.businessNumberMessage && (
-                      <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} className="text-[11px] text-blue-600">
+                      <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} className="text-caption-3 text-blue-600">
                         {formState.businessNumberMessage}
                       </motion.p>
                     )}
@@ -366,7 +366,7 @@ export default function BusinessSignupComponent() {
 
             {/* 담당자 정보 */}
             <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
-              <h3 className="text-[15px] font-bold text-slate-900">담당자 정보</h3>
+              <h3 className="text-body-2 font-bold text-slate-900">담당자 정보</h3>
               <FormField name="name" control={control} label="담당자명"
                 render={(field, fieldId) => <Input {...field} id={fieldId} placeholder="담당자명 입력" error={!!errors.name} />}
               />
@@ -382,7 +382,7 @@ export default function BusinessSignupComponent() {
                             onChange={() => { setFormState((prev) => ({ ...prev, phoneType: type })); field.onChange(''); clearErrors('phoneNumber'); }}
                             className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                           />
-                          <span className="text-sm text-slate-700">{type === 'MOBILE' ? '휴대전화' : '일반전화'}</span>
+                          <span className="text-caption-1 text-slate-700">{type === 'MOBILE' ? '휴대전화' : '일반전화'}</span>
                         </label>
                       ))}
                     </div>
@@ -411,7 +411,7 @@ export default function BusinessSignupComponent() {
                       }}
                       error={!!errors.email}
                     />
-                    <p className="text-xs text-slate-500 flex items-center gap-1">
+                    <p className="text-caption-2 text-slate-500 flex items-center gap-1">
                       <span className="text-blue-500">ℹ</span>
                       이 이메일은 추후 <span className="font-semibold text-slate-700">로그인 아이디</span>로 사용됩니다.
                     </p>
@@ -422,7 +422,7 @@ export default function BusinessSignupComponent() {
 
             {/* 비밀번호 */}
             <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
-              <h3 className="text-[15px] font-bold text-slate-900">비밀번호 설정</h3>
+              <h3 className="text-body-2 font-bold text-slate-900">비밀번호 설정</h3>
               <FormField name="password" control={control} label="비밀번호" error={errors.password?.message}
                 render={(field, fieldId) => (
                   <Input {...field} id={fieldId} variant="password" placeholder="8~15자리/영문, 숫자, 특수문자 조합"
@@ -452,7 +452,7 @@ export default function BusinessSignupComponent() {
                 가입하기
               </motion.button>
               {!requiredAgreed && (
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[11px] text-red-500 text-center">
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-caption-3 text-red-500 text-center">
                   필수 약관에 모두 동의해주세요
                 </motion.p>
               )}

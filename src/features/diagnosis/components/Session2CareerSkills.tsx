@@ -108,10 +108,10 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
       transition={{ duration: 0.3 }}
     >
       <div>
-        <h2 className="text-xl font-bold text-slate-900 mb-2">
+        <h2 className="text-title-4 font-bold text-slate-900 mb-2">
           경력 및 스킬 💼
         </h2>
-        <p className="text-sm text-slate-500 mb-6">
+        <p className="text-body-3 text-slate-500 mb-6">
           당신의 경험을 알려주세요
         </p>
       </div>
@@ -226,7 +226,7 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
               className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full"
             >
               <span className="text-sm font-medium">{lang.language}</span>
-              <span className="text-[11px]">
+              <span className="text-caption-3">
                 ({LANGUAGE_LEVELS.find(l => l.value === lang.level)?.label})
               </span>
               <button

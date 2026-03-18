@@ -21,7 +21,7 @@ function TypeBadge({ type }: { type: AdminEvent['type'] }) {
     promotion: 'bg-emerald-50 text-emerald-600',
   };
   return (
-    <span className={cn('inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold', styles[type])}>
+    <span className={cn('inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold', styles[type])}>
       {EVENT_TYPE_LABEL[type]}
     </span>
   );
@@ -29,11 +29,11 @@ function TypeBadge({ type }: { type: AdminEvent['type'] }) {
 
 function StatusBadge({ status }: { status: AdminEvent['status'] }) {
   return status === 'active' ? (
-    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600">
+    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-emerald-50 text-emerald-600">
       활성
     </span>
   ) : (
-    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-500">
+    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-slate-100 text-slate-500">
       비활성
     </span>
   );
@@ -71,7 +71,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h3 className="text-[16px] font-bold text-slate-900">이벤트 수정</h3>
+          <h3 className="text-body-1 font-bold text-slate-900">이벤트 수정</h3>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors focus:outline-none cursor-pointer"
@@ -355,7 +355,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
                   <td className="px-4 py-3.5">
                     <p className="font-semibold text-slate-800 line-clamp-1">{ev.title}</p>
                     {ev.banner_url && (
-                      <p className="text-[11px] text-slate-400 mt-0.5 truncate max-w-xs">배너 첨부됨</p>
+                      <p className="text-caption-3 text-slate-400 mt-0.5 truncate max-w-xs">배너 첨부됨</p>
                     )}
                   </td>
                   <td className="px-4 py-3.5">

@@ -11,7 +11,7 @@ export default function JobNotFound() {
         <h1 className="text-[22px] font-extrabold text-slate-900 mb-3">
           공고를 찾을 수 없습니다
         </h1>
-        <p className="text-[15px] text-slate-500 mb-8">
+        <p className="text-body-2 text-slate-500 mb-8">
           해당 채용 공고가 삭제되었거나<br />존재하지 않는 공고입니다.
         </p>
         <div className="space-y-3">

@@ -39,14 +39,14 @@ const FieldHint = ({
   hasValue?: boolean;
   hint?: string;
 }) => {
-  if (error) return <p className="mt-1.5 text-[11px] text-red-500">{error}</p>;
+  if (error) return <p className="mt-1.5 text-caption-3 text-red-500">{error}</p>;
   if (touched && hasValue)
     return (
-      <p className="mt-1.5 text-[11px] text-emerald-500 flex items-center gap-1">
+      <p className="mt-1.5 text-caption-3 text-emerald-500 flex items-center gap-1">
         <span>✓</span> 입력 완료
       </p>
     );
-  if (hint) return <p className="mt-1.5 text-[11px] text-slate-400">{hint}</p>;
+  if (hint) return <p className="mt-1.5 text-caption-3 text-slate-400">{hint}</p>;
   return null;
 };
 

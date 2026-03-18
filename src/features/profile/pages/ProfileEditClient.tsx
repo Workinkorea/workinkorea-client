@@ -615,8 +615,8 @@ function ProfileEditClient() {
           />
         </div>
         <div>
-          <h3 className="text-[15px] font-semibold text-slate-900">프로필 사진</h3>
-          <p className="text-[11px] text-slate-500">JPG, PNG 파일만 업로드 가능 (최대 5MB)</p>
+          <h3 className="text-body-2 font-semibold text-slate-900">프로필 사진</h3>
+          <p className="text-caption-3 text-slate-500">JPG, PNG 파일만 업로드 가능 (최대 5MB)</p>
         </div>
       </div>
 
@@ -680,12 +680,12 @@ function ProfileEditClient() {
                 rows={4}
                 maxLength={500}
                 className={cn(
-                  "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent resize-none",
+                  "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent resize-none",
                   "border-slate-200 focus:ring-blue-500",
                   basicForm.formState.errors.introduction && "border-red-500 focus:ring-red-500"
                 )}
               />
-              <div className="text-right text-[11px] text-slate-400 mt-1">
+              <div className="text-right text-caption-3 text-slate-400 mt-1">
                 {field.value?.length || 0}/500
               </div>
             </div>
@@ -702,7 +702,7 @@ function ProfileEditClient() {
               {...field}
               id={fieldId}
               className={cn(
-                "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                 "border-slate-200 focus:ring-blue-500",
                 preferencesForm.formState.errors.job_status && "border-red-500 focus:ring-red-500"
               )}
@@ -725,7 +725,7 @@ function ProfileEditClient() {
               {...field}
               id={fieldId}
               className={cn(
-                "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                 "border-slate-200 focus:ring-blue-500",
                 basicForm.formState.errors.career && "border-red-500 focus:ring-red-500"
               )}
@@ -742,14 +742,14 @@ function ProfileEditClient() {
 
         {/* 포트폴리오 파일 업로드 */}
         <div className="space-y-2">
-          <label className="text-[11px] font-medium text-slate-900">
+          <label className="text-caption-3 font-medium text-slate-900">
             포트폴리오
           </label>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={handlePortfolioButtonClick}
-              className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-[11px] text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-caption-3 text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
             >
               <Camera size={16} />
               파일 선택
@@ -763,7 +763,7 @@ function ProfileEditClient() {
             />
             {(portfolioFileName || profile.portfolio_url) && (
               <div className="flex items-center gap-2 flex-1">
-                <span className="text-[11px] text-slate-600 truncate">
+                <span className="text-caption-3 text-slate-600 truncate">
                   {portfolioFileName || profile.portfolio_url}
                 </span>
                 <button
@@ -776,7 +776,7 @@ function ProfileEditClient() {
               </div>
             )}
           </div>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-caption-3 text-slate-500">
             PDF, DOCX, 이미지 파일 업로드 가능 (최대 10MB)
           </p>
         </div>
@@ -795,7 +795,7 @@ function ProfileEditClient() {
                 value={field.value ?? ''}
                 onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                 className={cn(
-                  "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                  "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                   "border-slate-200 focus:ring-blue-500",
                   basicForm.formState.errors.position_id && "border-red-500 focus:ring-red-500"
                 )}
@@ -829,7 +829,7 @@ function ProfileEditClient() {
               value={field.value ?? 122}
               onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 122)}
               className={cn(
-                "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                 "border-slate-200 focus:ring-blue-500",
                 basicForm.formState.errors.country_id && "border-red-500 focus:ring-red-500"
               )}
@@ -846,11 +846,11 @@ function ProfileEditClient() {
         {/* 언어 스킬 */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-[11px] font-medium text-slate-900">언어 스킬</label>
+            <label className="text-caption-3 font-medium text-slate-900">언어 스킬</label>
             <button
               type="button"
               onClick={() => appendLanguage({ language_type: '', level: '' })}
-              className="flex items-center gap-1 text-blue-500 hover:text-blue-600 text-[11px] cursor-pointer"
+              className="flex items-center gap-1 text-blue-500 hover:text-blue-600 text-caption-3 cursor-pointer"
             >
               <Plus size={16} />
               <span>추가</span>
@@ -858,14 +858,14 @@ function ProfileEditClient() {
           </div>
 
           {languageFields.length === 0 && (
-            <p className="text-[11px] text-slate-400">언어 스킬을 추가해주세요</p>
+            <p className="text-caption-3 text-slate-400">언어 스킬을 추가해주세요</p>
           )}
 
           <div className="space-y-3">
             {languageFields.map((field, index) => (
               <div key={field.id} className="border border-slate-100 rounded-lg p-4 space-y-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-medium text-slate-700">언어 {index + 1}</span>
+                  <span className="text-caption-3 font-medium text-slate-700">언어 {index + 1}</span>
                   <button
                     type="button"
                     onClick={() => removeLanguage(index)}
@@ -885,7 +885,7 @@ function ProfileEditClient() {
                       {...field}
                       id={fieldId}
                       className={cn(
-                        "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                        "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                         "border-slate-200 focus:ring-blue-500",
                         basicForm.formState.errors.language_skills?.[index]?.language_type && "border-red-500 focus:ring-red-500"
                       )}
@@ -910,7 +910,7 @@ function ProfileEditClient() {
                       {...field}
                       id={fieldId}
                       className={cn(
-                        "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                        "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                         "border-slate-200 focus:ring-blue-500",
                         basicForm.formState.errors.language_skills?.[index]?.level && "border-red-500 focus:ring-red-500"
                       )}
@@ -1008,8 +1008,8 @@ function ProfileEditClient() {
       {/* 비밀번호 변경 */}
       {/* <div className="space-y-4">
         <div className="border-b border-slate-100 pb-3">
-          <h4 className="text-[15px] font-semibold text-slate-700">비밀번호 변경</h4>
-          <p className="text-[11px] text-slate-500 mt-1">
+          <h4 className="text-body-2 font-semibold text-slate-700">비밀번호 변경</h4>
+          <p className="text-caption-3 text-slate-500 mt-1">
             보안을 위해 정기적으로 비밀번호를 변경하세요
           </p>
         </div>
@@ -1062,7 +1062,7 @@ function ProfileEditClient() {
           )}
         />
 
-        <div className="text-[11px] text-slate-500 bg-slate-100 p-3 rounded-lg">
+        <div className="text-caption-3 text-slate-500 bg-slate-100 p-3 rounded-lg">
           <div className="font-medium mb-1">비밀번호 요구사항:</div>
           <ul className="list-disc list-inside space-y-1">
             <li>최소 8자 이상</li>
@@ -1075,8 +1075,8 @@ function ProfileEditClient() {
       {/* 알림 설정 */}
       <div className="space-y-4">
         <div className="border-b border-slate-100 pb-3">
-          <h4 className="text-[15px] font-semibold text-slate-700">알림 설정</h4>
-          <p className="text-[11px] text-slate-500 mt-1">
+          <h4 className="text-body-2 font-semibold text-slate-700">알림 설정</h4>
+          <p className="text-caption-3 text-slate-500 mt-1">
             받고 싶은 알림을 선택하세요
           </p>
         </div>
@@ -1092,7 +1092,7 @@ function ProfileEditClient() {
                 <label className="flex items-center justify-between p-3 bg-slate-100 rounded-lg cursor-pointer">
                   <div>
                     <span className="text-sm font-medium">SNS 메시지 알림</span>
-                    <p className="text-[11px] text-slate-500">중요한 활동을 SNS 메시지로 알림 받습니다</p>
+                    <p className="text-caption-3 text-slate-500">중요한 활동을 SNS 메시지로 알림 받습니다</p>
                   </div>
                   <input
                     {...fieldWithoutValue}
@@ -1117,7 +1117,7 @@ function ProfileEditClient() {
                 <label className="flex items-center justify-between p-3 bg-slate-100 rounded-lg cursor-pointer">
                   <div>
                     <span className="text-sm font-medium">이메일 알림</span>
-                    <p className="text-[11px] text-slate-500">중요한 활동을 이메일로 알림 받습니다</p>
+                    <p className="text-caption-3 text-slate-500">중요한 활동을 이메일로 알림 받습니다</p>
                   </div>
                   <input
                     {...fieldWithoutValue}
@@ -1138,8 +1138,8 @@ function ProfileEditClient() {
       {/* 위험 영역 */}
       <div className="space-y-4">
         <div className="border-b border-red-500 pb-3">
-          <h4 className="text-[15px] font-semibold text-red-500">계정 관리</h4>
-          <p className="text-[11px] text-slate-500 mt-1">
+          <h4 className="text-body-2 font-semibold text-red-500">계정 관리</h4>
+          <p className="text-caption-3 text-slate-500 mt-1">
             주의가 필요한 계정 관리 옵션입니다
           </p>
         </div>
@@ -1180,7 +1180,7 @@ function ProfileEditClient() {
 
             <div className="flex items-center gap-3">
               {hasUnsavedChanges && (
-                <div className="flex items-center gap-2 text-amber-500 text-[11px]">
+                <div className="flex items-center gap-2 text-amber-500 text-caption-3">
                   <AlertCircle size={16} />
                   <span>저장되지 않은 변경사항</span>
                 </div>

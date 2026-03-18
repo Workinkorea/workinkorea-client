@@ -18,7 +18,7 @@ export function LanguageToggle() {
       onClick={toggleLanguage}
       className={cn(
         'flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-slate-50',
-        'transition-colors cursor-pointer focus:outline-none text-[13px] font-semibold',
+        'transition-colors cursor-pointer focus:outline-none text-caption-1 font-semibold',
         'border border-slate-200 hover:border-blue-200'
       )}
       aria-label="Change language"

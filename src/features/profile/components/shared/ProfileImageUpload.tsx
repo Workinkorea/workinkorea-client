@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { UploadCloud, Camera, X } from 'lucide-react';
+import { UploadCloud, Camera } from 'lucide-react';
+import { toast } from 'sonner';
 import { cn } from '@/shared/lib/utils/utils';
 
 /**
@@ -70,13 +71,13 @@ function ProfileImageUpload({
     // File size validation
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     if (file.size > maxSizeBytes) {
-      alert(`파일 크기는 ${maxSizeMB}MB를 초과할 수 없습니다.`);
+      toast.error(`파일 크기는 ${maxSizeMB}MB를 초과할 수 없습니다.`);
       return;
     }
 
     // File type validation
     if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드 가능합니다.');
+      toast.error('이미지 파일만 업로드 가능합니다.');
       return;
     }
 
@@ -182,12 +183,12 @@ function ProfileImageUpload({
 
         {/* Description text */}
         <div>
-          <h3 className="text-[15px] font-semibold text-slate-900">프로필 사진</h3>
-          <p className="text-[11px] text-slate-500 mt-1">
+          <h3 className="text-body-2 font-semibold text-slate-900">프로필 사진</h3>
+          <p className="text-caption-3 text-slate-500 mt-1">
             채용 담당자에게 보여질<br />
             전문적인 사진을 등록하세요
           </p>
-          <p className="text-[11px] text-slate-400 mt-2">
+          <p className="text-caption-3 text-slate-400 mt-2">
             JPG, PNG • 최대 {maxSizeMB}MB
           </p>
         </div>
@@ -210,7 +211,7 @@ function ProfileImageUpload({
         <p className="text-caption-1 font-semibold text-slate-800 mb-1">
           사진을 드래그하거나 클릭하여 업로드
         </p>
-        <p className="text-[11px] text-slate-500">
+        <p className="text-caption-3 text-slate-500">
           JPG, PNG • 최대 {maxSizeMB}MB
         </p>
       </div>

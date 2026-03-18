@@ -16,7 +16,7 @@ function EventTypeBadge({ type }: { type: EventType }) {
     promotion: '프로모션',
   };
   return (
-    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold ${styles[type]}`}>
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold ${styles[type]}`}>
       {labels[type]}
     </span>
   );
@@ -51,7 +51,7 @@ function EventCard({ event }: { event: Event }) {
           <EventTypeBadge type={event.type} />
         </div>
 
-        <h3 className="text-[15px] font-bold text-slate-900 leading-snug line-clamp-2 mb-auto">
+        <h3 className="text-body-2 font-bold text-slate-900 leading-snug line-clamp-2 mb-auto">
           {event.title}
         </h3>
 

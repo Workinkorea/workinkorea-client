@@ -92,7 +92,7 @@ const FieldRow = ({ label, required, optional, children }: {
     <span className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
       {label}
       {required && <span className="text-red-500">*</span>}
-      {optional && <span className="text-[11px] font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">선택</span>}
+      {optional && <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">선택</span>}
     </span>
     <div>{children}</div>
   </div>
@@ -123,8 +123,8 @@ function BasicInfoSection({
             <FileText size={16} className="text-blue-600" />
           </span>
           <div>
-            <h2 className="text-[15px] font-bold text-slate-900">프로필 사진</h2>
-            <p className="text-[11px] text-slate-400 mt-0.5">채용 담당자에게 보여질 사진을 등록하세요</p>
+            <h2 className="text-body-2 font-bold text-slate-900">프로필 사진</h2>
+            <p className="text-caption-3 text-slate-400 mt-0.5">채용 담당자에게 보여질 사진을 등록하세요</p>
           </div>
         </div>
         <div className="px-5 sm:px-7 py-5">
@@ -144,8 +144,8 @@ function BasicInfoSection({
             <Briefcase size={16} className="text-blue-600" />
           </span>
           <div>
-            <h2 className="text-[15px] font-bold text-slate-900">기본 정보</h2>
-            <p className="text-[11px] text-slate-400 mt-0.5">개인 정보를 입력해주세요</p>
+            <h2 className="text-body-2 font-bold text-slate-900">기본 정보</h2>
+            <p className="text-caption-3 text-slate-400 mt-0.5">개인 정보를 입력해주세요</p>
           </div>
         </div>
 
@@ -163,7 +163,7 @@ function BasicInfoSection({
               />
             )}
           />
-          {errors.name && <p id="name-error" className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
+          {errors.name && <p id="name-error" className="text-caption-2 text-red-500 mt-1">{errors.name.message}</p>}
         </FieldRow>
 
         {/* Location & Address */}
@@ -179,7 +179,7 @@ function BasicInfoSection({
               />
             )}
           />
-          {errors.location && <p className="text-xs text-red-500 mt-1">{errors.location.message}</p>}
+          {errors.location && <p className="text-caption-2 text-red-500 mt-1">{errors.location.message}</p>}
         </FieldRow>
 
         <FieldRow label="주소" optional>
@@ -194,7 +194,7 @@ function BasicInfoSection({
               />
             )}
           />
-          {errors.address && <p className="text-xs text-red-500 mt-1">{errors.address.message}</p>}
+          {errors.address && <p className="text-caption-2 text-red-500 mt-1">{errors.address.message}</p>}
         </FieldRow>
 
         {/* Job Status & Career */}
@@ -219,7 +219,7 @@ function BasicInfoSection({
               </select>
             )}
           />
-          {errors.job_status && <p className="text-xs text-red-500 mt-1">{errors.job_status.message}</p>}
+          {errors.job_status && <p className="text-caption-2 text-red-500 mt-1">{errors.job_status.message}</p>}
         </FieldRow>
 
         <FieldRow label="경력" optional>
@@ -245,7 +245,7 @@ function BasicInfoSection({
               </select>
             )}
           />
-          {errors.career && <p className="text-xs text-red-500 mt-1">{errors.career.message}</p>}
+          {errors.career && <p className="text-caption-2 text-red-500 mt-1">{errors.career.message}</p>}
         </FieldRow>
       </div>
 
@@ -256,8 +256,8 @@ function BasicInfoSection({
             <Briefcase size={16} className="text-blue-600" />
           </span>
           <div>
-            <h2 className="text-[15px] font-bold text-slate-900">직무 정보</h2>
-            <p className="text-[11px] text-slate-400 mt-0.5">커리어 정보를 입력해주세요</p>
+            <h2 className="text-body-2 font-bold text-slate-900">직무 정보</h2>
+            <p className="text-caption-3 text-slate-400 mt-0.5">커리어 정보를 입력해주세요</p>
           </div>
         </div>
 
@@ -292,7 +292,7 @@ function BasicInfoSection({
               </select>
             )}
           />
-          {errors.position_id && <p className="text-xs text-red-500 mt-1">{errors.position_id.message}</p>}
+          {errors.position_id && <p className="text-caption-2 text-red-500 mt-1">{errors.position_id.message}</p>}
         </FieldRow>
 
         {/* Country */}
@@ -319,7 +319,7 @@ function BasicInfoSection({
               </select>
             )}
           />
-          {errors.country_id && <p className="text-xs text-red-500 mt-1">{errors.country_id.message}</p>}
+          {errors.country_id && <p className="text-caption-2 text-red-500 mt-1">{errors.country_id.message}</p>}
         </FieldRow>
 
         {/* Portfolio Upload */}
@@ -345,7 +345,7 @@ function BasicInfoSection({
               ) : (
                 <p className="text-caption-1 text-slate-600">파일을 선택하거나 드래그하세요</p>
               )}
-              <p className="text-[11px] text-slate-400 mt-0.5">PDF, DOCX, 이미지 (최대 10MB)</p>
+              <p className="text-caption-3 text-slate-400 mt-0.5">PDF, DOCX, 이미지 (최대 10MB)</p>
             </div>
             <FileUploadButton
               fileType="portfolio"
@@ -373,8 +373,8 @@ function BasicInfoSection({
             <Globe size={16} className="text-blue-600" />
           </span>
           <div>
-            <h2 className="text-[15px] font-bold text-slate-900">자기소개 & 언어 스킬</h2>
-            <p className="text-[11px] text-slate-400 mt-0.5">전문성을 표현해주세요</p>
+            <h2 className="text-body-2 font-bold text-slate-900">자기소개 & 언어 스킬</h2>
+            <p className="text-caption-3 text-slate-400 mt-0.5">전문성을 표현해주세요</p>
           </div>
         </div>
 
@@ -397,13 +397,13 @@ function BasicInfoSection({
                     errors.introduction && 'border-red-500 focus:ring-red-100'
                   )}
                 />
-                <div className="text-right text-[11px] text-slate-400 mt-1">
+                <div className="text-right text-caption-3 text-slate-400 mt-1">
                   {field.value?.length || 0}/500
                 </div>
               </div>
             )}
           />
-          {errors.introduction && <p className="text-xs text-red-500 mt-1">{errors.introduction.message}</p>}
+          {errors.introduction && <p className="text-caption-2 text-red-500 mt-1">{errors.introduction.message}</p>}
         </FieldRow>
 
         {/* Language Skills */}

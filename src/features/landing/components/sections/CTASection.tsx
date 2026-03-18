@@ -46,7 +46,7 @@ export default function CTASection() {
       >
         {/* 메인 제목 */}
         <motion.h2
-          className="text-title-2 sm:text-title-1 lg:text-[44px] font-black text-white mb-4 sm:mb-5 lg:mb-6 tracking-tight leading-tight"
+          className="text-title-2 sm:text-title-1 lg:text-display-1 font-black text-white mb-4 sm:mb-5 lg:mb-6 tracking-tight leading-tight"
           variants={itemVariants}
         >
           지금 시작하세요!
@@ -54,7 +54,7 @@ export default function CTASection() {
 
         {/* 부제 */}
         <motion.p
-          className="text-body-3 sm:text-[15px] lg:text-[18px] text-blue-100 mb-8 sm:mb-10 lg:mb-12 max-w-2xl mx-auto leading-relaxed"
+          className="text-body-3 sm:text-body-2 lg:text-[18px] text-blue-100 mb-8 sm:mb-10 lg:mb-12 max-w-2xl mx-auto leading-relaxed"
           variants={itemVariants}
         >
           수많은 기업과 함께 새로운 미래를 시작하세요
@@ -117,7 +117,7 @@ export default function CTASection() {
 
         {/* 보충 텍스트 */}
         <motion.p
-          className="mt-6 sm:mt-8 lg:mt-10 text-[11px] sm:text-caption-2 text-blue-200"
+          className="mt-6 sm:mt-8 lg:mt-10 text-caption-3 sm:text-caption-2 text-blue-200"
           variants={itemVariants}
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}

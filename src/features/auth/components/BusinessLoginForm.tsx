@@ -229,11 +229,11 @@ export default function BusinessLoginForm() {
           <motion.p variants={fadeUp} className="text-blue-200 text-caption-1 font-semibold uppercase tracking-[1.5px]">
             기업 채용 파트너
           </motion.p>
-          <motion.h2 variants={fadeUp} className="text-white text-[34px] font-extrabold leading-tight">
+          <motion.h2 variants={fadeUp} className="text-white text-title-1 font-extrabold leading-tight">
             외국인 인재 채용,<br />
             더 쉽고 빠르게
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-blue-200 text-[15px] leading-relaxed">
+          <motion.p variants={fadeUp} className="text-blue-200 text-body-2 leading-relaxed">
             WorkInKorea와 함께 우수한 외국인 인재를<br />
             효율적으로 채용하세요.
           </motion.p>
@@ -275,7 +275,7 @@ export default function BusinessLoginForm() {
             <motion.p variants={fadeUp} className="text-caption-2 font-bold text-blue-600 uppercase tracking-[1.5px]">
               기업 전용
             </motion.p>
-            <motion.h1 variants={fadeUp} className="text-[26px] font-extrabold text-slate-900">
+            <motion.h1 variants={fadeUp} className="text-title-2 font-extrabold text-slate-900">
               기업 로그인
             </motion.h1>
             <motion.p variants={fadeUp} className="text-caption-1 text-slate-500">

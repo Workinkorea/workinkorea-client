@@ -200,7 +200,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-[15px] font-bold text-slate-900 mb-4">약관 동의</h2>
+            <h2 className="text-body-2 font-bold text-slate-900 mb-4">약관 동의</h2>
           </motion.div>
 
           {/* 모두 동의 */}
@@ -252,7 +252,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                       </span>
                       <button
                         type="button"
-                        className="text-[11px] text-slate-500 hover:text-blue-600 underline cursor-pointer whitespace-nowrap shrink-0"
+                        className="text-caption-3 text-slate-500 hover:text-blue-600 underline cursor-pointer whitespace-nowrap shrink-0"
                         onClick={(e) => {
                           e.preventDefault();
                           openTermsModal(key);
@@ -286,7 +286,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-title-3 sm:text-title-2 font-bold text-slate-900 mb-2">개인 회원가입</h1>
-            <p className="text-sm text-slate-500">가입 정보를 입력하세요</p>
+            <p className="text-caption-1 text-slate-500">가입 정보를 입력하세요</p>
           </motion.div>
 
           <motion.form
@@ -299,7 +299,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             {/* 폼 카드 래퍼 */}
             <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm space-y-4">
               <div className="mb-2">
-                <h3 className="text-[15px] font-bold text-slate-900 mb-4">기본 정보</h3>
+                <h3 className="text-body-2 font-bold text-slate-900 mb-4">기본 정보</h3>
               </div>
 
               <div className="mb-6">
@@ -354,7 +354,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center gap-2 text-emerald-600 text-xs -mt-2"
+                  className="flex items-center gap-2 text-emerald-600 text-caption-2 -mt-2"
                 >
                   <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path
@@ -424,7 +424,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="flex items-center gap-2 text-emerald-600 text-xs"
+                            className="flex items-center gap-2 text-emerald-600 text-caption-2"
                           >
                             <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                               <path
@@ -512,7 +512,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-[11px] text-red-500 text-center"
+                  className="text-caption-3 text-red-500 text-center"
                 >
                   모든 약관에 동의해주세요
                 </motion.p>

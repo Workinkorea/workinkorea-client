@@ -259,7 +259,7 @@ export default function BusinessSignupStep2({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-title-2 sm:text-[36px] text-slate-900 text-center mb-4 leading-tight">
+          <h1 className="text-title-2 sm:text-title-1 text-slate-900 text-center mb-4 leading-tight">
             <p>기업 회원가입</p>
           </h1>
           <div className="flex items-center justify-between text-sm">
@@ -292,7 +292,7 @@ export default function BusinessSignupStep2({
                         {...field}
                         id={fieldId}
                         type="text"
-                        className="flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                        className="flex-1 border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
                         placeholder="-제외 10자리 입력"
                         maxLength={12}
                         onChange={(e) => {
@@ -331,7 +331,7 @@ export default function BusinessSignupStep2({
                         ) : formState.isBusinessNumberVerified ? '인증완료' : '인증하기'}
                       </motion.button>
                     </div>
-                    <p className='text-right text-xs underline hover:text-slate-700 cursor-pointer'
+                    <p className='text-right text-caption-2 underline hover:text-slate-700 cursor-pointer'
                       onClick={() => window.open(
                         "https://github.com/Workinkorea/workinkorea-client",
                         "_blank"
@@ -344,7 +344,7 @@ export default function BusinessSignupStep2({
               />
 
               {formState.isBusinessNumberVerified && formState.businessNumberMessage && (
-                <p className="text-[11px] text-blue-600 mt-1">
+                <p className="text-caption-3 text-blue-600 mt-1">
                   {formState.businessNumberMessage}
                 </p>
               )}
@@ -401,7 +401,7 @@ export default function BusinessSignupStep2({
                           }}
                           className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="text-sm text-slate-700">휴대전화</span>
+                        <span className="text-caption-1 text-slate-700">휴대전화</span>
                       </label>
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
@@ -416,7 +416,7 @@ export default function BusinessSignupStep2({
                           }}
                           className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="text-sm text-slate-700">일반전화</span>
+                        <span className="text-caption-1 text-slate-700">일반전화</span>
                       </label>
                     </div>
 
@@ -448,7 +448,7 @@ export default function BusinessSignupStep2({
 
                     {/* Helper Text */}
                     {!errors.phoneNumber && field.value && (
-                      <p className="text-[11px] text-slate-500">
+                      <p className="text-caption-3 text-slate-500">
                         {formState.phoneType === 'MOBILE'
                           ? '휴대전화: 010, 011, 016-019로 시작'
                           : '일반전화: 지역번호(예: 02, 031, 051) 포함'}

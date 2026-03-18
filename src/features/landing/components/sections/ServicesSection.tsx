@@ -90,7 +90,7 @@ export default function ServicesSection() {
             animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            <span className="text-[11px] sm:text-caption-2 font-bold text-blue-600 uppercase tracking-wider">
+            <span className="text-caption-3 sm:text-caption-2 font-bold text-blue-600 uppercase tracking-wider">
               특별 서비스
             </span>
           </motion.div>
@@ -172,7 +172,7 @@ export default function ServicesSection() {
 
                   {/* 타이틀 */}
                   <h3 className={cn(
-                    'text-[16px] sm:text-[17px] font-bold mb-3 sm:mb-4 transition-colors',
+                    'text-body-1 sm:text-title-5 font-bold mb-3 sm:mb-4 transition-colors',
                     service.id === 'jobs'
                       ? 'text-slate-900 group-hover:text-slate-900'
                       : 'text-slate-900 group-hover:text-blue-900'
@@ -204,7 +204,7 @@ export default function ServicesSection() {
                     </span>
                     <motion.span
                       className={cn(
-                        'inline-block text-body-3 sm:text-[15px]',
+                        'inline-block text-body-3 sm:text-body-2',
                         service.id === 'jobs'
                           ? 'text-slate-600 group-hover/link:text-slate-700'
                           : 'text-blue-600 group-hover/link:text-blue-700'

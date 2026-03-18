@@ -42,8 +42,8 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
             <Bell size={16} className="text-blue-600" />
           </span>
           <div>
-            <h2 className="text-[15px] font-bold text-slate-900">알림 설정</h2>
-            <p className="text-[11px] text-slate-400 mt-0.5">받고 싶은 알림을 선택하세요</p>
+            <h2 className="text-body-2 font-bold text-slate-900">알림 설정</h2>
+            <p className="text-caption-3 text-slate-400 mt-0.5">받고 싶은 알림을 선택하세요</p>
           </div>
         </div>
 
@@ -143,8 +143,8 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
             <AlertTriangle size={16} className="text-red-600" />
           </span>
           <div>
-            <h2 className="text-[15px] font-bold text-red-600">계정 관리</h2>
-            <p className="text-[11px] text-slate-500 mt-0.5">주의가 필요한 계정 관리 옵션입니다</p>
+            <h2 className="text-body-2 font-bold text-red-600">계정 관리</h2>
+            <p className="text-caption-3 text-slate-500 mt-0.5">주의가 필요한 계정 관리 옵션입니다</p>
           </div>
         </div>
 

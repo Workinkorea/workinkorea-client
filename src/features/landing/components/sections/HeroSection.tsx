@@ -43,7 +43,7 @@ export default function HeroSection() {
         {/* 브랜드 타이틀 */}
         <motion.h1
           variants={item}
-          className="font-['Plus_Jakarta_Sans'] text-[40px] sm:text-[52px] lg:text-[60px] font-extrabold text-blue-600 tracking-tight mb-3"
+          className="font-['Plus_Jakarta_Sans'] text-display-2 sm:text-[52px] lg:text-[60px] font-extrabold text-blue-600 tracking-tight mb-3"
         >
           Work In Korea
         </motion.h1>
@@ -51,7 +51,7 @@ export default function HeroSection() {
         {/* 서브타이틀 */}
         <motion.p
           variants={item}
-          className="text-[20px] sm:text-[22px] font-bold text-slate-900 mb-3"
+          className="text-title-4 sm:text-[22px] font-bold text-slate-900 mb-3"
         >
           한국 취업, 여기서 시작됩니다
         </motion.p>
@@ -68,7 +68,7 @@ export default function HeroSection() {
         <motion.div variants={item} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
           <Link
             href="/login-select"
-            className="inline-flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-8 py-3.5 rounded-full font-semibold text-[15px] transition-all shadow-md hover:shadow-lg"
+            className="inline-flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-8 py-3.5 rounded-full font-semibold text-body-2 transition-all shadow-md hover:shadow-lg"
           >
             시작하기
             <ArrowRight className="w-4 h-4" />

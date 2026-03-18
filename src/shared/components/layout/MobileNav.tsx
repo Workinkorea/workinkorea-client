@@ -162,7 +162,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
 
                 {/* 자주 찾는 메뉴 */}
                 <motion.div className="px-5 pt-6 pb-5" variants={panelItemVariants}>
-                  <p className="text-[13px] font-bold text-slate-900 mb-3">
+                  <p className="text-caption-1 font-bold text-slate-900 mb-3">
                     자주 찾는 메뉴예요
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -171,7 +171,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                         key={link.label}
                         href={link.href}
                         onClick={close}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-full text-[13px] font-medium text-slate-700 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-full text-caption-1 font-medium text-slate-700 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                       >
                         <span>{link.emoji}</span>
                         {link.label}
@@ -187,7 +187,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                   <motion.div key={section.title} variants={panelItemVariants}>
                     {si > 0 && <div className="h-px bg-slate-100 mx-5" />}
                     <div className="px-5 pt-5 pb-3">
-                      <p className="text-[13px] font-bold text-slate-900 mb-3">
+                      <p className="text-caption-1 font-bold text-slate-900 mb-3">
                         {section.title}
                       </p>
                       <div className="grid grid-cols-2 gap-1">
@@ -199,7 +199,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                             className="flex items-center gap-2.5 px-3 py-3 rounded-lg hover:bg-slate-50 transition-colors group"
                           >
                             <span className="text-[18px] leading-none">{item.icon}</span>
-                            <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600 transition-colors">
+                            <span className="text-caption-1 font-medium text-slate-700 group-hover:text-blue-600 transition-colors">
                               {item.label}
                             </span>
                           </Link>
@@ -220,14 +220,14 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                         onClick={close}
                         className="flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group"
                       >
-                        <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600">MY홈</span>
+                        <span className="text-caption-1 font-medium text-slate-700 group-hover:text-blue-600">MY홈</span>
                         <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400" />
                       </Link>
                       <button
                         onClick={() => { onLogout?.(); close(); }}
                         className="w-full flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group text-left cursor-pointer"
                       >
-                        <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600">로그아웃</span>
+                        <span className="text-caption-1 font-medium text-slate-700 group-hover:text-blue-600">로그아웃</span>
                         <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400" />
                       </button>
                     </>
@@ -238,7 +238,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                         onClick={close}
                         className="flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group"
                       >
-                        <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600">로그인</span>
+                        <span className="text-caption-1 font-medium text-slate-700 group-hover:text-blue-600">로그인</span>
                         <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400" />
                       </Link>
                       <Link
@@ -246,7 +246,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                         onClick={close}
                         className="flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group"
                       >
-                        <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600">회원가입</span>
+                        <span className="text-caption-1 font-medium text-slate-700 group-hover:text-blue-600">회원가입</span>
                         <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400" />
                       </Link>
                     </>
@@ -257,7 +257,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
 
               {/* 하단 브랜드 */}
               <div className="px-5 py-4 border-t border-slate-100 flex-shrink-0">
-                <span className="text-[11px] font-semibold text-slate-300 tracking-wide uppercase">
+                <span className="text-caption-3 font-semibold text-slate-300 tracking-wide uppercase">
                   WorkInKorea
                 </span>
               </div>

@@ -64,12 +64,12 @@ function SkillProgressBar({
       {(label || showValues) && (
         <div className="flex justify-between items-center mb-2">
           {label && (
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-caption-1 font-medium text-slate-700">
               {label}
             </span>
           )}
           {showValues && (
-            <div className="flex items-center gap-2 text-[11px]">
+            <div className="flex items-center gap-2 text-caption-3">
               <span className={cn(
                 'font-semibold',
                 isAboveAverage ? 'text-emerald-500' : 'text-amber-500'
@@ -124,7 +124,7 @@ function SkillProgressBar({
           >
             {/* 평균 라벨 */}
             <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
-              <div className="bg-slate-700 text-white text-[11px] px-1 py-0.5 rounded text-center whitespace-nowrap">
+              <div className="bg-slate-700 text-white text-caption-3 px-1 py-0.5 rounded text-center whitespace-nowrap">
                 평균
               </div>
             </div>
@@ -144,7 +144,7 @@ function SkillProgressBar({
             'w-2 h-2 rounded-full',
             isAboveAverage ? 'bg-emerald-500' : 'bg-amber-500'
           )} />
-          <span className="text-[11px] text-slate-500">
+          <span className="text-caption-3 text-slate-500">
             평균보다 {isAboveAverage ? '+' : ''}{value - average}점
           </span>
         </motion.div>

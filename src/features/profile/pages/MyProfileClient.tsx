@@ -348,7 +348,7 @@ function MyProfileClient() {
                     transition={{ duration: 0.5, delay: 0.4 }}
                   >
                     <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-[17px] font-semibold text-slate-900">
+                      <h3 className="text-title-5 font-semibold text-slate-900">
                         종합 역량 분석
                       </h3>
                       <button
@@ -372,7 +372,7 @@ function MyProfileClient() {
             {activeTab === 'skills' && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-[17px] font-semibold text-slate-900">
+                  <h3 className="text-title-5 font-semibold text-slate-900">
                     스킬 관리
                   </h3>
                   <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors cursor-pointer">
@@ -392,7 +392,7 @@ function MyProfileClient() {
                     <p className="text-sm text-slate-600 mb-1">
                       보유하신 스킬을 추가해보세요
                     </p>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="text-caption-3 text-slate-500">
                       스킬을 등록하면 기업에게 더 잘 어필할 수 있어요
                     </p>
                   </div>
@@ -408,7 +408,7 @@ function MyProfileClient() {
                 transition={{ duration: 0.5 }}
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="text-[17px] font-semibold text-slate-900">
+                  <h3 className="text-title-5 font-semibold text-slate-900">
                     경력 및 교육 관리
                   </h3>
                   <div className="flex gap-2">
@@ -424,14 +424,14 @@ function MyProfileClient() {
                 <div className="bg-white rounded-lg p-6 shadow-sm">
                   {/* 교육 이력 */}
                   <div className="space-y-4 mb-8">
-                    <h4 className="text-[15px] font-semibold text-slate-700">교육 이력</h4>
+                    <h4 className="text-body-2 font-semibold text-slate-700">교육 이력</h4>
                     {profile.education.length > 0 ? (
                       profile.education.map((edu) => (
                         <div key={edu.id} className="flex items-start justify-between border-l-4 border-blue-200 pl-4 py-2">
                           <div>
                             <h5 className="text-sm font-semibold text-slate-900">{edu.institution}</h5>
                             <p className="text-sm text-slate-600">{edu.degree} - {edu.field}</p>
-                            <p className="text-[11px] text-slate-500">
+                            <p className="text-caption-3 text-slate-500">
                               {edu.startDate} ~ {edu.endDate || '현재'}
                             </p>
                           </div>
@@ -452,9 +452,9 @@ function MyProfileClient() {
                   {/* 자격증 */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-[15px] font-semibold text-slate-700">자격증</h4>
+                      <h4 className="text-body-2 font-semibold text-slate-700">자격증</h4>
                       {profile.certifications.length > 0 && (
-                        <button className="text-blue-500 hover:text-blue-600 text-[11px] font-medium transition-colors cursor-pointer">
+                        <button className="text-blue-500 hover:text-blue-600 text-caption-3 font-medium transition-colors cursor-pointer">
                           관리
                         </button>
                       )}
@@ -464,7 +464,7 @@ function MyProfileClient() {
                         {profile.certifications.map((cert, index) => (
                           <span
                             key={index}
-                            className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[11px] border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors"
+                            className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-caption-3 border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors"
                           >
                             {cert}
                           </span>

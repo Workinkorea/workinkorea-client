@@ -195,8 +195,8 @@ const CompanyProfileEditClient = () => {
                     <Building2 size={16} className="text-blue-600" />
                   </span>
                   <div>
-                    <h2 className="text-[15px] font-bold text-slate-900">기업 정보</h2>
-                    <p className="text-[11px] text-slate-400 mt-0.5">기업의 기본 정보를 입력해주세요</p>
+                    <h2 className="text-body-2 font-bold text-slate-900">기업 정보</h2>
+                    <p className="text-caption-3 text-slate-400 mt-0.5">기업의 기본 정보를 입력해주세요</p>
                   </div>
                 </div>
                 <CompanyInfoSection
@@ -216,8 +216,8 @@ const CompanyProfileEditClient = () => {
                     <UserCircle size={16} className="text-blue-600" />
                   </span>
                   <div>
-                    <h2 className="text-[15px] font-bold text-slate-900">담당자 정보</h2>
-                    <p className="text-[11px] text-slate-400 mt-0.5">채용 담당자의 연락처를 입력해주세요</p>
+                    <h2 className="text-body-2 font-bold text-slate-900">담당자 정보</h2>
+                    <p className="text-caption-3 text-slate-400 mt-0.5">채용 담당자의 연락처를 입력해주세요</p>
                   </div>
                 </div>
                 <ContactPersonSection
@@ -296,7 +296,7 @@ const CompanyProfileEditClient = () => {
                         className="stroke-blue-600 transition-all duration-500"
                       />
                     </svg>
-                    <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-blue-600">
+                    <span className="absolute inset-0 flex items-center justify-center text-caption-3 font-bold text-blue-600">
                       {progress}%
                     </span>
                   </div>
@@ -305,7 +305,7 @@ const CompanyProfileEditClient = () => {
                       프로필 완성도{' '}
                       <span className="text-blue-600">{progress}%</span>
                     </p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
+                    <p className="text-caption-3 text-slate-400 mt-0.5">
                       {filledCount}/{REQUIRED_FIELDS.length}개 항목 입력됨
                     </p>
                   </div>
@@ -319,7 +319,7 @@ const CompanyProfileEditClient = () => {
                 </div>
 
                 {/* 기업 정보 체크리스트 */}
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                <p className="text-caption-3 font-bold text-slate-500 uppercase tracking-wider mb-2">
                   기업 정보
                 </p>
                 <ul className="space-y-1.5 mb-4">
@@ -350,7 +350,7 @@ const CompanyProfileEditClient = () => {
                 </ul>
 
                 {/* 담당자 정보 체크리스트 */}
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                <p className="text-caption-3 font-bold text-slate-500 uppercase tracking-wider mb-2">
                   담당자 정보
                 </p>
                 <ul className="space-y-1.5">
@@ -381,7 +381,7 @@ const CompanyProfileEditClient = () => {
                 </ul>
 
                 {hasChanges && (
-                  <p className="mt-4 text-[11px] text-amber-600 flex items-center gap-1">
+                  <p className="mt-4 text-caption-3 text-amber-600 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
                     저장되지 않은 변경사항이 있습니다.
                   </p>

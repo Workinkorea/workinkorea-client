@@ -182,10 +182,10 @@ const CompanyProfileClient = () => {
           <div className="max-w-5xl mx-auto px-6 pt-5 pb-0 flex items-center justify-between">
             <div>
               {/* 역할 레이블: 현재 컨텍스트를 명시해 방향 감각 제공 */}
-              <p className="text-[11px] font-semibold text-blue-600 uppercase tracking-wider mb-1">
+              <p className="text-caption-3 font-semibold text-blue-600 uppercase tracking-wider mb-1">
                 기업 대시보드
               </p>
-              <h1 className="text-[20px] font-extrabold text-slate-900 tracking-tight">
+              <h1 className="text-title-4 font-extrabold text-slate-900 tracking-tight">
                 기업 #{profile.company_id}
               </h1>
             </div>
@@ -231,7 +231,7 @@ const CompanyProfileClient = () => {
                   {tab.label}
                   {/* 공고 탭에 진행 공고 수 뱃지 표시 */}
                   {tab.key === 'posts' && activePosts.length > 0 && (
-                    <span className="ml-1 inline-flex items-center justify-center w-5 h-5 bg-blue-100 text-blue-600 text-[11px] font-bold rounded-full">
+                    <span className="ml-1 inline-flex items-center justify-center w-5 h-5 bg-blue-100 text-blue-600 text-caption-3 font-bold rounded-full">
                       {activePosts.length}
                     </span>
                   )}
@@ -314,8 +314,8 @@ const CompanyProfileClient = () => {
                               {post.title}
                             </p>
                             <div className="flex items-center justify-between">
-                              <span className="text-[11px] text-slate-400">{post.employment_type}</span>
-                              <span className="text-[11px] font-semibold text-slate-500">
+                              <span className="text-caption-3 text-slate-400">{post.employment_type}</span>
+                              <span className="text-caption-3 font-semibold text-slate-500">
                                 미열람{' '}
                                 <span className="text-blue-600 font-black">0</span> 명
                               </span>
@@ -434,7 +434,7 @@ const CompanyProfileClient = () => {
                       <Building2 size={22} className="text-white" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[15px] font-bold text-slate-900 truncate">
+                      <p className="text-body-2 font-bold text-slate-900 truncate">
                         기업 #{profile.company_id}
                       </p>
                       <p className="text-caption-2 text-slate-400 truncate">{profile.industry_type}</p>
@@ -445,11 +445,11 @@ const CompanyProfileClient = () => {
                   <div className="grid grid-cols-2 gap-3 mb-5 p-4 bg-slate-50 rounded-lg">
                     <div className="text-center">
                       <p className="text-[26px] font-extrabold text-slate-900">{activePosts.length}</p>
-                      <p className="text-[11px] text-slate-400">진행 공고</p>
+                      <p className="text-caption-3 text-slate-400">진행 공고</p>
                     </div>
                     <div className="text-center">
                       <p className="text-[26px] font-extrabold text-slate-900">{posts.length}</p>
-                      <p className="text-[11px] text-slate-400">전체 공고</p>
+                      <p className="text-caption-3 text-slate-400">전체 공고</p>
                     </div>
                   </div>
 
@@ -512,7 +512,7 @@ const CompanyProfileClient = () => {
                           <span className="text-caption-2 text-slate-300">-</span>
                           <button className={cn(
                             'px-2.5 py-1 border border-slate-200 rounded',
-                            'text-[11px] font-semibold text-slate-500',
+                            'text-caption-3 font-semibold text-slate-500',
                             'hover:bg-slate-50 transition-colors cursor-pointer',
                           )}>
                             구매

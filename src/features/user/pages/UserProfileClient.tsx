@@ -321,7 +321,7 @@ function UserProfileClient() {
           {/* 상단 제목 및 액션 버튼 */}
           <div className="flex items-center justify-between gap-4">
             <motion.h1
-              className="text-[20px] sm:text-title-3 font-extrabold text-slate-900"
+              className="text-title-4 sm:text-title-3 font-extrabold text-slate-900"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
@@ -434,7 +434,7 @@ function UserProfileClient() {
                       transition={{ duration: 0.5, delay: 0.3 }}
                     >
                       <div className="flex items-center justify-between mb-4 sm:mb-5">
-                        <h3 className="text-body-3 sm:text-[15px] font-bold text-slate-900">프로필 완성도</h3>
+                        <h3 className="text-body-3 sm:text-body-2 font-bold text-slate-900">프로필 완성도</h3>
                         <span className={cn(
                           'text-[18px] sm:text-lg font-extrabold',
                           pct >= 80 ? 'text-blue-600' : pct >= 50 ? 'text-amber-500' : 'text-slate-400'
@@ -462,7 +462,7 @@ function UserProfileClient() {
                           <div
                             key={item.label}
                             className={cn(
-                              'flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-caption-2 font-medium px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors',
+                              'flex items-center gap-1.5 sm:gap-2 text-caption-3 sm:text-caption-2 font-medium px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors',
                               item.done
                                 ? 'text-slate-700 bg-slate-50'
                                 : 'text-slate-400 bg-slate-50/50'
@@ -483,7 +483,7 @@ function UserProfileClient() {
 
                       {pct < 100 && (
                         <motion.p
-                          className="text-[11px] sm:text-caption-2 text-slate-400 leading-relaxed"
+                          className="text-caption-3 sm:text-caption-2 text-slate-400 leading-relaxed"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.6 }}
@@ -501,7 +501,7 @@ function UserProfileClient() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  <h3 className="text-[15px] sm:text-[16px] font-bold text-slate-900 mb-4 sm:mb-6 text-center">
+                  <h3 className="text-body-2 sm:text-body-1 font-bold text-slate-900 mb-4 sm:mb-6 text-center">
                     종합 역량 분석
                   </h3>
                   <div className="flex justify-center">
@@ -531,7 +531,7 @@ function UserProfileClient() {
                       <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h4 className="text-body-3 sm:text-[15px] font-bold text-slate-900">프로필 이미지 업로드</h4>
+                      <h4 className="text-body-3 sm:text-body-2 font-bold text-slate-900">프로필 이미지 업로드</h4>
                       <p className="text-caption-2 sm:text-caption-1 text-slate-500 mt-0.5">JPG, PNG 형식, 5MB 이하</p>
                     </div>
                   </div>
@@ -570,7 +570,7 @@ function UserProfileClient() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.4, delay: 0.1 }}
                   >
-                    <h4 className="text-body-3 sm:text-[15px] font-bold text-slate-900 px-2 sm:px-0">작성된 이력서 ({resumeList.length})</h4>
+                    <h4 className="text-body-3 sm:text-body-2 font-bold text-slate-900 px-2 sm:px-0">작성된 이력서 ({resumeList.length})</h4>
                     {resumeList.map((resume, idx) => (
                       <motion.div
                         key={resume.id}
@@ -589,7 +589,7 @@ function UserProfileClient() {
                           <p className="text-caption-1 sm:text-body-3 font-semibold text-slate-900 truncate">
                             {resume.title || '이력서'}
                           </p>
-                          <p className="text-[11px] sm:text-caption-2 text-slate-400 mt-1">
+                          <p className="text-caption-3 sm:text-caption-2 text-slate-400 mt-1">
                             {resume.updated_at ? new Date(resume.updated_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' }) : '날짜 정보 없음'}
                           </p>
                         </div>
@@ -600,7 +600,7 @@ function UserProfileClient() {
                             handleDeleteResume(resume.id, resume.title || '이력서');
                           }}
                           disabled={deleteResumeMutation.isPending}
-                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-caption-2 font-semibold text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-caption-3 sm:text-caption-2 font-semibold text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
@@ -649,7 +649,7 @@ function UserProfileClient() {
                     <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
                       <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                     </div>
-                    <h3 className="text-body-3 sm:text-[15px] font-bold text-slate-900">교육 이력</h3>
+                    <h3 className="text-body-3 sm:text-body-2 font-bold text-slate-900">교육 이력</h3>
                   </div>
 
                   <div className="space-y-3">
@@ -673,7 +673,7 @@ function UserProfileClient() {
                                 <p className="text-caption-2 sm:text-caption-1 text-slate-600 mt-1">
                                   {edu.degree} • {edu.field}
                                 </p>
-                                <p className="text-[11px] sm:text-caption-2 text-slate-400 mt-2">
+                                <p className="text-caption-3 sm:text-caption-2 text-slate-400 mt-2">
                                   {edu.startDate} ~ {edu.endDate || '현재'}
                                 </p>
                               </div>
@@ -699,14 +699,14 @@ function UserProfileClient() {
                       <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                         <Award className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
                       </div>
-                      <h3 className="text-body-3 sm:text-[15px] font-bold text-slate-900">자격증</h3>
+                      <h3 className="text-body-3 sm:text-body-2 font-bold text-slate-900">자격증</h3>
                     </div>
 
                     <div className="flex flex-wrap gap-2 sm:gap-3">
                       {resumeData.certifications.map((cert, index) => (
                         <motion.span
                           key={index}
-                          className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-linear-to-br from-amber-50 to-yellow-50 text-amber-700 text-[11px] sm:text-caption-2 font-semibold rounded-full border border-amber-200 hover:border-amber-300 hover:shadow-sm transition-all"
+                          className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-linear-to-br from-amber-50 to-yellow-50 text-amber-700 text-caption-3 sm:text-caption-2 font-semibold rounded-full border border-amber-200 hover:border-amber-300 hover:shadow-sm transition-all"
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ duration: 0.2, delay: index * 0.05 }}

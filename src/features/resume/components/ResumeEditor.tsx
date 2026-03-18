@@ -321,7 +321,7 @@ function ResumeEditor({
                 <FileText size={18} className="text-blue-600" />
               </div>
               <div>
-                <h3 className="text-[15px] font-bold text-slate-900">
+                <h3 className="text-body-2 font-bold text-slate-900">
                   기본 정보
                 </h3>
                 <p className="text-caption-2 text-slate-500 mt-0.5">
@@ -392,7 +392,7 @@ function ResumeEditor({
                     disabled={uploadingImage}
                     className="hidden"
                   />
-                  <p className="text-[11px] text-slate-500 mt-2">
+                  <p className="text-caption-3 text-slate-500 mt-2">
                     JPG, PNG, GIF 파일 (최대 5MB)
                   </p>
                 </div>
@@ -414,7 +414,7 @@ function ResumeEditor({
                   <MessageSquare size={18} className="text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-bold text-slate-900">
+                  <h3 className="text-body-2 font-bold text-slate-900">
                     자기소개
                   </h3>
                   <p className="text-caption-2 text-slate-500 mt-0.5">
@@ -500,7 +500,7 @@ function ResumeEditor({
                   <Briefcase size={18} className="text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-bold text-slate-900">
+                  <h3 className="text-body-2 font-bold text-slate-900">
                     경력사항
                   </h3>
                   <p className="text-caption-2 text-slate-500 mt-0.5">
@@ -668,7 +668,7 @@ function ResumeEditor({
                   <GraduationCap size={18} className="text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-bold text-slate-900">
+                  <h3 className="text-body-2 font-bold text-slate-900">
                     학력사항
                   </h3>
                   <p className="text-caption-2 text-slate-500 mt-0.5">
@@ -804,7 +804,7 @@ function ResumeEditor({
                   <Globe size={18} className="text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-bold text-slate-900">
+                  <h3 className="text-body-2 font-bold text-slate-900">
                     언어 능력
                   </h3>
                   <p className="text-caption-2 text-slate-500 mt-0.5">
@@ -913,7 +913,7 @@ function ResumeEditor({
                   <Award size={18} className="text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-bold text-slate-900">
+                  <h3 className="text-body-2 font-bold text-slate-900">
                     자격증
                   </h3>
                   <p className="text-caption-2 text-slate-500 mt-0.5">

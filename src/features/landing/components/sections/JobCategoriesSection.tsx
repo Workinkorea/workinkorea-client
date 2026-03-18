@@ -24,7 +24,7 @@ export default function JobCategoriesSection() {
           <h2 className="text-title-3 sm:text-title-1 font-extrabold text-slate-900 mb-3">
             직종별 채용정보
           </h2>
-          <p className="text-caption-1 sm:text-[15px] text-slate-500">
+          <p className="text-caption-1 sm:text-body-2 text-slate-500">
             원하는 분야의 채용공고를 바로 찾아보세요
           </p>
         </div>

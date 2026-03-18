@@ -17,7 +17,7 @@ export default function NotFound() {
           <h2 className="text-[22px] font-extrabold text-slate-900 mb-3">
             페이지를 찾을 수 없습니다
           </h2>
-          <p className="text-[15px] text-slate-500">
+          <p className="text-body-2 text-slate-500">
             요청하신 페이지가 존재하지 않거나<br />이동되었을 수 있습니다.
           </p>
         </div>

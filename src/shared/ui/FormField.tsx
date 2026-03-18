@@ -31,7 +31,7 @@ export const FormField = <T extends FieldValues, N extends Path<T>>({
 
   const labelClassName = variant === 'diagnosis'
     ? "cursor-pointer text-slate-900 text-lg font-semibold text-left self-start"
-    : "cursor-pointer text-slate-700 text-[13px] font-semibold text-left self-start";
+    : "cursor-pointer text-slate-700 text-caption-1 font-semibold text-left self-start";
 
   return (
     <div className="relative flex flex-col gap-2 w-full">

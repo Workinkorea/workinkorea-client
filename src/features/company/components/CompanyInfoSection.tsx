@@ -29,7 +29,7 @@ const FieldRow = ({
       {label}
       {required && <span className="text-red-500">*</span>}
       {optional && (
-        <span className="text-[11px] font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">
+        <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">
           선택
         </span>
       )}
@@ -59,14 +59,14 @@ const FieldHint = ({
   hasValue?: boolean;
   hint?: string;
 }) => {
-  if (error) return <p className="mt-1.5 text-[11px] text-red-500">{error}</p>;
+  if (error) return <p className="mt-1.5 text-caption-3 text-red-500">{error}</p>;
   if (touched && hasValue)
     return (
-      <p className="mt-1.5 text-[11px] text-emerald-500 flex items-center gap-1">
+      <p className="mt-1.5 text-caption-3 text-emerald-500 flex items-center gap-1">
         <span>✓</span> 입력 완료
       </p>
     );
-  if (hint) return <p className="mt-1.5 text-[11px] text-slate-400">{hint}</p>;
+  if (hint) return <p className="mt-1.5 text-caption-3 text-slate-400">{hint}</p>;
   return null;
 };
 
@@ -192,7 +192,7 @@ export const CompanyInfoSection = ({
           success={!!formData.insurance}
         />
         {!formData.insurance && (
-          <p className="mt-1.5 text-[11px] text-slate-400">제공하는 보험 정보를 입력해주세요.</p>
+          <p className="mt-1.5 text-caption-3 text-slate-400">제공하는 보험 정보를 입력해주세요.</p>
         )}
       </FieldRow>
 

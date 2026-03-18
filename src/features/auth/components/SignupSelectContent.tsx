@@ -55,7 +55,7 @@ export default function SignupSelectContent() {
 
           {/* Title */}
           <motion.div className="text-center mb-10 sm:mb-12" variants={itemVariants}>
-            <h1 className="text-title-2 sm:text-title-1 lg:text-[36px] font-extrabold text-slate-900 mb-2">
+            <h1 className="text-title-2 sm:text-title-1 lg:text-title-1 font-extrabold text-slate-900 mb-2">
               <span className="font-black">개인</span> 또는 <span className="font-black">기업</span>
               <br className="hidden sm:inline" /> 회원가입
             </h1>
@@ -96,7 +96,7 @@ export default function SignupSelectContent() {
 
                       {/* Title & Description */}
                       <div>
-                        <h2 className="text-[20px] sm:text-[22px] font-extrabold text-slate-900 mb-1">
+                        <h2 className="text-title-4 sm:text-title-3 font-extrabold text-slate-900 mb-1">
                           {title}
                         </h2>
                         <p className="text-caption-1 text-slate-600">{description}</p>

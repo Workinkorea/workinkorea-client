@@ -106,7 +106,7 @@ export default function JobCard({ post }: JobCardProps) {
           </div>
 
           {/* Job Title */}
-          <h3 className="text-[16px] sm:text-[17px] font-bold text-slate-900 line-clamp-2 group-hover:text-blue-700 transition-colors mb-3 leading-snug">
+          <h3 className="text-body-1 sm:text-title-5 font-bold text-slate-900 line-clamp-2 group-hover:text-blue-700 transition-colors mb-3 leading-snug">
             {post.title}
           </h3>
 
@@ -124,7 +124,7 @@ export default function JobCard({ post }: JobCardProps) {
           </div>
 
           {/* Salary */}
-          <p className="text-[15px] sm:text-[16px] font-extrabold text-blue-600 mb-4">
+          <p className="text-body-2 sm:text-body-1 font-extrabold text-blue-600 mb-4">
             {post.salary ? `${post.salary.toLocaleString()}원` : '급여 협의'}
           </p>
 
@@ -135,13 +135,13 @@ export default function JobCard({ post }: JobCardProps) {
                 {language.slice(0, 3).map((lang, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200 transition-colors"
+                    className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200 transition-colors"
                   >
                     {lang}
                   </span>
                 ))}
                 {language.length > 3 && (
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold text-slate-400">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold text-slate-400">
                     +{language.length - 3}
                   </span>
                 )}

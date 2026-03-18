@@ -65,7 +65,7 @@ export function ProfileStats({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+        <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
           프로필 통계
         </h3>
         
@@ -114,7 +114,7 @@ export function ProfileStats({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+        <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
           스킬 분석
         </h3>
         
@@ -163,7 +163,7 @@ export function ProfileStats({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+        <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
           경력 및 성과
         </h3>
         
@@ -204,7 +204,7 @@ export function ProfileStats({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+        <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
           스킬 분포
         </h3>
 
@@ -213,10 +213,10 @@ export function ProfileStats({
           <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="text-sm font-semibold text-blue-700 mb-1">
+                <h4 className="text-caption-1 font-semibold text-blue-700 mb-1">
                   주요 강점 영역
                 </h4>
-                <p className="text-sm text-blue-600">
+                <p className="text-body-3 text-blue-600">
                   {getSkillCategoryLabel(skillStats.topSkillCategory)}에서 가장 뛰어난 성과를 보이고 있습니다.
                 </p>
               </div>
@@ -236,13 +236,13 @@ export function ProfileStats({
 
               return (
                 <div key={category} className="p-3 bg-slate-100 rounded-lg">
-                  <div className="text-lg font-semibold text-slate-700 mb-1">
+                  <div className="text-title-5 font-semibold text-slate-700 mb-1">
                     {avgScore}점
                   </div>
-                  <div className="text-[11px] text-slate-500">
+                  <div className="text-caption-3 text-slate-500">
                     {getSkillCategoryLabel(category)}
                   </div>
-                  <div className="text-[11px] text-slate-400">
+                  <div className="text-caption-3 text-slate-400">
                     {categorySkills.length}개 스킬
                   </div>
                 </div>

@@ -47,7 +47,7 @@ export function RecommendedJobsSection({ diagnosisData }: RecommendedJobsSection
           <div className="inline-flex items-center justify-center w-8 h-8 bg-blue-50 rounded-lg">
             <Briefcase className="text-blue-600" size={18} />
           </div>
-          <h2 className="text-[16px] sm:text-[17px] font-bold text-slate-900">추천 채용 공고</h2>
+          <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">추천 채용 공고</h2>
         </div>
         <Link
           href="/jobs"

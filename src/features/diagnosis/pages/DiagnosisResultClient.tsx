@@ -196,7 +196,7 @@ const DiagnosisResultClient = () => {
                 <div className="inline-flex items-center justify-center w-8 h-8 bg-emerald-50 rounded-lg">
                   <CheckCircle className="text-emerald-600" size={20} />
                 </div>
-                <h2 className="text-[16px] sm:text-[17px] font-bold text-slate-900">당신의 강점</h2>
+                <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">당신의 강점</h2>
               </div>
               <ul className="space-y-2.5">
                 {result.strengths.map((strength, index) => (
@@ -221,7 +221,7 @@ const DiagnosisResultClient = () => {
                 <div className="inline-flex items-center justify-center w-8 h-8 bg-amber-50 rounded-lg">
                   <AlertCircle className="text-amber-600" size={20} />
                 </div>
-                <h2 className="text-[16px] sm:text-[17px] font-bold text-slate-900">개선할 점</h2>
+                <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">개선할 점</h2>
               </div>
               <ul className="space-y-2.5">
                 {result.improvements.map((improvement, index) => (
@@ -247,7 +247,7 @@ const DiagnosisResultClient = () => {
               <div className="inline-flex items-center justify-center w-8 h-8 bg-blue-50 rounded-lg">
                 <Briefcase className="text-blue-600" size={20} />
               </div>
-              <h2 className="text-[16px] sm:text-[17px] font-bold text-slate-900">추천 직무</h2>
+              <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">추천 직무</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
               {result.recommendedJobs.map((job, index) => (
@@ -283,7 +283,7 @@ const DiagnosisResultClient = () => {
             )}
           >
             <TrendingUp size={40} className="mx-auto mb-4 sm:mb-5" />
-            <h2 className="text-[20px] sm:text-[22px] font-extrabold mb-2">
+            <h2 className="text-title-4 sm:text-[22px] font-extrabold mb-2">
               지금 바로 시작하세요!
             </h2>
             <p className="text-caption-1 sm:text-sm opacity-90 mb-6">

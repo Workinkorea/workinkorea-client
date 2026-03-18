@@ -59,10 +59,10 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
       transition={{ duration: 0.3 }}
     >
       <div>
-        <h2 className="text-xl font-bold text-slate-900 mb-2">
+        <h2 className="text-title-4 font-bold text-slate-900 mb-2">
           기본 정보 🌍
         </h2>
-        <p className="text-[15px] text-slate-500 mb-6">
+        <p className="text-body-2 text-slate-500 mb-6">
           당신에 대해 알려주세요
         </p>
       </div>
@@ -84,7 +84,7 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
                 onChange={(e) => field.onChange(e.target.value)}
                 className="w-5 h-5 text-blue-600 focus:ring-blue-500"
               />
-              <span className="text-[15px] text-slate-700">한국에서 생활 중이에요</span>
+              <span className="text-body-1 text-slate-700">한국에서 생활 중이에요</span>
             </label>
             <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-lg cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-all">
               <input
@@ -94,7 +94,7 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
                 onChange={(e) => field.onChange(e.target.value)}
                 className="w-5 h-5 text-blue-600 focus:ring-blue-500"
               />
-              <span className="text-[15px] text-slate-700">다른 나라에 있어요</span>
+              <span className="text-body-2 text-slate-700">다른 나라에 있어요</span>
             </label>
           </div>
         )}
@@ -156,7 +156,7 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
                   onChange={(e) => field.onChange(e.target.value)}
                   className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-[15px] text-slate-700">{level.label}</span>
+                <span className="text-body-2 text-slate-700">{level.label}</span>
               </label>
             ))}
           </div>
@@ -188,7 +188,7 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
                   onChange={(e) => field.onChange(e.target.value)}
                   className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-[15px] text-slate-700">{visa.label}</span>
+                <span className="text-body-2 text-slate-700">{visa.label}</span>
               </label>
             ))}
           </div>

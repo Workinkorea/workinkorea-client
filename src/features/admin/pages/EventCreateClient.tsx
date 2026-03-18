@@ -57,7 +57,7 @@ function FormLabel({ required, children }: { required?: boolean; children: React
 function FormSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="bg-background-default border border-line-400 rounded-xl p-6 space-y-5">
-      <h3 className="text-[15px] font-bold text-label-900 pb-3 border-b border-line-200">
+      <h3 className="text-body-2 font-bold text-label-900 pb-3 border-b border-line-200">
         {title}
       </h3>
       {children}
