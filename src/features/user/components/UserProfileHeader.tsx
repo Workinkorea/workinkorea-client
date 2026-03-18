@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { MapPin, Mail, Github, Linkedin, ExternalLink, Calendar, Briefcase } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { UserProfile } from '@/features/user/types/user';
 import { cn } from '@/shared/lib/utils/utils';
 
@@ -18,6 +19,8 @@ function UserProfileHeader({
   onEditClick,
   className = ''
 }: UserProfileHeaderProps) {
+  const t = useTranslations('user.profile.header');
+
   // 가용성 상태에 따른 스타일
   const getAvailabilityStyle = (jobStatus: UserProfile['job_status']) => {
       switch (jobStatus) {
@@ -25,25 +28,25 @@ function UserProfileHeader({
           return {
             bg: 'bg-emerald-500',
             text: 'text-white',
-            label: '구직중'
+            label: t('statusAvailable')
           };
         case 'busy':
           return {
             bg: 'bg-amber-500',
             text: 'text-white',
-            label: '바쁨'
+            label: t('statusBusy')
           };
         case 'not-looking':
           return {
             bg: 'bg-slate-400',
             text: 'text-white',
-            label: '구직안함'
+            label: t('statusNotLooking')
           };
         default:
           return {
             bg: 'bg-slate-100',
             text: 'text-slate-700',
-            label: '미정'
+            label: t('statusUndecided')
           };
       }
     };
@@ -53,10 +56,10 @@ function UserProfileHeader({
   // 언어 숙련도 라벨
   const getProficiencyLabel = (proficiency: string) => {
     switch (proficiency) {
-      case 'beginner': return '초급';
-      case 'intermediate': return '중급';
-      case 'advanced': return '고급';
-      case 'native': return '모국어';
+      case 'beginner': return t('proficiencyBeginner');
+      case 'intermediate': return t('proficiencyIntermediate');
+      case 'advanced': return t('proficiencyAdvanced');
+      case 'native': return t('proficiencyNative');
       default: return proficiency;
     }
   };
@@ -136,13 +139,13 @@ function UserProfileHeader({
                 {profile.experience > 0 && (
                   <div className="flex items-center gap-1">
                     <Briefcase size={16} />
-                    <span>{profile.experience}년 경력</span>
+                    <span>{t('experienceYears', { years: profile.experience })}</span>
                   </div>
                 )}
 
                 <div className="flex items-center gap-1">
                   <Calendar size={16} />
-                  <span>가입일 {new Date(profile.createdAt).toLocaleDateString('ko-KR')}</span>
+                  <span>{t('joinDate', { date: new Date(profile.createdAt).toLocaleDateString('ko-KR') })}</span>
                 </div>
               </div>
 
@@ -156,7 +159,7 @@ function UserProfileHeader({
               {/* 언어 */}
               {profile.languages.length > 0 && (
                 <div className="mb-4">
-                  <span className="text-caption-1 text-slate-600 font-medium mr-2">언어:</span>
+                  <span className="text-caption-1 text-slate-600 font-medium mr-2">{t('languagesLabel')}</span>
                   <div className="inline-flex flex-wrap gap-2">
                     {profile.languages.map((lang, index) => (
                       <span
@@ -180,7 +183,7 @@ function UserProfileHeader({
                       onClick={onEditClick}
                       className="px-4 py-2 bg-blue-600 text-white rounded-lg text-caption-1 font-medium hover:bg-blue-700 transition-colors cursor-pointer"
                     >
-                      프로필 편집
+                      {t('editProfile')}
                     </button>
                   )}
                 </>
@@ -189,10 +192,10 @@ function UserProfileHeader({
               {!isOwnProfile && (
                 <>
                   <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-caption-1 font-medium hover:bg-blue-700 transition-colors cursor-pointer">
-                    연락하기
+                    {t('contact')}
                   </button>
                   <button className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg text-caption-1 font-medium hover:bg-blue-50 transition-colors cursor-pointer">
-                    즐겨찾기
+                    {t('favorite')}
                   </button>
                 </>
               )}

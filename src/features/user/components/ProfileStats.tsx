@@ -11,6 +11,7 @@ import {
   Briefcase,
   TrendingUp
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { UserProfile, ProfileStatistics, SkillStats } from '@/features/user/types/user';
 import { StatCard } from '@/shared/ui/StatCard';
 import { cn } from '@/shared/lib/utils/utils';
@@ -28,26 +29,28 @@ export function ProfileStats({
   skillStats,
   className = ''
 }: ProfileStatsProps) {
+  const t = useTranslations('user.profile.stats');
+
   // 스킬 카테고리 라벨 변환
   const getSkillCategoryLabel = (category: 'technical' | 'soft' | 'language') => {
     switch (category) {
       case 'technical':
-        return '기술 스킬';
+        return t('skillCategoryTechnical');
       case 'soft':
-        return '소프트 스킬';
+        return t('skillCategorySoft');
       case 'language':
-        return '언어 스킬';
+        return t('skillCategoryLanguage');
       default:
-        return '기타';
+        return t('skillCategoryOther');
     }
   };
 
   // 업계 랭킹 퍼센타일 계산
   const getRankingLabel = (ranking: number) => {
-    if (ranking >= 90) return '상위 10%';
-    if (ranking >= 75) return '상위 25%';
-    if (ranking >= 50) return '상위 50%';
-    return `상위 ${Math.ceil(ranking)}%`;
+    if (ranking >= 90) return t('rankingTop10');
+    if (ranking >= 75) return t('rankingTop25');
+    if (ranking >= 50) return t('rankingTop50');
+    return t('rankingTopN', { n: Math.ceil(ranking) });
   };
 
   const getRankingColor = (ranking: number) => {
@@ -66,41 +69,41 @@ export function ProfileStats({
         transition={{ duration: 0.5 }}
       >
         <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
-          프로필 통계
+          {t('statsTitle')}
         </h3>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <StatCard
-            title="프로필 조회"
+            title={t('profileViews')}
             value={statistics.profileViews}
-            subtitle="총 조회수"
+            subtitle={t('profileViewsSub')}
             icon={Eye}
             color="primary"
             delay={0.1}
           />
-          
+
           <StatCard
-            title="연락 요청"
+            title={t('contactRequests')}
             value={statistics.contactRequests}
-            subtitle="받은 요청"
+            subtitle={t('contactRequestsSub')}
             icon={MessageCircle}
             color="secondary"
             delay={0.2}
           />
-          
+
           <StatCard
-            title="스킬 추천"
+            title={t('skillEndorsements')}
             value={statistics.skillEndorsements}
-            subtitle="받은 추천"
+            subtitle={t('skillEndorsementsSub')}
             icon={ThumbsUp}
             color="success"
             delay={0.3}
           />
-          
+
           <StatCard
-            title="평균 평점"
+            title={t('avgRating')}
             value={statistics.averageRating.toFixed(1)}
-            subtitle="5점 만점"
+            subtitle={t('avgRatingSub')}
             icon={Star}
             color="warning"
             delay={0.4}
@@ -115,41 +118,41 @@ export function ProfileStats({
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
-          스킬 분석
+          {t('skillAnalysisTitle')}
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
-            title="보유 스킬"
+            title={t('totalSkills')}
             value={skillStats.totalSkills}
-            subtitle="등록된 스킬"
+            subtitle={t('totalSkillsSub')}
             icon={BookOpen}
             color="neutral"
             delay={0.1}
           />
-          
+
           <StatCard
-            title="평균 이상 스킬"
+            title={t('aboveAverageSkills')}
             value={skillStats.aboveAverageSkills}
-            subtitle={`전체 ${skillStats.totalSkills}개 중`}
+            subtitle={t('aboveAverageSkillsSub', { total: skillStats.totalSkills })}
             icon={TrendingUp}
             color="success"
             delay={0.2}
           />
-          
+
           <StatCard
-            title="전체 평점"
+            title={t('overallScore')}
             value={skillStats.overallScore}
-            subtitle="100점 만점"
+            subtitle={t('overallScoreSub')}
             icon={Award}
             color="primary"
             delay={0.3}
           />
-          
+
           <StatCard
-            title="업계 순위"
+            title={t('industryRanking')}
             value={getRankingLabel(skillStats.industryRanking)}
-            subtitle="동일 경력 대비"
+            subtitle={t('industryRankingSub')}
             icon={TrendingUp}
             color={getRankingColor(skillStats.industryRanking)}
             delay={0.4}
@@ -164,32 +167,32 @@ export function ProfileStats({
         transition={{ duration: 0.5, delay: 0.4 }}
       >
         <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
-          경력 및 성과
+          {t('careerTitle')}
         </h3>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <StatCard
-            title="경력 기간"
-            value={`${profile.experience}년`}
-            subtitle="총 경력"
+            title={t('careerPeriod')}
+            value={t('careerYears', { years: profile.experience })}
+            subtitle={t('careerPeriodSub')}
             icon={Briefcase}
             color="primary"
             delay={0.1}
           />
-          
+
           <StatCard
-            title="완료 프로젝트"
+            title={t('completedProjects')}
             value={profile.completedProjects}
-            subtitle="프로젝트 수"
+            subtitle={t('completedProjectsSub')}
             icon={Award}
             color="success"
             delay={0.2}
           />
-          
+
           <StatCard
-            title="자격증"
+            title={t('certifications')}
             value={profile.certifications.length}
-            subtitle="보유 자격증"
+            subtitle={t('certificationsSub')}
             icon={Award}
             color="warning"
             delay={0.3}
@@ -205,7 +208,7 @@ export function ProfileStats({
         transition={{ duration: 0.5, delay: 0.6 }}
       >
         <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
-          스킬 분포
+          {t('skillDistributionTitle')}
         </h3>
 
         <div className="space-y-4">
@@ -214,10 +217,10 @@ export function ProfileStats({
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="text-caption-1 font-semibold text-blue-700 mb-1">
-                  주요 강점 영역
+                  {t('topStrengthTitle')}
                 </h4>
                 <p className="text-body-3 text-blue-600">
-                  {getSkillCategoryLabel(skillStats.topSkillCategory)}에서 가장 뛰어난 성과를 보이고 있습니다.
+                  {t('topStrengthDesc', { category: getSkillCategoryLabel(skillStats.topSkillCategory) })}
                 </p>
               </div>
               <div className="text-xl font-bold text-blue-600">
