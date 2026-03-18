@@ -12,12 +12,31 @@ import { diagnosisApi } from '@/features/diagnosis/api/diagnosisApi';
 import { DiagnosisAnswerResponse } from '@/shared/types/api';
 import { cn } from '@/shared/lib/utils/utils';
 import { RecommendedJobsSection } from '@/features/diagnosis/components/RecommendedJobsSection';
+import { useTranslations } from 'next-intl';
 
 interface MatchingResult {
   score: number;
   strengths: string[];
   improvements: string[];
   recommendedJobs: string[];
+}
+
+// TODO(human): Map API response questions to DiagnosisData fields
+function convertResponseToDiagnosisData(response: DiagnosisAnswerResponse): Partial<DiagnosisData> {
+  // This is a placeholder mapping. Update based on actual question-to-field mapping
+  return {
+    currentLocation: response.q1_answer,
+    koreanLevel: response.q2_answer,
+    visaStatus: response.q3_answer,
+    workExperience: response.q4_answer,
+    jobField: response.q5_answer,
+    education: response.q6_answer,
+    desiredSalary: response.q7_answer,
+    employmentType: response.q8_answer,
+    companySize: response.q9_answer,
+    startDate: response.q10_answer,
+    // Add more mappings as needed
+  };
 }
 
 const DiagnosisResultClient = () => {
@@ -29,6 +48,72 @@ const DiagnosisResultClient = () => {
   const [diagnosisData, setDiagnosisData] = useState<Partial<DiagnosisData> | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const t = useTranslations('diagnosis.result');
+
+  // TODO(human): Implement matching score calculation logic
+  const calculateMatchingScore = (data: Partial<DiagnosisData>): MatchingResult => {
+    // Placeholder implementation
+    let score = 50;
+    const strengths: string[] = [];
+    const improvements: string[] = [];
+    const recommendedJobs: string[] = [];
+
+    // Example scoring logic
+    if (data.currentLocation === 'korea') {
+      score += 15;
+      strengths.push(t('strengths.inKorea'));
+    } else {
+      improvements.push(t('improvements.relocation'));
+    }
+
+    if (data.koreanLevel === 'native' || data.koreanLevel === 'topik6') {
+      score += 20;
+      strengths.push(t('strengths.koreanFluent'));
+    } else if (data.koreanLevel === 'topik1') {
+      score -= 10;
+      improvements.push(t('improvements.koreanImprove'));
+    }
+
+    if (data.visaStatus === 'have' || data.visaStatus === 'permanent') {
+      score += 15;
+      strengths.push(t('strengths.visaReady'));
+    } else if (data.visaStatus === 'need') {
+      improvements.push(t('improvements.visa'));
+    }
+
+    // Recommended jobs based on job field
+    const jobFieldMapping: Record<string, string[]> = {
+      it: t.raw('recommendedJobsByField.it') as string[],
+      marketing: t.raw('recommendedJobsByField.marketing') as string[],
+      design: t.raw('recommendedJobsByField.design') as string[],
+      education: t.raw('recommendedJobsByField.education') as string[],
+      manufacturing: t.raw('recommendedJobsByField.manufacturing') as string[],
+      service: t.raw('recommendedJobsByField.service') as string[],
+    };
+
+    recommendedJobs.push(...(jobFieldMapping[data.jobField as string] || (t.raw('recommendedJobsByField.default') as string[])));
+
+    // Ensure score is between 0 and 100
+    score = Math.max(0, Math.min(100, score));
+
+    // Add generic improvements if needed
+    if (improvements.length === 0) {
+      improvements.push(t('improvements.keepGoing'));
+    }
+
+    // Add generic strengths if needed
+    if (strengths.length < 2) {
+      strengths.push(t('strengths.goalOriented'));
+    }
+
+    return {
+      score,
+      strengths,
+      improvements,
+      recommendedJobs,
+    };
+  };
+
   useEffect(() => {
     const fetchDiagnosisResult = async () => {
       try {
@@ -37,7 +122,7 @@ const DiagnosisResultClient = () => {
         const id = idFromQuery ? parseInt(idFromQuery, 10) : diagnosisId;
 
         if (!id) {
-          setError('진단 결과를 찾을 수 없습니다.');
+          setError(t('notFound'));
           return;
         }
 
@@ -52,11 +137,12 @@ const DiagnosisResultClient = () => {
         setDiagnosisData(converted);
         setResult(calculatedResult);
       } catch (err) {
-        setError('진단 결과를 불러오는데 실패했습니다.');
+        setError(t('fetchError'));
       }
     };
 
     fetchDiagnosisResult();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, diagnosisId]);
 
   const handleRestart = () => {
@@ -81,7 +167,7 @@ const DiagnosisResultClient = () => {
             </div>
             <p className="text-base text-slate-700 mb-2">{error}</p>
             <p className="text-sm text-slate-500 mb-6">
-              진단을 다시 시도하거나 처음부터 시작해보세요
+              {t('retryHint')}
             </p>
             <motion.button
               onClick={() => router.push('/diagnosis')}
@@ -93,7 +179,7 @@ const DiagnosisResultClient = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              다시 진단하기
+              {t('retry')}
             </motion.button>
           </div>
         </div>
@@ -110,7 +196,7 @@ const DiagnosisResultClient = () => {
               <div className="skeleton-shimmer rounded-full w-24 h-24 sm:w-32 sm:h-32 mx-auto" />
               <div className="skeleton-shimmer h-8 w-48 rounded mx-auto" />
               <div className="skeleton-shimmer h-4 w-64 rounded mx-auto" />
-              <p className="text-caption-1 text-slate-400 mt-4">결과를 분석하는 중...</p>
+              <p className="text-caption-1 text-slate-400 mt-4">{t('analyzing')}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -143,7 +229,7 @@ const DiagnosisResultClient = () => {
             )}
           >
             <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-slate-900 mb-6">
-              진단 결과가 나왔어요! 🎉
+              {t('resultTitle')}
             </h1>
             <div className="inline-grid w-32 h-32 sm:w-40 sm:h-40 mb-6">
               <svg className="col-start-1 row-start-1 transform -rotate-90 w-32 h-32 sm:w-40 sm:h-40">
@@ -172,12 +258,15 @@ const DiagnosisResultClient = () => {
               <div className="col-start-1 row-start-1 flex items-center justify-center">
                 <div className="text-center">
                   <div className="text-3xl sm:text-4xl font-bold text-blue-600">{result.score}%</div>
-                  <div className="text-xs text-slate-500 mt-1">준비도</div>
+                  <div className="text-xs text-slate-500 mt-1">{t('readinessLabel')}</div>
                 </div>
               </div>
             </div>
             <p className="text-body-3 sm:text-base text-slate-700">
-              당신의 한국 취업 준비도는 <span className="font-bold text-blue-600">{result.score}%</span>입니다!
+              {t.rich('readinessMessage', {
+                score: result.score,
+                bold: (chunks) => <span className="font-bold text-blue-600">{chunks}</span>,
+              })}
             </p>
           </motion.div>
 
@@ -196,7 +285,7 @@ const DiagnosisResultClient = () => {
                 <div className="inline-flex items-center justify-center w-8 h-8 bg-emerald-50 rounded-lg">
                   <CheckCircle className="text-emerald-600" size={20} />
                 </div>
-                <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">당신의 강점</h2>
+                <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">{t('strengthsTitle')}</h2>
               </div>
               <ul className="space-y-2.5">
                 {result.strengths.map((strength, index) => (
@@ -221,7 +310,7 @@ const DiagnosisResultClient = () => {
                 <div className="inline-flex items-center justify-center w-8 h-8 bg-amber-50 rounded-lg">
                   <AlertCircle className="text-amber-600" size={20} />
                 </div>
-                <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">개선할 점</h2>
+                <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">{t('improvementsTitle')}</h2>
               </div>
               <ul className="space-y-2.5">
                 {result.improvements.map((improvement, index) => (
@@ -247,7 +336,7 @@ const DiagnosisResultClient = () => {
               <div className="inline-flex items-center justify-center w-8 h-8 bg-blue-50 rounded-lg">
                 <Briefcase className="text-blue-600" size={20} />
               </div>
-              <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">추천 직무</h2>
+              <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">{t('recommendedJobsTitle')}</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
               {result.recommendedJobs.map((job, index) => (
@@ -284,10 +373,10 @@ const DiagnosisResultClient = () => {
           >
             <TrendingUp size={40} className="mx-auto mb-4 sm:mb-5" />
             <h2 className="text-title-4 sm:text-[22px] font-extrabold mb-2">
-              지금 바로 시작하세요!
+              {t('ctaTitle')}
             </h2>
             <p className="text-caption-1 sm:text-sm opacity-90 mb-6">
-              회원가입하고 당신에게 맞는 채용 공고를 확인해보세요
+              {t('ctaSubtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               {!isAuthenticated && (
@@ -302,7 +391,7 @@ const DiagnosisResultClient = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  회원가입하기
+                  {t('signupButton')}
                 </motion.button>
               )}
               <motion.button
@@ -316,7 +405,7 @@ const DiagnosisResultClient = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                채용 공고 둘러보기
+                {t('browseJobsButton')}
               </motion.button>
             </div>
           </motion.div>
@@ -332,7 +421,7 @@ const DiagnosisResultClient = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              진단 다시 하기
+              {t('retryButton')}
             </motion.button>
           </div>
         </div>
@@ -340,87 +429,5 @@ const DiagnosisResultClient = () => {
     </Layout>
   );
 };
-
-// TODO(human): Map API response questions to DiagnosisData fields
-function convertResponseToDiagnosisData(response: DiagnosisAnswerResponse): Partial<DiagnosisData> {
-  // This is a placeholder mapping. Update based on actual question-to-field mapping
-  return {
-    currentLocation: response.q1_answer,
-    koreanLevel: response.q2_answer,
-    visaStatus: response.q3_answer,
-    workExperience: response.q4_answer,
-    jobField: response.q5_answer,
-    education: response.q6_answer,
-    desiredSalary: response.q7_answer,
-    employmentType: response.q8_answer,
-    companySize: response.q9_answer,
-    startDate: response.q10_answer,
-    // Add more mappings as needed
-  };
-}
-
-// TODO(human): Implement matching score calculation logic
-function calculateMatchingScore(data: Partial<DiagnosisData>): MatchingResult {
-  // Placeholder implementation
-  let score = 50;
-  const strengths: string[] = [];
-  const improvements: string[] = [];
-  const recommendedJobs: string[] = [];
-
-  // Example scoring logic
-  if (data.currentLocation === 'korea') {
-    score += 15;
-    strengths.push('한국에 이미 거주하고 계셔서 즉시 근무가 가능합니다');
-  } else {
-    improvements.push('한국 입국 및 정착 준비가 필요합니다');
-  }
-
-  if (data.koreanLevel === 'native' || data.koreanLevel === 'topik6') {
-    score += 20;
-    strengths.push('뛰어난 한국어 실력으로 원활한 업무 소통이 가능합니다');
-  } else if (data.koreanLevel === 'topik1') {
-    score -= 10;
-    improvements.push('한국어 실력 향상이 필요합니다');
-  }
-
-  if (data.visaStatus === 'have' || data.visaStatus === 'permanent') {
-    score += 15;
-    strengths.push('비자 문제가 없어 바로 취업이 가능합니다');
-  } else if (data.visaStatus === 'need') {
-    improvements.push('취업 비자 지원이 가능한 회사를 찾아야 합니다');
-  }
-
-  // Recommended jobs based on job field
-  const jobFieldMapping: Record<string, string[]> = {
-    it: ['웹 개발자', '소프트웨어 엔지니어', 'DevOps', '데이터 분석가'],
-    marketing: ['마케팅 매니저', '디지털 마케터', '영업 담당자', 'SNS 마케터'],
-    design: ['UI/UX 디자이너', '그래픽 디자이너', '브랜드 디자이너', '일러스트레이터'],
-    education: ['한국어 강사', '교육 컨텐츠 개발자', '학원 강사', '기업 교육 담당자'],
-    manufacturing: ['생산 관리', '품질 관리', '기계 엔지니어', '공정 엔지니어'],
-    service: ['호텔 매니저', '레스토랑 관리자', '고객 서비스', '관광 가이드'],
-  };
-
-  recommendedJobs.push(...(jobFieldMapping[data.jobField as string] || ['일반 사무직', '영업직', '서비스직', '기술직']));
-
-  // Ensure score is between 0 and 100
-  score = Math.max(0, Math.min(100, score));
-
-  // Add generic improvements if needed
-  if (improvements.length === 0) {
-    improvements.push('현재 상태를 유지하며 꾸준히 준비하세요');
-  }
-
-  // Add generic strengths if needed
-  if (strengths.length < 2) {
-    strengths.push('취업을 위한 명확한 목표와 계획을 가지고 있습니다');
-  }
-
-  return {
-    score,
-    strengths,
-    improvements,
-    recommendedJobs,
-  };
-}
 
 export default DiagnosisResultClient;
