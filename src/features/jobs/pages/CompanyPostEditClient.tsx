@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { FileText } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Layout from '@/shared/components/layout/Layout';
 import { Button } from '@/shared/ui/Button';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -19,6 +20,8 @@ interface CompanyPostEditClientProps {
 }
 
 function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
+  const t = useTranslations('jobs.postEdit');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const queryClient = useQueryClient();
   const { isAuthenticated, isLoading: authLoading, userType } = useAuth();
@@ -44,12 +47,12 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyPosts'] });
       queryClient.invalidateQueries({ queryKey: ['companyPost', postId] });
-      toast.success('공고가 수정되었습니다.');
+      toast.success(t('updateSuccess'));
       router.push('/company');
     },
     onError: (error) => {
       logError(error, 'CompanyPostEditClient.updatePost');
-      const errorMessage = extractErrorMessage(error, '공고 수정에 실패했습니다. 다시 시도해주세요.');
+      const errorMessage = extractErrorMessage(error, t('updateError'));
       toast.error(errorMessage);
     },
   });
@@ -59,12 +62,12 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
     mutationFn: () => postsApi.deleteCompanyPost(Number(postId)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyPosts'] });
-      toast.success('공고가 삭제되었습니다.');
+      toast.success(t('deleteSuccess'));
       router.push('/company');
     },
     onError: (error) => {
       logError(error, 'CompanyPostEditClient.deletePost');
-      const errorMessage = extractErrorMessage(error, '공고 삭제에 실패했습니다. 다시 시도해주세요.');
+      const errorMessage = extractErrorMessage(error, t('deleteError'));
       toast.error(errorMessage);
     },
   });
@@ -74,7 +77,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
   };
 
   const handleDelete = () => {
-    if (window.confirm('정말로 이 공고를 삭제하시겠습니까?')) {
+    if (window.confirm(t('deleteConfirm'))) {
       deletePostMutation.mutate();
     }
   };
@@ -119,12 +122,12 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
       <Layout>
         <main className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-slate-500 text-body-2">공고를 찾을 수 없습니다.</p>
+            <p className="text-slate-500 text-body-2">{t('notFound')}</p>
             <button
               onClick={() => router.push('/company')}
               className="mt-4 text-blue-600 hover:text-blue-700 text-body-3 font-medium cursor-pointer"
             >
-              기업 대시보드로 돌아가기
+              {t('backToDashboard')}
             </button>
           </div>
         </main>
@@ -168,9 +171,9 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
                 <FileText size={20} className="text-blue-600" />
               </div>
               <div>
-                <h1 className="text-[22px] font-extrabold text-slate-900">채용 공고 수정</h1>
+                <h1 className="text-[22px] font-extrabold text-slate-900">{t('title')}</h1>
                 <p className="text-caption-1 text-slate-500 mt-0.5">
-                  채용 공고 정보를 수정해주세요
+                  {t('subtitle')}
                 </p>
               </div>
             </div>
@@ -206,7 +209,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
                 isLoading={updatePostMutation.isPending}
                 className="w-full shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
               >
-                공고 수정하기
+                {t('updateBtn')}
               </Button>
 
               {/* 취소 버튼 */}
@@ -217,7 +220,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
                 className="w-full"
                 onClick={handleCancel}
               >
-                취소
+                {tCommon('button.cancel')}
               </Button>
 
               {/* 삭제 버튼 */}
@@ -228,7 +231,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
                 onClick={handleDelete}
                 disabled={deletePostMutation.isPending}
               >
-                공고 삭제
+                {t('deleteBtn')}
               </Button>
 
             </aside>

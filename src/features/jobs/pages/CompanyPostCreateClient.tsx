@@ -10,6 +10,7 @@
  * 4. 페이지 진입 애니메이션: stagger로 헤더·폼이 순차적으로 등장해 부드러운 경험 제공
  */
 
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { FileText, Lightbulb } from 'lucide-react';
@@ -48,6 +49,13 @@ function CompanyPostCreateClient() {
     createPostMutation.mutate(data as CreateCompanyPostRequest);
   };
 
+  // 미인증 또는 기업 회원 아닌 경우 리다이렉트 (auth 로딩 완료 후)
+  useEffect(() => {
+    if (!authLoading && (!isAuthenticated || userType !== 'company')) {
+      router.replace('/company-login');
+    }
+  }, [isAuthenticated, authLoading, userType, router]);
+
   const handleCancel = () => {
     router.push('/company?tab=posts');
   };
@@ -81,9 +89,32 @@ function CompanyPostCreateClient() {
     );
   }
 
-  // 미인증 또는 기업 회원이 아닐 경우 렌더링하지 않음 (middleware가 처리)
+  // 미인증 또는 기업 회원이 아닐 경우 — useEffect에서 리다이렉트 처리 중, 스켈레톤 유지
   if (!isAuthenticated || userType !== 'company') {
-    return null;
+    return (
+      <Layout>
+        <main className="min-h-screen bg-background-alternative py-8">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
+              <div className="space-y-4">
+                <div className="skeleton-shimmer h-6 w-40 rounded" />
+                <div className="skeleton-shimmer h-8 w-64 rounded" />
+                {[180, 140, 220, 120].map((h, i) => (
+                  <div key={i} className="bg-white rounded-xl border border-slate-200 p-6">
+                    <div className="skeleton-shimmer h-5 w-32 rounded mb-5" />
+                    <div className="space-y-3">
+                      <div className="skeleton-shimmer h-10 w-full rounded-lg" />
+                      {h > 150 && <div className="skeleton-shimmer h-10 w-full rounded-lg" />}
+                      {h > 200 && <div className="skeleton-shimmer h-24 w-full rounded-lg" />}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
+      </Layout>
+    );
   }
 
   return (
