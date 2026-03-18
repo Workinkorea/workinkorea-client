@@ -131,6 +131,18 @@ export const useAuthStore = create<AuthState>((set) => ({
           });
           return;
         }
+
+        // Fallback: 서버가 200 OK를 반환했지만 body에 token/user_type이 없는 경우
+        // userType 쿠키를 확인해 인증 상태 복원 (로그인 시 서버가 설정한 쿠키)
+        const cookieUserType = cookieManager.getUserType();
+        if (cookieUserType) {
+          set({
+            isAuthenticated: true,
+            userType: cookieUserType,
+            isInitialized: true,
+          });
+          return;
+        }
       }
     } catch {
       // 네트워크 오류 등 — 비인증 상태로 처리
