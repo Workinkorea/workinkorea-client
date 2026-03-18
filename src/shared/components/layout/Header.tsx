@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import { User } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { SearchIcon } from '@/shared/ui/AccessibleIcon';
 import { MobileNav } from './MobileNav';
 import { LanguageToggle } from '@/shared/components/LanguageToggle';
@@ -12,12 +15,14 @@ interface HeaderProps {
 }
 
 export function Header({ type, isAuthenticated, onLogout }: HeaderProps) {
+  const t = useTranslations('common.nav');
+
   const navigationItems =
     type === 'homepage'
-      ? [{ name: '공고', href: '/jobs' }]
+      ? [{ name: t('jobs'), href: '/jobs' }]
       : [
-          { name: '인재채용', href: '/company/posts/create' },
-          { name: '채용공고 관리', href: '/company/jobs' },
+          { name: t('postJob'), href: '/company/posts/create' },
+          { name: t('manageJobs'), href: '/company/jobs' },
         ];
 
   return (
@@ -31,7 +36,7 @@ export function Header({ type, isAuthenticated, onLogout }: HeaderProps) {
               WorkInKorea
             </span>
             <span className="ml-2 text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
-              {type === 'homepage' ? '개인' : '기업'}
+              {type === 'homepage' ? t('personal') : t('company')}
             </span>
           </Link>
 
@@ -46,7 +51,7 @@ export function Header({ type, isAuthenticated, onLogout }: HeaderProps) {
             {/* 검색 아이콘 */}
             <button
               className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none rounded-lg cursor-pointer"
-              aria-label="검색"
+              aria-label={t('jobs')}
             >
               <SearchIcon />
             </button>
@@ -55,7 +60,7 @@ export function Header({ type, isAuthenticated, onLogout }: HeaderProps) {
             <Link
               href={isAuthenticated ? (type === 'homepage' ? '/user/profile' : '/company') : '/login-select'}
               className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none rounded-lg cursor-pointer"
-              aria-label={isAuthenticated ? '마이페이지' : '로그인'}
+              aria-label={isAuthenticated ? t('myHome') : t('login')}
             >
               <User size={20} />
             </Link>

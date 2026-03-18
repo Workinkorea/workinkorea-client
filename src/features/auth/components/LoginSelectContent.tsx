@@ -3,31 +3,7 @@
 import Link from 'next/link';
 import { User, Building2, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-interface LoginOption {
-  href: string;
-  icon: typeof User;
-  title: string;
-  description: string;
-}
-
-function buildLoginOptions(callbackUrl?: string): LoginOption[] {
-  const qs = callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : '';
-  return [
-    {
-      href: `/login${qs}`,
-      icon: User,
-      title: '개인회원',
-      description: '구직자 및 일반 회원',
-    },
-    {
-      href: `/company-login${qs}`,
-      icon: Building2,
-      title: '기업회원',
-      description: '채용 담당자 및 기업 회원',
-    },
-  ];
-}
+import { useTranslations } from 'next-intl';
 
 const containerVariants = {
   hidden: {},
@@ -59,10 +35,27 @@ interface LoginSelectContentProps {
 }
 
 export default function LoginSelectContent({ callbackUrl }: LoginSelectContentProps) {
-  const loginOptions = buildLoginOptions(callbackUrl);
+  const t = useTranslations('auth.loginSelect');
+
+  const qs = callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : '';
   const signupHref = callbackUrl
     ? `/signup-select?callbackUrl=${encodeURIComponent(callbackUrl)}`
     : '/signup-select';
+
+  const loginOptions = [
+    {
+      href: `/login${qs}`,
+      icon: User,
+      title: t('personalMember'),
+      description: t('personalMemberDesc'),
+    },
+    {
+      href: `/company-login${qs}`,
+      icon: Building2,
+      title: t('companyMember'),
+      description: t('companyMemberDesc'),
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -74,11 +67,11 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
       >
         {/* 헤더 */}
         <motion.div variants={itemVariants} className="text-center mb-12 sm:mb-14">
-          <h1 className="text-[26px] sm:text-title-1 lg:text-[40px] font-black text-slate-900 leading-tight tracking-tight mb-3 sm:mb-4">
-            어떤 유형의 회원이신가요?
+          <h1 className="text-title-2 sm:text-title-1 lg:text-display-2 font-black text-slate-900 leading-tight tracking-tight mb-3 sm:mb-4">
+            {t('memberTypeTitle')}
           </h1>
-          <p className="text-body-3 sm:text-[15px] text-slate-500 max-w-lg mx-auto">
-            Work In Korea는 개인 구직자와 채용 담당자 모두를 위한 맞춤형 솔루션을 제공합니다.
+          <p className="text-body-3 sm:text-body-2 text-slate-500 max-w-lg mx-auto">
+            {t('memberTypeDesc')}
           </p>
         </motion.div>
 
@@ -113,7 +106,7 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
 
                     {/* 텍스트 */}
                     <div className="flex-1 mb-6">
-                      <h2 className="text-[18px] font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+                      <h2 className="text-title-4 font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
                         {title}
                       </h2>
                       <p className="text-caption-1 text-slate-500 group-hover:text-slate-600 transition-colors">
@@ -123,7 +116,7 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
 
                     {/* CTA */}
                     <div className="flex items-center text-blue-600 group-hover:text-blue-700 font-semibold text-sm gap-2 transition-colors">
-                      <span>로그인하기</span>
+                      <span>{t('loginButton')}</span>
                       <motion.div
                         initial={{ x: 0 }}
                         whileHover={{ x: 4 }}
@@ -142,9 +135,9 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
         {/* 회원가입 링크 */}
         <motion.div variants={itemVariants} className="text-center pt-6 sm:pt-8 border-t border-slate-200">
           <p className="text-body-3 text-slate-600">
-            아직 회원이 아니신가요?{' '}
+            {t('notMemberYet')}{' '}
             <Link href={signupHref} className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
-              회원가입하기
+              {t('signupButton')}
             </Link>
           </p>
         </motion.div>

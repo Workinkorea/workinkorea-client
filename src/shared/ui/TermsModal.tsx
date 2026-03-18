@@ -57,7 +57,7 @@ export default function TermsModal({ isOpen, onClose, title, content }: TermsMod
             >
               {/* 헤더 */}
               <div className="flex items-center justify-between p-6 border-b border-slate-100">
-                <h2 className="text-xl text-slate-900 font-semibold">{title}</h2>
+                <h2 className="text-title-4 text-slate-900 font-semibold">{title}</h2>
                 <button
                   onClick={onClose}
                   className="p-2 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
@@ -74,21 +74,21 @@ export default function TermsModal({ isOpen, onClose, title, content }: TermsMod
                     // 헤딩 처리
                     if (line.startsWith('# ')) {
                       return (
-                        <h1 key={index} className="text-[28px] font-bold text-slate-900 mt-6 mb-4">
+                        <h1 key={index} className="text-title-2 font-bold text-slate-900 mt-6 mb-4">
                           {line.replace('# ', '')}
                         </h1>
                       );
                     }
                     if (line.startsWith('## ')) {
                       return (
-                        <h2 key={index} className="text-xl font-bold text-slate-900 mt-5 mb-3">
+                        <h2 key={index} className="text-title-4 font-bold text-slate-900 mt-5 mb-3">
                           {line.replace('## ', '')}
                         </h2>
                       );
                     }
                     if (line.startsWith('### ')) {
                       return (
-                        <h3 key={index} className="text-base font-semibold text-slate-900 mt-4 mb-2">
+                        <h3 key={index} className="text-body-1 font-semibold text-slate-900 mt-4 mb-2">
                           {line.replace('### ', '')}
                         </h3>
                       );
@@ -103,7 +103,7 @@ export default function TermsModal({ isOpen, onClose, title, content }: TermsMod
                     if (line.includes('**')) {
                       const parts = line.split('**');
                       return (
-                        <p key={index} className="text-sm text-slate-700 mb-2 leading-relaxed">
+                        <p key={index} className="text-body-3 text-slate-700 mb-2 leading-relaxed">
                           {parts.map((part, i) =>
                             i % 2 === 1 ? <strong key={i} className="font-semibold text-slate-900">{part}</strong> : part
                           )}

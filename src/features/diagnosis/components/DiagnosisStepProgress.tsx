@@ -21,10 +21,10 @@ export const DiagnosisStepProgress = ({ currentStep, totalSteps }: DiagnosisStep
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center mb-2">
-        <span className="text-[15px] font-medium text-slate-700">
+        <span className="text-body-2 font-medium text-slate-700">
           Step {currentStep} of {totalSteps}
         </span>
-        <span className="text-[15px] font-medium text-blue-600">
+        <span className="text-body-2 font-medium text-blue-600">
           {Math.round(progress)}%
         </span>
       </div>

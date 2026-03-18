@@ -2,28 +2,24 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getActiveEvents } from '@/features/events/api/eventsApi';
 import type { Event, EventType } from '@/features/events/types/event';
+import { getTranslations } from 'next-intl/server';
 
 // ── 타입 배지 ────────────────────────────────────────────────────────────────
-function EventTypeBadge({ type }: { type: EventType }) {
+function EventTypeBadge({ type, labels }: { type: EventType; labels: Record<EventType, string> }) {
   const styles: Record<EventType, string> = {
     notice: 'bg-blue-100 text-blue-700',
     event: 'bg-amber-50 text-amber-600',
     promotion: 'bg-emerald-50 text-emerald-600',
   };
-  const labels: Record<EventType, string> = {
-    notice: '공지사항',
-    event: '이벤트',
-    promotion: '프로모션',
-  };
   return (
-    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold ${styles[type]}`}>
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold ${styles[type]}`}>
       {labels[type]}
     </span>
   );
 }
 
 // ── 이벤트 카드 ──────────────────────────────────────────────────────────────
-function EventCard({ event }: { event: Event }) {
+function EventCard({ event, labels }: { event: Event; labels: Record<EventType, string> }) {
   return (
     <article className="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-blue-200 transition-all duration-200 flex flex-col">
       {/* 배너 이미지 */}
@@ -48,10 +44,10 @@ function EventCard({ event }: { event: Event }) {
       {/* 카드 본문 */}
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-center gap-2 mb-2.5">
-          <EventTypeBadge type={event.type} />
+          <EventTypeBadge type={event.type} labels={labels} />
         </div>
 
-        <h3 className="text-[15px] font-bold text-slate-900 leading-snug line-clamp-2 mb-auto">
+        <h3 className="text-body-2 font-bold text-slate-900 leading-snug line-clamp-2 mb-auto">
           {event.title}
         </h3>
 
@@ -65,6 +61,7 @@ function EventCard({ event }: { event: Event }) {
 
 // ── 메인 섹션 ────────────────────────────────────────────────────────────────
 export default async function EventBannerSection() {
+  const t = await getTranslations('landing.events');
   let events: Event[] = [];
 
   try {
@@ -77,6 +74,11 @@ export default async function EventBannerSection() {
   if (events.length === 0) return null;
 
   const displayed = events.slice(0, 4);
+  const typeLabels: Record<EventType, string> = {
+    notice: t('typeNotice'),
+    event: t('typeEvent'),
+    promotion: t('typePromotion'),
+  };
 
   return (
     <section className="py-16 bg-white">
@@ -85,13 +87,13 @@ export default async function EventBannerSection() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <p className="text-caption-2 font-bold text-blue-600 uppercase tracking-[1.5px] mb-2">
-              Events &amp; Notices
+              {t('overline')}
             </p>
             <h2 className="text-title-2 font-extrabold text-slate-900">
-              이벤트 &amp; 공지사항
+              {t('title')}
             </h2>
             <p className="text-sm text-slate-500 mt-1.5">
-              Work in Korea의 최신 이벤트와 공지사항을 확인하세요.
+              {t('subtitle')}
             </p>
           </div>
 
@@ -100,7 +102,7 @@ export default async function EventBannerSection() {
               href="/events"
               className="text-caption-1 font-semibold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1"
             >
-              전체 보기
+              {t('viewAll')}
               <span aria-hidden="true">→</span>
             </Link>
           )}
@@ -109,7 +111,7 @@ export default async function EventBannerSection() {
         {/* 이벤트 그리드 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {displayed.map((event) => (
-            <EventCard key={event.id} event={event} />
+            <EventCard key={event.id} event={event} labels={typeLabels} />
           ))}
         </div>
       </div>

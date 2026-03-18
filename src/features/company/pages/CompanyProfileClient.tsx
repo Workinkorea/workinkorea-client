@@ -30,6 +30,7 @@ import {
   Package,
   Briefcase,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/utils/utils';
 import { FetchError } from '@/shared/api/fetchClient';
 import Layout from '@/shared/components/layout/Layout';
@@ -41,27 +42,8 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 // URL query param 값과 1:1 대응해 직접 링크 접근이 가능합니다.
 type DashboardTab = 'posts' | 'profile';
 
-const DASHBOARD_TABS: { key: DashboardTab; label: string; icon: React.ReactNode }[] = [
-  { key: 'posts',   label: '관리 중인 공고', icon: <Briefcase size={14} /> },
-  { key: 'profile', label: '기업 정보',      icon: <Building2  size={14} /> },
-];
-
 // ── 내 할일 탭 상수 ───────────────────────────────────────────────────────────
 type TodoTab = 'unread' | 'accepted' | 'interview' | 'evaluated';
-
-const TODO_TABS: { key: TodoTab; label: string }[] = [
-  { key: 'unread',    label: '미열람' },
-  { key: 'accepted',  label: '제안 수락' },
-  { key: 'interview', label: '면접' },
-  { key: 'evaluated', label: '평가' },
-];
-
-const EMPTY_TODO: Record<TodoTab, string> = {
-  unread:    '미열람 후보자가 없어요.',
-  accepted:  '제안 수락한 후보자가 없어요.',
-  interview: '면접 예정 후보자가 없어요.',
-  evaluated: '평가 완료된 후보자가 없어요.',
-};
 
 // ── 탭 전환 애니메이션 ─────────────────────────────────────────────────────────
 const tabVariants = {
@@ -72,6 +54,7 @@ const tabVariants = {
 
 // ── 메인 컴포넌트 ─────────────────────────────────────────────────────────────
 const CompanyProfileClient = () => {
+  const t = useTranslations('company.dashboard');
   const router     = useRouter();
   const pathname   = usePathname();
   const searchParams = useSearchParams();
@@ -81,6 +64,25 @@ const CompanyProfileClient = () => {
   const activeTab = (searchParams.get('tab') as DashboardTab) ?? 'posts';
 
   const [activeTodoTab, setActiveTodoTab] = useState<TodoTab>('unread');
+
+  const DASHBOARD_TABS: { key: DashboardTab; label: string; icon: React.ReactNode }[] = [
+    { key: 'posts',   label: t('tabPosts'),   icon: <Briefcase size={14} /> },
+    { key: 'profile', label: t('tabProfile'), icon: <Building2  size={14} /> },
+  ];
+
+  const TODO_TABS: { key: TodoTab; label: string }[] = [
+    { key: 'unread',    label: t('tabUnread') },
+    { key: 'accepted',  label: t('tabAccepted') },
+    { key: 'interview', label: t('tabInterview') },
+    { key: 'evaluated', label: t('tabEvaluated') },
+  ];
+
+  const EMPTY_TODO: Record<TodoTab, string> = {
+    unread:    t('emptyUnread'),
+    accepted:  t('emptyAccepted'),
+    interview: t('emptyInterview'),
+    evaluated: t('emptyEvaluated'),
+  };
 
   const { isAuthenticated, isLoading: authLoading } = useAuth();
 
@@ -131,7 +133,7 @@ const CompanyProfileClient = () => {
       <Layout>
         <div className="min-h-screen bg-white flex items-center justify-center">
           <div className="bg-white rounded-xl border border-slate-200 p-8 text-center max-w-sm">
-            <p className="text-slate-900 font-semibold mb-2">접근 권한이 없습니다</p>
+            <p className="text-slate-900 font-semibold mb-2">{t('accessDenied')}</p>
             <p className="text-sm text-slate-500">{error.message}</p>
           </div>
         </div>
@@ -182,11 +184,11 @@ const CompanyProfileClient = () => {
           <div className="max-w-5xl mx-auto px-6 pt-5 pb-0 flex items-center justify-between">
             <div>
               {/* 역할 레이블: 현재 컨텍스트를 명시해 방향 감각 제공 */}
-              <p className="text-[11px] font-semibold text-blue-600 uppercase tracking-wider mb-1">
-                기업 대시보드
+              <p className="text-caption-3 font-semibold text-blue-600 uppercase tracking-wider mb-1">
+                {t('dashboardLabel')}
               </p>
-              <h1 className="text-[20px] font-extrabold text-slate-900 tracking-tight">
-                기업 #{profile.company_id}
+              <h1 className="text-title-4 font-extrabold text-slate-900 tracking-tight">
+                {t('companyId', { id: profile.company_id })}
               </h1>
             </div>
 
@@ -204,7 +206,7 @@ const CompanyProfileClient = () => {
               whileTap={{ scale: 0.97 }}
             >
               <Plus size={16} />
-              새 채용 공고 등록
+              {t('createPostBtn')}
             </motion.button>
           </div>
 
@@ -231,7 +233,7 @@ const CompanyProfileClient = () => {
                   {tab.label}
                   {/* 공고 탭에 진행 공고 수 뱃지 표시 */}
                   {tab.key === 'posts' && activePosts.length > 0 && (
-                    <span className="ml-1 inline-flex items-center justify-center w-5 h-5 bg-blue-100 text-blue-600 text-[11px] font-bold rounded-full">
+                    <span className="ml-1 inline-flex items-center justify-center w-5 h-5 bg-blue-100 text-blue-600 text-caption-3 font-bold rounded-full">
                       {activePosts.length}
                     </span>
                   )}
@@ -265,7 +267,7 @@ const CompanyProfileClient = () => {
                       onClick={() => router.push('/company/jobs')}
                       className="flex items-center gap-1.5 text-body-3 font-bold text-slate-900 hover:text-blue-600 transition-colors group cursor-pointer"
                     >
-                      진행중 공고
+                      {t('activePostsTitle')}
                       <span className="text-blue-600 font-extrabold">{activePosts.length}</span>
                       <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400 transition-colors" />
                     </button>
@@ -279,7 +281,7 @@ const CompanyProfileClient = () => {
                       )}
                     >
                       <PenSquare size={13} />
-                      공고 등록
+                      {t('createPostBtnSmall')}
                     </button>
                   </div>
 
@@ -314,9 +316,9 @@ const CompanyProfileClient = () => {
                               {post.title}
                             </p>
                             <div className="flex items-center justify-between">
-                              <span className="text-[11px] text-slate-400">{post.employment_type}</span>
-                              <span className="text-[11px] font-semibold text-slate-500">
-                                미열람{' '}
+                              <span className="text-caption-3 text-slate-400">{post.employment_type}</span>
+                              <span className="text-caption-3 font-semibold text-slate-500">
+                                {t('unreadCountLabel')}{' '}
                                 <span className="text-blue-600 font-black">0</span> 명
                               </span>
                             </div>
@@ -331,7 +333,7 @@ const CompanyProfileClient = () => {
                           <FileText size={22} className="text-slate-300" />
                         </div>
                         <p className="text-caption-1 text-slate-500 mb-4">
-                          진행중인 공고가 없어요
+                          {t('noActivePosts')}
                         </p>
                         <button
                           onClick={() => router.push('/company/posts/create')}
@@ -342,7 +344,7 @@ const CompanyProfileClient = () => {
                           )}
                         >
                           <Plus size={14} />
-                          첫 공고 등록하기
+                          {t('firstPostBtn')}
                         </button>
                       </div>
                     )}
@@ -353,19 +355,19 @@ const CompanyProfileClient = () => {
                 <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
                   <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
                     <div className="flex items-center gap-1.5 text-body-3 font-bold text-slate-900">
-                      진행중 인재풀
+                      {t('talentPoolTitle')}
                       <span className="text-blue-600 font-extrabold">0</span>
                       <ChevronRight size={15} className="text-slate-300" />
                     </div>
                   </div>
                   <div className="p-4">
                     <div className="bg-blue-50 rounded-lg flex flex-col items-center justify-center py-7 text-center">
-                      <p className="text-caption-1 text-slate-500 mb-2 leading-relaxed">
-                        딱 맞는 우수한<br />인재를 찾아보세요!
+                      <p className="text-caption-1 text-slate-500 mb-2 leading-relaxed whitespace-pre-line">
+                        {t('talentPoolCta')}
                       </p>
                       <button className="inline-flex items-center gap-1.5 text-caption-2 font-semibold text-blue-600 hover:underline transition-colors cursor-pointer">
                         <Search size={13} />
-                        인재 검색
+                        {t('talentSearch')}
                       </button>
                     </div>
                   </div>
@@ -375,7 +377,7 @@ const CompanyProfileClient = () => {
                     UX 근거: pill 탭으로 채용 프로세스 단계를 시각적으로 분리 */}
                 <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
                   <div className="px-5 py-3.5 border-b border-slate-100">
-                    <span className="text-body-3 font-bold text-slate-900">내 할일</span>
+                    <span className="text-body-3 font-bold text-slate-900">{t('myTasksTitle')}</span>
                   </div>
                   {/* 상태별 pill 탭 */}
                   <div className="flex items-center gap-2 px-5 pt-4 flex-wrap">
@@ -404,7 +406,7 @@ const CompanyProfileClient = () => {
                         'hover:bg-slate-50 transition-colors cursor-pointer',
                       )}>
                         <Users size={13} />
-                        후보자 관리
+                        {t('manageBtn')}
                       </button>
                     </div>
                   </div>
@@ -434,8 +436,8 @@ const CompanyProfileClient = () => {
                       <Building2 size={22} className="text-white" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[15px] font-bold text-slate-900 truncate">
-                        기업 #{profile.company_id}
+                      <p className="text-body-2 font-bold text-slate-900 truncate">
+                        {t('companyId', { id: profile.company_id })}
                       </p>
                       <p className="text-caption-2 text-slate-400 truncate">{profile.industry_type}</p>
                     </div>
@@ -445,11 +447,11 @@ const CompanyProfileClient = () => {
                   <div className="grid grid-cols-2 gap-3 mb-5 p-4 bg-slate-50 rounded-lg">
                     <div className="text-center">
                       <p className="text-[26px] font-extrabold text-slate-900">{activePosts.length}</p>
-                      <p className="text-[11px] text-slate-400">진행 공고</p>
+                      <p className="text-caption-3 text-slate-400">{t('activePostsCount')}</p>
                     </div>
                     <div className="text-center">
                       <p className="text-[26px] font-extrabold text-slate-900">{posts.length}</p>
-                      <p className="text-[11px] text-slate-400">전체 공고</p>
+                      <p className="text-caption-3 text-slate-400">{t('totalPostsCount')}</p>
                     </div>
                   </div>
 
@@ -487,21 +489,21 @@ const CompanyProfileClient = () => {
                       'hover:bg-slate-50 transition-colors cursor-pointer',
                     )}
                   >
-                    프로필 편집
+                    {t('editProfile')}
                   </button>
                 </div>
 
                 {/* 이용중인 상품 */}
                 <div className="bg-white border border-slate-200 rounded-xl p-5">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-body-3 font-bold text-slate-900">이용중인 상품</span>
+                    <span className="text-body-3 font-bold text-slate-900">{t('productsTitle')}</span>
                     <ChevronRight size={15} className="text-slate-300" />
                   </div>
                   <div className="space-y-3">
                     {[
-                      { icon: <FileText size={13} />, label: '채용 광고' },
-                      { icon: <Users    size={13} />, label: '인재풀'   },
-                      { icon: <Package  size={13} />, label: '인적성'   },
+                      { icon: <FileText size={13} />, label: t('recruitAd') },
+                      { icon: <Users    size={13} />, label: t('talentPool') },
+                      { icon: <Package  size={13} />, label: t('aptitude')  },
                     ].map(item => (
                       <div key={item.label} className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-caption-2 text-slate-500">
@@ -512,10 +514,10 @@ const CompanyProfileClient = () => {
                           <span className="text-caption-2 text-slate-300">-</span>
                           <button className={cn(
                             'px-2.5 py-1 border border-slate-200 rounded',
-                            'text-[11px] font-semibold text-slate-500',
+                            'text-caption-3 font-semibold text-slate-500',
                             'hover:bg-slate-50 transition-colors cursor-pointer',
                           )}>
-                            구매
+                            {t('buyBtn')}
                           </button>
                         </div>
                       </div>
@@ -526,17 +528,16 @@ const CompanyProfileClient = () => {
                 {/* 하단 프로모 배너 */}
                 <div className="bg-blue-50 border border-blue-100 rounded-xl p-5">
                   <p className="text-caption-1 font-semibold text-slate-700 mb-1.5 leading-snug">
-                    적합한 인재를 찾지 못하셨나요?
+                    {t('promoTitle')}
                   </p>
-                  <p className="text-caption-2 text-slate-500 mb-3 leading-relaxed">
-                    <span className="text-blue-600 font-semibold">인재풀 60건 (30일)</span> 상품으로
-                    우수한 인재를 찾아보세요!
+                  <p className="text-caption-2 text-slate-500 mb-3 leading-relaxed whitespace-pre-line">
+                    {t('promoSubtitle')}
                   </p>
                   <button className={cn(
                     'w-full py-2 bg-blue-600 text-white text-caption-2 font-semibold rounded-lg',
                     'hover:bg-blue-700 transition-colors cursor-pointer',
                   )}>
-                    인재풀 이용하기
+                    {t('promoBtn')}
                   </button>
                 </div>
               </motion.div>

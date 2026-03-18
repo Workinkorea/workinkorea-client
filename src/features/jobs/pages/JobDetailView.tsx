@@ -7,6 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import Layout from '@/shared/components/layout/Layout';
 import { Modal } from '@/shared/ui/Modal';
 import { useJobApplication } from '@/features/jobs/hooks/useJobApplication';
@@ -25,6 +26,9 @@ function getDaysLeft(endDate: string): number | null {
 }
 
 export default function JobDetailView({ job }: JobDetailViewProps) {
+  const t = useTranslations('jobs.detail');
+  const tCommon = useTranslations('common');
+  const tCard = useTranslations('jobs.card');
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
@@ -80,9 +84,9 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      toast.success('링크가 복사되었습니다');
+      toast.success(t('linkCopied'));
     } catch {
-      toast.error('링크 복사에 실패했습니다');
+      toast.error(t('linkCopyFailed'));
     }
   };
 
@@ -91,9 +95,9 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
   return (
     <Layout>
       {/* Resume Selection Modal */}
-      <Modal isOpen={showApplyModal} onClose={() => setShowApplyModal(false)} title="이력서 선택" size="sm">
+      <Modal isOpen={showApplyModal} onClose={() => setShowApplyModal(false)} title={t('selectResume')} size="sm">
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">지원할 이력서를 선택해주세요.</p>
+          <p className="text-sm text-slate-600">{t('selectResumeDesc')}</p>
 
           {isLoadingResumes ? (
             <div className="space-y-2">
@@ -119,7 +123,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-slate-900 truncate">{resume.title}</p>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      {new Date(resume.updated_at).toLocaleDateString('ko-KR')} 수정
+                      {t('modified', { date: new Date(resume.updated_at).toLocaleDateString() })}
                     </p>
                   </div>
                 </button>
@@ -128,14 +132,14 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
           ) : (
             <div className="py-8 text-center">
               <FileText size={40} className="mx-auto text-slate-300 mb-3" />
-              <p className="text-sm font-medium text-slate-700 mb-1">등록된 이력서가 없습니다</p>
-              <p className="text-xs text-slate-400 mb-4">이력서를 먼저 작성해주세요</p>
+              <p className="text-sm font-medium text-slate-700 mb-1">{t('noResume')}</p>
+              <p className="text-xs text-slate-400 mb-4">{t('noResumeDesc')}</p>
               <Link
                 href="/user/resume/create"
                 onClick={() => setShowApplyModal(false)}
                 className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
               >
-                이력서 작성하기
+                {t('createResume')}
               </Link>
             </div>
           )}
@@ -146,14 +150,14 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                 onClick={() => setShowApplyModal(false)}
                 className="flex-1 py-2.5 border border-slate-200 text-slate-600 text-sm font-semibold rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
               >
-                취소
+                {tCommon('button.cancel')}
               </button>
               <button
                 onClick={handleConfirmApply}
                 disabled={isPending || selectedResumeId === null}
                 className="flex-1 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                {isPending ? '지원 중...' : '지원하기'}
+                {isPending ? t('applying') : tCommon('button.apply')}
               </button>
             </div>
           )}
@@ -166,9 +170,9 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
           <motion.button
             onClick={handleApply}
             whileTap={{ scale: 0.97 }}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-[15px] shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-body-2 shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
           >
-            지원하기
+            {tCommon('button.apply')}
           </motion.button>
         </div>
       )}
@@ -181,7 +185,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
             className="flex items-center gap-2 text-slate-600 hover:text-blue-600 text-sm font-medium mb-4 sm:mb-6 cursor-pointer transition-colors"
           >
             <ChevronLeft size={18} />
-            목록으로 돌아가기
+            {t('backToListFull')}
           </button>
 
           {/* Desktop Layout: 2-Column (Main + Sidebar) */}
@@ -200,13 +204,13 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <p className="text-caption-2 font-semibold text-slate-400 mb-2">기업 채용공고</p>
+                        <p className="text-caption-2 font-semibold text-slate-400 mb-2">{t('companyPost')}</p>
 
                         {/* Badges */}
                         <div className="flex items-center gap-2 mb-3 flex-wrap">
                           {isUrgent && (
                             <motion.span
-                              className="inline-flex px-2.5 py-1 bg-red-500 text-white text-[11px] font-bold rounded-md"
+                              className="inline-flex px-2.5 py-1 bg-red-500 text-white text-caption-3 font-bold rounded-md"
                               animate={{ opacity: [1, 0.6, 1] }}
                               transition={{ duration: 1.5, repeat: Infinity }}
                             >
@@ -214,14 +218,14 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                             </motion.span>
                           )}
                           {isExpired && (
-                            <span className="inline-flex px-2.5 py-1 bg-slate-200 text-slate-500 text-[11px] font-bold rounded-md">
-                              마감
+                            <span className="inline-flex px-2.5 py-1 bg-slate-200 text-slate-500 text-caption-3 font-bold rounded-md">
+                              {t('expiredBadge')}
                             </span>
                           )}
                         </div>
 
                         {/* Title */}
-                        <h1 className="text-[20px] sm:text-title-3 lg:text-title-2 font-extrabold text-slate-900 leading-tight line-clamp-3">
+                        <h1 className="text-title-4 sm:text-title-3 lg:text-title-2 font-extrabold text-slate-900 leading-tight line-clamp-3">
                           {job.title}
                         </h1>
                       </div>
@@ -233,7 +237,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                         onClick={handleBookmarkToggle}
                         className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer focus:outline-none"
                         whileTap={{ scale: 0.9 }}
-                        aria-label={bookmarked ? '북마크 해제' : '북마크'}
+                        aria-label={bookmarked ? tCard('bookmarkRemove') : t('bookmarkBtn')}
                       >
                         <Bookmark size={20} className={bookmarked ? 'fill-blue-600 text-blue-600' : ''} />
                       </motion.button>
@@ -241,7 +245,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                         onClick={handleShare}
                         className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer focus:outline-none"
                         whileTap={{ scale: 0.9 }}
-                        aria-label="링크 공유"
+                        aria-label={t('shareLabel')}
                       >
                         <Share2 size={20} />
                       </motion.button>
@@ -251,22 +255,22 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   {/* Key Info Banner */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-blue-50 border border-blue-100 rounded-lg">
                     <div className="flex flex-col">
-                      <p className="text-[11px] font-semibold text-slate-400 mb-1">연봉</p>
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">{tCommon('label.salary')}</p>
                       <p className="text-body-3 font-extrabold text-blue-600">
-                        {job.salary ? `${job.salary.toLocaleString()}` : '협의'}
+                        {job.salary ? `${job.salary.toLocaleString()}` : tCommon('label.negotiable')}
                       </p>
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-[11px] font-semibold text-slate-400 mb-1">근무지</p>
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">{tCommon('label.location')}</p>
                       <p className="text-body-3 font-bold text-slate-900 line-clamp-2">{job.work_location}</p>
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-[11px] font-semibold text-slate-400 mb-1">고용형태</p>
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">{tCommon('label.employmentType')}</p>
                       <p className="text-body-3 font-bold text-slate-900">{job.employment_type}</p>
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-[11px] font-semibold text-slate-400 mb-1">근무시간</p>
-                      <p className="text-body-3 font-bold text-slate-900">{job.working_hours}시간</p>
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">{tCommon('label.workingHours')}</p>
+                      <p className="text-body-3 font-bold text-slate-900">{t('workingHoursUnit', { hours: job.working_hours })}</p>
                     </div>
                   </div>
 
@@ -274,7 +278,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-100 rounded-lg">
                     <Calendar className="text-amber-600 shrink-0" size={18} />
                     <p className="text-caption-1 text-slate-900">
-                      <span className="font-semibold">모집기간:</span> {job.start_date} ~ {job.end_date}
+                      <span className="font-semibold">{t('recruitPeriod')}:</span> {job.start_date} ~ {job.end_date}
                     </p>
                   </div>
                 </div>
@@ -282,13 +286,13 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
 
               {/* Details Card */}
               <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-7 lg:p-8 space-y-6">
-                <h2 className="text-[18px] sm:text-[20px] font-extrabold text-slate-900">공고 상세</h2>
+                <h2 className="text-[18px] sm:text-title-4 font-extrabold text-slate-900">{t('jobDetails')}</h2>
 
                 {/* Job Content Section */}
                 <div className="space-y-3">
                   <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
                     <FileText size={16} className="text-blue-600" />
-                    직무 내용
+                    {t('jobContent')}
                   </h3>
                   <p className="text-caption-1 text-slate-700 leading-relaxed whitespace-pre-wrap">{job.content}</p>
                 </div>
@@ -299,7 +303,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                 <div className="space-y-3">
                   <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
                     <Briefcase size={16} className="text-blue-600" />
-                    경력
+                    {t('experience')}
                   </h3>
                   <p className="text-caption-1 text-slate-700 leading-relaxed">{job.work_experience}</p>
                 </div>
@@ -310,7 +314,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                 <div className="space-y-3">
                   <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
                     <GraduationCap size={16} className="text-blue-600" />
-                    학력
+                    {t('education')}
                   </h3>
                   <p className="text-caption-1 text-slate-700 leading-relaxed">{job.education}</p>
                 </div>
@@ -323,7 +327,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                     <div className="space-y-3">
                       <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
                         <Languages size={16} className="text-blue-600" />
-                        필요 언어
+                        {t('requiredLanguage')}
                       </h3>
                       <div className="flex flex-wrap gap-2">
                         {language.map((lang, index) => (
@@ -350,24 +354,24 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
               >
                 {/* Salary Display */}
                 <div className="space-y-1">
-                  <p className="text-[11px] font-semibold text-slate-400">연봉</p>
+                  <p className="text-caption-3 font-semibold text-slate-400">{tCommon('label.salary')}</p>
                   <p className="text-title-1 font-extrabold text-blue-600 leading-tight">
-                    {job.salary ? `${job.salary.toLocaleString()}` : '협의'}
+                    {job.salary ? `${job.salary.toLocaleString()}` : tCommon('label.negotiable')}
                   </p>
                 </div>
 
                 {/* Apply Button */}
                 {isExpired ? (
-                  <button className="w-full py-4 bg-slate-100 text-slate-400 text-center rounded-lg font-bold text-[15px] cursor-not-allowed">
-                    마감된 공고
+                  <button className="w-full py-4 bg-slate-100 text-slate-400 text-center rounded-lg font-bold text-body-2 cursor-not-allowed">
+                    {t('expiredPostShort')}
                   </button>
                 ) : (
                   <motion.button
                     onClick={handleApply}
-                    className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-[15px] shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
+                    className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-body-2 shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
                     whileTap={{ scale: 0.98 }}
                   >
-                    지원하기
+                    {tCommon('button.apply')}
                   </motion.button>
                 )}
 
@@ -378,7 +382,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   whileTap={{ scale: 0.98 }}
                 >
                   <Bookmark size={16} className={bookmarked ? 'fill-blue-600 text-blue-600' : ''} />
-                  {bookmarked ? '저장됨' : '북마크'}
+                  {bookmarked ? t('bookmarkSaved') : t('bookmarkSave')}
                 </motion.button>
 
                 {/* Share Button */}
@@ -388,12 +392,12 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   whileTap={{ scale: 0.98 }}
                 >
                   <Share2 size={16} />
-                  링크 복사
+                  {t('copyLink')}
                 </motion.button>
 
                 {/* Recruitment Info */}
                 <div className="p-4 bg-slate-50 rounded-lg border border-slate-100 space-y-2 mt-6 pt-6 border-t">
-                  <p className="text-[11px] font-semibold text-slate-400">모집기간</p>
+                  <p className="text-caption-3 font-semibold text-slate-400">{tCommon('label.period')}</p>
                   <p className="text-caption-1 font-semibold text-slate-900">{job.start_date}</p>
                   <p className="text-caption-1 text-slate-600">~ {job.end_date}</p>
                 </div>

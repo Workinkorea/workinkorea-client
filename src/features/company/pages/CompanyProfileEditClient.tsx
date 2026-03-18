@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Building2, UserCircle, Check } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Layout from '@/shared/components/layout/Layout';
 import { Button } from '@/shared/ui/Button';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -17,21 +18,24 @@ import { CompanyInfoSection } from '@/features/company/components/CompanyInfoSec
 import { ContactPersonSection } from '@/features/company/components/ContactPersonSection';
 import { cn } from '@/shared/lib/utils/utils';
 
-// 완성도 체크 항목
-const REQUIRED_FIELDS: { key: keyof CompanyProfileRequest; label: string; section: '기업 정보' | '담당자 정보' }[] = [
-  { key: 'industry_type',       label: '업종',       section: '기업 정보' },
-  { key: 'company_type',        label: '기업 형태',  section: '기업 정보' },
-  { key: 'employee_count',      label: '직원 수',    section: '기업 정보' },
-  { key: 'establishment_date',  label: '설립일',     section: '기업 정보' },
-  { key: 'address',             label: '주소',       section: '기업 정보' },
-  { key: 'email',               label: '이메일',     section: '담당자 정보' },
-  { key: 'phone_number',        label: '전화번호',   section: '담당자 정보' },
-];
-
 const CompanyProfileEditClient = () => {
+  const t = useTranslations('company.profile.edit');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const queryClient = useQueryClient();
   const { isLoading: authLoading } = useAuth();
+
+  // 완성도 체크 항목 (inside component to use t())
+  type RequiredField = { key: keyof CompanyProfileRequest; label: string; section: 'info' | 'contact' };
+  const REQUIRED_FIELDS: RequiredField[] = [
+    { key: 'industry_type',       label: t('fields.requiredLabels.industryType'),       section: 'info' },
+    { key: 'company_type',        label: t('fields.requiredLabels.companyType'),         section: 'info' },
+    { key: 'employee_count',      label: t('fields.requiredLabels.employeeCount'),       section: 'info' },
+    { key: 'establishment_date',  label: t('fields.requiredLabels.establishmentDate'),   section: 'info' },
+    { key: 'address',             label: t('fields.requiredLabels.address'),             section: 'info' },
+    { key: 'email',               label: t('fields.requiredLabels.email'),               section: 'contact' },
+    { key: 'phone_number',        label: t('fields.requiredLabels.phoneNumber'),         section: 'contact' },
+  ];
 
   const [formData, setFormData] = useState<CompanyProfileRequest>({
     industry_type: '',
@@ -89,20 +93,20 @@ const CompanyProfileEditClient = () => {
     return { filledCount: filled, progress: Math.round((filled / REQUIRED_FIELDS.length) * 100) };
   }, [formData]);
 
-  const infoFields  = REQUIRED_FIELDS.filter((f) => f.section === '기업 정보');
-  const contactFields = REQUIRED_FIELDS.filter((f) => f.section === '담당자 정보');
+  const infoFields  = REQUIRED_FIELDS.filter((f) => f.section === 'info');
+  const contactFields = REQUIRED_FIELDS.filter((f) => f.section === 'contact');
 
   const updateProfileMutation = useMutation({
     mutationFn: (data: CompanyProfileRequest) =>
       profile ? profileApi.updateProfileCompany(data) : profileApi.createProfileCompany(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyProfile'] });
-      toast.success(profile ? '프로필이 수정되었습니다.' : '프로필이 등록되었습니다.');
+      toast.success(profile ? t('updateSuccess') : t('createSuccess'));
       setTimeout(() => router.push('/company'), 1000);
     },
     onError: (error: unknown) => {
       logError(error, 'CompanyProfileEditClient.updateProfile');
-      toast.error(extractErrorMessage(error, '프로필 수정에 실패했습니다. 다시 시도해주세요.'));
+      toast.error(extractErrorMessage(error, t('updateError')));
     },
   });
 
@@ -148,11 +152,11 @@ const CompanyProfileEditClient = () => {
     );
 
     if (Object.keys(newErrors).length > 0) {
-      toast.error('입력 항목을 확인해주세요.');
+      toast.error(t('validationError'));
       return;
     }
     if (!hasChanges) {
-      toast.error('변경된 내용이 없습니다.');
+      toast.error(t('noChanges'));
       return;
     }
 
@@ -178,8 +182,8 @@ const CompanyProfileEditClient = () => {
 
           {/* 페이지 헤더 */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-slate-900">기업 프로필 수정</h1>
-            <p className="text-sm text-slate-500 mt-1">기업 정보와 담당자 연락처를 등록해주세요.</p>
+            <h1 className="text-2xl font-bold text-slate-900">{t('title')}</h1>
+            <p className="text-sm text-slate-500 mt-1">{t('subtitle')}</p>
           </div>
 
           {/* 2-column layout */}
@@ -195,8 +199,8 @@ const CompanyProfileEditClient = () => {
                     <Building2 size={16} className="text-blue-600" />
                   </span>
                   <div>
-                    <h2 className="text-[15px] font-bold text-slate-900">기업 정보</h2>
-                    <p className="text-[11px] text-slate-400 mt-0.5">기업의 기본 정보를 입력해주세요</p>
+                    <h2 className="text-body-2 font-bold text-slate-900">{t('sectionInfo')}</h2>
+                    <p className="text-caption-3 text-slate-400 mt-0.5">{t('sectionInfoHint')}</p>
                   </div>
                 </div>
                 <CompanyInfoSection
@@ -216,8 +220,8 @@ const CompanyProfileEditClient = () => {
                     <UserCircle size={16} className="text-blue-600" />
                   </span>
                   <div>
-                    <h2 className="text-[15px] font-bold text-slate-900">담당자 정보</h2>
-                    <p className="text-[11px] text-slate-400 mt-0.5">채용 담당자의 연락처를 입력해주세요</p>
+                    <h2 className="text-body-2 font-bold text-slate-900">{t('sectionContact')}</h2>
+                    <p className="text-caption-3 text-slate-400 mt-0.5">{t('sectionContactHint')}</p>
                   </div>
                 </div>
                 <ContactPersonSection
@@ -238,7 +242,7 @@ const CompanyProfileEditClient = () => {
                   className="flex-1"
                   onClick={() => router.back()}
                 >
-                  취소
+                  {tCommon('button.cancel')}
                 </Button>
                 <Button
                   type="submit"
@@ -247,7 +251,7 @@ const CompanyProfileEditClient = () => {
                   isLoading={updateProfileMutation.isPending}
                   disabled={!hasChanges}
                 >
-                  {updateProfileMutation.isPending ? '저장 중...' : '저장하기'}
+                  {updateProfileMutation.isPending ? t('saving') : t('saveBtn')}
                 </Button>
               </div>
             </form>
@@ -264,7 +268,7 @@ const CompanyProfileEditClient = () => {
                 disabled={!hasChanges}
                 onClick={handleSubmit}
               >
-                {updateProfileMutation.isPending ? '저장 중...' : '저장하기'}
+                {updateProfileMutation.isPending ? t('saving') : t('saveBtn')}
               </Button>
               <Button
                 type="button"
@@ -273,7 +277,7 @@ const CompanyProfileEditClient = () => {
                 className="w-full"
                 onClick={() => router.back()}
               >
-                취소
+                {tCommon('button.cancel')}
               </Button>
 
               {/* 완성도 카드 */}
@@ -296,17 +300,17 @@ const CompanyProfileEditClient = () => {
                         className="stroke-blue-600 transition-all duration-500"
                       />
                     </svg>
-                    <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-blue-600">
+                    <span className="absolute inset-0 flex items-center justify-center text-caption-3 font-bold text-blue-600">
                       {progress}%
                     </span>
                   </div>
                   <div>
                     <p className="text-caption-1 font-bold text-slate-900">
-                      프로필 완성도{' '}
+                      {t('completionTitle')}{' '}
                       <span className="text-blue-600">{progress}%</span>
                     </p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
-                      {filledCount}/{REQUIRED_FIELDS.length}개 항목 입력됨
+                    <p className="text-caption-3 text-slate-400 mt-0.5">
+                      {t('completionCount', { filled: filledCount, total: REQUIRED_FIELDS.length })}
                     </p>
                   </div>
                 </div>
@@ -319,8 +323,8 @@ const CompanyProfileEditClient = () => {
                 </div>
 
                 {/* 기업 정보 체크리스트 */}
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  기업 정보
+                <p className="text-caption-3 font-bold text-slate-500 uppercase tracking-wider mb-2">
+                  {t('checklistInfo')}
                 </p>
                 <ul className="space-y-1.5 mb-4">
                   {infoFields.map(({ key, label }) => {
@@ -350,8 +354,8 @@ const CompanyProfileEditClient = () => {
                 </ul>
 
                 {/* 담당자 정보 체크리스트 */}
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  담당자 정보
+                <p className="text-caption-3 font-bold text-slate-500 uppercase tracking-wider mb-2">
+                  {t('checklistContact')}
                 </p>
                 <ul className="space-y-1.5">
                   {contactFields.map(({ key, label }) => {
@@ -381,9 +385,9 @@ const CompanyProfileEditClient = () => {
                 </ul>
 
                 {hasChanges && (
-                  <p className="mt-4 text-[11px] text-amber-600 flex items-center gap-1">
+                  <p className="mt-4 text-caption-3 text-amber-600 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-                    저장되지 않은 변경사항이 있습니다.
+                    {t('unsavedChanges')}
                   </p>
                 )}
               </div>

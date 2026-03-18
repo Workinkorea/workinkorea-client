@@ -77,22 +77,22 @@ export function ResumeCard({
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-[15px] font-semibold text-slate-900 truncate">
+            <h3 className="text-body-2 font-semibold text-slate-900 truncate">
               {resume.title}
             </h3>
-            <div className={cn(`px-2 py-1 rounded-full text-[11px] font-medium border`, getStatusColor(resume.status))}>
+            <div className={cn(`px-2 py-1 rounded-full text-caption-3 font-medium border`, getStatusColor(resume.status))}>
               {getStatusText(resume.status)}
             </div>
           </div>
 
           {resume.description && (
-            <p className="text-sm text-slate-600 line-clamp-2 mb-2">
+            <p className="text-body-3 text-slate-600 line-clamp-2 mb-2">
               {resume.description}
             </p>
           )}
 
           {/* 메타 정보 */}
-          <div className="flex items-center gap-4 text-[11px] text-slate-500">
+          <div className="flex items-center gap-4 text-caption-3 text-slate-500">
             <div className="flex items-center gap-1">
               <Calendar size={12} />
               <span>수정: {formatDate(resume.updatedAt)}</span>
@@ -125,16 +125,16 @@ export function ResumeCard({
       {statistics && (
         <div className="grid grid-cols-3 gap-4 py-3 mb-4 border-t border-slate-100">
           <div className="text-center">
-            <div className="text-sm font-semibold text-slate-900">
+            <div className="text-caption-1 font-semibold text-slate-900">
               {statistics.totalViews.toLocaleString()}
             </div>
-            <div className="text-[11px] text-slate-500">지원 건수</div>
+            <div className="text-caption-3 text-slate-500">지원 건수</div>
           </div>
           <div className="text-center">
-            <div className="text-sm font-semibold text-slate-900">
+            <div className="text-caption-1 font-semibold text-slate-900">
               {statistics.downloadCount.toLocaleString()}
             </div>
-            <div className="text-[11px] text-slate-500">열람 횟수</div>
+            <div className="text-caption-3 text-slate-500">열람 횟수</div>
           </div>
         </div>
       )}
@@ -144,14 +144,14 @@ export function ResumeCard({
         <div className="flex items-center gap-2">
           <button
             onClick={onView}
-            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-3 py-1.5 text-caption-2 font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
           >
             <Eye size={14} />
             미리보기
           </button>
 
           {statistics && (
-            <button className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer">
+            <button className="flex items-center gap-2 px-3 py-1.5 text-caption-2 font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer">
               <Download size={14} />
               다운로드
             </button>

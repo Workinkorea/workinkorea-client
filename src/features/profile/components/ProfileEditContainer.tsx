@@ -628,7 +628,7 @@ function ProfileEditContainer() {
                 </nav>
 
                 {hasUnsavedChanges && (
-                  <p className="mt-4 text-[11px] text-amber-600 flex items-center gap-1">
+                  <p className="mt-4 text-caption-3 text-amber-600 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
                     저장되지 않은 변경사항이 있습니다.
                   </p>

@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Edit3, FileText, GraduationCap, Award } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Layout from '@/shared/components/layout/Layout';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
 import dynamic from 'next/dynamic';
@@ -28,6 +29,7 @@ import { profileApi } from '@/features/profile/api/profileApi';
 import type { CareerHistory, ResumeListItem } from '@/shared/types/api';
 
 function UserProfileClient() {
+  const t = useTranslations('user.profile.client');
   const router = useRouter();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'resume' | 'skills' | 'career'>('dashboard');
@@ -49,12 +51,12 @@ function UserProfileClient() {
   const uploadImageMutation = useMutation({
     mutationFn: (file: File) => resumeApi.uploadUserImage(file),
     onSuccess: () => {
-      toast.success('이미지가 업로드되었습니다.');
+      toast.success(t('imageUploadSuccess'));
       setSelectedFile(null);
       queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
     onError: () => {
-      toast.error('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+      toast.error(t('imageUploadError'));
     },
   });
 
@@ -66,9 +68,9 @@ function UserProfileClient() {
     if (!confirmDelete) return;
     try {
       await deleteResumeMutation.mutateAsync(confirmDelete.resumeId);
-      toast.success('이력서가 삭제되었습니다.');
+      toast.success(t('deleteResumeSuccess'));
     } catch {
-      toast.error('이력서 삭제에 실패했습니다. 다시 시도해주세요.');
+      toast.error(t('deleteResumeError'));
     } finally {
       setConfirmDelete(null);
     }
@@ -83,7 +85,7 @@ function UserProfileClient() {
 
   const handleUploadImage = async () => {
     if (!selectedFile) {
-      toast.error('파일을 선택해주세요.');
+      toast.error(t('noFileSelected'));
       return;
     }
     await uploadImageMutation.mutateAsync(selectedFile);
@@ -260,12 +262,12 @@ function UserProfileClient() {
               <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
             </div>
             <h2 className="text-[18px] sm:text-xl font-extrabold text-slate-900 mb-2">
-              프로필을 불러올 수 없습니다
+              {t('loadingError')}
             </h2>
             <p className="text-caption-1 sm:text-sm text-slate-500 mb-6 sm:mb-8">
               {!resumeList?.length
-                ? '먼저 이력서를 작성해주세요.'
-                : '잠시 후 다시 시도해주세요.'}
+                ? t('noResumeHint')
+                : t('retryHint')}
             </p>
             {!resumeList?.length && (
               <button
@@ -273,7 +275,7 @@ function UserProfileClient() {
                 className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-1 sm:text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
               >
                 <FileText size={16} />
-                이력서 작성하기
+                {t('writeResume')}
               </button>
             )}
           </div>
@@ -291,27 +293,27 @@ function UserProfileClient() {
       <Modal
         isOpen={!!confirmDelete}
         onClose={() => setConfirmDelete(null)}
-        title="이력서 삭제"
+        title={t('deleteModalTitle')}
         size="sm"
       >
         <p className="text-sm text-slate-700 mb-6">
-          &ldquo;{confirmDelete?.title}&rdquo; 이력서를 삭제하시겠습니까?
+          &ldquo;{confirmDelete?.title}&rdquo; {t('deleteConfirmText')}
           <br />
-          <span className="text-slate-500 text-xs mt-1 block">삭제 후 복구할 수 없습니다.</span>
+          <span className="text-slate-500 text-xs mt-1 block">{t('deleteCannotUndo')}</span>
         </p>
         <div className="flex gap-3 justify-end">
           <button
             onClick={() => setConfirmDelete(null)}
             className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors cursor-pointer"
           >
-            취소
+            {t('cancel')}
           </button>
           <button
             onClick={handleConfirmDelete}
             disabled={deleteResumeMutation.isPending}
             className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50 cursor-pointer"
           >
-            {deleteResumeMutation.isPending ? '삭제 중...' : '삭제'}
+            {deleteResumeMutation.isPending ? t('deleting') : t('delete')}
           </button>
         </div>
       </Modal>
@@ -321,12 +323,12 @@ function UserProfileClient() {
           {/* 상단 제목 및 액션 버튼 */}
           <div className="flex items-center justify-between gap-4">
             <motion.h1
-              className="text-[20px] sm:text-title-3 font-extrabold text-slate-900"
+              className="text-title-4 sm:text-title-3 font-extrabold text-slate-900"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
             >
-              내 프로필
+              {t('myProfile')}
             </motion.h1>
             <motion.button
               onClick={() => {
@@ -345,10 +347,10 @@ function UserProfileClient() {
             >
               <Edit3 size={14} className="sm:size-[16px]" />
               <span className="hidden sm:inline">
-                {resumeList && resumeList.length > 0 ? '이력서 수정' : '이력서 작성'}
+                {resumeList && resumeList.length > 0 ? t('editResume') : t('createResume')}
               </span>
               <span className="sm:hidden">
-                {resumeList && resumeList.length > 0 ? '수정' : '작성'}
+                {resumeList && resumeList.length > 0 ? t('edit') : t('create')}
               </span>
             </motion.button>
           </div>
@@ -368,10 +370,10 @@ function UserProfileClient() {
           >
             <div className="flex gap-1 min-w-max sm:min-w-0 bg-white rounded-xl border border-slate-200 p-1.5 sm:p-2">
               {[
-                { key: 'dashboard', label: '대시보드', icon: '📊' },
-                { key: 'resume', label: '이력서', icon: '📄' },
-                { key: 'skills', label: '스킬 관리', icon: '⭐' },
-                { key: 'career', label: '경력 관리', icon: '🎓' }
+                { key: 'dashboard', label: t('tabDashboard'), icon: '📊' },
+                { key: 'resume', label: t('tabResume'), icon: '📄' },
+                { key: 'skills', label: t('tabSkills'), icon: '⭐' },
+                { key: 'career', label: t('tabCareer'), icon: '🎓' }
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -414,14 +416,14 @@ function UserProfileClient() {
                 {/* 프로필 완성도 */}
                 {(() => {
                   const items = [
-                    { label: '프로필 사진', done: !!resumeData.profileImage },
-                    { label: '이름', done: !!profileData?.name },
-                    { label: '거주 지역', done: !!profileData?.location },
-                    { label: '자기소개', done: !!resumeData.introduction },
-                    { label: '학력', done: resumeData.education.length > 0 },
-                    { label: '언어 능력', done: resumeData.languages.length > 0 },
-                    { label: '자격증', done: resumeData.certifications.length > 0 },
-                    { label: '연락처 링크', done: !!(contactData?.github_url || contactData?.linkedin_url || resumeData.portfolioUrl) },
+                    { label: t('checklistPhoto'), done: !!resumeData.profileImage },
+                    { label: t('checklistName'), done: !!profileData?.name },
+                    { label: t('checklistLocation'), done: !!profileData?.location },
+                    { label: t('checklistIntro'), done: !!resumeData.introduction },
+                    { label: t('checklistEducation'), done: resumeData.education.length > 0 },
+                    { label: t('checklistLanguage'), done: resumeData.languages.length > 0 },
+                    { label: t('checklistCert'), done: resumeData.certifications.length > 0 },
+                    { label: t('checklistContact'), done: !!(contactData?.github_url || contactData?.linkedin_url || resumeData.portfolioUrl) },
                   ];
                   const done = items.filter(i => i.done).length;
                   const pct = Math.round((done / items.length) * 100);
@@ -434,7 +436,7 @@ function UserProfileClient() {
                       transition={{ duration: 0.5, delay: 0.3 }}
                     >
                       <div className="flex items-center justify-between mb-4 sm:mb-5">
-                        <h3 className="text-body-3 sm:text-[15px] font-bold text-slate-900">프로필 완성도</h3>
+                        <h3 className="text-body-3 sm:text-body-2 font-bold text-slate-900">{t('profileCompletion')}</h3>
                         <span className={cn(
                           'text-[18px] sm:text-lg font-extrabold',
                           pct >= 80 ? 'text-blue-600' : pct >= 50 ? 'text-amber-500' : 'text-slate-400'
@@ -462,7 +464,7 @@ function UserProfileClient() {
                           <div
                             key={item.label}
                             className={cn(
-                              'flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-caption-2 font-medium px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors',
+                              'flex items-center gap-1.5 sm:gap-2 text-caption-3 sm:text-caption-2 font-medium px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors',
                               item.done
                                 ? 'text-slate-700 bg-slate-50'
                                 : 'text-slate-400 bg-slate-50/50'
@@ -483,12 +485,12 @@ function UserProfileClient() {
 
                       {pct < 100 && (
                         <motion.p
-                          className="text-[11px] sm:text-caption-2 text-slate-400 leading-relaxed"
+                          className="text-caption-3 sm:text-caption-2 text-slate-400 leading-relaxed"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.6 }}
                         >
-                          <span className="font-semibold text-slate-600">더 알아보기:</span> {items.filter(i => !i.done).map(i => i.label).join(', ')}을(를) 완성하면 더 많은 기업에 노출됩니다.
+                          <span className="font-semibold text-slate-600">{t('completionTip')}:</span> {items.filter(i => !i.done).map(i => i.label).join(', ')}{t('completionTipSuffix')}
                         </motion.p>
                       )}
                     </motion.div>
@@ -501,8 +503,8 @@ function UserProfileClient() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  <h3 className="text-[15px] sm:text-[16px] font-bold text-slate-900 mb-4 sm:mb-6 text-center">
-                    종합 역량 분석
+                  <h3 className="text-body-2 sm:text-body-1 font-bold text-slate-900 mb-4 sm:mb-6 text-center">
+                    {t('radarTitle')}
                   </h3>
                   <div className="flex justify-center">
                     <div className="w-full max-w-sm flex justify-center">
@@ -531,8 +533,8 @@ function UserProfileClient() {
                       <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h4 className="text-body-3 sm:text-[15px] font-bold text-slate-900">프로필 이미지 업로드</h4>
-                      <p className="text-caption-2 sm:text-caption-1 text-slate-500 mt-0.5">JPG, PNG 형식, 5MB 이하</p>
+                      <h4 className="text-body-3 sm:text-body-2 font-bold text-slate-900">{t('imageUploadTitle')}</h4>
+                      <p className="text-caption-2 sm:text-caption-1 text-slate-500 mt-0.5">{t('imageUploadHint')}</p>
                     </div>
                   </div>
 
@@ -546,7 +548,7 @@ function UserProfileClient() {
                       />
                       <div className="px-4 py-2.5 sm:py-3 bg-white border-2 border-dashed border-blue-300 rounded-lg text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-colors">
                         <p className="text-caption-2 sm:text-caption-1 font-semibold text-slate-700">
-                          {selectedFile ? selectedFile.name : '클릭하여 파일 선택'}
+                          {selectedFile ? selectedFile.name : t('clickToSelect')}
                         </p>
                       </div>
                     </label>
@@ -557,7 +559,7 @@ function UserProfileClient() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      {uploadImageMutation.isPending ? '업로드 중...' : '업로드'}
+                      {uploadImageMutation.isPending ? t('uploading') : t('upload')}
                     </motion.button>
                   </div>
                 </motion.div>
@@ -570,7 +572,7 @@ function UserProfileClient() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.4, delay: 0.1 }}
                   >
-                    <h4 className="text-body-3 sm:text-[15px] font-bold text-slate-900 px-2 sm:px-0">작성된 이력서 ({resumeList.length})</h4>
+                    <h4 className="text-body-3 sm:text-body-2 font-bold text-slate-900 px-2 sm:px-0">{t('resumeListTitle', { count: resumeList.length })}</h4>
                     {resumeList.map((resume, idx) => (
                       <motion.div
                         key={resume.id}
@@ -589,7 +591,7 @@ function UserProfileClient() {
                           <p className="text-caption-1 sm:text-body-3 font-semibold text-slate-900 truncate">
                             {resume.title || '이력서'}
                           </p>
-                          <p className="text-[11px] sm:text-caption-2 text-slate-400 mt-1">
+                          <p className="text-caption-3 sm:text-caption-2 text-slate-400 mt-1">
                             {resume.updated_at ? new Date(resume.updated_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' }) : '날짜 정보 없음'}
                           </p>
                         </div>
@@ -600,11 +602,11 @@ function UserProfileClient() {
                             handleDeleteResume(resume.id, resume.title || '이력서');
                           }}
                           disabled={deleteResumeMutation.isPending}
-                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-caption-2 font-semibold text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-caption-3 sm:text-caption-2 font-semibold text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
-                          {deleteResumeMutation.isPending ? '삭제 중' : '삭제'}
+                          {deleteResumeMutation.isPending ? t('deletingInline') : t('delete')}
                         </motion.button>
                       </motion.div>
                     ))}
@@ -614,13 +616,13 @@ function UserProfileClient() {
                     <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-slate-100 flex items-center justify-center">
                       <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400" />
                     </div>
-                    <p className="text-caption-1 sm:text-sm text-slate-500 mb-4 sm:mb-6">작성된 이력서가 없습니다.</p>
+                    <p className="text-caption-1 sm:text-sm text-slate-500 mb-4 sm:mb-6">{t('noResumeEmpty')}</p>
                     <button
                       onClick={() => router.push('/user/resume/create')}
                       className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
                     >
                       <FileText size={16} />
-                      이력서 작성하기
+                      {t('writeResume')}
                     </button>
                   </div>
                 )}
@@ -630,7 +632,7 @@ function UserProfileClient() {
             {activeTab === 'skills' && (
               <SkillBarChart
                 skills={resumeData.skills}
-                title="세부 스킬 분석"
+                title={t('skillAnalysisTitle')}
                 maxItems={12}
                 showCategory={true}
               />
@@ -649,7 +651,7 @@ function UserProfileClient() {
                     <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
                       <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                     </div>
-                    <h3 className="text-body-3 sm:text-[15px] font-bold text-slate-900">교육 이력</h3>
+                    <h3 className="text-body-3 sm:text-body-2 font-bold text-slate-900">{t('educationTitle')}</h3>
                   </div>
 
                   <div className="space-y-3">
@@ -673,8 +675,8 @@ function UserProfileClient() {
                                 <p className="text-caption-2 sm:text-caption-1 text-slate-600 mt-1">
                                   {edu.degree} • {edu.field}
                                 </p>
-                                <p className="text-[11px] sm:text-caption-2 text-slate-400 mt-2">
-                                  {edu.startDate} ~ {edu.endDate || '현재'}
+                                <p className="text-caption-3 sm:text-caption-2 text-slate-400 mt-2">
+                                  {edu.startDate} ~ {edu.endDate || t('present')}
                                 </p>
                               </div>
                             </motion.div>
@@ -682,7 +684,7 @@ function UserProfileClient() {
                         </div>
                       </>
                     ) : (
-                      <p className="text-caption-2 sm:text-caption-1 text-slate-400 text-center py-4">교육 이력이 없습니다.</p>
+                      <p className="text-caption-2 sm:text-caption-1 text-slate-400 text-center py-4">{t('noEducation')}</p>
                     )}
                   </div>
                 </motion.div>
@@ -699,14 +701,14 @@ function UserProfileClient() {
                       <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                         <Award className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
                       </div>
-                      <h3 className="text-body-3 sm:text-[15px] font-bold text-slate-900">자격증</h3>
+                      <h3 className="text-body-3 sm:text-body-2 font-bold text-slate-900">{t('certTitle')}</h3>
                     </div>
 
                     <div className="flex flex-wrap gap-2 sm:gap-3">
                       {resumeData.certifications.map((cert, index) => (
                         <motion.span
                           key={index}
-                          className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-linear-to-br from-amber-50 to-yellow-50 text-amber-700 text-[11px] sm:text-caption-2 font-semibold rounded-full border border-amber-200 hover:border-amber-300 hover:shadow-sm transition-all"
+                          className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-linear-to-br from-amber-50 to-yellow-50 text-amber-700 text-caption-3 sm:text-caption-2 font-semibold rounded-full border border-amber-200 hover:border-amber-300 hover:shadow-sm transition-all"
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ duration: 0.2, delay: index * 0.05 }}

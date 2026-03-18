@@ -1,24 +1,18 @@
 'use client';
 
 import { Globe } from 'lucide-react';
-import { useLocale } from 'next-intl';
+import { useLocaleStore } from '@/shared/stores/localeStore';
 import { cn } from '@/shared/lib/utils/utils';
 
 export function LanguageToggle() {
-  const locale = useLocale();
-
-  const toggleLanguage = () => {
-    const newLocale = locale === 'ko' ? 'en' : 'ko';
-    document.cookie = `locale=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
-    window.location.reload();
-  };
+  const { locale, setLocale } = useLocaleStore();
 
   return (
     <button
-      onClick={toggleLanguage}
+      onClick={() => setLocale(locale === 'ko' ? 'en' : 'ko')}
       className={cn(
         'flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-slate-50',
-        'transition-colors cursor-pointer focus:outline-none text-[13px] font-semibold',
+        'transition-colors cursor-pointer focus:outline-none text-caption-1 font-semibold',
         'border border-slate-200 hover:border-blue-200'
       )}
       aria-label="Change language"

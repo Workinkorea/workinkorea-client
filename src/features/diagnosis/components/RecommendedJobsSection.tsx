@@ -8,12 +8,15 @@ import { postsApi } from '@/features/jobs/api/postsApi';
 import JobCard from '@/features/jobs/components/JobCard';
 import { cn } from '@/shared/lib/utils/utils';
 import type { DiagnosisData } from '@/features/diagnosis/store/diagnosisStore';
+import { useTranslations } from 'next-intl';
 
 interface RecommendedJobsSectionProps {
   diagnosisData?: Partial<DiagnosisData>;
 }
 
 export function RecommendedJobsSection({ diagnosisData }: RecommendedJobsSectionProps) {
+  const t = useTranslations('diagnosis.recommendedJobs');
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ['recommended-jobs', diagnosisData?.jobField, diagnosisData?.employmentType],
     queryFn: () => postsApi.getPublicCompanyPosts({ page: 1, limit: 8 }),
@@ -47,13 +50,13 @@ export function RecommendedJobsSection({ diagnosisData }: RecommendedJobsSection
           <div className="inline-flex items-center justify-center w-8 h-8 bg-blue-50 rounded-lg">
             <Briefcase className="text-blue-600" size={18} />
           </div>
-          <h2 className="text-[16px] sm:text-[17px] font-bold text-slate-900">추천 채용 공고</h2>
+          <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">{t('sectionTitle')}</h2>
         </div>
         <Link
           href="/jobs"
           className="text-caption-2 sm:text-caption-1 text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 transition-colors"
         >
-          전체 보기
+          {t('viewAll')}
           <ArrowRight size={14} />
         </Link>
       </div>
@@ -110,7 +113,7 @@ export function RecommendedJobsSection({ diagnosisData }: RecommendedJobsSection
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                이 공고들에 바로 지원하기
+                {t('applyNow')}
                 <ArrowRight size={16} />
               </motion.span>
             </Link>

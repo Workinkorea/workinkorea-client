@@ -11,6 +11,7 @@ import { authApi } from '@/features/auth/api/authApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { FetchError } from '@/shared/api/fetchClient';
 import { Building2, CheckCircle2, Users, FileText, Loader2, AlertCircle, WifiOff } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface BusinessLoginFormData {
   email: string;
@@ -43,18 +44,7 @@ interface LoginErrorInfo {
   message: string;
 }
 
-const STATUS_ERRORS: Record<number, LoginErrorInfo> = {
-  401: { type: 'credential', field: 'password', message: '비밀번호가 일치하지 않습니다. 다시 확인해주세요.' },
-  403: { type: 'permission', field: 'email',    message: '기업 계정이 비활성화되었거나 접근 권한이 없습니다.' },
-  404: { type: 'account',    field: 'email',    message: '등록되지 않은 기업 계정입니다. 이메일을 확인해주세요.' },
-  429: { type: 'rateLimit',  field: null,       message: '로그인 시도 횟수가 초과되었습니다. 잠시 후 다시 시도해주세요.' },
-};
-
-const FEATURES = [
-  { icon: FileText,  text: '채용 공고를 손쉽게 등록하고 관리하세요' },
-  { icon: Users,     text: '외국인 인재 지원자를 한눈에 확인하세요' },
-  { icon: CheckCircle2, text: '전문 HR 솔루션으로 채용 효율을 높이세요' },
-];
+const ICON_MAP = [FileText, Users, CheckCircle2];
 
 const stagger = {
   hidden: {},
@@ -69,6 +59,7 @@ const fadeUp = {
 export default function BusinessLoginForm() {
   const router = useRouter();
   const { login } = useAuth();
+  const t = useTranslations('auth.companyLogin');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState<LoginErrorInfo | null>(null);
@@ -90,9 +81,22 @@ export default function BusinessLoginForm() {
 
   const isValidEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 
+  const STATUS_ERRORS: Record<number, LoginErrorInfo> = {
+    401: { type: 'credential', field: 'password', message: t('errorCredential401') },
+    403: { type: 'permission', field: 'email',    message: t('errorPermission403') },
+    404: { type: 'account',    field: 'email',    message: t('errorAccount404') },
+    429: { type: 'rateLimit',  field: null,       message: t('errorRateLimit429') },
+  };
+
+  const FEATURES = [
+    { icon: ICON_MAP[0], text: t('feature1') },
+    { icon: ICON_MAP[1], text: t('feature2') },
+    { icon: ICON_MAP[2], text: t('feature3') },
+  ];
+
   const handleEmailBlur = (val: string) => {
     if (val && !isValidEmail(val)) {
-      setError('email', { type: 'manual', message: '올바른 이메일 형식을 입력해주세요.' });
+      setError('email', { type: 'manual', message: t('errorEmailFormat') });
     } else {
       clearErrors('email');
     }
@@ -113,8 +117,8 @@ export default function BusinessLoginForm() {
 
   const onSubmit = async (data: BusinessLoginFormData) => {
     if (!isFormValid) {
-      if (!email)    setError('email',    { type: 'manual', message: '이메일을 입력해주세요.' });
-      if (!password) setError('password', { type: 'manual', message: '비밀번호를 입력해주세요.' });
+      if (!email)    setError('email',    { type: 'manual', message: t('errorEmailEmpty') });
+      if (!password) setError('password', { type: 'manual', message: t('errorPasswordEmpty') });
       return;
     }
     if (isLoading) return;
@@ -148,7 +152,7 @@ export default function BusinessLoginForm() {
       let errorInfo: LoginErrorInfo = {
         type: 'server',
         field: null,
-        message: '로그인 중 오류가 발생했습니다.',
+        message: t('errorServer'),
       };
 
       if (error instanceof FetchError) {
@@ -166,23 +170,23 @@ export default function BusinessLoginForm() {
         } else if (status === 400) {
           const msg = serverError.toLowerCase();
           if (msg.includes('email')) {
-            errorInfo = { type: 'credential', field: 'email', message: '올바른 이메일 형식을 입력해주세요.' };
+            errorInfo = { type: 'credential', field: 'email', message: t('errorEmailFormat') };
           } else if (msg.includes('password')) {
-            errorInfo = { type: 'credential', field: 'password', message: '올바른 비밀번호를 입력해주세요.' };
+            errorInfo = { type: 'credential', field: 'password', message: t('errorPasswordFormat') };
           } else {
-            errorInfo = { type: 'credential', field: null, message: serverError || '아이디 또는 비밀번호를 확인해주세요.' };
+            errorInfo = { type: 'credential', field: null, message: serverError || t('errorCredential400') };
           }
         } else if (status >= 500) {
-          errorInfo = { type: 'server', field: null, message: '서버에 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' };
+          errorInfo = { type: 'server', field: null, message: t('errorServerInternal') };
         } else if (serverError) {
           errorInfo = { type: 'server', field: null, message: serverError };
         }
       } else if (error instanceof Error) {
         const msg = error.message.toLowerCase();
         if (msg.includes('network') || msg.includes('fetch')) {
-          errorInfo = { type: 'network', field: null, message: '네트워크 연결을 확인해주세요.' };
+          errorInfo = { type: 'network', field: null, message: t('errorNetwork') };
         } else if (msg.includes('timeout')) {
-          errorInfo = { type: 'network', field: null, message: '요청 시간이 초과되었습니다. 다시 시도해주세요.' };
+          errorInfo = { type: 'network', field: null, message: t('errorTimeout') };
         }
       }
 
@@ -227,15 +231,15 @@ export default function BusinessLoginForm() {
           className="space-y-4 mb-12"
         >
           <motion.p variants={fadeUp} className="text-blue-200 text-caption-1 font-semibold uppercase tracking-[1.5px]">
-            기업 채용 파트너
+            {t('partnerBadge')}
           </motion.p>
-          <motion.h2 variants={fadeUp} className="text-white text-[34px] font-extrabold leading-tight">
-            외국인 인재 채용,<br />
-            더 쉽고 빠르게
+          <motion.h2 variants={fadeUp} className="text-white text-title-1 font-extrabold leading-tight">
+            {t('heading').split('\n').map((line, i) => (
+              <span key={i}>{line}{i === 0 && <br />}</span>
+            ))}
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-blue-200 text-[15px] leading-relaxed">
-            WorkInKorea와 함께 우수한 외국인 인재를<br />
-            효율적으로 채용하세요.
+          <motion.p variants={fadeUp} className="text-blue-200 text-body-2 leading-relaxed">
+            {t('description')}
           </motion.p>
         </motion.div>
 
@@ -273,13 +277,13 @@ export default function BusinessLoginForm() {
             className="space-y-1 mb-8"
           >
             <motion.p variants={fadeUp} className="text-caption-2 font-bold text-blue-600 uppercase tracking-[1.5px]">
-              기업 전용
+              {t('overline')}
             </motion.p>
-            <motion.h1 variants={fadeUp} className="text-[26px] font-extrabold text-slate-900">
-              기업 로그인
+            <motion.h1 variants={fadeUp} className="text-title-2 font-extrabold text-slate-900">
+              {t('title')}
             </motion.h1>
             <motion.p variants={fadeUp} className="text-caption-1 text-slate-500">
-              등록된 기업 계정으로 로그인하세요
+              {t('subtitle')}
             </motion.p>
           </motion.div>
 
@@ -294,7 +298,7 @@ export default function BusinessLoginForm() {
               <FormField
                 name="email"
                 control={control}
-                label="이메일 (기업 ID)"
+                label={t('emailLabel')}
                 error={errors.email?.message}
                 render={(field, fieldId) => (
                   <Input
@@ -314,7 +318,7 @@ export default function BusinessLoginForm() {
               <FormField
                 name="password"
                 control={control}
-                label="비밀번호"
+                label={t('passwordLabel')}
                 error={errors.password?.message}
                 render={(field, fieldId) => (
                   <Input
@@ -350,7 +354,7 @@ export default function BusinessLoginForm() {
                       onBlur={field.onBlur}
                     />
                     <label htmlFor={fieldId} className="ml-2 block text-caption-1 text-slate-700 cursor-pointer">
-                      이메일 저장
+                      {t('rememberEmail')}
                     </label>
                   </div>
                 )}
@@ -369,7 +373,7 @@ export default function BusinessLoginForm() {
                 whileTap={isFormValid && !isLoading ? { scale: 0.98 } : {}}
               >
                 {isLoading && <Loader2 size={15} className="animate-spin" />}
-                {isLoading ? '로그인 중...' : '기업 로그인'}
+                {isLoading ? t('loggingIn') : t('loginButton')}
               </motion.button>
 
               {/* 로그인 에러 배너 */}
@@ -405,7 +409,7 @@ export default function BusinessLoginForm() {
                 className="w-full py-3 px-4 border border-slate-200 text-blue-600 rounded-lg font-semibold text-sm hover:bg-blue-50 transition-colors cursor-pointer"
                 whileTap={{ scale: 0.98 }}
               >
-                기업 회원가입
+                {t('signupButton')}
               </motion.button>
             </motion.div>
           </motion.form>
@@ -417,13 +421,13 @@ export default function BusinessLoginForm() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
           >
-            개인 회원이신가요?{' '}
+            {t('personalPrompt')}{' '}
             <button
               type="button"
               onClick={() => router.push('/login')}
               className="text-blue-600 font-semibold hover:underline cursor-pointer"
             >
-              개인 로그인
+              {t('personalLogin')}
             </button>
           </motion.p>
         </div>

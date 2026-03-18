@@ -6,6 +6,7 @@ import type { CompanyPost } from '@/shared/types/api';
 import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
 import { motion, useAnimation } from 'framer-motion';
 import { cn } from '@/shared/lib/utils/utils';
+import { useTranslations } from 'next-intl';
 
 interface JobCardProps {
   post: CompanyPost;
@@ -20,6 +21,8 @@ function getDaysLeft(endDate: string): number | null {
 export default function JobCard({ post }: JobCardProps) {
   const { toggle, isBookmarked } = useBookmarks();
   const bookmarkControls = useAnimation();
+  const tCard = useTranslations('jobs.card');
+  const tCommon = useTranslations('common');
 
   const isRecent = new Date(post.start_date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const daysLeft = getDaysLeft(post.end_date);
@@ -61,7 +64,7 @@ export default function JobCard({ post }: JobCardProps) {
 
             {/* Type Label + Badges */}
             <div className="flex-1 min-w-0">
-              <p className="text-caption-2 font-semibold text-slate-400 mb-1">기업 채용공고</p>
+              <p className="text-caption-2 font-semibold text-slate-400 mb-1">{tCard('companyPost')}</p>
               <div className="flex items-center gap-1.5 flex-wrap">
                 {isRecent && !isExpired && (
                   <span className="inline-flex items-center px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-md tracking-wide">
@@ -79,7 +82,7 @@ export default function JobCard({ post }: JobCardProps) {
                 )}
                 {isExpired && (
                   <span className="inline-flex items-center px-2 py-0.5 bg-slate-200 text-slate-500 text-[10px] font-bold rounded-md">
-                    마감
+                    {tCommon('status.expired')}
                   </span>
                 )}
               </div>
@@ -91,7 +94,7 @@ export default function JobCard({ post }: JobCardProps) {
               className="shrink-0 p-1.5 rounded-lg cursor-pointer focus:outline-none hover:bg-blue-50 transition-colors"
               whileTap={{ scale: 0.85 }}
               transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-              aria-label={bookmarked ? '북마크 해제' : '북마크 추가'}
+              aria-label={bookmarked ? tCard('bookmarkRemove') : tCard('bookmarkAdd')}
             >
               <motion.div animate={bookmarkControls}>
                 <Bookmark
@@ -106,14 +109,14 @@ export default function JobCard({ post }: JobCardProps) {
           </div>
 
           {/* Job Title */}
-          <h3 className="text-[16px] sm:text-[17px] font-bold text-slate-900 line-clamp-2 group-hover:text-blue-700 transition-colors mb-3 leading-snug">
+          <h3 className="text-body-1 sm:text-title-5 font-bold text-slate-900 line-clamp-2 group-hover:text-blue-700 transition-colors mb-3 leading-snug">
             {post.title}
           </h3>
 
           {/* Location & Employment Type */}
           <div className="flex items-center gap-1.5 text-caption-2 sm:text-caption-1 text-slate-500 mb-2">
             <MapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />
-            <span className="truncate">{post.work_location || '미정'}</span>
+            <span className="truncate">{post.work_location || tCommon('label.location')}</span>
             {post.employment_type && (
               <>
                 <span className="text-slate-300">•</span>
@@ -124,8 +127,8 @@ export default function JobCard({ post }: JobCardProps) {
           </div>
 
           {/* Salary */}
-          <p className="text-[15px] sm:text-[16px] font-extrabold text-blue-600 mb-4">
-            {post.salary ? `${post.salary.toLocaleString()}원` : '급여 협의'}
+          <p className="text-body-2 sm:text-body-1 font-extrabold text-blue-600 mb-4">
+            {post.salary ? `${post.salary.toLocaleString()}원` : tCommon('label.negotiable')}
           </p>
 
           {/* Bottom: Language Tags */}
@@ -135,19 +138,19 @@ export default function JobCard({ post }: JobCardProps) {
                 {language.slice(0, 3).map((lang, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200 transition-colors"
+                    className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200 transition-colors"
                   >
                     {lang}
                   </span>
                 ))}
                 {language.length > 3 && (
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold text-slate-400">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold text-slate-400">
                     +{language.length - 3}
                   </span>
                 )}
               </div>
             ) : (
-              <p className="text-caption-2 text-slate-400">기술스택 정보 없음</p>
+              <p className="text-caption-2 text-slate-400">{tCommon('label.noData')}</p>
             )}
           </div>
         </div>

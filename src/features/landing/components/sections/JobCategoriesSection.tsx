@@ -1,31 +1,36 @@
+'use client';
+
 import Link from 'next/link';
 import { Monitor, Megaphone, Palette, TrendingUp, Building, GraduationCap, ChefHat, Rocket } from 'lucide-react';
-
-const jobCategories = [
-  { id: 'it',        title: 'IT',      icon: Monitor,       bgColor: 'bg-blue-50',   iconColor: 'text-blue-600' },
-  { id: 'marketing', title: '마케팅',   icon: Megaphone,     bgColor: 'bg-blue-50',   iconColor: 'text-blue-600' },
-  { id: 'design',    title: '디자인',   icon: Palette,       bgColor: 'bg-purple-50', iconColor: 'text-purple-600' },
-  { id: 'sales',     title: '영업/사업', icon: TrendingUp,    bgColor: 'bg-orange-50', iconColor: 'text-orange-600' },
-  { id: 'finance',   title: '금융',     icon: Building,      bgColor: 'bg-yellow-50', iconColor: 'text-yellow-600' },
-  { id: 'education', title: '교육',     icon: GraduationCap, bgColor: 'bg-indigo-50', iconColor: 'text-indigo-600' },
-  { id: 'food',      title: '요리',     icon: ChefHat,       bgColor: 'bg-red-50',    iconColor: 'text-red-600' },
-  { id: 'startup',   title: '스타트업', icon: Rocket,        bgColor: 'bg-teal-50',   iconColor: 'text-teal-600' },
-];
+import { useTranslations } from 'next-intl';
 
 export default function JobCategoriesSection() {
+  const t = useTranslations('landing.categories');
+
+  const jobCategories = [
+    { id: 'it',        title: t('it'),        icon: Monitor,       bgColor: 'bg-blue-50',   iconColor: 'text-blue-600' },
+    { id: 'marketing', title: t('marketing'), icon: Megaphone,     bgColor: 'bg-blue-50',   iconColor: 'text-blue-600' },
+    { id: 'design',    title: t('design'),    icon: Palette,       bgColor: 'bg-purple-50', iconColor: 'text-purple-600' },
+    { id: 'sales',     title: t('sales'),     icon: TrendingUp,    bgColor: 'bg-orange-50', iconColor: 'text-orange-600' },
+    { id: 'finance',   title: t('finance'),   icon: Building,      bgColor: 'bg-yellow-50', iconColor: 'text-yellow-600' },
+    { id: 'education', title: t('education'), icon: GraduationCap, bgColor: 'bg-indigo-50', iconColor: 'text-indigo-600' },
+    { id: 'food',      title: t('food'),      icon: ChefHat,       bgColor: 'bg-red-50',    iconColor: 'text-red-600' },
+    { id: 'startup',   title: t('startup'),   icon: Rocket,        bgColor: 'bg-teal-50',   iconColor: 'text-teal-600' },
+  ];
+
   return (
     <section id="job-categories" className="py-12 sm:py-16 lg:py-20 bg-white border-t border-slate-100">
       <div className="page-container">
         {/* 섹션 헤더 */}
         <div className="text-center mb-8 sm:mb-12">
           <span className="inline-block bg-blue-50 text-blue-600 text-caption-2 font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
-            직종 카테고리
+            {t('overline')}
           </span>
           <h2 className="text-title-3 sm:text-title-1 font-extrabold text-slate-900 mb-3">
-            직종별 채용정보
+            {t('title')}
           </h2>
-          <p className="text-caption-1 sm:text-[15px] text-slate-500">
-            원하는 분야의 채용공고를 바로 찾아보세요
+          <p className="text-caption-1 sm:text-body-2 text-slate-500">
+            {t('subtitle')}
           </p>
         </div>
 
