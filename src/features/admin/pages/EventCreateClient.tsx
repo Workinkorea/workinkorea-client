@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { Container } from '@/shared/components/layout/Container';
 import { cn } from '@/shared/lib/utils/utils';
 import { adminApi } from '@/features/admin/api/adminApi';
@@ -21,18 +22,6 @@ interface EventFormData {
   content: string;
   banner_url: string;
 }
-
-const EVENT_TYPE_OPTIONS: { value: EventType; label: string }[] = [
-  { value: 'notice', label: '공지사항' },
-  { value: 'event', label: '이벤트' },
-  { value: 'promotion', label: '프로모션' },
-];
-
-const EVENT_TARGET_OPTIONS: { value: EventTarget; label: string }[] = [
-  { value: 'all', label: '전체' },
-  { value: 'user', label: '일반 회원' },
-  { value: 'company', label: '기업 회원' },
-];
 
 const INITIAL_FORM: EventFormData = {
   title: '',
@@ -66,6 +55,7 @@ function FormSection({ title, children }: { title: string; children: React.React
 }
 
 export function EventCreateClient() {
+  const t = useTranslations('admin.events.create');
   const router = useRouter();
   const [form, setForm] = useState<EventFormData>(INITIAL_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,19 +67,19 @@ export function EventCreateClient() {
     e.preventDefault();
 
     if (!form.title.trim()) {
-      toast.error('이벤트 제목을 입력해주세요.');
+      toast.error(t('validationTitle'));
       return;
     }
     if (!form.start_date || !form.end_date) {
-      toast.error('시작일과 종료일을 모두 입력해주세요.');
+      toast.error(t('validationDates'));
       return;
     }
     if (form.start_date > form.end_date) {
-      toast.error('종료일은 시작일 이후여야 합니다.');
+      toast.error(t('validationDateOrder'));
       return;
     }
     if (!form.content.trim()) {
-      toast.error('이벤트 내용을 입력해주세요.');
+      toast.error(t('validationContent'));
       return;
     }
 
@@ -105,10 +95,10 @@ export function EventCreateClient() {
         content: form.content,
         banner_url: form.banner_url || undefined,
       });
-      toast.success('이벤트가 생성되었습니다.');
+      toast.success(t('createSuccess'));
       router.push('/admin/events');
     } catch {
-      toast.error('이벤트 생성에 실패했습니다.');
+      toast.error(t('createError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -122,28 +112,28 @@ export function EventCreateClient() {
           <p className="text-caption-2 font-semibold text-blue-600 uppercase tracking-widest mb-1">
             Admin
           </p>
-          <h2 className="text-title-3 font-extrabold text-label-900">이벤트 생성</h2>
+          <h2 className="text-title-3 font-extrabold text-label-900">{t('pageTitle')}</h2>
         </div>
         <button
           type="button"
           onClick={() => router.back()}
           className="text-caption-1 text-label-500 hover:text-label-900 transition-colors cursor-pointer"
         >
-          ← 목록으로
+          {t('backToList')}
         </button>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* 기본 정보 */}
-        <FormSection title="기본 정보">
+        <FormSection title={t('sectionBasic')}>
           {/* 제목 */}
           <div>
-            <FormLabel required>이벤트 제목</FormLabel>
+            <FormLabel required>{t('fieldEventTitle')}</FormLabel>
             <input
               type="text"
               value={form.title}
               onChange={(e) => set('title', e.target.value)}
-              placeholder="이벤트 제목을 입력하세요"
+              placeholder={t('fieldEventTitlePlaceholder')}
               className={cn(
                 'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
                 'text-sm text-label-800 placeholder:text-label-400 bg-background-default',
@@ -156,7 +146,7 @@ export function EventCreateClient() {
           {/* 유형 + 대상 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <FormLabel required>이벤트 유형</FormLabel>
+              <FormLabel required>{t('fieldEventType')}</FormLabel>
               <select
                 value={form.type}
                 onChange={(e) => set('type', e.target.value as EventType)}
@@ -167,16 +157,14 @@ export function EventCreateClient() {
                   'transition-colors cursor-pointer',
                 )}
               >
-                {EVENT_TYPE_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
+                <option value="notice">{t('typeNotice')}</option>
+                <option value="event">{t('typeEvent')}</option>
+                <option value="promotion">{t('typePromotion')}</option>
               </select>
             </div>
 
             <div>
-              <FormLabel required>노출 대상</FormLabel>
+              <FormLabel required>{t('fieldTarget')}</FormLabel>
               <select
                 value={form.target}
                 onChange={(e) => set('target', e.target.value as EventTarget)}
@@ -187,11 +175,9 @@ export function EventCreateClient() {
                   'transition-colors cursor-pointer',
                 )}
               >
-                {EVENT_TARGET_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
+                <option value="all">{t('targetAll')}</option>
+                <option value="user">{t('targetUser')}</option>
+                <option value="company">{t('targetCompany')}</option>
               </select>
             </div>
           </div>
@@ -199,7 +185,7 @@ export function EventCreateClient() {
           {/* 시작일 + 종료일 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <FormLabel required>시작일</FormLabel>
+              <FormLabel required>{t('fieldStartDate')}</FormLabel>
               <input
                 type="date"
                 value={form.start_date}
@@ -213,7 +199,7 @@ export function EventCreateClient() {
               />
             </div>
             <div>
-              <FormLabel required>종료일</FormLabel>
+              <FormLabel required>{t('fieldEndDate')}</FormLabel>
               <input
                 type="date"
                 value={form.end_date}
@@ -231,14 +217,14 @@ export function EventCreateClient() {
         </FormSection>
 
         {/* 컨텐츠 */}
-        <FormSection title="이벤트 내용">
+        <FormSection title={t('sectionContent')}>
           <div>
-            <FormLabel required>본문</FormLabel>
+            <FormLabel required>{t('fieldContent')}</FormLabel>
             <textarea
               value={form.content}
               onChange={(e) => set('content', e.target.value)}
               rows={8}
-              placeholder="이벤트 내용을 입력하세요"
+              placeholder={t('fieldContentPlaceholder')}
               className={cn(
                 'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
                 'text-sm text-label-800 placeholder:text-label-400 bg-background-default',
@@ -249,7 +235,7 @@ export function EventCreateClient() {
           </div>
 
           <div>
-            <FormLabel>배너 이미지 URL</FormLabel>
+            <FormLabel>{t('fieldBannerUrl')}</FormLabel>
             <input
               type="url"
               value={form.banner_url}
@@ -262,25 +248,22 @@ export function EventCreateClient() {
                 'transition-colors',
               )}
             />
-            <p className="text-xs text-label-400 mt-1">선택 사항입니다. 비워두면 배너 없이 표시됩니다.</p>
+            <p className="text-xs text-label-400 mt-1">{t('fieldBannerUrlHint')}</p>
           </div>
         </FormSection>
 
         {/* 게시 설정 */}
-        <FormSection title="게시 설정">
+        <FormSection title={t('sectionPublish')}>
           <div>
-            <FormLabel required>게시 상태</FormLabel>
+            <FormLabel required>{t('fieldPublishStatus')}</FormLabel>
             <div className="flex gap-3">
-              {([
-                { value: 'active', label: '활성 (즉시 게시)' },
-                { value: 'inactive', label: '비활성 (임시 저장)' },
-              ] as const).map((opt) => (
+              {(['active', 'inactive'] as const).map((val) => (
                 <label
-                  key={opt.value}
+                  key={val}
                   className={cn(
                     'flex items-center gap-2.5 px-4 py-2.5 rounded-lg border-2 cursor-pointer',
                     'text-sm font-medium transition-colors',
-                    form.status === opt.value
+                    form.status === val
                       ? 'border-blue-500 bg-blue-50 text-blue-700'
                       : 'border-line-400 bg-background-default text-label-600 hover:border-blue-200',
                   )}
@@ -288,22 +271,22 @@ export function EventCreateClient() {
                   <input
                     type="radio"
                     name="status"
-                    value={opt.value}
-                    checked={form.status === opt.value}
-                    onChange={() => set('status', opt.value)}
+                    value={val}
+                    checked={form.status === val}
+                    onChange={() => set('status', val)}
                     className="sr-only"
                   />
                   <span
                     className={cn(
                       'w-4 h-4 rounded-full border-2 flex items-center justify-center',
-                      form.status === opt.value ? 'border-blue-500' : 'border-line-300',
+                      form.status === val ? 'border-blue-500' : 'border-line-300',
                     )}
                   >
-                    {form.status === opt.value && (
+                    {form.status === val && (
                       <span className="w-2 h-2 rounded-full bg-blue-500" />
                     )}
                   </span>
-                  {opt.label}
+                  {val === 'active' ? t('statusActive') : t('statusInactive')}
                 </label>
               ))}
             </div>
@@ -322,7 +305,7 @@ export function EventCreateClient() {
               'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
             )}
           >
-            취소
+            {t('cancel')}
           </button>
           <button
             type="submit"
@@ -334,7 +317,7 @@ export function EventCreateClient() {
               'disabled:opacity-50 disabled:cursor-not-allowed',
             )}
           >
-            {isSubmitting ? '생성 중...' : '이벤트 생성'}
+            {isSubmitting ? t('submitting') : t('submit')}
           </button>
         </div>
       </form>

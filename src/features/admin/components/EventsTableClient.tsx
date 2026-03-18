@@ -4,37 +4,42 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/utils/utils';
 import { adminApi } from '@/features/admin/api/adminApi';
 import type { AdminEvent, UpdateAdminEventRequest } from '@/shared/types/api';
 
 const LIMIT = 10;
 
-const EVENT_TYPE_LABEL = { notice: '공지사항', event: '이벤트', promotion: '프로모션' } as const;
-const EVENT_TARGET_LABEL = { all: '전체', user: '일반 회원', company: '기업 회원' } as const;
-
 // ── 뱃지 ────────────────────────────────────────────────────────────────────
 function TypeBadge({ type }: { type: AdminEvent['type'] }) {
+  const t = useTranslations('admin.events');
   const styles = {
     notice: 'bg-blue-100 text-blue-700',
     event: 'bg-amber-50 text-amber-600',
     promotion: 'bg-emerald-50 text-emerald-600',
   };
+  const labels = {
+    notice: t('typeBadgeNotice'),
+    event: t('typeBadgeEvent'),
+    promotion: t('typeBadgePromotion'),
+  };
   return (
     <span className={cn('inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold', styles[type])}>
-      {EVENT_TYPE_LABEL[type]}
+      {labels[type]}
     </span>
   );
 }
 
 function StatusBadge({ status }: { status: AdminEvent['status'] }) {
+  const t = useTranslations('admin.events');
   return status === 'active' ? (
     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-emerald-50 text-emerald-600">
-      활성
+      {t('statusActive')}
     </span>
   ) : (
     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-slate-100 text-slate-500">
-      비활성
+      {t('statusInactive')}
     </span>
   );
 }
@@ -48,6 +53,7 @@ interface EditModalProps {
 }
 
 function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
+  const t = useTranslations('admin.events');
   const [form, setForm] = useState<UpdateAdminEventRequest>({
     title: event.title,
     type: event.type,
@@ -71,11 +77,11 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h3 className="text-body-1 font-bold text-slate-900">이벤트 수정</h3>
+          <h3 className="text-body-1 font-bold text-slate-900">{t('editModal.title')}</h3>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors focus:outline-none cursor-pointer"
-            aria-label="닫기"
+            aria-label={t('editModal.close')}
           >
             ✕
           </button>
@@ -85,7 +91,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
           {/* 제목 */}
           <div>
             <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">
-              제목 <span className="text-red-500">*</span>
+              {t('editModal.fieldTitle')} <span className="text-red-500">{t('editModal.fieldTitleRequired')}</span>
             </label>
             <input
               type="text"
@@ -98,27 +104,27 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
           {/* 유형 + 대상 */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">유형</label>
+              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">{t('editModal.fieldType')}</label>
               <select
                 value={form.type}
                 onChange={(e) => set('type', e.target.value as AdminEvent['type'])}
                 className={cn(inputCls, 'cursor-pointer')}
               >
-                <option value="notice">공지사항</option>
-                <option value="event">이벤트</option>
-                <option value="promotion">프로모션</option>
+                <option value="notice">{t('typeBadgeNotice')}</option>
+                <option value="event">{t('typeBadgeEvent')}</option>
+                <option value="promotion">{t('typeBadgePromotion')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">대상</label>
+              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">{t('editModal.fieldTarget')}</label>
               <select
                 value={form.target}
                 onChange={(e) => set('target', e.target.value as AdminEvent['target'])}
                 className={cn(inputCls, 'cursor-pointer')}
               >
-                <option value="all">전체</option>
-                <option value="user">일반 회원</option>
-                <option value="company">기업 회원</option>
+                <option value="all">{t('targetAll')}</option>
+                <option value="user">{t('targetUser')}</option>
+                <option value="company">{t('targetCompany')}</option>
               </select>
             </div>
           </div>
@@ -126,7 +132,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
           {/* 날짜 */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">시작일</label>
+              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">{t('editModal.fieldStartDate')}</label>
               <input
                 type="date"
                 value={form.start_date}
@@ -135,7 +141,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
               />
             </div>
             <div>
-              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">종료일</label>
+              <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">{t('editModal.fieldEndDate')}</label>
               <input
                 type="date"
                 value={form.end_date}
@@ -148,7 +154,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
 
           {/* 게시 상태 */}
           <div>
-            <label className="block text-caption-1 font-semibold text-slate-700 mb-2">게시 상태</label>
+            <label className="block text-caption-1 font-semibold text-slate-700 mb-2">{t('editModal.fieldStatus')}</label>
             <div className="flex gap-3">
               {(['active', 'inactive'] as const).map((s) => (
                 <label
@@ -176,7 +182,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
                   >
                     {form.status === s && <span className="w-2 h-2 rounded-full bg-blue-500" />}
                   </span>
-                  {s === 'active' ? '활성' : '비활성'}
+                  {s === 'active' ? t('editModal.statusActive') : t('editModal.statusInactive')}
                 </label>
               ))}
             </div>
@@ -184,7 +190,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
 
           {/* 본문 */}
           <div>
-            <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">본문</label>
+            <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">{t('editModal.fieldContent')}</label>
             <textarea
               value={form.content}
               onChange={(e) => set('content', e.target.value)}
@@ -195,7 +201,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
 
           {/* 배너 URL */}
           <div>
-            <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">배너 이미지 URL</label>
+            <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">{t('editModal.fieldBannerUrl')}</label>
             <input
               type="url"
               value={form.banner_url ?? ''}
@@ -215,7 +221,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
               'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
             )}
           >
-            취소
+            {t('editModal.cancel')}
           </button>
           <button
             onClick={() => onSave(form)}
@@ -227,7 +233,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
               'disabled:opacity-50 disabled:cursor-not-allowed',
             )}
           >
-            {isSaving ? '저장 중...' : '저장'}
+            {isSaving ? t('editModal.saving') : t('editModal.save')}
           </button>
         </div>
       </div>
@@ -241,6 +247,7 @@ interface EventsTableClientProps {
 }
 
 export function EventsTableClient({ initialData }: EventsTableClientProps) {
+  const t = useTranslations('admin.events');
   const [page, setPage] = useState(0);
   const [selectedEvent, setSelectedEvent] = useState<AdminEvent | null>(null);
   const queryClient = useQueryClient();
@@ -257,23 +264,23 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
       adminApi.updateEvent(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'events'] });
-      toast.success('이벤트가 수정되었습니다.');
+      toast.success(t('editModal.updateSuccess'));
       setSelectedEvent(null);
     },
-    onError: () => toast.error('이벤트 수정에 실패했습니다.'),
+    onError: () => toast.error(t('editModal.updateError')),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => adminApi.deleteEvent(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'events'] });
-      toast.success('이벤트가 삭제되었습니다.');
+      toast.success(t('editModal.deleteSuccess'));
     },
-    onError: () => toast.error('이벤트 삭제에 실패했습니다.'),
+    onError: () => toast.error(t('editModal.deleteError')),
   });
 
   const handleDelete = (event: AdminEvent) => {
-    if (!window.confirm(`"${event.title}" 이벤트를 삭제하시겠습니까?`)) return;
+    if (!window.confirm(t('editModal.deleteConfirm', { title: event.title }))) return;
     deleteMutation.mutate(event.id);
   };
 
@@ -288,7 +295,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <p className="text-caption-2 font-semibold text-blue-600 uppercase tracking-widest mb-1">Admin</p>
-          <h2 className="text-title-3 font-extrabold text-slate-900">이벤트 관리</h2>
+          <h2 className="text-title-3 font-extrabold text-slate-900">{t('pageTitle')}</h2>
         </div>
         <Link
           href="/admin/events/create"
@@ -298,7 +305,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
             'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
           )}
         >
-          + 이벤트 생성
+          {t('createButton')}
         </Link>
       </div>
 
@@ -308,25 +315,25 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
               <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-12">
-                ID
+                {t('tableIdCol')}
               </th>
               <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider">
-                제목
+                {t('tableTitleCol')}
               </th>
               <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-24">
-                유형
+                {t('tableTypeCol')}
               </th>
               <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-24">
-                대상
+                {t('tableTargetCol')}
               </th>
               <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-20">
-                상태
+                {t('tableStatusCol')}
               </th>
               <th className="px-4 py-3 text-left text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-48">
-                기간
+                {t('tablePeriodCol')}
               </th>
               <th className="px-4 py-3 text-right text-caption-2 font-semibold text-slate-500 uppercase tracking-wider w-28">
-                관리
+                {t('tableActionCol')}
               </th>
             </tr>
           </thead>
@@ -342,9 +349,9 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
             ) : events.length === 0 ? (
               <tr>
                 <td colSpan={7} className="px-4 py-12 text-center text-slate-400 text-sm">
-                  등록된 이벤트가 없습니다.{' '}
+                  {t('noEvents')}{' '}
                   <Link href="/admin/events/create" className="text-blue-600 hover:underline font-semibold">
-                    이벤트를 생성해 주세요.
+                    {t('noEventsCreate')}
                   </Link>
                 </td>
               </tr>
@@ -355,14 +362,14 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
                   <td className="px-4 py-3.5">
                     <p className="font-semibold text-slate-800 line-clamp-1">{ev.title}</p>
                     {ev.banner_url && (
-                      <p className="text-caption-3 text-slate-400 mt-0.5 truncate max-w-xs">배너 첨부됨</p>
+                      <p className="text-caption-3 text-slate-400 mt-0.5 truncate max-w-xs">{t('bannerAttached')}</p>
                     )}
                   </td>
                   <td className="px-4 py-3.5">
                     <TypeBadge type={ev.type} />
                   </td>
                   <td className="px-4 py-3.5 text-slate-600 text-caption-1">
-                    {EVENT_TARGET_LABEL[ev.target]}
+                    {ev.target === 'all' ? t('targetAll') : ev.target === 'user' ? t('targetUser') : t('targetCompany')}
                   </td>
                   <td className="px-4 py-3.5">
                     <StatusBadge status={ev.status} />
@@ -380,7 +387,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
                           'focus:outline-none',
                         )}
                       >
-                        수정
+                        {t('editButton')}
                       </button>
                       <button
                         onClick={() => handleDelete(ev)}
@@ -391,7 +398,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
                           'focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
                         )}
                       >
-                        삭제
+                        {t('deleteButton')}
                       </button>
                     </div>
                   </td>
@@ -405,7 +412,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
       {/* 페이지네이션 */}
       <div className="flex items-center justify-between mt-4">
         <p className="text-sm text-slate-500">
-          {page * LIMIT + 1}~{page * LIMIT + events.length}번째 이벤트
+          {t('paginationInfo', { start: page * LIMIT + 1, end: page * LIMIT + events.length })}
         </p>
         <div className="flex gap-2">
           <button
@@ -417,7 +424,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
               'disabled:opacity-40 disabled:cursor-not-allowed',
             )}
           >
-            이전
+            {t('prevPage')}
           </button>
           <button
             onClick={() => setPage((p) => p + 1)}
@@ -428,7 +435,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
               'disabled:opacity-40 disabled:cursor-not-allowed',
             )}
           >
-            다음
+            {t('nextPage')}
           </button>
         </div>
       </div>
