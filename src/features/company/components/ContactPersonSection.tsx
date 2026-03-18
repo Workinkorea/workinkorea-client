@@ -1,4 +1,7 @@
+'use client';
+
 import { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 import { CompanyProfileRequest } from '@/shared/types/api';
 import { Input } from '@/shared/ui/Input';
 
@@ -33,17 +36,19 @@ const FieldHint = ({
   touched,
   hasValue,
   hint,
+  inputComplete,
 }: {
   error?: string;
   touched?: boolean;
   hasValue?: boolean;
   hint?: string;
+  inputComplete: string;
 }) => {
   if (error) return <p className="mt-1.5 text-caption-3 text-red-500">{error}</p>;
   if (touched && hasValue)
     return (
       <p className="mt-1.5 text-caption-3 text-emerald-500 flex items-center gap-1">
-        <span>✓</span> 입력 완료
+        <span>✓</span> {inputComplete}
       </p>
     );
   if (hint) return <p className="mt-1.5 text-caption-3 text-slate-400">{hint}</p>;
@@ -57,10 +62,12 @@ export const ContactPersonSection = ({
   onChange,
   onBlur,
 }: ContactPersonSectionProps) => {
+  const t = useTranslations('company.profile.edit');
+
   return (
     <div>
       {/* 이메일 */}
-      <FieldRow label="이메일" required>
+      <FieldRow label={t('fields.email')} required>
         <Input
           type="email"
           id="email"
@@ -68,7 +75,7 @@ export const ContactPersonSection = ({
           value={formData.email}
           onChange={onChange}
           onBlur={onBlur}
-          placeholder="hr@example.com"
+          placeholder={t('fields.emailPlaceholder')}
           error={!!errors.email}
           success={!errors.email && touchedFields.email && !!formData.email}
         />
@@ -76,19 +83,20 @@ export const ContactPersonSection = ({
           error={errors.email}
           touched={touchedFields.email}
           hasValue={!!formData.email}
-          hint="채용 담당자 이메일을 입력해주세요."
+          hint={t('fields.emailHint')}
+          inputComplete={t('inputComplete')}
         />
       </FieldRow>
 
       {/* 휴대전화 */}
-      <FieldRow label="휴대전화" required>
+      <FieldRow label={t('fields.phone')} required>
         <Input
           id="phone_number"
           name="phone_number"
           value={formData.phone_number || ''}
           onChange={onChange}
           onBlur={onBlur}
-          placeholder="010-1234-5678"
+          placeholder={t('fields.phonePlaceholder')}
           error={!!errors.phone_number}
           success={
             !errors.phone_number && touchedFields.phone_number && !!formData.phone_number
@@ -98,7 +106,8 @@ export const ContactPersonSection = ({
           error={errors.phone_number}
           touched={touchedFields.phone_number}
           hasValue={!!formData.phone_number}
-          hint="010, 011, 016~019로 시작하는 번호를 입력하세요."
+          hint={t('fields.phoneHint')}
+          inputComplete={t('inputComplete')}
         />
       </FieldRow>
 

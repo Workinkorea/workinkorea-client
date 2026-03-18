@@ -1,4 +1,7 @@
+'use client';
+
 import { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 import { CompanyProfileRequest } from '@/shared/types/api';
 import { Input } from '@/shared/ui/Input';
 import { cn } from '@/shared/lib/utils/utils';
@@ -17,11 +20,13 @@ const FieldRow = ({
   label,
   required,
   optional,
+  optionalLabel = 'Optional',
   children,
 }: {
   label: string;
   required?: boolean;
   optional?: boolean;
+  optionalLabel?: string;
   children: ReactNode;
 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0 items-start">
@@ -30,7 +35,7 @@ const FieldRow = ({
       {required && <span className="text-red-500">*</span>}
       {optional && (
         <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">
-          선택
+          {optionalLabel}
         </span>
       )}
     </span>
@@ -53,17 +58,19 @@ const FieldHint = ({
   touched,
   hasValue,
   hint,
+  inputComplete,
 }: {
   error?: string;
   touched?: boolean;
   hasValue?: boolean;
   hint?: string;
+  inputComplete: string;
 }) => {
   if (error) return <p className="mt-1.5 text-caption-3 text-red-500">{error}</p>;
   if (touched && hasValue)
     return (
       <p className="mt-1.5 text-caption-3 text-emerald-500 flex items-center gap-1">
-        <span>✓</span> 입력 완료
+        <span>✓</span> {inputComplete}
       </p>
     );
   if (hint) return <p className="mt-1.5 text-caption-3 text-slate-400">{hint}</p>;
@@ -78,17 +85,19 @@ export const CompanyInfoSection = ({
   onBlur,
   today,
 }: CompanyInfoSectionProps) => {
+  const t = useTranslations('company.profile.edit');
+
   return (
     <div>
       {/* 업종 */}
-      <FieldRow label="업종" required>
+      <FieldRow label={t('fields.industryType')} required>
         <Input
           id="industry_type"
           name="industry_type"
           value={formData.industry_type}
           onChange={onChange}
           onBlur={onBlur}
-          placeholder="예: IT/소프트웨어, 제조, 유통 등"
+          placeholder={t('fields.industryTypePlaceholder')}
           error={!!errors.industry_type}
           success={!errors.industry_type && touchedFields.industry_type && !!formData.industry_type}
         />
@@ -96,11 +105,12 @@ export const CompanyInfoSection = ({
           error={errors.industry_type}
           touched={touchedFields.industry_type}
           hasValue={!!formData.industry_type}
+          inputComplete={t('inputComplete')}
         />
       </FieldRow>
 
       {/* 기업 형태 */}
-      <FieldRow label="기업 형태" required>
+      <FieldRow label={t('fields.companyType')} required>
         <select
           id="company_type"
           name="company_type"
@@ -113,21 +123,22 @@ export const CompanyInfoSection = ({
             !!formData.company_type,
           )}
         >
-          <option value="">선택하세요</option>
-          <option value="주식회사">주식회사</option>
-          <option value="유한회사">유한회사</option>
-          <option value="개인사업자">개인사업자</option>
-          <option value="외국계기업">외국계기업</option>
+          <option value="">{t('selectPlaceholder')}</option>
+          <option value="주식회사">{t('fields.companyTypes.corporation')}</option>
+          <option value="유한회사">{t('fields.companyTypes.limited')}</option>
+          <option value="개인사업자">{t('fields.companyTypes.individual')}</option>
+          <option value="외국계기업">{t('fields.companyTypes.foreign')}</option>
         </select>
         <FieldHint
           error={errors.company_type}
           touched={touchedFields.company_type}
           hasValue={!!formData.company_type}
+          inputComplete={t('inputComplete')}
         />
       </FieldRow>
 
       {/* 직원 수 & 설립일 */}
-      <FieldRow label="직원 수 / 설립일" required>
+      <FieldRow label={t('fields.employeeAndDate')} required>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <select
@@ -142,18 +153,19 @@ export const CompanyInfoSection = ({
                 formData.employee_count > 0,
               )}
             >
-              <option value="">직원 수</option>
-              <option value="10">1~10명</option>
-              <option value="50">11~50명</option>
-              <option value="100">51~100명</option>
-              <option value="200">101~200명</option>
-              <option value="500">201~500명</option>
-              <option value="1000">500명 이상</option>
+              <option value="">{t('fields.employeeCounts.select')}</option>
+              <option value="10">{t('fields.employeeCounts.under10')}</option>
+              <option value="50">{t('fields.employeeCounts.under50')}</option>
+              <option value="100">{t('fields.employeeCounts.under100')}</option>
+              <option value="200">{t('fields.employeeCounts.under200')}</option>
+              <option value="500">{t('fields.employeeCounts.under500')}</option>
+              <option value="1000">{t('fields.employeeCounts.over500')}</option>
             </select>
             <FieldHint
               error={errors.employee_count}
               touched={touchedFields.employee_count}
               hasValue={formData.employee_count > 0}
+              inputComplete={t('inputComplete')}
             />
           </div>
           <div>
@@ -176,35 +188,36 @@ export const CompanyInfoSection = ({
               error={errors.establishment_date}
               touched={touchedFields.establishment_date}
               hasValue={!!formData.establishment_date}
+              inputComplete={t('inputComplete')}
             />
           </div>
         </div>
       </FieldRow>
 
       {/* 보험 */}
-      <FieldRow label="보험" optional>
+      <FieldRow label={t('fields.insurance')} optional optionalLabel={t('optionalLabel')}>
         <Input
           id="insurance"
           name="insurance"
           value={formData.insurance}
           onChange={onChange}
-          placeholder="예: 4대보험 완비, 산재보험 등"
+          placeholder={t('fields.insurancePlaceholder')}
           success={!!formData.insurance}
         />
         {!formData.insurance && (
-          <p className="mt-1.5 text-caption-3 text-slate-400">제공하는 보험 정보를 입력해주세요.</p>
+          <p className="mt-1.5 text-caption-3 text-slate-400">{t('fields.insuranceHint')}</p>
         )}
       </FieldRow>
 
       {/* 주소 */}
-      <FieldRow label="주소" required>
+      <FieldRow label={t('fields.address')} required>
         <Input
           id="address"
           name="address"
           value={formData.address}
           onChange={onChange}
           onBlur={onBlur}
-          placeholder="서울특별시 강남구 테헤란로 427"
+          placeholder={t('fields.addressPlaceholder')}
           error={!!errors.address}
           success={!errors.address && touchedFields.address && !!formData.address}
         />
@@ -212,12 +225,13 @@ export const CompanyInfoSection = ({
           error={errors.address}
           touched={touchedFields.address}
           hasValue={!!formData.address}
-          hint="회사의 주소를 입력해주세요."
+          hint={t('fields.addressHint')}
+          inputComplete={t('inputComplete')}
         />
       </FieldRow>
 
       {/* 웹사이트 */}
-      <FieldRow label="웹사이트" optional>
+      <FieldRow label={t('fields.website')} optional optionalLabel={t('optionalLabel')}>
         <Input
           type="url"
           id="website_url"
@@ -225,14 +239,15 @@ export const CompanyInfoSection = ({
           value={formData.website_url}
           onChange={onChange}
           onBlur={onBlur}
-          placeholder="https://example.com"
+          placeholder={t('fields.websitePlaceholder')}
           error={!!errors.website_url}
           success={!errors.website_url && !!formData.website_url}
         />
         <FieldHint
           error={errors.website_url}
           hasValue={!!formData.website_url}
-          hint="회사 홈페이지 주소를 입력해주세요. (https:// 포함)"
+          hint={t('fields.websiteHint')}
+          inputComplete={t('inputComplete')}
         />
       </FieldRow>
     </div>
