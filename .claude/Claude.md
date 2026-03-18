@@ -36,6 +36,7 @@
 | **서버** | FastAPI (Python 3.13+), SQLAlchemy 2.0 (async), PostgreSQL, Redis |
 | **인증** | JWT (access + refresh) + HttpOnly Cookie + Google OAuth |
 | **아키텍처** | Feature-Sliced Design (클라이언트) / 클린 아키텍처 (서버) |
+| **상태 관리** | Zustand (전역 클라이언트 상태) / React Query (서버 상태) |
 | **파일 저장소** | MinIO (S3 호환) |
 | **배포** | Docker Standalone (양쪽 모두) |
 
@@ -130,6 +131,33 @@ responsive 변형도 동일: `sm:text-title-1`, `lg:text-body-3` 등
 @/shared/*    -> ./src/shared/*
 @/features/*  -> ./src/features/*
 @/app/*       -> ./src/app/*
+```
+
+### 상태 관리
+
+| 용도 | 솔루션 | 위치 |
+|------|--------|------|
+| **전역 클라이언트 상태** (인증, UI 상태 등) | **Zustand** | `src/shared/stores/` |
+| **서버 상태** (API 데이터 캐싱/동기화) | **React Query** | feature hooks |
+| **로컬 컴포넌트 상태** | `useState` / `useReducer` | 컴포넌트 내부 |
+
+**Zustand 사용 원칙:**
+- `src/shared/stores/`에 store 파일 위치 (예: `authStore.ts`)
+- `'use client'` 컴포넌트에서만 사용
+- 서버 데이터는 React Query로 관리, Zustand에 캐싱 금지
+- 인증 상태(`isAuthenticated`, `userType`)처럼 여러 컴포넌트에서 공유되는 클라이언트 상태에 사용
+
+```typescript
+// ✅ Good: Zustand — 전역 클라이언트 상태 (인증)
+import { useAuth } from '@/shared/stores/authStore';
+const { isAuthenticated, userType, logout } = useAuth();
+
+// ✅ Good: React Query — 서버 데이터
+import { useJobs } from '@/features/jobs/hooks/useJobs';
+const { data: jobs, isLoading } = useJobs();
+
+// ❌ Bad: Zustand에 서버 데이터 저장
+// set({ jobs: fetchedJobs }) — React Query 사용할 것
 ```
 
 ### 스타일링

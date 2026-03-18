@@ -2,8 +2,11 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function NotFound() {
+  const t = useTranslations('errors.notFound');
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-slate-50">
       <motion.div
@@ -15,10 +18,10 @@ export default function NotFound() {
         <div className="mb-8">
           <h1 className="text-[72px] font-extrabold text-slate-200 mb-2 leading-none">404</h1>
           <h2 className="text-[22px] font-extrabold text-slate-900 mb-3">
-            페이지를 찾을 수 없습니다
+            {t('title')}
           </h2>
           <p className="text-body-2 text-slate-500">
-            요청하신 페이지가 존재하지 않거나<br />이동되었을 수 있습니다.
+            {t('description')}
           </p>
         </div>
 
@@ -28,7 +31,7 @@ export default function NotFound() {
               href="/"
               className="inline-block w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
             >
-              홈으로 돌아가기
+              {t('goHome')}
             </Link>
           </motion.div>
 
@@ -37,7 +40,7 @@ export default function NotFound() {
               onClick={() => window.history.back()}
               className="w-full px-6 py-3 border border-slate-200 text-slate-600 rounded-lg font-semibold hover:bg-slate-100 transition-colors cursor-pointer"
             >
-              이전 페이지로
+              {t('goBack')}
             </button>
           </motion.div>
         </div>

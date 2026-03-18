@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 export default function Error({
   error,
@@ -10,6 +11,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations('errors.error');
+
   useEffect(() => {
     // 프로덕션에서는 에러 로깅 서비스로 전송
   }, [error]);
@@ -25,10 +28,10 @@ export default function Error({
         <div className="mb-8">
           <h1 className="text-[72px] font-extrabold text-slate-200 mb-2 leading-none">500</h1>
           <h2 className="text-[22px] font-extrabold text-slate-900 mb-3">
-            문제가 발생했습니다
+            {t('title')}
           </h2>
           <p className="text-body-2 text-slate-500">
-            일시적인 오류가 발생했습니다.<br />잠시 후 다시 시도해주세요.
+            {t('description')}
           </p>
         </div>
 
@@ -39,7 +42,7 @@ export default function Error({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            다시 시도
+            {t('retry')}
           </motion.button>
 
           <motion.button
@@ -48,7 +51,7 @@ export default function Error({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            홈으로 돌아가기
+            {t('goHome')}
           </motion.button>
         </div>
       </motion.div>
