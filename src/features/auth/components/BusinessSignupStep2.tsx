@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { authApi } from '@/features/auth/api/authApi';
 import { formatPhoneByType, validatePhoneType, getPhonePlaceholder, PhoneType } from '@/shared/lib/utils/phoneUtils';
 import { extractErrorMessage, logError, getErrorStatus } from '@/shared/lib/utils/errorHandler';
+import { useTranslations } from 'next-intl';
 
 interface BusinessSignupStep2Props {
   initialData?: SignupStep2Data;
@@ -19,9 +20,10 @@ interface BusinessSignupStep2Props {
 };
 
 export default function BusinessSignupStep2({
-  initialData, 
+  initialData,
   onNextAction,
 }: BusinessSignupStep2Props) {
+  const t = useTranslations('auth.companySignup');
 
   const {
     control,
@@ -95,7 +97,7 @@ export default function BusinessSignupStep2({
     if (!isValidBusinessNumber(businessNumber)) {
       setError('businessNumber', {
         type: 'manual',
-        message: '사업자등록번호 10자리를 입력해주세요.'
+        message: t('errorBizNumberRequired'),
       });
       return;
     }
@@ -112,38 +114,38 @@ export default function BusinessSignupStep2({
         if (businessData.b_stt_cd !== '01') {
           setError('businessNumber', {
             type: 'manual',
-            message: `해당 사업자는 ${businessData.b_stt} 상태입니다.`
+            message: t('errorBizStatus', { status: businessData.b_stt }),
           });
-          toast.error(`사업자 상태: ${businessData.b_stt}`);
+          toast.error(t('errorBizStatus', { status: businessData.b_stt }));
           return;
         }
 
         setFormState(prev => ({
           ...prev,
           isBusinessNumberVerified: true,
-          businessNumberMessage: '사업자등록번호 인증이 완료되었습니다.',
+          businessNumberMessage: t('bizVerifiedMsg'),
           businessNumberVerifyToken: `verified_${businessNumber}_${Date.now()}`,
           companyInfo: {
             company: businessData.tax_type || '',
-            owner: businessData.b_stt || ''
+            owner: businessData.b_stt || '',
           },
         }));
 
         clearErrors('businessNumber');
-        toast.success('사업자등록번호 인증이 완료되었습니다.');
+        toast.success(t('toastBizVerified'));
       } else {
         setError('businessNumber', {
           type: 'manual',
-          message: '유효하지 않은 사업자등록번호입니다.'
+          message: t('toastBizInvalid'),
         });
-        toast.error('유효하지 않은 사업자등록번호입니다.');
+        toast.error(t('toastBizInvalid'));
       }
     } catch (error) {
       setError('businessNumber', {
         type: 'manual',
-        message: '사업자등록번호 인증에 실패했습니다.'
+        message: t('toastBizError'),
       });
-      toast.error('사업자등록번호 인증에 실패했습니다. 다시 시도해주세요.');
+      toast.error(t('toastBizError'));
     } finally {
       setFormState(prev => ({ ...prev, isVerifying: false }));
     }
@@ -186,7 +188,7 @@ export default function BusinessSignupStep2({
     try {
       await authApi.companySignup(companySignupData);
 
-      toast.success('기업 회원가입이 완료되었습니다. 로그인 해주세요.');
+      toast.success(t('toastSuccess'));
 
       const transformedData = {
         userInfo: {
@@ -204,11 +206,11 @@ export default function BusinessSignupStep2({
       if (status === 400 && rawMessage.toLowerCase().includes('already exists')) {
         setError('email', {
           type: 'manual',
-          message: '이미 사용 중인 이메일입니다.',
+          message: t('toastEmailDuplicate'),
         });
-        toast.error('이미 사용 중인 이메일입니다.');
+        toast.error(t('toastEmailDuplicate'));
       } else {
-        toast.error(rawMessage || '회원가입 중 오류가 발생했습니다.');
+        toast.error(rawMessage || t('toastError'));
       }
     }
   };
@@ -260,7 +262,7 @@ export default function BusinessSignupStep2({
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-title-2 sm:text-title-1 text-slate-900 text-center mb-4 leading-tight">
-            <p>기업 회원가입</p>
+            <p>{t('title')}</p>
           </h1>
           <div className="flex items-center justify-between text-sm">
             <div />
@@ -283,7 +285,7 @@ export default function BusinessSignupStep2({
               <FormField
                 name="businessNumber"
                 control={control}
-                label="사업자등록번호 (ID)"
+                label={t('bizNumber')}
                 error={errors.businessNumber?.message}
                 render={(field, fieldId) => (
                   <div className="space-y-1.5">
@@ -293,7 +295,7 @@ export default function BusinessSignupStep2({
                         id={fieldId}
                         type="text"
                         className="flex-1 border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
-                        placeholder="-제외 10자리 입력"
+                        placeholder={t('bizNumberPlaceholder')}
                         maxLength={12}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, '');
@@ -326,9 +328,9 @@ export default function BusinessSignupStep2({
                         {formState.isVerifying ? (
                           <>
                             <Loader2 size={14} className="animate-spin" />
-                            인증 중
+                            {t('verifying')}
                           </>
-                        ) : formState.isBusinessNumberVerified ? '인증완료' : '인증하기'}
+                        ) : formState.isBusinessNumberVerified ? t('verified') : t('verify')}
                       </motion.button>
                     </div>
                     <p className='text-right text-caption-2 underline hover:text-slate-700 cursor-pointer'
@@ -337,7 +339,7 @@ export default function BusinessSignupStep2({
                         "_blank"
                       )}
                     >
-                      사업자번호가 기억나지 않아요
+                      {t('forgotBizNumber')}
                     </p>
                   </div>
                 )}
@@ -354,12 +356,12 @@ export default function BusinessSignupStep2({
               <FormField
                 name="company"
                 control={control}
-                label="기업명"
+                label={t('companyLabel')}
                 render={(field, fieldId) => (
                   <Input
                     {...field}
                     id={fieldId}
-                    placeholder="기업명 입력"
+                    placeholder={t('companyPlaceholder')}
                     error={!!errors.company}
                   />
                 )}
@@ -368,12 +370,12 @@ export default function BusinessSignupStep2({
               <FormField
                 name="name"
                 control={control}
-                label="담당자명"
+                label={t('managerName')}
                 render={(field, fieldId) => (
                   <Input
                     {...field}
                     id={fieldId}
-                    placeholder="담당자명 입력"
+                    placeholder={t('managerNamePlaceholder')}
                     error={!!errors.name}
                   />
                 )}
@@ -382,7 +384,7 @@ export default function BusinessSignupStep2({
               <FormField
                 name="phoneNumber"
                 control={control}
-                label="담당자 전화번호"
+                label={t('managerPhone')}
                 error={errors.phoneNumber?.message}
                 render={(field, fieldId) => (
                   <div className="space-y-3">
@@ -401,7 +403,7 @@ export default function BusinessSignupStep2({
                           }}
                           className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="text-caption-1 text-slate-700">휴대전화</span>
+                        <span className="text-caption-1 text-slate-700">{t('mobile')}</span>
                       </label>
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
@@ -416,7 +418,7 @@ export default function BusinessSignupStep2({
                           }}
                           className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="text-caption-1 text-slate-700">일반전화</span>
+                        <span className="text-caption-1 text-slate-700">{t('landline')}</span>
                       </label>
                     </div>
 
@@ -450,8 +452,8 @@ export default function BusinessSignupStep2({
                     {!errors.phoneNumber && field.value && (
                       <p className="text-caption-3 text-slate-500">
                         {formState.phoneType === 'MOBILE'
-                          ? '휴대전화: 010, 011, 016-019로 시작'
-                          : '일반전화: 지역번호(예: 02, 031, 051) 포함'}
+                          ? t('phoneHintMobile')
+                          : t('phoneHintLandline')}
                       </p>
                     )}
                   </div>
@@ -461,7 +463,7 @@ export default function BusinessSignupStep2({
               <FormField
                 name="email"
                 control={control}
-                label="담당자 이메일"
+                label={t('managerEmail')}
                 error={errors.email?.message}
                 render={(field, fieldId) => (
                   <div className="space-y-1.5">
@@ -469,13 +471,13 @@ export default function BusinessSignupStep2({
                       {...field}
                       id={fieldId}
                       type="email"
-                      placeholder="이메일 입력"
+                      placeholder={t('emailPlaceholder')}
                       onBlur={(e) => {
                         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                         if (!emailRegex.test(e.target.value)) {
                           setError('email', {
                             type: 'manual',
-                            message: '이메일 형식이 올바르지 않습니다.'
+                            message: t('errorEmailFormat'),
                           });
                         } else {
                           clearErrors('email');
@@ -485,7 +487,7 @@ export default function BusinessSignupStep2({
                     />
                     <p className="text-xs text-slate-500 flex items-center gap-1">
                       <span className="text-blue-500">ℹ</span>
-                      이 이메일은 추후 <span className="font-semibold text-slate-700">로그인 아이디</span>로 사용됩니다.
+                      {t('emailLoginHint')}
                     </p>
                   </div>
                 )}
@@ -496,14 +498,14 @@ export default function BusinessSignupStep2({
               <FormField
                 name="password"
                 control={control}
-                label="비밀번호"
+                label={t('passwordLabel')}
                 error={errors.password?.message}
                 render={(field, fieldId) => (
                   <Input
                     {...field}
                     id={fieldId}
                     variant="password"
-                    placeholder="8~15자리/영문, 숫자, 특수문자 조합 입력"
+                    placeholder={t('passwordPlaceholder')}
                     error={!!errors.password}
                     showPassword={formState.showPassword}
                     onTogglePassword={() => setFormState(prev => ({
@@ -527,7 +529,7 @@ export default function BusinessSignupStep2({
                     {...field}
                     id={fieldId}
                     variant="password"
-                    placeholder="8~15자리/영문, 숫자, 특수문자 조합 재입력"
+                    placeholder={t('confirmPasswordPlaceholder')}
                     error={!!errors.confirmPassword}
                     showPassword={formState.showConfirmPassword}
                     onTogglePassword={() => setFormState(prev => ({
@@ -557,7 +559,7 @@ export default function BusinessSignupStep2({
                 }`}
                 whileTap={isFormValid ? { scale: 0.98 } : {}}
               >
-                가입하기
+                {t('signupButton')}
               </motion.button>
             </motion.div>
           </motion.div>

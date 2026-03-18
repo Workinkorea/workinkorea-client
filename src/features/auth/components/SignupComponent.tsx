@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { FormField } from '@/shared/ui/FormField';
 import { SelectSearchInput } from '@/shared/ui/SelectSearchInput';
 import { COUNTRIES } from '@/shared/constants/countries';
@@ -38,24 +39,26 @@ interface TermsAgreement {
 
 type TermKey = Exclude<keyof TermsAgreement, 'allAgree'>;
 
-const TERMS: { key: TermKey; label: string }[] = [
-  { key: 'termsOfService', label: '사용자 약관' },
-  { key: 'privacyPolicy', label: '개인정보 처리방침' },
-  { key: 'privacyPolicyHold', label: '개인정보 처리방침 보류' },
-  { key: 'copyrightPolicy', label: '저작권 정책' },
-  { key: 'cookiePolicy', label: '쿠키 정책' },
-];
-
-const TERMS_CONTENT: Record<TermKey, { title: string; content: string }> = {
-  termsOfService: { title: '사용자 약관', content: TERMS_OF_SERVICE },
-  privacyPolicy: { title: '개인정보 처리방침', content: PRIVACY_POLICY },
-  privacyPolicyHold: { title: '개인정보 처리방침 보류', content: PRIVACY_POLICY_HOLD },
-  copyrightPolicy: { title: '저작권 정책', content: COPYRIGHT_POLICY },
-  cookiePolicy: { title: '쿠키 정책', content: COOKIE_POLICY },
+const TERMS_CONTENT_RAW: Record<TermKey, string> = {
+  termsOfService: TERMS_OF_SERVICE,
+  privacyPolicy: PRIVACY_POLICY,
+  privacyPolicyHold: PRIVACY_POLICY_HOLD,
+  copyrightPolicy: COPYRIGHT_POLICY,
+  cookiePolicy: COOKIE_POLICY,
 };
+
+const TERM_KEYS: TermKey[] = [
+  'termsOfService',
+  'privacyPolicy',
+  'privacyPolicyHold',
+  'copyrightPolicy',
+  'cookiePolicy',
+];
 
 export default function SignupComponent({ userEmail }: { userEmail?: string }) {
   const router = useRouter();
+  const t = useTranslations('auth.signup');
+
   const [formState, setFormState] = useState({
     isEmailSent: !!userEmail,
     isEmailVerified: !!userEmail,
@@ -78,8 +81,11 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
   }>({ isOpen: false, title: '', content: '' });
 
   const openTermsModal = (type: TermKey) => {
-    const { title, content } = TERMS_CONTENT[type];
-    setModalState({ isOpen: true, title, content });
+    setModalState({
+      isOpen: true,
+      title: t(`termLabels.${type}`),
+      content: TERMS_CONTENT_RAW[type],
+    });
   };
 
   const closeModal = () => setModalState({ isOpen: false, title: '', content: '' });
@@ -115,7 +121,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
       await authApi.sendEmailVerification(email);
       setFormState(prev => ({ ...prev, isEmailSent: true }));
       clearErrors('email');
-      toast.success('인증번호가 이메일로 전송되었습니다.');
+      toast.success(t('toastCodeSent'));
     } catch {
       setFormState(prev => ({ ...prev, isEmailSent: true }));
     }
@@ -123,48 +129,48 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
 
   const handleVerifyCode = async (email: string, code: string) => {
     if (!code || code.length !== 6) {
-      setError('verificationCode', { type: 'manual', message: '6자리 인증번호를 입력해주세요.' });
+      setError('verificationCode', { type: 'manual', message: t('errorCodeRequired') });
       return;
     }
     try {
       await authApi.verifyEmailCode(email, code);
       setFormState(prev => ({ ...prev, isEmailVerified: true }));
       clearErrors('verificationCode');
-      toast.success('이메일 인증이 완료되었습니다.');
+      toast.success(t('toastEmailVerified'));
     } catch (error: unknown) {
       const errorMessage =
         error && typeof error === 'object' && 'response' in error
           ? (error.response as { data?: { message?: string } })?.data?.message
-          : '인증번호 확인 중 오류가 발생했습니다.';
+          : t('toastCodeError');
       setError('verificationCode', {
         type: 'manual',
-        message: errorMessage || '인증번호가 올바르지 않습니다.',
+        message: errorMessage || t('toastCodeInvalid'),
       });
-      toast.error(errorMessage || '인증번호가 올바르지 않습니다.');
+      toast.error(errorMessage || t('toastCodeInvalid'));
     }
   };
 
   const onSubmit = async (data: SignupFormData) => {
     if (!formState.isEmailVerified) {
-      toast.error('이메일 인증 완료해주세요.');
+      toast.error(t('toastVerifyFirst'));
       return;
     }
     const { email, name, birth, country } = data;
     const birth_date = `${birth.substring(0, 4)}-${birth.substring(4, 6)}-${birth.substring(6, 8)}`;
     try {
       await authApi.signup({ email, name, birth_date, country_code: country });
-      toast.success('회원가입이 완료되었습니다. 로그인 해주세요.');
+      toast.success(t('toastSuccess'));
       router.push('/login');
     } catch (error: unknown) {
       const errorMessage =
         error && typeof error === 'object' && 'response' in error
           ? (error.response as { data?: { message?: string } })?.data?.message
-          : '회원가입 중 오류가 발생했습니다.';
-      toast.error(errorMessage || '회원가입 중 오류가 발생했습니다.');
+          : t('toastError');
+      toast.error(errorMessage || t('toastError'));
     }
   };
 
-  const allTermsAgreed = TERMS.every(({ key }) => termsAgreement[key]);
+  const allTermsAgreed = TERM_KEYS.every((key) => termsAgreement[key]);
 
   const isFormValid =
     formState.isEmailVerified &&
@@ -187,7 +193,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
 
   const handleTermChange = (term: TermKey, checked: boolean) => {
     const newTerms = { ...termsAgreement, [term]: checked };
-    setTermsAgreement({ ...newTerms, allAgree: TERMS.every(({ key }) => newTerms[key]) });
+    setTermsAgreement({ ...newTerms, allAgree: TERM_KEYS.every((key) => newTerms[key]) });
   };
 
   return (
@@ -200,7 +206,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-body-2 font-bold text-slate-900 mb-4">약관 동의</h2>
+            <h2 className="text-body-2 font-bold text-slate-900 mb-4">{t('termsTitle')}</h2>
           </motion.div>
 
           {/* 모두 동의 */}
@@ -218,7 +224,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                 className="w-5 h-5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
               />
               <span className="ml-3 text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-                전체 동의
+                {t('agreeAll')}
               </span>
             </label>
           </motion.div>
@@ -230,7 +236,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2, staggerChildren: 0.05 }}
           >
-            {TERMS.map(({ key, label }, index) => (
+            {TERM_KEYS.map((key, index) => (
               <motion.div
                 key={key}
                 className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-sm hover:border-blue-200 transition-colors"
@@ -248,7 +254,8 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                       <span className="text-sm text-slate-900 group-hover:text-blue-600 transition-colors">
-                        <span className="text-blue-600 font-semibold">[필수]</span> {label}
+                        <span className="text-blue-600 font-semibold">{t('required')}</span>{' '}
+                        {t(`termLabels.${key}`)}
                       </span>
                       <button
                         type="button"
@@ -258,7 +265,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                           openTermsModal(key);
                         }}
                       >
-                        보기
+                        {t('viewButton')}
                       </button>
                     </div>
                   </div>
@@ -285,8 +292,8 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-title-3 sm:text-title-2 font-bold text-slate-900 mb-2">개인 회원가입</h1>
-            <p className="text-caption-1 text-slate-500">가입 정보를 입력하세요</p>
+            <h1 className="text-title-3 sm:text-title-2 font-bold text-slate-900 mb-2">{t('personalTitle')}</h1>
+            <p className="text-caption-1 text-slate-500">{t('formSubtitle')}</p>
           </motion.div>
 
           <motion.form
@@ -299,14 +306,14 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             {/* 폼 카드 래퍼 */}
             <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm space-y-4">
               <div className="mb-2">
-                <h3 className="text-body-2 font-bold text-slate-900 mb-4">기본 정보</h3>
+                <h3 className="text-body-2 font-bold text-slate-900 mb-4">{t('basicInfo')}</h3>
               </div>
 
               <div className="mb-6">
                 <FormField
                   name="email"
                   control={control}
-                  label="이메일"
+                  label={t('email')}
                   render={(field, fieldId) => (
                     <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                       <input
@@ -341,7 +348,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                               : {}
                           }
                         >
-                          {formState.isEmailSent ? '전송완료' : '인증하기'}
+                          {formState.isEmailSent ? t('codeSent') : t('sendCode')}
                         </motion.button>
                       )}
                     </div>
@@ -363,7 +370,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span>이메일 인증이 완료되었습니다.</span>
+                  <span>{t('emailVerifiedMsg')}</span>
                 </motion.div>
               )}
 
@@ -377,7 +384,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                   <FormField
                     name="verificationCode"
                     control={control}
-                    label="인증번호"
+                    label={t('verificationCode')}
                     render={(field, fieldId) => (
                       <div className="space-y-2">
                         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
@@ -386,7 +393,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                             id={fieldId}
                             type="text"
                             value={field.value || ''}
-                            placeholder="6자리 인증번호"
+                            placeholder={t('codePlaceholder')}
                             maxLength={6}
                             disabled={formState.isEmailVerified}
                             onChange={(e) => {
@@ -416,7 +423,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                                 : {}
                             }
                           >
-                            {formState.isEmailVerified ? '인증완료' : '확인'}
+                            {formState.isEmailVerified ? t('codeVerified') : t('verify')}
                           </motion.button>
                         </div>
                         {formState.isEmailVerified && (
@@ -433,7 +440,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                                 clipRule="evenodd"
                               />
                             </svg>
-                            <span>이메일 인증이 완료되었습니다.</span>
+                            <span>{t('emailVerifiedMsg')}</span>
                           </motion.div>
                         )}
                       </div>
@@ -445,7 +452,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
               <FormField
                 name="name"
                 control={control}
-                label="이름 (영문)"
+                label={t('nameLabel')}
                 render={(field, fieldId) => (
                   <input
                     {...field}
@@ -461,7 +468,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
               <FormField
                 name="birth"
                 control={control}
-                label="생년월일"
+                label={t('birthLabel')}
                 render={(field, fieldId) => (
                   <input
                     {...field}
@@ -482,13 +489,13 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
               <FormField
                 name="country"
                 control={control}
-                label="국적"
+                label={t('nationality')}
                 render={(field) => (
                   <SelectSearchInput
                     options={COUNTRIES}
                     value={field.value || ''}
                     onChange={field.onChange}
-                    placeholder="국적을 선택하세요"
+                    placeholder={t('countryPlaceholder')}
                   />
                 )}
               />
@@ -506,7 +513,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                 disabled={!isFormValid}
                 whileTap={isFormValid ? { scale: 0.98 } : {}}
               >
-                회원가입
+                {t('signupButton')}
               </motion.button>
               {!allTermsAgreed && (
                 <motion.p
@@ -514,7 +521,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                   animate={{ opacity: 1 }}
                   className="text-caption-3 text-red-500 text-center"
                 >
-                  모든 약관에 동의해주세요
+                  {t('termsRequired')}
                 </motion.p>
               )}
             </div>
