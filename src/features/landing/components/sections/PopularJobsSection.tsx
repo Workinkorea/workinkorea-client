@@ -4,8 +4,11 @@ import { MapPin, Clock, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { useTranslations } from 'next-intl';
 
 export default function PopularJobsSection() {
+  const t = useTranslations('landing.popularJobs');
+  const tCommon = useTranslations('common');
   // TODO: 인기 공고 API가 준비되면 교체 필요
   // Mock 데이터 사용 (임시)
   const mockPopularPosts = [
@@ -111,10 +114,10 @@ export default function PopularJobsSection() {
           animate={isInView ? 'visible' : 'hidden'}
         >
           <h2 className="text-title-3 md:text-title-2 font-extrabold text-slate-900 mb-3 md:mb-4">
-            인기 공고
+            {t('title')}
           </h2>
           <p className="text-caption-1 md:text-base text-slate-500">
-            지금 가장 주목받는 기업들의 채용공고입니다
+            {t('subtitle')}
           </p>
         </motion.div>
 
@@ -180,7 +183,7 @@ export default function PopularJobsSection() {
                             {isRecent && (
                               <span className="inline-flex items-center gap-1 text-xs md:text-sm text-blue-600">
                                 <Clock className="w-3 h-3 md:w-4 md:h-4" />
-                                신규
+                                {tCommon('status.new')}
                               </span>
                             )}
                           </div>
@@ -200,7 +203,7 @@ export default function PopularJobsSection() {
                           <span className="text-xs md:text-sm">• {post.employment_type}</span>
                         </div>
                         <p className="text-blue-600 font-semibold text-sm md:text-body-2">
-                          {post.salary ? `${post.salary.toLocaleString()}원` : '연봉 협의'}
+                          {post.salary ? `${post.salary.toLocaleString()}원` : tCommon('label.negotiable')}
                         </p>
                       </div>
 
@@ -221,7 +224,7 @@ export default function PopularJobsSection() {
               })
             ) : (
               <div className="col-span-full text-center py-12">
-                <p className="text-slate-500 text-sm">등록된 공고가 없습니다.</p>
+                <p className="text-slate-500 text-sm">{tCommon('label.noData')}</p>
               </div>
             )}
           </motion.div>
@@ -243,7 +246,7 @@ export default function PopularJobsSection() {
               href="/jobs"
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-lg font-medium transition-colors text-sm md:text-base cursor-pointer"
             >
-              더 많은 공고 보기
+              {t('viewMore')}
               <ChevronRight className="w-4 h-4" />
             </Link>
           </motion.div>

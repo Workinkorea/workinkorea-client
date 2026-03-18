@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import HeroSearchClient from './HeroSearchClient';
 
 const container = {
@@ -20,6 +21,8 @@ const item = {
 };
 
 export default function HeroSection() {
+  const t = useTranslations('landing.hero');
+
   return (
     <section className="bg-white min-h-[calc(100vh-65px)] sm:min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
 
@@ -53,7 +56,7 @@ export default function HeroSection() {
           variants={item}
           className="text-title-4 sm:text-[22px] font-bold text-slate-900 mb-3"
         >
-          한국 취업, 여기서 시작됩니다
+          {t('tagline')}
         </motion.p>
 
         {/* 설명 */}
@@ -61,7 +64,7 @@ export default function HeroSection() {
           variants={item}
           className="text-caption-1 sm:text-body-3 text-slate-500 mb-8"
         >
-          맞춤형 채용공고 추천을 확인하려면 로그인하세요.
+          {t('loginPrompt')}
         </motion.p>
 
         {/* CTA 버튼 */}
@@ -70,7 +73,7 @@ export default function HeroSection() {
             href="/login-select"
             className="inline-flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-8 py-3.5 rounded-full font-semibold text-body-2 transition-all shadow-md hover:shadow-lg"
           >
-            시작하기
+            {t('getStarted')}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </motion.div>

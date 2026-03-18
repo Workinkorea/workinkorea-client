@@ -4,43 +4,8 @@ import Link from 'next/link';
 import { Target, FileText, MessageSquare } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/utils/utils';
-
-const services = [
-  {
-    id: 'personalized',
-    title: '맞춤형 채용정보',
-    description: 'AI 기반의 개인맞춤 취업정보 분석으로 최적의 기업을 추천합니다. 당신의 능력과 경험에 맞는 완벽한 기회를 찾아드립니다.',
-    icon: Target,
-    bgColor: 'bg-blue-50',
-    iconColor: 'text-blue-600',
-    borderColor: 'border-blue-200',
-    href: '/diagnosis',
-    linkLabel: '진단 시작하기',
-  },
-  {
-    id: 'resume',
-    title: '이력서 작성 도구',
-    description: '전문가가 검증한 이력서 템플릿으로 완벽한 지원서를 작성하세요. 한국 기업에 최적화된 가이드를 제공합니다.',
-    icon: FileText,
-    bgColor: 'bg-blue-50',
-    iconColor: 'text-blue-600',
-    borderColor: 'border-blue-200',
-    href: '/user/resume/create',
-    linkLabel: '이력서 작성하기',
-  },
-  {
-    id: 'jobs',
-    title: '면접 컨설팅 가이드',
-    description: '실제 현직자와의 모의면접과 개인별 피드백으로 면접 성공률을 높여보세요. 한국 문화에 맞는 면접 스킬을 습득할 수 있습니다.',
-    icon: MessageSquare,
-    bgColor: 'bg-slate-50',
-    iconColor: 'text-slate-600',
-    borderColor: 'border-slate-200',
-    href: '/jobs',
-    linkLabel: '공고 둘러보기',
-  },
-];
 
 const containerVariants = {
   hidden: {},
@@ -68,6 +33,43 @@ const headerVariants = {
 export default function ServicesSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const t = useTranslations('landing.services');
+
+  const services = [
+    {
+      id: 'personalized',
+      title: t('service1Title'),
+      description: t('service1Desc'),
+      icon: Target,
+      bgColor: 'bg-blue-50',
+      iconColor: 'text-blue-600',
+      borderColor: 'border-blue-200',
+      href: '/diagnosis',
+      linkLabel: t('service1Link'),
+    },
+    {
+      id: 'resume',
+      title: t('service2Title'),
+      description: t('service2Desc'),
+      icon: FileText,
+      bgColor: 'bg-blue-50',
+      iconColor: 'text-blue-600',
+      borderColor: 'border-blue-200',
+      href: '/user/resume/create',
+      linkLabel: t('service2Link'),
+    },
+    {
+      id: 'jobs',
+      title: t('service3Title'),
+      description: t('service3Desc'),
+      icon: MessageSquare,
+      bgColor: 'bg-slate-50',
+      iconColor: 'text-slate-600',
+      borderColor: 'border-slate-200',
+      href: '/jobs',
+      linkLabel: t('service3Link'),
+    },
+  ];
 
   return (
     <section className="bg-white py-16 sm:py-20 lg:py-24 relative overflow-hidden" ref={ref}>
@@ -91,19 +93,19 @@ export default function ServicesSection() {
             transition={{ duration: 0.4, delay: 0.1 }}
           >
             <span className="text-caption-3 sm:text-caption-2 font-bold text-blue-600 uppercase tracking-wider">
-              특별 서비스
+              {t('overline')}
             </span>
           </motion.div>
 
           {/* 타이틀 */}
           <h2 className="text-title-3 sm:text-title-2 lg:text-[36px] font-extrabold text-slate-900 mb-3 sm:mb-4 leading-tight">
-            Work In Korea{' '}
-            <span className="text-blue-600">특별한 서비스</span>
+            {t('title')}{' '}
+            <span className="text-blue-600">{t('titleHighlight')}</span>
           </h2>
 
           {/* 부제 */}
           <p className="text-caption-1 sm:text-body-3 lg:text-base text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            성공적인 한국 취업을 위한 특별한 서비스를 제공합니다
+            {t('subtitle')}
           </p>
         </motion.div>
 
@@ -114,7 +116,7 @@ export default function ServicesSection() {
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
         >
-          {services.map((service, idx) => {
+          {services.map((service) => {
             const IconComponent = service.icon;
             return (
               <motion.div

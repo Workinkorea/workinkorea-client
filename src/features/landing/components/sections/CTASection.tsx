@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/utils/utils';
 import { ArrowRight } from 'lucide-react';
 
@@ -23,6 +24,7 @@ const itemVariants = {
 export default function CTASection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
+  const t = useTranslations('landing.cta');
 
   return (
     <section
@@ -49,7 +51,7 @@ export default function CTASection() {
           className="text-title-2 sm:text-title-1 lg:text-display-1 font-black text-white mb-4 sm:mb-5 lg:mb-6 tracking-tight leading-tight"
           variants={itemVariants}
         >
-          지금 시작하세요!
+          {t('heading')}
         </motion.h2>
 
         {/* 부제 */}
@@ -57,7 +59,7 @@ export default function CTASection() {
           className="text-body-3 sm:text-body-2 lg:text-[18px] text-blue-100 mb-8 sm:mb-10 lg:mb-12 max-w-2xl mx-auto leading-relaxed"
           variants={itemVariants}
         >
-          수많은 기업과 함께 새로운 미래를 시작하세요
+          {t('description')}
         </motion.p>
 
         {/* CTA 버튼 그룹 */}
@@ -84,7 +86,7 @@ export default function CTASection() {
                 'cursor-pointer'
               )}
             >
-              <span>무료 회원가입</span>
+              <span>{t('freeSignup')}</span>
               <ArrowRight size={16} className="hidden sm:inline" />
             </Link>
           </motion.div>
@@ -109,7 +111,7 @@ export default function CTASection() {
                 'cursor-pointer'
               )}
             >
-              <span>공고 둘러보기</span>
+              <span>{t('browseJobs')}</span>
               <ArrowRight size={16} className="hidden sm:inline" />
             </Link>
           </motion.div>
@@ -123,7 +125,7 @@ export default function CTASection() {
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          회원가입 후 맞춤형 채용정보와 이력서 피드백을 받아보세요
+          {t('signupBenefit')}
         </motion.p>
       </motion.div>
     </section>
