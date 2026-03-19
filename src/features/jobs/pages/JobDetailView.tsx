@@ -1,16 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { MapPin, Clock, DollarSign, Briefcase, GraduationCap, Languages, Calendar, Building2, FileText, Bookmark, Share2 } from 'lucide-react';
+import { MapPin, DollarSign, Briefcase, GraduationCap, Languages, Calendar, Building2, FileText, Bookmark, Share2, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import Layout from '@/shared/components/layout/Layout';
-import { HeaderClient } from '@/shared/components/layout/HeaderClient';
 import { Modal } from '@/shared/ui/Modal';
-import JobDetailActions from './JobDetailActions';
 import { useJobApplication } from '@/features/jobs/hooks/useJobApplication';
 import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { resumeApi } from '@/features/resume/api/resumeApi';
 import type { CompanyPostDetailResponse } from '@/shared/types/api';
 
@@ -24,6 +26,12 @@ function getDaysLeft(endDate: string): number | null {
 }
 
 export default function JobDetailView({ job }: JobDetailViewProps) {
+  const t = useTranslations('jobs.detail');
+  const tCommon = useTranslations('common');
+  const tCard = useTranslations('jobs.card');
+  const router = useRouter();
+  const pathname = usePathname();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { mutate: applyToJob, isPending } = useJobApplication();
   const { toggle, isBookmarked } = useBookmarks();
   const [showApplyModal, setShowApplyModal] = useState(false);
@@ -42,9 +50,25 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
   const isExpired = daysLeft !== null && daysLeft < 0;
   const language = job.language ? job.language.split(',').map(l => l.trim()) : [];
 
+  const redirectToLogin = () => {
+    router.push(`/login-select?callbackUrl=${encodeURIComponent(pathname)}`);
+  };
+
   const handleApply = () => {
+    if (!isAuthLoading && !isAuthenticated) {
+      redirectToLogin();
+      return;
+    }
     setSelectedResumeId(null);
     setShowApplyModal(true);
+  };
+
+  const handleBookmarkToggle = () => {
+    if (!isAuthLoading && !isAuthenticated) {
+      redirectToLogin();
+      return;
+    }
+    toggle(job.id);
   };
 
   const handleConfirmApply = () => {
@@ -60,24 +84,26 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      toast.success('링크가 복사되었습니다');
+      toast.success(t('linkCopied'));
     } catch {
-      toast.error('링크 복사에 실패했습니다');
+      toast.error(t('linkCopyFailed'));
     }
   };
 
+  const bookmarked = isBookmarked(job.id);
+
   return (
     <Layout>
-      <HeaderClient type="homepage" />
-
-      {/* 이력서 선택 모달 */}
-      <Modal isOpen={showApplyModal} onClose={() => setShowApplyModal(false)} title="이력서 선택" size="sm">
+      {/* Resume Selection Modal */}
+      <Modal isOpen={showApplyModal} onClose={() => setShowApplyModal(false)} title={t('selectResume')} size="sm">
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">지원할 이력서를 선택해주세요.</p>
+          <p className="text-sm text-slate-600">{t('selectResumeDesc')}</p>
 
           {isLoadingResumes ? (
             <div className="space-y-2">
-              {[1, 2].map(i => <div key={i} className="h-14 skeleton-shimmer rounded-lg" />)}
+              {[1, 2].map(i => (
+                <div key={i} className="h-16 skeleton-shimmer rounded-lg" />
+              ))}
             </div>
           ) : resumes.length > 0 ? (
             <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -91,210 +117,292 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                       : 'border-slate-200 hover:border-blue-200 hover:bg-slate-50'
                   }`}
                 >
-                  <div className={`p-2 rounded-lg ${selectedResumeId === resume.id ? 'bg-blue-100' : 'bg-slate-100'}`}>
+                  <div className={`p-2 rounded-lg shrink-0 ${selectedResumeId === resume.id ? 'bg-blue-100' : 'bg-slate-100'}`}>
                     <FileText size={18} className={selectedResumeId === resume.id ? 'text-blue-600' : 'text-slate-500'} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-slate-900 truncate">{resume.title}</p>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      {new Date(resume.updated_at).toLocaleDateString('ko-KR')} 수정
+                      {t('modified', { date: new Date(resume.updated_at).toLocaleDateString() })}
                     </p>
                   </div>
                 </button>
               ))}
             </div>
           ) : (
-            <div className="py-6 text-center">
+            <div className="py-8 text-center">
               <FileText size={40} className="mx-auto text-slate-300 mb-3" />
-              <p className="text-sm font-medium text-slate-700 mb-1">등록된 이력서가 없습니다</p>
-              <p className="text-xs text-slate-400 mb-4">이력서를 먼저 작성해주세요</p>
+              <p className="text-sm font-medium text-slate-700 mb-1">{t('noResume')}</p>
+              <p className="text-xs text-slate-400 mb-4">{t('noResumeDesc')}</p>
               <Link
                 href="/user/resume/create"
                 onClick={() => setShowApplyModal(false)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
               >
-                이력서 작성하기
+                {t('createResume')}
               </Link>
             </div>
           )}
 
           {resumes.length > 0 && (
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3 pt-3 border-t border-slate-100">
               <button
                 onClick={() => setShowApplyModal(false)}
                 className="flex-1 py-2.5 border border-slate-200 text-slate-600 text-sm font-semibold rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
               >
-                취소
+                {tCommon('button.cancel')}
               </button>
               <button
                 onClick={handleConfirmApply}
                 disabled={isPending || selectedResumeId === null}
                 className="flex-1 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                {isPending ? '지원 중...' : '지원하기'}
+                {isPending ? t('applying') : tCommon('button.apply')}
               </button>
             </div>
           )}
         </div>
       </Modal>
 
-      {/* 모바일 플로팅 지원 버튼 */}
+      {/* Mobile Floating Apply Button */}
       {!isExpired && (
-        <div className="fixed bottom-6 left-0 right-0 px-4 z-40 md:hidden">
-          <button
+        <div className="fixed bottom-6 left-0 right-0 px-4 z-40 lg:hidden">
+          <motion.button
             onClick={handleApply}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-semibold text-base shadow-lg transition-colors cursor-pointer"
+            whileTap={{ scale: 0.97 }}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-body-2 shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
           >
-            지원하기
-          </button>
+            {tCommon('button.apply')}
+          </motion.button>
         </div>
       )}
 
-      <div className="min-h-screen bg-slate-50 py-8 pb-28 md:pb-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <JobDetailActions />
+      <div className="min-h-screen bg-white py-4 sm:py-6 pb-24 lg:pb-8">
+        <div className="page-container">
+          {/* Back Button */}
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-slate-600 hover:text-blue-600 text-sm font-medium mb-4 sm:mb-6 cursor-pointer transition-colors"
+          >
+            <ChevronLeft size={18} />
+            {t('backToListFull')}
+          </button>
 
-          {/* 공고 헤더 */}
-          <div className="bg-white rounded-xl p-8 shadow-sm mb-6">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white shrink-0">
-                <Building2 className="w-8 h-8" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <h1 className="text-[20px] md:text-[28px] font-extrabold text-slate-900 mb-1">
-                      {job.title}
-                    </h1>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-[13px] md:text-[15px] text-slate-600">기업 채용공고</p>
-                      {isUrgent && (
-                        <span className="px-2 py-0.5 bg-red-50 text-red-500 text-xs font-semibold rounded-full border border-red-200">
-                          마감 D-{daysLeft}
-                        </span>
-                      )}
-                      {isExpired && (
-                        <span className="px-2 py-0.5 bg-slate-100 text-slate-400 text-xs font-semibold rounded-full">
-                          마감됨
-                        </span>
-                      )}
+          {/* Desktop Layout: 2-Column (Main + Sidebar) */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 lg:gap-8">
+            {/* Main Content Column */}
+            <div className="space-y-6">
+              {/* Hero Header Card */}
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <div className="p-5 sm:p-7 lg:p-8 space-y-6">
+                  {/* Top Row: Icon + Info + Actions */}
+                  <div className="flex items-start gap-4 justify-between">
+                    <div className="flex items-start gap-4 flex-1 min-w-0">
+                      {/* Company Icon */}
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm">
+                        <Building2 className="w-8 h-8 sm:w-10 sm:h-10" />
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <p className="text-caption-2 font-semibold text-slate-400 mb-2">{t('companyPost')}</p>
+
+                        {/* Badges */}
+                        <div className="flex items-center gap-2 mb-3 flex-wrap">
+                          {isUrgent && (
+                            <motion.span
+                              className="inline-flex px-2.5 py-1 bg-red-500 text-white text-caption-3 font-bold rounded-md"
+                              animate={{ opacity: [1, 0.6, 1] }}
+                              transition={{ duration: 1.5, repeat: Infinity }}
+                            >
+                              D-{daysLeft}
+                            </motion.span>
+                          )}
+                          {isExpired && (
+                            <span className="inline-flex px-2.5 py-1 bg-slate-200 text-slate-500 text-caption-3 font-bold rounded-md">
+                              {t('expiredBadge')}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Title */}
+                        <h1 className="text-title-4 sm:text-title-3 lg:text-title-2 font-extrabold text-slate-900 leading-tight line-clamp-3">
+                          {job.title}
+                        </h1>
+                      </div>
+                    </div>
+
+                    {/* Desktop: Action Buttons */}
+                    <div className="hidden lg:flex items-center gap-2 shrink-0">
+                      <motion.button
+                        onClick={handleBookmarkToggle}
+                        className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer focus:outline-none"
+                        whileTap={{ scale: 0.9 }}
+                        aria-label={bookmarked ? tCard('bookmarkRemove') : t('bookmarkBtn')}
+                      >
+                        <Bookmark size={20} className={bookmarked ? 'fill-blue-600 text-blue-600' : ''} />
+                      </motion.button>
+                      <motion.button
+                        onClick={handleShare}
+                        className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer focus:outline-none"
+                        whileTap={{ scale: 0.9 }}
+                        aria-label={t('shareLabel')}
+                      >
+                        <Share2 size={20} />
+                      </motion.button>
                     </div>
                   </div>
-                  {/* 북마크 & 공유 버튼 */}
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <button
-                      onClick={() => toggle(job.id)}
-                      className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer focus:outline-none"
-                      aria-label={isBookmarked(job.id) ? '북마크 해제' : '북마크'}
-                    >
-                      <Bookmark size={20} className={isBookmarked(job.id) ? 'fill-blue-600 text-blue-600' : ''} />
-                    </button>
-                    <button
-                      onClick={handleShare}
-                      className="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer focus:outline-none"
-                      aria-label="링크 공유"
-                    >
-                      <Share2 size={20} />
-                    </button>
+
+                  {/* Key Info Banner */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                    <div className="flex flex-col">
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">{tCommon('label.salary')}</p>
+                      <p className="text-body-3 font-extrabold text-blue-600">
+                        {job.salary ? `${job.salary.toLocaleString()}` : tCommon('label.negotiable')}
+                      </p>
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">{tCommon('label.location')}</p>
+                      <p className="text-body-3 font-bold text-slate-900 line-clamp-2">{job.work_location}</p>
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">{tCommon('label.employmentType')}</p>
+                      <p className="text-body-3 font-bold text-slate-900">{job.employment_type}</p>
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-caption-3 font-semibold text-slate-400 mb-1">{tCommon('label.workingHours')}</p>
+                      <p className="text-body-3 font-bold text-slate-900">{t('workingHoursUnit', { hours: job.working_hours })}</p>
+                    </div>
+                  </div>
+
+                  {/* Recruitment Period */}
+                  <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-100 rounded-lg">
+                    <Calendar className="text-amber-600 shrink-0" size={18} />
+                    <p className="text-caption-1 text-slate-900">
+                      <span className="font-semibold">{t('recruitPeriod')}:</span> {job.start_date} ~ {job.end_date}
+                    </p>
                   </div>
                 </div>
               </div>
+
+              {/* Details Card */}
+              <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-7 lg:p-8 space-y-6">
+                <h2 className="text-[18px] sm:text-title-4 font-extrabold text-slate-900">{t('jobDetails')}</h2>
+
+                {/* Job Content Section */}
+                <div className="space-y-3">
+                  <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
+                    <FileText size={16} className="text-blue-600" />
+                    {t('jobContent')}
+                  </h3>
+                  <p className="text-caption-1 text-slate-700 leading-relaxed whitespace-pre-wrap">{job.content}</p>
+                </div>
+
+                <div className="border-t border-slate-100" />
+
+                {/* Experience Section */}
+                <div className="space-y-3">
+                  <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
+                    <Briefcase size={16} className="text-blue-600" />
+                    {t('experience')}
+                  </h3>
+                  <p className="text-caption-1 text-slate-700 leading-relaxed">{job.work_experience}</p>
+                </div>
+
+                <div className="border-t border-slate-100" />
+
+                {/* Education Section */}
+                <div className="space-y-3">
+                  <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
+                    <GraduationCap size={16} className="text-blue-600" />
+                    {t('education')}
+                  </h3>
+                  <p className="text-caption-1 text-slate-700 leading-relaxed">{job.education}</p>
+                </div>
+
+                {/* Languages Section */}
+                {language.length > 0 && (
+                  <>
+                    <div className="border-t border-slate-100" />
+
+                    <div className="space-y-3">
+                      <h3 className="text-body-3 font-bold text-slate-900 flex items-center gap-2">
+                        <Languages size={16} className="text-blue-600" />
+                        {t('requiredLanguage')}
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {language.map((lang, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex px-3 py-1.5 bg-blue-50 text-blue-700 text-caption-2 font-semibold rounded-lg border border-blue-200"
+                          >
+                            {lang}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
 
-            {/* 주요 정보 그리드 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div className="flex items-center gap-3 p-4 bg-slate-100 rounded-lg">
-                <MapPin className="text-blue-600 shrink-0" size={20} />
-                <div>
-                  <p className="text-[11px] text-slate-500">근무지</p>
-                  <p className="text-sm font-medium text-slate-900">{job.work_location}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-4 bg-slate-100 rounded-lg">
-                <DollarSign className="text-blue-600 shrink-0" size={20} />
-                <div>
-                  <p className="text-[11px] text-slate-500">연봉</p>
-                  <p className="text-sm font-medium text-slate-900">
-                    {job.salary ? `${job.salary.toLocaleString()}원` : '협의'}
+            {/* Desktop Sidebar: Apply Card */}
+            <div className="hidden lg:block">
+              <motion.div
+                className="bg-white rounded-xl border border-slate-200 p-7 sticky top-[calc(65px+20px)] space-y-4"
+                initial={{ y: 0 }}
+                whileInView={{ y: 0 }}
+              >
+                {/* Salary Display */}
+                <div className="space-y-1">
+                  <p className="text-caption-3 font-semibold text-slate-400">{tCommon('label.salary')}</p>
+                  <p className="text-title-1 font-extrabold text-blue-600 leading-tight">
+                    {job.salary ? `${job.salary.toLocaleString()}` : tCommon('label.negotiable')}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center gap-3 p-4 bg-slate-100 rounded-lg">
-                <Briefcase className="text-blue-600 shrink-0" size={20} />
-                <div>
-                  <p className="text-[11px] text-slate-500">고용 형태</p>
-                  <p className="text-sm font-medium text-slate-900">{job.employment_type}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-4 bg-slate-100 rounded-lg">
-                <Clock className="text-blue-600 shrink-0" size={20} />
-                <div>
-                  <p className="text-[11px] text-slate-500">근무 시간</p>
-                  <p className="text-sm font-medium text-slate-900">{job.working_hours}시간/일</p>
-                </div>
-              </div>
-            </div>
 
-            {/* 모집 기간 */}
-            <div className="flex items-center gap-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <Calendar className="text-blue-600 shrink-0" size={20} />
-              <p className="text-sm text-slate-900">
-                <span className="font-medium">모집 기간:</span> {job.start_date} ~ {job.end_date}
-              </p>
-            </div>
-          </div>
+                {/* Apply Button */}
+                {isExpired ? (
+                  <button className="w-full py-4 bg-slate-100 text-slate-400 text-center rounded-lg font-bold text-body-2 cursor-not-allowed">
+                    {t('expiredPostShort')}
+                  </button>
+                ) : (
+                  <motion.button
+                    onClick={handleApply}
+                    className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-body-2 shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {tCommon('button.apply')}
+                  </motion.button>
+                )}
 
-          {/* 공고 상세 내용 */}
-          <div className="bg-white rounded-xl p-8 shadow-sm mb-6">
-            <h2 className="text-[18px] md:text-[24px] font-extrabold text-slate-900 mb-6">공고 상세</h2>
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-[15px] font-semibold text-slate-900 mb-3">직무 내용</h3>
-                <p className="text-sm text-slate-700 whitespace-pre-wrap">{job.content}</p>
-              </div>
-              <div>
-                <h3 className="text-[15px] font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                  <Briefcase size={18} /> 경력
-                </h3>
-                <p className="text-sm text-slate-700">{job.work_experience}</p>
-              </div>
-              <div>
-                <h3 className="text-[15px] font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                  <GraduationCap size={18} /> 학력
-                </h3>
-                <p className="text-sm text-slate-700">{job.education}</p>
-              </div>
-              {language.length > 0 && (
-                <div>
-                  <h3 className="text-[15px] font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                    <Languages size={18} /> 필요 언어
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {language.map((lang, index) => (
-                      <span key={index} className="px-3 py-1.5 bg-blue-50 text-blue-700 text-sm rounded-lg border border-blue-200">
-                        {lang}
-                      </span>
-                    ))}
-                  </div>
+                {/* Bookmark Button */}
+                <motion.button
+                  onClick={handleBookmarkToggle}
+                  className="w-full flex items-center justify-center gap-2 py-3 border border-slate-200 text-slate-700 rounded-lg font-semibold text-caption-1 hover:bg-slate-50 transition-colors cursor-pointer"
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Bookmark size={16} className={bookmarked ? 'fill-blue-600 text-blue-600' : ''} />
+                  {bookmarked ? t('bookmarkSaved') : t('bookmarkSave')}
+                </motion.button>
+
+                {/* Share Button */}
+                <motion.button
+                  onClick={handleShare}
+                  className="w-full flex items-center justify-center gap-2 py-3 border border-slate-200 text-slate-700 rounded-lg font-semibold text-caption-1 hover:bg-slate-50 transition-colors cursor-pointer"
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Share2 size={16} />
+                  {t('copyLink')}
+                </motion.button>
+
+                {/* Recruitment Info */}
+                <div className="p-4 bg-slate-50 rounded-lg border border-slate-100 space-y-2 mt-6 pt-6 border-t">
+                  <p className="text-caption-3 font-semibold text-slate-400">{tCommon('label.period')}</p>
+                  <p className="text-caption-1 font-semibold text-slate-900">{job.start_date}</p>
+                  <p className="text-caption-1 text-slate-600">~ {job.end_date}</p>
                 </div>
-              )}
+              </motion.div>
             </div>
-          </div>
-
-          {/* 데스크탑 지원하기 버튼 */}
-          <div className="hidden md:block bg-white rounded-xl p-6 shadow-sm">
-            {isExpired ? (
-              <div className="w-full py-4 bg-slate-100 text-slate-400 text-center rounded-lg font-semibold text-base">
-                마감된 공고입니다
-              </div>
-            ) : (
-              <button
-                onClick={handleApply}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-semibold text-base transition-colors cursor-pointer"
-              >
-                지원하기
-              </button>
-            )}
           </div>
         </div>
       </div>

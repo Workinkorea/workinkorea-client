@@ -1,7 +1,8 @@
 'use client';
 
-import { UseFormReturn } from 'react-hook-form';
-import { FormField } from '@/shared/ui/FormField';
+import { UseFormReturn, Controller } from 'react-hook-form';
+import { Bell, AlertTriangle } from 'lucide-react';
+import { cn } from '@/shared/lib/utils/utils';
 import type { AccountSettingsForm } from '../../validations/profile';
 
 /**
@@ -33,75 +34,101 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
   const { control } = form;
 
   return (
-    <div className="space-y-8">
-      {/* Notification Settings */}
-      <div className="space-y-4">
-        <div className="border-b border-slate-200 pb-3">
-          <h4 className="text-[15px] font-semibold text-slate-700">
-            알림 설정
-          </h4>
-          <p className="text-[11px] text-slate-500 mt-1">
-            받고 싶은 알림을 선택하세요
-          </p>
+    <div className="space-y-4">
+      {/* Card: Notification Settings */}
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
+          <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+            <Bell size={16} className="text-blue-600" />
+          </span>
+          <div>
+            <h2 className="text-body-2 font-bold text-slate-900">알림 설정</h2>
+            <p className="text-caption-3 text-slate-400 mt-0.5">받고 싶은 알림을 선택하세요</p>
+          </div>
         </div>
 
-        <div className="space-y-3">
-          {/* SNS Message Notifications */}
-          <FormField
+        {/* SNS Message Notifications */}
+        <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100">
+          <Controller
             name="notifications.contactRequestNotifications"
             control={control}
-            label=""
-            render={(field, fieldId) => {
-              // Destructure to handle checkbox separately
+            render={({ field }) => {
               const { value, ...fieldWithoutValue } = field;
               return (
-                <label className="flex items-center justify-between p-3 bg-slate-50 rounded-lg cursor-pointer">
-                  <div>
-                    <span className="text-sm font-medium">
+                <label className="flex items-center justify-between cursor-pointer">
+                  <div className="flex-1">
+                    <span className="text-caption-1 font-semibold text-slate-900">
                       SNS 메시지 알림
                     </span>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="text-caption-2 text-slate-500 mt-1">
                       중요한 활동을 SNS 메시지로 알림 받습니다
                     </p>
                   </div>
-                  <input
-                    {...fieldWithoutValue}
-                    id={fieldId}
-                    type="checkbox"
-                    checked={value}
-                    onChange={(e) => field.onChange(e.target.checked)}
-                    className="w-4 h-4 text-blue-500 rounded focus:ring-blue-500"
-                  />
+                  {/* Toggle Switch */}
+                  <div
+                    className={cn(
+                      'relative w-11 h-6 rounded-full transition-colors cursor-pointer shrink-0 ml-4',
+                      value ? 'bg-blue-600' : 'bg-slate-200'
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform',
+                        value ? 'translate-x-5' : 'translate-x-0.5'
+                      )}
+                    />
+                    <input
+                      {...fieldWithoutValue}
+                      type="checkbox"
+                      checked={value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      className="sr-only"
+                    />
+                  </div>
                 </label>
               );
             }}
           />
+        </div>
 
-          {/* Email Notifications */}
-          <FormField
+        {/* Email Notifications */}
+        <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100">
+          <Controller
             name="notifications.emailNotifications"
             control={control}
-            label=""
-            render={(field, fieldId) => {
+            render={({ field }) => {
               const { value, ...fieldWithoutValue } = field;
               return (
-                <label className="flex items-center justify-between p-3 bg-slate-50 rounded-lg cursor-pointer">
-                  <div>
-                    <span className="text-sm font-medium">
+                <label className="flex items-center justify-between cursor-pointer">
+                  <div className="flex-1">
+                    <span className="text-caption-1 font-semibold text-slate-900">
                       이메일 알림
                     </span>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="text-caption-2 text-slate-500 mt-1">
                       중요한 활동을 이메일로 알림 받습니다
                     </p>
                   </div>
-                  <input
-                    {...fieldWithoutValue}
-                    id={fieldId}
-                    type="checkbox"
-                    checked={value}
-                    onChange={(e) => field.onChange(e.target.checked)}
-                    className="w-4 h-4 text-blue-500 rounded focus:ring-blue-500"
-                  />
+                  {/* Toggle Switch */}
+                  <div
+                    className={cn(
+                      'relative w-11 h-6 rounded-full transition-colors cursor-pointer shrink-0 ml-4',
+                      value ? 'bg-blue-600' : 'bg-slate-200'
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform',
+                        value ? 'translate-x-5' : 'translate-x-0.5'
+                      )}
+                    />
+                    <input
+                      {...fieldWithoutValue}
+                      type="checkbox"
+                      checked={value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      className="sr-only"
+                    />
+                  </div>
                 </label>
               );
             }}
@@ -109,29 +136,23 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
         </div>
       </div>
 
-      {/* Danger Zone: Account Deletion */}
-      <div className="space-y-4">
-        <div className="border-b border-red-500 pb-3">
-          <h4 className="text-[15px] font-semibold text-red-500">
-            계정 관리
-          </h4>
-          <p className="text-[11px] text-slate-500 mt-1">
-            주의가 필요한 계정 관리 옵션입니다
-          </p>
+      {/* Card: Account Management (Danger Zone) */}
+      <div className="bg-red-50 border border-red-200 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-red-200">
+          <span className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
+            <AlertTriangle size={16} className="text-red-600" />
+          </span>
+          <div>
+            <h2 className="text-body-2 font-bold text-red-600">계정 관리</h2>
+            <p className="text-caption-3 text-slate-500 mt-0.5">주의가 필요한 계정 관리 옵션입니다</p>
+          </div>
         </div>
 
-        <div className="space-y-3">
+        <div className="px-5 sm:px-7 py-5">
           <button
             type="button"
-            className="
-              w-full text-left p-3
-              border border-red-500 rounded-lg
-              text-sm text-red-500
-              hover:bg-slate-50
-              transition-colors cursor-pointer
-            "
+            className="w-full px-4 py-2.5 border border-red-300 text-red-600 rounded-lg text-sm font-semibold hover:bg-red-100 transition-colors cursor-pointer"
             onClick={() => {
-              // TODO: Implement account deletion confirmation modal
               alert('계정 삭제 기능은 준비 중입니다.');
             }}
           >

@@ -189,11 +189,11 @@ export const postsApi = {
   /**
    * 채용 공고에 지원하기 (일반 사용자, 인증 필요)
    * @param data - 지원 정보 (company_post_id, resume_id, cover_letter)
+   *
+   * TODO: 백엔드에 POST /api/applications 엔드포인트 구현 필요.
+   * 현재 해당 라우터가 존재하지 않아 404 에러 발생.
    */
-  async applyToJob(data: ApplyToJobRequest): Promise<ApplyToJobResponse> {
-    return fetchClient.post<ApplyToJobResponse>(
-      '/api/applications',
-      data
-    );
+  async applyToJob(_data: ApplyToJobRequest): Promise<ApplyToJobResponse> {
+    throw new Error('지원 기능은 현재 준비 중입니다. 백엔드에 POST /api/applications 엔드포인트 구현이 필요합니다.');
   },
 };

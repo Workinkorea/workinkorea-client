@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,7 +22,6 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '@/shared/components/layout/Layout';
-import { HeaderClient } from '@/shared/components/layout/HeaderClient';
 import { FormField } from '@/shared/ui/FormField';
 import { Input } from '@/shared/ui/Input';
 import {
@@ -93,6 +93,7 @@ const getCareerKeyFromValue = (value: string): string => {
 };
 
 function ProfileEditClient() {
+  const t = useTranslations('profile.edit');
   const router = useRouter();
   const queryClient = useQueryClient();
   const [activeSection, setActiveSection] = useState<SectionType>('basic');
@@ -135,12 +136,12 @@ function ProfileEditClient() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
-      toast.success('프로필이 성공적으로 저장되었습니다.');
+      toast.success(t('saveSuccess'));
       setHasUnsavedChanges(false);
       router.push('/user/profile');
     },
     onError: () => {
-      toast.error('프로필 저장에 실패했습니다. 다시 시도해주세요.');
+      toast.error(t('saveError'));
     }
   });
 
@@ -151,12 +152,12 @@ function ProfileEditClient() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contact'] });
-      toast.success('연락처가 성공적으로 저장되었습니다.');
+      toast.success(t('contactSaveSuccess'));
       setHasUnsavedChanges(false);
       router.push('/user/profile');
     },
     onError: () => {
-      toast.error('연락처 저장에 실패했습니다. 다시 시도해주세요.');
+      toast.error(t('contactSaveError'));
     }
   });
 
@@ -167,11 +168,11 @@ function ProfileEditClient() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['accountConfig'] });
-      toast.success('계정 설정이 성공적으로 저장되었습니다.');
+      toast.success(t('accountSaveSuccess'));
       setHasUnsavedChanges(false);
     },
     onError: () => {
-      toast.error('계정 설정 저장에 실패했습니다. 다시 시도해주세요.');
+      toast.error(t('accountSaveError'));
     }
   });
 
@@ -377,9 +378,9 @@ function ProfileEditClient() {
   }, [activeSection, contactForm, accountForm]);
 
   const sections = [
-    { key: 'basic', label: '기본 정보', icon: User },
-    { key: 'contact', label: '연락처', icon: Mail },
-    { key: 'account', label: '계정 설정', icon: Settings },
+    { key: 'basic', label: t('sectionBasic'), icon: User },
+    { key: 'contact', label: t('sectionContact'), icon: Mail },
+    { key: 'account', label: t('sectionAccount'), icon: Settings },
   ];
 
   const handleSave = async () => {
@@ -442,7 +443,7 @@ function ProfileEditClient() {
           // 비밀번호가 입력된 경우에만 변경 요청
           if (passwordData.currentPassword && passwordData.newPassword) {
             // TODO: 비밀번호 변경 API 구현 필요
-            toast.info('비밀번호 변경 기능은 준비 중입니다.');
+            toast.info(t('passwordChangePending'));
           }
         }
 
@@ -464,7 +465,7 @@ function ProfileEditClient() {
 
   const handleBack = () => {
     if (hasUnsavedChanges) {
-      const confirmLeave = window.confirm('저장하지 않은 변경사항이 있습니다. 정말 나가시겠습니까?');
+      const confirmLeave = window.confirm(t('unsavedConfirm'));
       if (!confirmLeave) return;
     }
     router.push('/user/profile');
@@ -477,13 +478,13 @@ function ProfileEditClient() {
 
     // 파일 크기 검증 (5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('파일 크기는 5MB를 초과할 수 없습니다.');
+      toast.error(t('fileTooLarge5MB'));
       return;
     }
 
     // 파일 타입 검증
     if (!file.type.startsWith('image/')) {
-      toast.error('이미지 파일만 업로드 가능합니다.');
+      toast.error(t('imageOnly'));
       return;
     }
 
@@ -509,7 +510,7 @@ function ProfileEditClient() {
 
     // 파일 크기 검증 (10MB)
     if (file.size > 10 * 1024 * 1024) {
-      toast.error('파일 크기는 10MB를 초과할 수 없습니다.');
+      toast.error(t('fileTooLarge10MB'));
       return;
     }
 
@@ -524,7 +525,7 @@ function ProfileEditClient() {
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      toast.error('PDF, DOCX, 이미지 파일만 업로드 가능합니다.');
+      toast.error(t('portfolioFileTypes'));
       return;
     }
 
@@ -550,11 +551,10 @@ function ProfileEditClient() {
   if (isLoading) {
     return (
       <Layout>
-        <HeaderClient />
-        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="animate-pulse text-center">
             <div className="w-16 h-16 bg-blue-200 rounded-full mx-auto mb-4"></div>
-            <p className="text-slate-500">프로필 정보를 불러오는 중...</p>
+            <p className="text-slate-500">{t('loadingText')}</p>
           </div>
         </div>
       </Layout>
@@ -564,21 +564,20 @@ function ProfileEditClient() {
   if (error || !profile) {
     return (
       <Layout>
-        <HeaderClient />
-        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="text-center">
             <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
-            <h2 className="text-[24px] font-semibold text-slate-900 mb-2">
-              프로필을 불러올 수 없습니다
+            <h2 className="text-title-3 font-semibold text-slate-900 mb-2">
+              {t('errorTitle')}
             </h2>
             <p className="text-sm text-slate-500 mb-4">
-              잠시 후 다시 시도해주세요.
+              {t('errorRetry')}
             </p>
             <button
               onClick={handleBack}
               className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
             >
-              돌아가기
+              {t('goBack')}
             </button>
           </div>
         </div>
@@ -618,8 +617,8 @@ function ProfileEditClient() {
           />
         </div>
         <div>
-          <h3 className="text-[15px] font-semibold text-slate-900">프로필 사진</h3>
-          <p className="text-[11px] text-slate-500">JPG, PNG 파일만 업로드 가능 (최대 5MB)</p>
+          <h3 className="text-body-2 font-semibold text-slate-900">{t('profilePhoto')}</h3>
+          <p className="text-caption-3 text-slate-500">{t('profilePhotoHint')}</p>
         </div>
       </div>
 
@@ -627,13 +626,13 @@ function ProfileEditClient() {
         <FormField
           name="name"
           control={basicForm.control}
-          label="이름"
+          label={t('nameLabel')}
           error={basicForm.formState.errors.name?.message}
           render={(field, fieldId) => (
             <Input
               {...field}
               id={fieldId}
-              placeholder="이름을 입력하세요"
+              placeholder={t('namePlaceholder')}
               error={!!basicForm.formState.errors.name}
             />
           )}
@@ -642,13 +641,13 @@ function ProfileEditClient() {
         <FormField
           name="location"
           control={basicForm.control}
-          label="위치"
+          label={t('locationLabel')}
           error={basicForm.formState.errors.location?.message}
           render={(field, fieldId) => (
             <Input
               {...field}
               id={fieldId}
-              placeholder="이름을 입력하세요"
+              placeholder={t('locationPlaceholder')}
               error={!!basicForm.formState.errors.name}
             />
           )}
@@ -657,13 +656,13 @@ function ProfileEditClient() {
         <FormField
           name="address"
           control={basicForm.control}
-          label="주소"
+          label={t('addressLabel')}
           error={basicForm.formState.errors.address?.message}
           render={(field, fieldId) => (
             <Input
               {...field}
               id={fieldId}
-              placeholder="예: 서울특별시 강남구"
+              placeholder={t('addressPlaceholder')}
               error={!!basicForm.formState.errors.address}
             />
           )}
@@ -672,23 +671,23 @@ function ProfileEditClient() {
         <FormField
           name="introduction"
           control={basicForm.control}
-          label="소개"
+          label={t('introLabel')}
           error={basicForm.formState.errors.introduction?.message}
           render={(field, fieldId) => (
             <div>
               <textarea
                 {...field}
                 id={fieldId}
-                placeholder="자신에 대해 간단히 소개해주세요"
+                placeholder={t('introPlaceholder')}
                 rows={4}
                 maxLength={500}
                 className={cn(
-                  "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent resize-none",
+                  "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent resize-none",
                   "border-slate-200 focus:ring-blue-500",
                   basicForm.formState.errors.introduction && "border-red-500 focus:ring-red-500"
                 )}
               />
-              <div className="text-right text-[11px] text-slate-400 mt-1">
+              <div className="text-right text-caption-3 text-slate-400 mt-1">
                 {field.value?.length || 0}/500
               </div>
             </div>
@@ -698,22 +697,22 @@ function ProfileEditClient() {
         <FormField
           name="job_status"
           control={basicForm.control}
-          label="구직 상태"
+          label={t('jobStatusLabel')}
           error={basicForm.formState.errors.job_status?.message}
           render={(field, fieldId) => (
             <select
               {...field}
               id={fieldId}
               className={cn(
-                "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                 "border-slate-200 focus:ring-blue-500",
                 preferencesForm.formState.errors.job_status && "border-red-500 focus:ring-red-500"
               )}
             >
-              <option value="">상태를 선택하세요</option>
-              <option value="available">구직중</option>
-              <option value="busy">바쁨</option>
-              <option value="not-looking">구직안함</option>
+              <option value="">{t('jobStatusPlaceholder')}</option>
+              <option value="available">{t('jobStatusAvailable')}</option>
+              <option value="busy">{t('jobStatusBusy')}</option>
+              <option value="not-looking">{t('jobStatusNotLooking')}</option>
             </select>
           )}
         />
@@ -721,41 +720,50 @@ function ProfileEditClient() {
         <FormField
           name="career"
           control={basicForm.control}
-          label="경력"
+          label={t('careerLabel')}
           error={basicForm.formState.errors.career?.message}
           render={(field, fieldId) => (
             <select
               {...field}
               id={fieldId}
               className={cn(
-                "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                 "border-slate-200 focus:ring-blue-500",
                 basicForm.formState.errors.career && "border-red-500 focus:ring-red-500"
               )}
             >
-              <option value="">경력을 선택하세요</option>
-              {CAREER_OPTIONS.map((option) => (
-                <option key={option.key} value={option.key}>
-                  {option.label}
-                </option>
-              ))}
+              <option value="">{t('careerPlaceholder')}</option>
+              <option value="NEWCOMER">{t('careerNewcomer')}</option>
+              <option value="YEAR_1_LESS">{t('career1YearLess')}</option>
+              <option value="YEAR_1">{t('career1Year')}</option>
+              <option value="YEAR_2_LESS">{t('career2YearLess')}</option>
+              <option value="YEAR_2">{t('career2Year')}</option>
+              <option value="YEAR_3_LESS">{t('career3YearLess')}</option>
+              <option value="YEAR_3">{t('career3Year')}</option>
+              <option value="YEAR_5_LESS">{t('career5YearLess')}</option>
+              <option value="YEAR_5">{t('career5Year')}</option>
+              <option value="YEAR_7_LESS">{t('career7YearLess')}</option>
+              <option value="YEAR_7">{t('career7Year')}</option>
+              <option value="YEAR_10_LESS">{t('career10YearLess')}</option>
+              <option value="YEAR_10">{t('career10Year')}</option>
+              <option value="YEAR_10_MORE">{t('career10YearMore')}</option>
             </select>
           )}
         />
 
         {/* 포트폴리오 파일 업로드 */}
         <div className="space-y-2">
-          <label className="text-[11px] font-medium text-slate-900">
-            포트폴리오
+          <label className="text-caption-3 font-medium text-slate-900">
+            {t('portfolioLabel')}
           </label>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={handlePortfolioButtonClick}
-              className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-[11px] text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-caption-3 text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
             >
               <Camera size={16} />
-              파일 선택
+              {t('portfolioSelectFile')}
             </button>
             <input
               ref={portfolioFileInputRef}
@@ -766,7 +774,7 @@ function ProfileEditClient() {
             />
             {(portfolioFileName || profile.portfolio_url) && (
               <div className="flex items-center gap-2 flex-1">
-                <span className="text-[11px] text-slate-600 truncate">
+                <span className="text-caption-3 text-slate-600 truncate">
                   {portfolioFileName || profile.portfolio_url}
                 </span>
                 <button
@@ -779,15 +787,15 @@ function ProfileEditClient() {
               </div>
             )}
           </div>
-          <p className="text-[11px] text-slate-500">
-            PDF, DOCX, 이미지 파일 업로드 가능 (최대 10MB)
+          <p className="text-caption-3 text-slate-500">
+            {t('portfolioFileHint')}
           </p>
         </div>
 
         <FormField
           name="position_id"
           control={basicForm.control}
-          label="직무 선택"
+          label={t('positionLabel')}
           error={basicForm.formState.errors.position_id?.message}
           render={(field, fieldId) => {
             const positionHierarchy = getPositionsByHierarchy();
@@ -798,12 +806,12 @@ function ProfileEditClient() {
                 value={field.value ?? ''}
                 onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                 className={cn(
-                  "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                  "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                   "border-slate-200 focus:ring-blue-500",
                   basicForm.formState.errors.position_id && "border-red-500 focus:ring-red-500"
                 )}
               >
-                <option value="">직무를 선택하세요</option>
+                <option value="">{t('positionPlaceholder')}</option>
                 {positionHierarchy.map((category) => (
                   <optgroup key={category.categoryCode} label={category.category}>
                     {category.subcategories.map((subcategory) =>
@@ -823,7 +831,7 @@ function ProfileEditClient() {
         <FormField
           name="country_id"
           control={basicForm.control}
-          label="국적"
+          label={t('nationalityLabel')}
           error={basicForm.formState.errors.country_id?.message}
           render={(field, fieldId) => (
             <select
@@ -832,7 +840,7 @@ function ProfileEditClient() {
               value={field.value ?? 122}
               onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 122)}
               className={cn(
-                "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                 "border-slate-200 focus:ring-blue-500",
                 basicForm.formState.errors.country_id && "border-red-500 focus:ring-red-500"
               )}
@@ -849,26 +857,26 @@ function ProfileEditClient() {
         {/* 언어 스킬 */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-[11px] font-medium text-slate-900">언어 스킬</label>
+            <label className="text-caption-3 font-medium text-slate-900">{t('languageSkillsLabel')}</label>
             <button
               type="button"
               onClick={() => appendLanguage({ language_type: '', level: '' })}
-              className="flex items-center gap-1 text-blue-500 hover:text-blue-600 text-[11px] cursor-pointer"
+              className="flex items-center gap-1 text-blue-500 hover:text-blue-600 text-caption-3 cursor-pointer"
             >
               <Plus size={16} />
-              <span>추가</span>
+              <span>{t('languageSkillsAdd')}</span>
             </button>
           </div>
 
           {languageFields.length === 0 && (
-            <p className="text-[11px] text-slate-400">언어 스킬을 추가해주세요</p>
+            <p className="text-caption-3 text-slate-400">{t('languageSkillsEmpty')}</p>
           )}
 
           <div className="space-y-3">
             {languageFields.map((field, index) => (
               <div key={field.id} className="border border-slate-100 rounded-lg p-4 space-y-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-medium text-slate-700">언어 {index + 1}</span>
+                  <span className="text-caption-3 font-medium text-slate-700">{t('languageN', { n: index + 1 })}</span>
                   <button
                     type="button"
                     onClick={() => removeLanguage(index)}
@@ -881,24 +889,29 @@ function ProfileEditClient() {
                 <FormField
                   name={`language_skills.${index}.language_type`}
                   control={basicForm.control}
-                  label="언어"
+                  label={t('languageLabel')}
                   error={basicForm.formState.errors.language_skills?.[index]?.language_type?.message}
                   render={(field, fieldId) => (
                     <select
                       {...field}
                       id={fieldId}
                       className={cn(
-                        "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                        "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                         "border-slate-200 focus:ring-blue-500",
                         basicForm.formState.errors.language_skills?.[index]?.language_type && "border-red-500 focus:ring-red-500"
                       )}
                     >
-                      <option value="">언어를 선택하세요</option>
-                      {LANGUAGE_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
+                      <option value="">{t('languagePlaceholder')}</option>
+                      <option value="korean">{t('langKorean')}</option>
+                      <option value="english">{t('langEnglish')}</option>
+                      <option value="japanese">{t('langJapanese')}</option>
+                      <option value="chinese">{t('langChinese')}</option>
+                      <option value="spanish">{t('langSpanish')}</option>
+                      <option value="french">{t('langFrench')}</option>
+                      <option value="german">{t('langGerman')}</option>
+                      <option value="vietnamese">{t('langVietnamese')}</option>
+                      <option value="thai">{t('langThai')}</option>
+                      <option value="other">{t('langOther')}</option>
                     </select>
                   )}
                 />
@@ -906,24 +919,23 @@ function ProfileEditClient() {
                 <FormField
                   name={`language_skills.${index}.level`}
                   control={basicForm.control}
-                  label="수준"
+                  label={t('languageLevelLabel')}
                   error={basicForm.formState.errors.language_skills?.[index]?.level?.message}
                   render={(field, fieldId) => (
                     <select
                       {...field}
                       id={fieldId}
                       className={cn(
-                        "w-full border rounded-lg text-[11px] px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
+                        "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
                         "border-slate-200 focus:ring-blue-500",
                         basicForm.formState.errors.language_skills?.[index]?.level && "border-red-500 focus:ring-red-500"
                       )}
                     >
-                      <option value="">수준을 선택하세요</option>
-                      {LANGUAGE_LEVEL_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
+                      <option value="">{t('languageLevelPlaceholder')}</option>
+                      <option value="native">{t('levelNative')}</option>
+                      <option value="advanced">{t('levelAdvanced')}</option>
+                      <option value="intermediate">{t('levelIntermediate')}</option>
+                      <option value="beginner">{t('levelBeginner')}</option>
                     </select>
                   )}
                 />
@@ -940,14 +952,14 @@ function ProfileEditClient() {
       <FormField
         name="phone_number"
         control={contactForm.control}
-        label="전화번호"
+        label={t('phoneLabel')}
         error={contactForm.formState.errors.phone_number?.message}
         render={(field, fieldId) => (
           <Input
             {...field}
             id={fieldId}
             type="tel"
-            placeholder="전화번호를 입력하세요"
+            placeholder={t('phonePlaceholder')}
             error={!!contactForm.formState.errors.phone_number}
           />
         )}
@@ -986,7 +998,7 @@ function ProfileEditClient() {
       <FormField
         name="website_url"
         control={contactForm.control}
-        label="웹사이트 URL"
+        label={t('websiteLabel')}
         error={contactForm.formState.errors.website_url?.message}
         render={(field, fieldId) => (
           <Input
@@ -1011,8 +1023,8 @@ function ProfileEditClient() {
       {/* 비밀번호 변경 */}
       {/* <div className="space-y-4">
         <div className="border-b border-slate-100 pb-3">
-          <h4 className="text-[15px] font-semibold text-slate-700">비밀번호 변경</h4>
-          <p className="text-[11px] text-slate-500 mt-1">
+          <h4 className="text-body-2 font-semibold text-slate-700">비밀번호 변경</h4>
+          <p className="text-caption-3 text-slate-500 mt-1">
             보안을 위해 정기적으로 비밀번호를 변경하세요
           </p>
         </div>
@@ -1065,7 +1077,7 @@ function ProfileEditClient() {
           )}
         />
 
-        <div className="text-[11px] text-slate-500 bg-slate-100 p-3 rounded-lg">
+        <div className="text-caption-3 text-slate-500 bg-slate-100 p-3 rounded-lg">
           <div className="font-medium mb-1">비밀번호 요구사항:</div>
           <ul className="list-disc list-inside space-y-1">
             <li>최소 8자 이상</li>
@@ -1078,9 +1090,9 @@ function ProfileEditClient() {
       {/* 알림 설정 */}
       <div className="space-y-4">
         <div className="border-b border-slate-100 pb-3">
-          <h4 className="text-[15px] font-semibold text-slate-700">알림 설정</h4>
-          <p className="text-[11px] text-slate-500 mt-1">
-            받고 싶은 알림을 선택하세요
+          <h4 className="text-body-2 font-semibold text-slate-700">{t('notificationsTitle')}</h4>
+          <p className="text-caption-3 text-slate-500 mt-1">
+            {t('notificationsSubtitle')}
           </p>
         </div>
 
@@ -1094,8 +1106,8 @@ function ProfileEditClient() {
               return (
                 <label className="flex items-center justify-between p-3 bg-slate-100 rounded-lg cursor-pointer">
                   <div>
-                    <span className="text-sm font-medium">SNS 메시지 알림</span>
-                    <p className="text-[11px] text-slate-500">중요한 활동을 SNS 메시지로 알림 받습니다</p>
+                    <span className="text-sm font-medium">{t('snsNotificationLabel')}</span>
+                    <p className="text-caption-3 text-slate-500">{t('snsNotificationDesc')}</p>
                   </div>
                   <input
                     {...fieldWithoutValue}
@@ -1119,8 +1131,8 @@ function ProfileEditClient() {
               return (
                 <label className="flex items-center justify-between p-3 bg-slate-100 rounded-lg cursor-pointer">
                   <div>
-                    <span className="text-sm font-medium">이메일 알림</span>
-                    <p className="text-[11px] text-slate-500">중요한 활동을 이메일로 알림 받습니다</p>
+                    <span className="text-sm font-medium">{t('emailNotificationLabel')}</span>
+                    <p className="text-caption-3 text-slate-500">{t('emailNotificationDesc')}</p>
                   </div>
                   <input
                     {...fieldWithoutValue}
@@ -1141,15 +1153,15 @@ function ProfileEditClient() {
       {/* 위험 영역 */}
       <div className="space-y-4">
         <div className="border-b border-red-500 pb-3">
-          <h4 className="text-[15px] font-semibold text-red-500">계정 관리</h4>
-          <p className="text-[11px] text-slate-500 mt-1">
-            주의가 필요한 계정 관리 옵션입니다
+          <h4 className="text-body-2 font-semibold text-red-500">{t('accountManagementTitle')}</h4>
+          <p className="text-caption-3 text-slate-500 mt-1">
+            {t('accountManagementSubtitle')}
           </p>
         </div>
 
         <div className="space-y-3">
           <button className="w-full text-left p-3 border border-red-500 rounded-lg text-sm text-red-500 hover:bg-slate-100 transition-colors cursor-pointer">
-            계정 삭제 요청
+            {t('deleteAccountButton')}
           </button>
         </div>
       </div>
@@ -1158,8 +1170,7 @@ function ProfileEditClient() {
 
   return (
     <Layout>
-      <HeaderClient />
-      <div className="min-h-screen bg-slate-50 py-8">
+      <div className="min-h-screen bg-white py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* 헤더 */}
           <motion.div
@@ -1174,19 +1185,19 @@ function ProfileEditClient() {
                 className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
               >
                 <ArrowLeft size={20} />
-                <span>돌아가기</span>
+                <span>{t('back')}</span>
               </button>
               <div>
-                <h1 className="text-[28px] font-bold text-slate-900">프로필 편집</h1>
-                <p className="text-sm text-slate-500">개인 정보를 수정하여 프로필을 최신 상태로 유지하세요</p>
+                <h1 className="text-title-2 font-bold text-slate-900">{t('pageTitle')}</h1>
+                <p className="text-sm text-slate-500">{t('pageSubtitle')}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
               {hasUnsavedChanges && (
-                <div className="flex items-center gap-2 text-amber-500 text-[11px]">
+                <div className="flex items-center gap-2 text-amber-500 text-caption-3">
                   <AlertCircle size={16} />
-                  <span>저장되지 않은 변경사항</span>
+                  <span>{t('unsavedChanges')}</span>
                 </div>
               )}
 
@@ -1198,12 +1209,12 @@ function ProfileEditClient() {
                 {updateProfileMutation.isPending ? (
                   <>
                     <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                    저장 중...
+                    {t('saving')}
                   </>
                 ) : (
                   <>
                     <Save size={16} />
-                    저장
+                    {t('save')}
                   </>
                 )}
               </button>
@@ -1213,7 +1224,7 @@ function ProfileEditClient() {
           <div className="flex gap-8">
             {/* 사이드바 네비게이션 */}
             <motion.div
-              className="w-64 flex-shrink-0"
+              className="w-64 shrink-0"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}

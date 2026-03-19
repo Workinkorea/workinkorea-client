@@ -1,9 +1,6 @@
-'use client';
-
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 
-const footerLinks = [
+const links = [
   { name: '채용공고 찾아보기', href: '/jobs' },
   { name: '이용약관', href: '/terms' },
   { name: '개인정보처리방침', href: '/privacy' },
@@ -13,30 +10,26 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-100 bg-white px-4 py-6">
-      {/* 링크 */}
-      <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 mb-4">
-        {footerLinks.map((link) => (
-          <Link
-            key={link.name}
-            href={link.href}
-            className="relative text-[13px] text-slate-500 hover:text-slate-800 transition-colors group"
-          >
-            {link.name}
-            <motion.span
-              className="absolute bottom-0 left-0 h-px bg-slate-500 w-full origin-left"
-              initial={{ scaleX: 0 }}
-              whileHover={{ scaleX: 1 }}
-              transition={{ duration: 0.22 }}
-            />
-          </Link>
-        ))}
-      </div>
+    <footer className="bg-white border-t border-slate-100 py-6">
+      <div className="page-container flex flex-col items-center gap-3">
+        {/* 링크 */}
+        <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-caption-1 text-slate-400 hover:text-slate-600 transition-colors"
+            >
+              {link.name}
+            </Link>
+          ))}
+        </nav>
 
-      {/* 저작권 */}
-      <p className="text-center text-[12px] text-slate-400">
-        © 2026 Work In Korea. All rights reserved.
-      </p>
+        {/* 저작권 */}
+        <p className="text-caption-2 text-slate-400">
+          © 2026 Work In Korea. All rights reserved.
+        </p>
+      </div>
     </footer>
   );
 }

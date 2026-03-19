@@ -1,5 +1,10 @@
 import { create } from 'zustand';
 import { cookieManager, UserType } from '@/shared/lib/utils/cookieManager';
+import { tokenStore, decodeUserType } from '@/shared/api/tokenStore';
+
+// 로컬 개발 테스트용 인증 우회
+const BYPASS_AUTH = process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true';
+const BYPASS_AUTH_TYPE = (process.env.NEXT_PUBLIC_BYPASS_AUTH_TYPE ?? 'user') as UserType;
 
 interface AuthState {
   // State
@@ -48,7 +53,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     // 1. userType 먼저 읽기 (쿠키 삭제 전)
     const currentUserType = cookieManager.getUserType();
 
-    // 2. State 즉시 업데이트 (UI 반영)
+    // 2. State 즉시 업데이트 (UI 반영) + 토큰 삭제
+    tokenStore.clear();
     set({
       isAuthenticated: false,
       userType: null,
@@ -76,23 +82,82 @@ export const useAuthStore = create<AuthState>((set) => ({
   /**
    * 앱 시작 시 인증 상태 초기화
    *
-   * 백엔드가 userType 쿠키를 httponly=false로 설정하므로
-   * 클라이언트에서 직접 읽어서 초기화
+   * refresh_token (HttpOnly Cookie)으로 access_token을 재발급받고
+   * JWT payload에서 userType을 추출하여 인증 상태 결정
    */
   initialize: async () => {
     if (typeof window === 'undefined') return;
 
-    const userType = cookieManager.getUserType();
+    // 로컬 개발 테스트 모드: 인증 우회
+    if (BYPASS_AUTH) {
+      set({
+        isAuthenticated: true,
+        userType: BYPASS_AUTH_TYPE,
+        isInitialized: true,
+      });
+      return;
+    }
 
+    try {
+      const response = await fetch('/api/auth/refresh', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const token: string | undefined = data.access_token;
+        const userTypeFromBody: UserType | undefined = data.user_type;
+
+        if (token) {
+          // Legacy path: backend returns token in body
+          tokenStore.set(token);
+          const userType = decodeUserType(token);
+          set({
+            isAuthenticated: true,
+            userType,
+            isInitialized: true,
+          });
+          return;
+        }
+
+        if (userTypeFromBody) {
+          // Current path: backend sets token as cookie, returns user_type in body
+          set({
+            isAuthenticated: true,
+            userType: userTypeFromBody,
+            isInitialized: true,
+          });
+          return;
+        }
+
+        // Fallback: 서버가 200 OK를 반환했지만 body에 token/user_type이 없는 경우
+        // userType 쿠키를 확인해 인증 상태 복원 (로그인 시 서버가 설정한 쿠키)
+        const cookieUserType = cookieManager.getUserType();
+        if (cookieUserType) {
+          set({
+            isAuthenticated: true,
+            userType: cookieUserType,
+            isInitialized: true,
+          });
+          return;
+        }
+      }
+    } catch {
+      // 네트워크 오류 등 — 비인증 상태로 처리
+    }
+
+    tokenStore.clear();
     set({
-      isAuthenticated: !!userType,
-      userType,
+      isAuthenticated: false,
+      userType: null,
       isInitialized: true,
     });
   },
 
   /**
-   * 인증 상태 재확인 (쿠키 기반)
+   * 인증 상태 재확인 (token 기반)
    *
    * 사용 시점:
    * - 로그인 성공 후
@@ -101,12 +166,13 @@ export const useAuthStore = create<AuthState>((set) => ({
   checkAuth: async () => {
     if (typeof window === 'undefined') return;
 
-    const userType = cookieManager.getUserType();
-
-    set({
-      isAuthenticated: !!userType,
-      userType,
-    });
+    const token = tokenStore.get();
+    if (token) {
+      const userType = decodeUserType(token);
+      set({ isAuthenticated: true, userType });
+    } else {
+      set({ isAuthenticated: false, userType: null });
+    }
   },
 }));
 

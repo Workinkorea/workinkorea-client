@@ -1,33 +1,15 @@
-'use client';
-
-import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { ReactNode } from 'react';
 
 interface ResumeLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function ResumeLayout({ children }: ResumeLayoutProps) {
-  const { isAuthenticated, isLoading, userType, logout } = useAuth();
-
-  const handleLogout = async () => {
-    await logout();
-  };
-
   return (
-    <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={isLoading}
-        onLogout={handleLogout}
-      />
-      <div className="min-h-screen bg-background-alternative py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {children}
-        </div>
+    <div className="min-h-screen bg-background-alternative py-8">
+      <div className="page-container">
+        {children}
       </div>
-    </Layout>
+    </div>
   );
 }

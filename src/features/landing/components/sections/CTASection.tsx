@@ -3,10 +3,13 @@
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { useTranslations } from 'next-intl';
+import { cn } from '@/shared/lib/utils/utils';
+import { ArrowRight } from 'lucide-react';
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } },
 };
 
 const itemVariants = {
@@ -21,56 +24,109 @@ const itemVariants = {
 export default function CTASection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
+  const t = useTranslations('landing.cta');
 
   return (
     <section
       ref={ref}
-      className="py-12 md:py-16 animated-gradient"
+      className="relative py-16 sm:py-20 lg:py-28 overflow-hidden"
     >
+      {/* 배경 그래디언트 */}
+      <div className="absolute inset-0 bg-linear-to-br from-blue-600 via-blue-700 to-blue-900" />
+
+      {/* 장식 원 1 */}
+      <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400/20 rounded-full -mr-36 sm:-mr-48 -mt-36 sm:-mt-48 blur-3xl" />
+
+      {/* 장식 원 2 */}
+      <div className="absolute bottom-0 left-0 w-64 sm:w-80 h-64 sm:h-80 bg-blue-500/20 rounded-full -ml-32 sm:-ml-40 -mb-32 sm:-mb-40 blur-3xl" />
+
       <motion.div
-        className="flex flex-col justify-center px-4 sm:px-6 lg:px-8 text-center"
+        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? 'visible' : 'hidden'}
       >
         {/* 메인 제목 */}
         <motion.h2
-          className="text-[24px] md:text-[40px] font-black text-white mb-3 md:mb-6 tracking-tight"
+          className="text-title-2 sm:text-title-1 lg:text-display-1 font-black text-white mb-4 sm:mb-5 lg:mb-6 tracking-tight leading-tight"
           variants={itemVariants}
         >
-          지금 시작하세요!
+          {t('heading')}
         </motion.h2>
 
-        {/* 설명 */}
+        {/* 부제 */}
         <motion.p
-          className="text-[13px] md:text-lg text-blue-100 mb-8 md:mb-12"
+          className="text-body-3 sm:text-body-2 lg:text-[18px] text-blue-100 mb-8 sm:mb-10 lg:mb-12 max-w-2xl mx-auto leading-relaxed"
           variants={itemVariants}
         >
-          수많은 기업과 함께 새로운 미래를 시작하세요
+          {t('description')}
         </motion.p>
 
-        {/* 버튼들 */}
+        {/* CTA 버튼 그룹 */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-5 justify-center flex-wrap"
           variants={itemVariants}
         >
-          <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+          {/* Primary CTA */}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full sm:w-auto"
+          >
             <Link
               href="/signup"
-              className="inline-flex items-center justify-center px-6 md:px-8 py-3 md:py-4 bg-white text-blue-600 text-sm md:text-base font-semibold rounded-xl hover:bg-slate-50 transition-colors shadow-lg"
+              className={cn(
+                'inline-flex items-center justify-center gap-2',
+                'px-5 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4',
+                'bg-white text-blue-600',
+                'text-caption-1 sm:text-body-3 lg:text-base font-semibold',
+                'rounded-lg lg:rounded-xl',
+                'hover:bg-blue-50 transition-all duration-200',
+                'shadow-lg hover:shadow-xl',
+                'cursor-pointer'
+              )}
             >
-              무료 회원가입
+              <span>{t('freeSignup')}</span>
+              <ArrowRight size={16} className="hidden sm:inline" />
             </Link>
           </motion.div>
-          <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+
+          {/* Secondary CTA */}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full sm:w-auto"
+          >
             <Link
               href="/jobs"
-              className="inline-flex items-center justify-center px-6 md:px-8 py-3 md:py-4 bg-transparent text-white text-sm md:text-base font-semibold rounded-xl border-2 border-white hover:bg-white hover:text-blue-600 transition-colors"
+              className={cn(
+                'inline-flex items-center justify-center gap-2',
+                'px-5 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4',
+                'bg-transparent text-white',
+                'text-caption-1 sm:text-body-3 lg:text-base font-semibold',
+                'rounded-lg lg:rounded-xl',
+                'border-2 border-white/50 hover:border-white',
+                'hover:bg-white/10 transition-all duration-200',
+                'backdrop-blur-sm',
+                'cursor-pointer'
+              )}
             >
-              공고 둘러보기
+              <span>{t('browseJobs')}</span>
+              <ArrowRight size={16} className="hidden sm:inline" />
             </Link>
           </motion.div>
         </motion.div>
+
+        {/* 보충 텍스트 */}
+        <motion.p
+          className="mt-6 sm:mt-8 lg:mt-10 text-caption-3 sm:text-caption-2 text-blue-200"
+          variants={itemVariants}
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          {t('signupBenefit')}
+        </motion.p>
       </motion.div>
     </section>
   );

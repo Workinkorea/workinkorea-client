@@ -8,6 +8,8 @@
  * 4. Server/Client Components 모두 지원
  */
 
+import { tokenStore, decodeUserType } from '@/shared/api/tokenStore';
+
 export const API_BASE_URL = "";
 
 // 서버 전용 URL (SSR/SSG에서 사용)
@@ -47,11 +49,16 @@ export async function fetchAPI<T>(
   const isServer = typeof window === 'undefined';
   const baseURL = isServer ? SERVER_API_URL : API_BASE_URL;
 
+  // 클라이언트 환경에서 in-memory access_token 주입
+  const token = !isServer ? tokenStore.get() : null;
+  const authHeader: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+
   const config: RequestInit = {
     ...fetchOptions,
     credentials: 'include', // HttpOnly Cookie 자동 전송
     headers: {
       'Content-Type': 'application/json',
+      ...authHeader,
       ...fetchOptions.headers,
     },
     // Next.js 캐싱 옵션 (Server Components에서만 유효)
@@ -105,7 +112,7 @@ export async function fetchAPI<T>(
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new FetchError(
-        errorData.message || response.statusText,
+        errorData.error || errorData.message || errorData.detail || response.statusText,
         response.status,
         errorData
       );
@@ -144,7 +151,15 @@ async function refreshToken(isServer: boolean): Promise<boolean> {
       },
     });
 
-    return response.ok;
+    if (response.ok) {
+      const data = await response.json();
+      if (!isServer && data.access_token) {
+        tokenStore.set(data.access_token);
+      }
+      return true;
+    }
+
+    return false;
   } catch (error) {
     return false;
   }

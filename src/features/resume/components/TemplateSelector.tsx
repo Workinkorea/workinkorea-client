@@ -62,7 +62,7 @@ function TemplateSelector({
     <div className="space-y-6">
       {/* 헤더 */}
       <div className="text-center">
-        <h2 className="text-[28px] font-bold text-slate-900 mb-2">
+        <h2 className="text-title-2 font-bold text-slate-900 mb-2">
           이력서 템플릿 선택
         </h2>
         <p className="text-sm text-slate-600">
@@ -105,7 +105,7 @@ function TemplateSelector({
                 {template.preview}
               </div>
               <div className="flex-1">
-                <h3 className="text-[15px] font-semibold text-slate-900 mb-1">
+                <h3 className="text-body-2 font-semibold text-slate-900 mb-1">
                   {template.name}
                 </h3>
                 <p className="text-xs text-slate-600 line-clamp-2">
@@ -119,7 +119,7 @@ function TemplateSelector({
               <h4 className="text-xs font-semibold text-slate-700">주요 특징</h4>
               <ul className="space-y-1">
                 {template.features.map((feature, idx) => (
-                  <li key={idx} className="text-[11px] text-slate-600 flex items-center gap-2">
+                  <li key={idx} className="text-caption-3 text-slate-600 flex items-center gap-2">
                     <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
                     {feature}
                   </li>
@@ -160,7 +160,7 @@ function TemplateSelector({
 
       {/* 안내 메시지 */}
       <div className="text-center">
-        <p className="text-[11px] text-slate-500">
+        <p className="text-caption-3 text-slate-500">
           템플릿은 나중에 변경할 수 있습니다
         </p>
       </div>

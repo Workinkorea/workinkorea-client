@@ -10,6 +10,8 @@ import { validatePassword } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { FetchError } from '@/shared/api/fetchClient';
+import { Building2, CheckCircle2, Users, FileText, Loader2, AlertCircle, WifiOff } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface BusinessLoginFormData {
   email: string;
@@ -34,18 +36,33 @@ const getDefaultValues = (): BusinessLoginFormData => {
   }
 };
 
-const STATUS_ERRORS: Record<number, { field: 'email' | 'password'; message: string }> = {
-  401: { field: 'password', message: '비밀번호가 일치하지 않습니다.' },
-  403: { field: 'email', message: '기업 계정이 비활성화되었거나 접근 권한이 없습니다.' },
-  404: { field: 'email', message: '등록되지 않은 기업 계정입니다.' },
-  429: { field: 'password', message: '로그인 시도 횟수가 초과되었습니다. 잠시 후 다시 시도해주세요.' },
+type LoginErrorType = 'credential' | 'account' | 'permission' | 'rateLimit' | 'server' | 'network';
+
+interface LoginErrorInfo {
+  type: LoginErrorType;
+  field: 'email' | 'password' | null;
+  message: string;
+}
+
+const ICON_MAP = [FileText, Users, CheckCircle2];
+
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
 export default function BusinessLoginForm() {
   const router = useRouter();
   const { login } = useAuth();
+  const t = useTranslations('auth.companyLogin');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState<LoginErrorInfo | null>(null);
 
   const {
     control,
@@ -59,14 +76,27 @@ export default function BusinessLoginForm() {
     defaultValues: getDefaultValues(),
   });
 
-  const email = watch('email');
+  const email    = watch('email');
   const password = watch('password');
 
   const isValidEmail = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 
+  const STATUS_ERRORS: Record<number, LoginErrorInfo> = {
+    401: { type: 'credential', field: 'password', message: t('errorCredential401') },
+    403: { type: 'permission', field: 'email',    message: t('errorPermission403') },
+    404: { type: 'account',    field: 'email',    message: t('errorAccount404') },
+    429: { type: 'rateLimit',  field: null,       message: t('errorRateLimit429') },
+  };
+
+  const FEATURES = [
+    { icon: ICON_MAP[0], text: t('feature1') },
+    { icon: ICON_MAP[1], text: t('feature2') },
+    { icon: ICON_MAP[2], text: t('feature3') },
+  ];
+
   const handleEmailBlur = (val: string) => {
     if (val && !isValidEmail(val)) {
-      setError('email', { type: 'manual', message: '올바른 이메일 형식을 입력해주세요.' });
+      setError('email', { type: 'manual', message: t('errorEmailFormat') });
     } else {
       clearErrors('email');
     }
@@ -87,13 +117,14 @@ export default function BusinessLoginForm() {
 
   const onSubmit = async (data: BusinessLoginFormData) => {
     if (!isFormValid) {
-      if (!email) setError('email', { type: 'manual', message: '이메일을 입력해주세요.' });
-      if (!password) setError('password', { type: 'manual', message: '비밀번호를 입력해주세요.' });
+      if (!email)    setError('email',    { type: 'manual', message: t('errorEmailEmpty') });
+      if (!password) setError('password', { type: 'manual', message: t('errorPasswordEmpty') });
       return;
     }
     if (isLoading) return;
 
     setIsLoading(true);
+    setLoginError(null);
     clearErrors();
 
     try {
@@ -118,8 +149,11 @@ export default function BusinessLoginForm() {
         console.error('Company login error:', error);
       }
 
-      let errorMessage = '로그인 중 오류가 발생했습니다.';
-      let errorField: 'email' | 'password' = 'password';
+      let errorInfo: LoginErrorInfo = {
+        type: 'server',
+        field: null,
+        message: t('errorServer'),
+      };
 
       if (error instanceof FetchError) {
         const { status, data } = error;
@@ -132,141 +166,272 @@ export default function BusinessLoginForm() {
             : '';
 
         if (STATUS_ERRORS[status]) {
-          errorField = STATUS_ERRORS[status].field;
-          errorMessage = STATUS_ERRORS[status].message;
+          errorInfo = STATUS_ERRORS[status];
         } else if (status === 400) {
           const msg = serverError.toLowerCase();
           if (msg.includes('email')) {
-            errorField = 'email';
-            errorMessage = '올바른 이메일 형식을 입력해주세요.';
+            errorInfo = { type: 'credential', field: 'email', message: t('errorEmailFormat') };
           } else if (msg.includes('password')) {
-            errorMessage = '올바른 비밀번호를 입력해주세요.';
+            errorInfo = { type: 'credential', field: 'password', message: t('errorPasswordFormat') };
           } else {
-            errorMessage = serverError || '입력 정보를 확인해주세요.';
+            errorInfo = { type: 'credential', field: null, message: serverError || t('errorCredential400') };
           }
         } else if (status >= 500) {
-          errorMessage = '서버에 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+          errorInfo = { type: 'server', field: null, message: t('errorServerInternal') };
         } else if (serverError) {
-          errorMessage = serverError;
+          errorInfo = { type: 'server', field: null, message: serverError };
         }
       } else if (error instanceof Error) {
         const msg = error.message.toLowerCase();
         if (msg.includes('network') || msg.includes('fetch')) {
-          errorMessage = '네트워크 연결을 확인해주세요.';
+          errorInfo = { type: 'network', field: null, message: t('errorNetwork') };
         } else if (msg.includes('timeout')) {
-          errorMessage = '요청 시간이 초과되었습니다. 다시 시도해주세요.';
+          errorInfo = { type: 'network', field: null, message: t('errorTimeout') };
         }
       }
 
-      setError(errorField, { type: 'manual', message: errorMessage });
+      setLoginError(errorInfo);
+      // 특정 필드에도 포커스 표시
+      if (errorInfo.field) {
+        setError(errorInfo.field, { type: 'manual', message: '' });
+      }
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-[400px] w-full space-y-8">
+    <div className="flex min-h-screen">
+
+      {/* ── 좌측 그라데이션 패널 ──────────────────────────────────── */}
+      <motion.div
+        className="hidden lg:flex flex-1 bg-linear-to-br from-blue-400 to-blue-600 flex-col justify-center p-16 relative overflow-hidden"
+        initial={{ opacity: 0, x: -24 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* 배경 장식 원 */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-white/5 pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-white/7 pointer-events-none" />
+
+        {/* 로고 */}
+        <div className="flex items-center gap-3 mb-12">
+          <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center">
+            <Building2 size={20} className="text-white" />
+          </div>
+          <span className="text-white font-['Plus_Jakarta_Sans'] text-xl font-extrabold tracking-[-0.5px]">
+            WorkInKorea
+          </span>
+        </div>
+
+        {/* 헤드카피 */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
+          className="space-y-4 mb-12"
         >
-          <h1 className="text-title-2 text-slate-900 mb-8">기업 로그인</h1>
+          <motion.p variants={fadeUp} className="text-blue-200 text-caption-1 font-semibold uppercase tracking-[1.5px]">
+            {t('partnerBadge')}
+          </motion.p>
+          <motion.h2 variants={fadeUp} className="text-white text-title-1 font-extrabold leading-tight">
+            {t('heading').split('\n').map((line, i) => (
+              <span key={i}>{line}{i === 0 && <br />}</span>
+            ))}
+          </motion.h2>
+          <motion.p variants={fadeUp} className="text-blue-200 text-body-2 leading-relaxed">
+            {t('description')}
+          </motion.p>
         </motion.div>
 
-        <motion.form
-          className="space-y-6"
-          onSubmit={handleSubmit(onSubmit)}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+        {/* 피처 리스트 */}
+        <motion.ul
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
+          className="space-y-4"
         >
-          <FormField
-            name="email"
-            control={control}
-            label="이메일 (기업 ID)"
-            error={errors.email?.message}
-            render={(field, fieldId) => (
-              <Input
-                {...field}
-                id={fieldId}
-                type="email"
-                placeholder="example@company.com"
-                onChange={(e) => { field.onChange(e.target.value); clearErrors('email'); }}
-                onBlur={(e) => handleEmailBlur(e.target.value)}
-                error={!!errors.email}
-              />
-            )}
-          />
-
-          <FormField
-            name="password"
-            control={control}
-            label="비밀번호"
-            error={errors.password?.message}
-            render={(field, fieldId) => (
-              <Input
-                {...field}
-                id={fieldId}
-                variant="password"
-                placeholder="••••••••••"
-                error={!!errors.password}
-                showPassword={showPassword}
-                onTogglePassword={() => setShowPassword(prev => !prev)}
-                onChange={(e) => { field.onChange(e.target.value); clearErrors('password'); }}
-                onBlur={(e) => handlePasswordBlur(e.target.value)}
-                maxLength={15}
-              />
-            )}
-          />
-
-          <FormField
-            name="rememberMe"
-            control={control}
-            render={(field, fieldId) => (
-              <div className="flex items-center">
-                <input
-                  id={fieldId}
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-200 rounded cursor-pointer"
-                  name={field.name}
-                  ref={field.ref}
-                  checked={!!field.value}
-                  onChange={(e) => field.onChange(e.target.checked)}
-                  onBlur={field.onBlur}
-                />
-                <label htmlFor={fieldId} className="ml-2 block text-sm text-slate-900">
-                  이메일 저장
-                </label>
+          {FEATURES.map(({ icon: Icon, text }) => (
+            <motion.li key={text} variants={fadeUp} className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-white/12 flex items-center justify-center shrink-0">
+                <Icon size={15} className="text-white" />
               </div>
-            )}
-          />
+              <span className="text-blue-100 text-caption-1 font-medium">{text}</span>
+            </motion.li>
+          ))}
+        </motion.ul>
 
-          <div className="space-y-3">
-            <motion.button
-              type="submit"
-              disabled={isLoading || !isFormValid}
-              className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
-                isLoading || !isFormValid
-                  ? 'bg-slate-200 cursor-not-allowed text-slate-400'
-                  : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-              }`}
-              whileTap={isFormValid && !isLoading ? { scale: 0.98 } : {}}
-            >
-              {isLoading ? '기업 로그인 중...' : '기업 로그인'}
-            </motion.button>
+      </motion.div>
 
-            <motion.button
+      {/* ── 우측 폼 패널 ─────────────────────────────────────────── */}
+      <motion.div
+        className="flex flex-1 flex-col justify-center px-8 sm:px-14 lg:px-20 py-12 bg-white"
+        initial={{ opacity: 0, x: 24 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <div className="w-full max-w-[400px] mx-auto">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+            className="space-y-1 mb-8"
+          >
+            <motion.p variants={fadeUp} className="text-caption-2 font-bold text-blue-600 uppercase tracking-[1.5px]">
+              {t('overline')}
+            </motion.p>
+            <motion.h1 variants={fadeUp} className="text-title-2 font-extrabold text-slate-900">
+              {t('title')}
+            </motion.h1>
+            <motion.p variants={fadeUp} className="text-caption-1 text-slate-500">
+              {t('subtitle')}
+            </motion.p>
+          </motion.div>
+
+          <motion.form
+            className="space-y-5"
+            onSubmit={handleSubmit(onSubmit)}
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div variants={fadeUp}>
+              <FormField
+                name="email"
+                control={control}
+                label={t('emailLabel')}
+                error={errors.email?.message}
+                render={(field, fieldId) => (
+                  <Input
+                    {...field}
+                    id={fieldId}
+                    type="email"
+                    placeholder="example@company.com"
+                    onChange={(e) => { field.onChange(e.target.value); clearErrors('email'); setLoginError(null); }}
+                    onBlur={(e) => handleEmailBlur(e.target.value)}
+                    error={!!errors.email || loginError?.field === 'email'}
+                  />
+                )}
+              />
+            </motion.div>
+
+            <motion.div variants={fadeUp}>
+              <FormField
+                name="password"
+                control={control}
+                label={t('passwordLabel')}
+                error={errors.password?.message}
+                render={(field, fieldId) => (
+                  <Input
+                    {...field}
+                    id={fieldId}
+                    variant="password"
+                    placeholder="••••••••••"
+                    error={!!errors.password || loginError?.field === 'password'}
+                    showPassword={showPassword}
+                    onTogglePassword={() => setShowPassword(prev => !prev)}
+                    onChange={(e) => { field.onChange(e.target.value); clearErrors('password'); setLoginError(null); }}
+                    onBlur={(e) => handlePasswordBlur(e.target.value)}
+                    maxLength={15}
+                  />
+                )}
+              />
+            </motion.div>
+
+            <motion.div variants={fadeUp}>
+              <FormField
+                name="rememberMe"
+                control={control}
+                render={(field, fieldId) => (
+                  <div className="flex items-center">
+                    <input
+                      id={fieldId}
+                      type="checkbox"
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-200 rounded cursor-pointer"
+                      name={field.name}
+                      ref={field.ref}
+                      checked={!!field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      onBlur={field.onBlur}
+                    />
+                    <label htmlFor={fieldId} className="ml-2 block text-caption-1 text-slate-700 cursor-pointer">
+                      {t('rememberEmail')}
+                    </label>
+                  </div>
+                )}
+              />
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="space-y-3 pt-1">
+              <motion.button
+                type="submit"
+                disabled={isLoading || !isFormValid}
+                className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-colors flex items-center justify-center gap-2 ${
+                  isLoading || !isFormValid
+                    ? 'bg-slate-100 cursor-not-allowed text-slate-400'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]'
+                }`}
+                whileTap={isFormValid && !isLoading ? { scale: 0.98 } : {}}
+              >
+                {isLoading && <Loader2 size={15} className="animate-spin" />}
+                {isLoading ? t('loggingIn') : t('loginButton')}
+              </motion.button>
+
+              {/* 로그인 에러 배너 */}
+              {loginError && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className={`flex items-start gap-2.5 px-4 py-3 rounded-lg text-caption-1 font-medium ${
+                    loginError.type === 'network'
+                      ? 'bg-slate-50 border border-slate-200 text-slate-600'
+                      : loginError.type === 'server'
+                        ? 'bg-amber-50 border border-amber-200 text-amber-700'
+                        : loginError.type === 'rateLimit'
+                          ? 'bg-amber-50 border border-amber-200 text-amber-700'
+                          : 'bg-red-50 border border-red-200 text-red-600'
+                  }`}
+                  role="alert"
+                  aria-live="polite"
+                >
+                  {loginError.type === 'network'
+                    ? <WifiOff size={15} className="mt-0.5 shrink-0" />
+                    : <AlertCircle size={15} className="mt-0.5 shrink-0" />
+                  }
+                  <span>{loginError.message}</span>
+                </motion.div>
+              )}
+
+              <motion.button
+                type="button"
+                onClick={() => router.push('/company-signup/step1')}
+                className="w-full py-3 px-4 border border-slate-200 text-blue-600 rounded-lg font-semibold text-sm hover:bg-blue-50 transition-colors cursor-pointer"
+                whileTap={{ scale: 0.98 }}
+              >
+                {t('signupButton')}
+              </motion.button>
+            </motion.div>
+          </motion.form>
+
+          {/* 개인 회원 로그인 링크 */}
+          <motion.p
+            className="mt-8 text-center text-caption-1 text-slate-400"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+          >
+            {t('personalPrompt')}{' '}
+            <button
               type="button"
-              onClick={() => router.push('/company-signup/step1')}
-              className="w-full py-3 px-4 border border-slate-200 text-blue-600 rounded-lg font-medium text-sm hover:bg-blue-50 transition-colors cursor-pointer"
-              whileTap={{ scale: 0.98 }}
+              onClick={() => router.push('/login')}
+              className="text-blue-600 font-semibold hover:underline cursor-pointer"
             >
-              회원가입
-            </motion.button>
-          </div>
-        </motion.form>
-      </div>
+              {t('personalLogin')}
+            </button>
+          </motion.p>
+        </div>
+      </motion.div>
     </div>
   );
 }

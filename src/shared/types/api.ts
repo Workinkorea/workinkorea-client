@@ -23,14 +23,12 @@ export interface LoginResponse {
 }
 
 export interface LogoutResponse {
-  success: boolean;
+  success?: boolean;
   message: string;
 }
 
 export interface RefreshTokenResponse {
   success: boolean;
-  accessToken: string;
-  token_type?: 'access' | 'access_company' | 'admin_access';
 }
 
 export interface UserInfo {
@@ -59,7 +57,6 @@ export interface CompanySignupRequest {
   password: string;
   name: string;
   phone: string;
-  phone_type: 'MOBILE' | 'LANDLINE';  // 전화번호 타입 (휴대전화/일반전화)
 }
 
 export interface CompanySignupResponse {
@@ -144,16 +141,10 @@ export interface CompanyProfileResponse {
   establishment_date: string;
   company_type: string;
   insurance: string;
-  company_phone: string;  // 기업 일반전화 (회사 대표번호)
-  phone_number: string;  // 담당자 휴대전화
-  phone_type?: 'MOBILE' | 'LANDLINE';  // 전화번호 타입 (휴대전화/일반전화)
+  phone_number: string;
   address: string;
   website_url: string;
   email: string;
-  country_id: number;
-  position_id: number;
-  company_number?: string;  // 사업자등록번호 (선택)
-  representative_name?: string;  // 대표자명 (선택)
 }
 
 export interface CompanyProfileRequest {
@@ -162,16 +153,10 @@ export interface CompanyProfileRequest {
   establishment_date: string;
   company_type: string;
   insurance: string;
-  company_phone: string;  // 기업 일반전화 (회사 대표번호)
-  phone_number: string;  // 담당자 휴대전화
-  phone_type: 'MOBILE' | 'LANDLINE';  // 전화번호 타입 (휴대전화/일반전화)
+  phone_number: string;
   address: string;
   website_url: string;
   email: string;
-  country_id: number;
-  position_id: number;
-  company_number?: string;  // 사업자등록번호 (선택)
-  representative_name?: string;  // 대표자명 (선택)
 }
 
 export interface ApiErrorResponse {
@@ -343,19 +328,20 @@ export interface CompanyPostDetailResponse {
   end_date: string;
 }
 
+// 백엔드 PUT /api/posts/company/{id}는 CompanyPostRequest를 사용하며 모든 필드 필수.
 export interface UpdateCompanyPostRequest {
-  title?: string;
-  content?: string;
-  work_experience?: string;
-  position_id?: number;
-  education?: string;
-  language?: string;
-  employment_type?: string;
-  work_location?: string;
-  working_hours?: number;
-  salary?: number;
-  start_date?: string;
-  end_date?: string;
+  title: string;
+  content: string;
+  work_experience: string;
+  position_id: number;
+  education: string;
+  language: string;
+  employment_type: string;
+  work_location: string;
+  working_hours: number;
+  salary: number;
+  start_date: string;
+  end_date: string;
 }
 
 export interface UpdateCompanyPostResponse {
@@ -505,6 +491,47 @@ export interface DiagnosisAnswerResponse {
   q13_answer: string;
   q14_answer: string;
   q15_answer: string;
+}
+
+// Event API types
+export type EventType = 'notice' | 'event' | 'promotion';
+export type EventTarget = 'all' | 'user' | 'company';
+export type EventStatus = 'active' | 'inactive';
+
+export interface AdminEvent {
+  id: number;
+  title: string;
+  type: EventType;
+  target: EventTarget;
+  status: EventStatus;
+  start_date: string;
+  end_date: string;
+  content: string;
+  banner_url?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateAdminEventRequest {
+  title: string;
+  type: EventType;
+  target: EventTarget;
+  status: EventStatus;
+  start_date: string;
+  end_date: string;
+  content: string;
+  banner_url?: string;
+}
+
+export interface UpdateAdminEventRequest {
+  title?: string;
+  type?: EventType;
+  target?: EventTarget;
+  status?: EventStatus;
+  start_date?: string;
+  end_date?: string;
+  content?: string;
+  banner_url?: string;
 }
 
 // Business Verification API types (National Tax Service)

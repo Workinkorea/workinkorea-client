@@ -71,8 +71,8 @@ function SkillBarChart({
       transition={{ duration: 0.5 }}
     >
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-        <div className="flex items-center gap-4 text-[11px] text-slate-500">
+        <h3 className="text-title-5 font-semibold text-slate-900">{title}</h3>
+        <div className="flex items-center gap-4 text-caption-3 text-slate-500">
           <div className="flex items-center gap-1">
             <div className="w-3 h-1 bg-blue-500 rounded"></div>
             <span>내 점수</span>
@@ -98,12 +98,12 @@ function SkillBarChart({
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-slate-900">
+                <span className="text-caption-1 font-medium text-slate-900">
                   {skill.name}
                 </span>
                 {showCategory && (
                   <span className={cn(
-                    'text-[11px] px-2 py-0.5 rounded border text-center',
+                    'text-caption-3 px-2 py-0.5 rounded border text-center',
                     getCategoryColor(skill.category)
                   )}>
                     {getCategoryLabel(skill.category)}
@@ -114,7 +114,7 @@ function SkillBarChart({
               {/* 점수 차이 표시 */}
               <div className="flex items-center gap-2">
                 <div className={cn(
-                  'text-[11px] px-2 py-0.5 rounded font-medium',
+                  'text-caption-3 px-2 py-0.5 rounded font-medium',
                   skill.level > skill.average
                     ? 'text-emerald-500 bg-emerald-50'
                     : skill.level < skill.average
@@ -136,7 +136,7 @@ function SkillBarChart({
 
             {/* 스킬 설명 (있는 경우) */}
             {skill.description && (
-              <p className="mt-1 text-[11px] text-slate-500">
+              <p className="mt-1 text-caption-3 text-slate-500">
                 {skill.description}
               </p>
             )}
@@ -153,28 +153,28 @@ function SkillBarChart({
       >
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
-            <div className="text-lg font-semibold text-blue-600">
+            <div className="text-title-5 font-semibold text-blue-600">
               {sortedSkills.length}
             </div>
-            <div className="text-[11px] text-slate-500">총 스킬</div>
+            <div className="text-caption-3 text-slate-500">총 스킬</div>
           </div>
           <div>
-            <div className="text-lg font-semibold text-emerald-500">
+            <div className="text-title-5 font-semibold text-emerald-500">
               {sortedSkills.filter(skill => skill.level > skill.average).length}
             </div>
-            <div className="text-[11px] text-slate-500">평균 이상</div>
+            <div className="text-caption-3 text-slate-500">평균 이상</div>
           </div>
           <div>
-            <div className="text-lg font-semibold text-blue-600">
+            <div className="text-title-5 font-semibold text-blue-600">
               {Math.round(sortedSkills.reduce((sum, skill) => sum + skill.level, 0) / sortedSkills.length)}
             </div>
-            <div className="text-[11px] text-slate-500">평균 점수</div>
+            <div className="text-caption-3 text-slate-500">평균 점수</div>
           </div>
           <div>
-            <div className="text-lg font-semibold text-slate-700">
+            <div className="text-title-5 font-semibold text-slate-700">
               {Math.round(sortedSkills.reduce((sum, skill) => sum + skill.average, 0) / sortedSkills.length)}
             </div>
-            <div className="text-[11px] text-slate-500">업계 평균</div>
+            <div className="text-caption-3 text-slate-500">업계 평균</div>
           </div>
         </div>
       </motion.div>

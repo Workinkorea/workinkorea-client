@@ -86,18 +86,18 @@ export function StatCard({
       <div className="flex items-start justify-between">
         <div className="flex-1">
           {/* 제목 */}
-          <h3 className="text-sm text-slate-500 font-medium mb-1">
+          <h3 className="text-caption-1 text-slate-500 font-medium mb-1">
             {title}
           </h3>
 
           {/* 값 */}
-          <div className={cn('text-xl font-bold mb-1', scheme.value)}>
+          <div className={cn('text-title-4 font-bold mb-1', scheme.value)}>
             {typeof value === 'number' ? value.toLocaleString() : value}
           </div>
 
           {/* 부제목 */}
           {subtitle && (
-            <p className="text-[11px] text-slate-500">
+            <p className="text-caption-3 text-slate-500">
               {subtitle}
             </p>
           )}
@@ -106,7 +106,7 @@ export function StatCard({
           {trend && (
             <div className="flex items-center gap-1 mt-2">
               <span className={cn(
-                'text-[11px] font-medium',
+                'text-caption-3 font-medium',
                 trend.isPositive ? 'text-emerald-500' : 'text-red-500'
               )}>
                 {trend.isPositive ? '+' : ''}{trend.value}

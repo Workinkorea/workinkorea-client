@@ -38,7 +38,7 @@ export function JobListSkeleton({ count = 6 }: { count?: number }) {
 export function JobDetailSkeleton() {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="page-container space-y-6">
         {/* 뒤로가기 */}
         <Skeleton variant="text" className="h-9 w-24" />
 
@@ -80,58 +80,81 @@ export function JobDetailSkeleton() {
 /** 유저 프로필 스켈레톤 */
 export function UserProfileSkeleton() {
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        {/* 헤더 */}
-        <div className="bg-white rounded-xl p-6 shadow-sm">
-          <div className="flex items-center gap-5">
-            <Skeleton variant="circle" className="w-20 h-20 shrink-0" />
-            <div className="flex-1 space-y-2">
-              <Skeleton variant="text" className="h-6 w-48" />
-              <Skeleton variant="text" className="h-4 w-32" />
-              <Skeleton variant="text" className="h-4 w-64" />
+    <div className="min-h-screen bg-white py-8">
+      <div className="page-container space-y-6">
+        {/* 페이지 타이틀 */}
+        <div className="flex items-center justify-between">
+          <div className="space-y-1.5">
+            <Skeleton variant="text" className="h-8 w-32" />
+            <Skeleton variant="text" className="h-4 w-56" />
+          </div>
+        </div>
+
+        {/* 헤더 카드 */}
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
+            <Skeleton variant="circle" className="w-20 h-20 sm:w-24 sm:h-24 shrink-0" />
+            <div className="flex-1 w-full space-y-2 text-center sm:text-left">
+              <Skeleton variant="text" className="h-6 w-40 mx-auto sm:mx-0" />
+              <Skeleton variant="text" className="h-4 w-28 mx-auto sm:mx-0" />
+              <Skeleton variant="text" className="h-4 w-56 mx-auto sm:mx-0" />
             </div>
+            <Skeleton className="h-9 w-24 rounded-lg shrink-0" />
           </div>
         </div>
 
         {/* 탭 */}
         <div className="bg-white rounded-lg p-2 shadow-sm">
           <div className="flex gap-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} variant="text" className="h-9 w-20" />
+            {['대시보드', '이력서', '스킬 관리', '경력 관리'].map((label, i) => (
+              <div key={label} className={`px-4 py-2 rounded-lg text-sm font-medium shrink-0 ${i === 0 ? 'bg-blue-500' : 'bg-transparent'}`}>
+                <Skeleton variant="text" className={`h-4 ${i === 0 ? 'w-16 bg-white/60' : 'w-12'}`} />
+              </div>
             ))}
           </div>
         </div>
 
-        {/* 콘텐츠 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg h-96 border border-slate-100 skeleton-shimmer" />
-          <div className="bg-white rounded-lg h-96 border border-slate-100 skeleton-shimmer" />
+        {/* 콘텐츠 — 레이더 차트 */}
+        <div className="grid grid-cols-1 gap-6">
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <Skeleton variant="text" className="h-5 w-32" />
+              <Skeleton className="w-5 h-5 rounded" />
+            </div>
+            <div className="flex justify-center">
+              <Skeleton variant="circle" className="w-[280px] h-[280px] sm:w-[350px] sm:h-[350px]" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-/** 기업 대시보드 스켈레톤 */
+/** 기업 대시보드 스켈레톤 (탭 기반 레이아웃) */
 export function CompanyDashboardSkeleton() {
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
-      <div className="max-w-6xl mx-auto space-y-5">
-        {/* 배너 */}
-        <Skeleton className="h-20 w-full" />
-
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5">
-          <div className="space-y-5">
-            <Skeleton className="h-56" />
-            <Skeleton className="h-40" />
-            <Skeleton className="h-48" />
+    <div className="min-h-screen bg-slate-50">
+      {/* 헤더 영역: 기업명 + CTA 버튼 */}
+      <div className="bg-white border-b border-slate-100 px-6 py-5">
+        <div className="page-container flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton variant="text" className="h-3 w-20" />
+            <Skeleton variant="text" className="h-6 w-32" />
           </div>
-          <div className="space-y-4">
-            <Skeleton className="h-72" />
-            <Skeleton className="h-44" />
-          </div>
+          <Skeleton className="h-10 w-36 rounded-lg" />
         </div>
+        {/* 탭 바 */}
+        <div className="page-container mt-4 flex gap-1">
+          <Skeleton variant="text" className="h-10 w-32 rounded-none" />
+          <Skeleton variant="text" className="h-10 w-24 rounded-none" />
+        </div>
+      </div>
+      {/* 콘텐츠 */}
+      <div className="page-container py-6 space-y-4">
+        <Skeleton className="h-52 rounded-xl" />
+        <Skeleton className="h-36 rounded-xl" />
+        <Skeleton className="h-44 rounded-xl" />
       </div>
     </div>
   );
@@ -141,7 +164,7 @@ export function CompanyDashboardSkeleton() {
 export function CompanyJobsSkeleton() {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="page-container space-y-6">
         <div className="flex items-center justify-between">
           <Skeleton variant="text" className="h-8 w-40" />
           <Skeleton className="h-10 w-28" />
@@ -192,7 +215,7 @@ export function TableSkeleton({ rows = 8 }: { rows?: number }) {
 export function DiagnosisResultSkeleton() {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="page-container space-y-6">
         {/* 상단 점수 카드 */}
         <div className="bg-white rounded-xl p-8 shadow-sm text-center space-y-4">
           <Skeleton variant="circle" className="w-32 h-32 mx-auto" />
@@ -220,7 +243,7 @@ export function DiagnosisResultSkeleton() {
 export function FormPageSkeleton({ rows = 6 }: { rows?: number }) {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="page-container">
         <div className="bg-white rounded-xl p-8 shadow-sm space-y-6">
           <Skeleton variant="text" className="h-8 w-48 mb-6" />
           {Array.from({ length: rows }).map((_, i) => (
@@ -243,7 +266,7 @@ export function FormPageSkeleton({ rows = 6 }: { rows?: number }) {
 export function DiagnosisSkeleton() {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="page-container space-y-6">
         {/* 프로그레스 바 */}
         <div className="bg-white rounded-xl p-6 shadow-sm">
           <div className="flex justify-between mb-3">
