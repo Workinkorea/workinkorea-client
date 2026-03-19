@@ -186,7 +186,7 @@ src/
 │   ├── diagnosis/          # 자가진단 (api, components, pages, store)
 │   ├── events/             # 이벤트 (api, types)
 │   ├── jobs/               # 채용공고 (api, hooks, components, pages)
-│   ├── landing/            # 랜딩페이지 (components)
+│   ├── landing/            # 랜딩페이지 (components) — HeroSection만 사용 (ServicesSection, JobCategoriesSection, PopularJobsSection, EventBannerSection, CTASection 사용 금지)
 │   ├── profile/            # 프로필 (api, components, pages, types, validations)
 │   ├── resume/             # 이력서 (api, components)
 │   └── user/               # 사용자 (components, pages, types)
