@@ -223,13 +223,13 @@ function MyProfileClient() {
   if (authLoading || isLoading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-white py-8">
+        <div className="min-h-screen bg-background-alternative py-8">
           <div className="page-container">
             <div className="animate-pulse space-y-6">
-              <div className="bg-white rounded-lg h-64"></div>
+              <div className="bg-slate-200 rounded-xl h-64"></div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg h-96"></div>
-                <div className="bg-white rounded-lg h-96"></div>
+                <div className="bg-slate-200 rounded-xl h-96"></div>
+                <div className="bg-slate-200 rounded-xl h-96"></div>
               </div>
             </div>
           </div>
@@ -261,7 +261,31 @@ function MyProfileClient() {
     );
   }
 
-  if (!profile) return null;
+  if (!profile) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-background-alternative py-16 flex items-center justify-center px-4">
+          <div className="text-center max-w-md mx-auto">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
+              <Edit3 className="w-8 h-8 text-blue-600" />
+            </div>
+            <h2 className="text-title-4 font-bold text-slate-900 mb-2">
+              {t('errorTitle')}
+            </h2>
+            <p className="text-caption-1 text-slate-500 mb-6">
+              {t('errorSubtitle')}
+            </p>
+            <button
+              onClick={() => router.push('/user/resume/create')}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+            >
+              {t('createResume')}
+            </button>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   const radarData = generateRadarData(profile.skills);
 
