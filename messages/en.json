@@ -28,7 +28,9 @@
       "candidateManage": "Manage Candidates",
       "companyProfileMenu": "Company Profile",
       "recruitManage": "Recruitment",
-      "my": "MY"
+      "my": "MY",
+      "companyPage": "For Employers",
+      "loginSignup": "Log In / Sign Up"
     },
     "button": {
       "apply": "Apply Now",
@@ -95,6 +97,9 @@
       "subtitle": "AI-powered personalized job matching to help you land your dream job in Korea",
       "searchPlaceholder": "Search jobs, companies, keywords",
       "searchButton": "Search",
+      "searchAriaLabel": "Search jobs, keywords and companies",
+      "searchLocation": "South Korea",
+      "searchPhrases": ["Developer", "Marketer", "Visa sponsorship", "Designer", "Seoul full-time", "Korean preferred", "IT startup", "English speaking"],
       "stat1Value": "500+",
       "stat1Label": "Companies",
       "stat2Value": "1,200+",

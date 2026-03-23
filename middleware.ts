@@ -76,7 +76,9 @@ export function middleware(request: NextRequest) {
   }
 
   // Company routes
-  if (pathname.startsWith('/company')) {
+  // /company (exact) is public — shows landing or dashboard depending on auth
+  // /company/* sub-routes require company auth
+  if (pathname.startsWith('/company/')) {
     if (!userType) {
       const loginUrl = new URL('/company-login', request.url);
       loginUrl.searchParams.set('callbackUrl', pathname);

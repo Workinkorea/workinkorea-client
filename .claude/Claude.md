@@ -65,9 +65,9 @@
 - **기본 폰트**: `Pretendard` (로컬 woff2, `--font-pretendard`)
 - **로고/브랜드**: `Plus Jakarta Sans` (`--font-plus-jakarta-sans`, font-weight: 800)
 
-#### ⚠️ 폰트 크기 — 반드시 Canonical 클래스 사용 (arbitrary px 금지)
+#### ⚠️ 폰트 크기 — 반드시 Canonical 클래스 사용 (arbitrary px 및 Tailwind 기본 크기 클래스 금지)
 
-`text-[13px]` 같은 arbitrary 값 사용 금지. 반드시 globals.css에 정의된 클래스 사용:
+`text-[13px]` 같은 arbitrary 값뿐 아니라 **`text-xs`, `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl`, `text-3xl`, `text-4xl`, `text-5xl`** 등 Tailwind 기본 크기 클래스도 사용 금지. 반드시 globals.css에 정의된 Canonical 클래스 사용:
 
 | Canonical 클래스 | 크기 | 용도 |
 |-----------------|------|------|
@@ -88,13 +88,19 @@
 responsive 변형도 동일: `sm:text-title-1`, `lg:text-body-3` 등
 
 ```tsx
-// ❌ Bad
+// ❌ Bad — arbitrary px
 <p className="text-[13px]">...</p>
 <h2 className="text-[28px] sm:text-[32px]">...</h2>
+
+// ❌ Bad — Tailwind 기본 크기 클래스
+<p className="text-sm">...</p>
+<h2 className="text-2xl sm:text-3xl">...</h2>
+<span className="text-xs">...</span>
 
 // ✅ Good
 <p className="text-caption-1">...</p>
 <h2 className="text-title-2 sm:text-title-1">...</h2>
+<span className="text-caption-2">...</span>
 ```
 
 ### Spacing & Radius
