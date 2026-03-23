@@ -33,14 +33,15 @@ export const useAuthStore = create<AuthState>((set) => ({
    * 클라이언트에서도 명시적으로 설정하여 동기화 보장
    */
   login: (userType: UserType) => {
-    // 1. Zustand State 업데이트
     set({
       isAuthenticated: true,
       userType,
       isInitialized: true,
     });
 
-    // 2. 쿠키에도 userType 설정 (백엔드 쿠키와 동기화)
+    // non-HttpOnly 쿠키를 별도 설정 — initialize() 폴백에서 document.cookie로 읽기 위해 필요
+    // 백엔드가 설정한 쿠키는 HttpOnly이므로 JS에서 읽을 수 없음
+    // (브라우저 DevTools에 2개로 표시되나 값은 동일하며 각각 역할이 다름)
     cookieManager.setUserType(userType);
   },
 
@@ -66,7 +67,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       await fetchClient.delete('/api/auth/logout');
     } catch (err) {
       console.error('[AuthStore] Logout API failed:', err);
-      // API 실패 시 폴백
+    } finally {
+      // 성공/실패 무관하게 클라이언트 쿠키 항상 정리
+      // (백엔드가 삭제 안 하거나 domain 불일치 대비)
       cookieManager.clearAuth();
     }
 

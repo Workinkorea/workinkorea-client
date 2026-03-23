@@ -3,17 +3,7 @@
 import { useState, useEffect, useRef, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, MapPin } from 'lucide-react';
-
-const PHRASES = [
-  '개발자',
-  '마케터',
-  '비자 지원 가능',
-  '디자이너',
-  '서울 정규직',
-  '한국어 능통자 우대',
-  'IT 스타트업',
-  '영어 가능',
-];
+import { useTranslations } from 'next-intl';
 
 const TYPE_SPEED = 80;
 const DELETE_SPEED = 40;
@@ -69,10 +59,13 @@ function useTypewriter(phrases: string[]) {
 }
 
 export default function HeroSearchClient() {
+  const t = useTranslations('landing.hero');
+  const phrases = t.raw('searchPhrases') as string[];
+
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
-  const animatedText = useTypewriter(PHRASES);
+  const animatedText = useTypewriter(phrases);
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
@@ -112,7 +105,7 @@ export default function HeroSearchClient() {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           className="flex-1 text-sm md:text-base border-none outline-none text-slate-800 bg-transparent min-w-0"
-          aria-label="직무, 키워드 및 회사 검색"
+          aria-label={t('searchAriaLabel')}
         />
       </div>
 
@@ -122,7 +115,7 @@ export default function HeroSearchClient() {
       {/* 지역 (고정) */}
       <div className="hidden sm:flex items-center px-4 md:px-5 py-3 gap-2 shrink-0">
         <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
-        <span className="text-sm text-slate-500 whitespace-nowrap">대한민국</span>
+        <span className="text-sm text-slate-500 whitespace-nowrap">{t('searchLocation')}</span>
       </div>
 
       {/* 검색 버튼 */}
@@ -130,7 +123,7 @@ export default function HeroSearchClient() {
         type="submit"
         className="bg-blue-600 hover:bg-blue-700 text-white rounded-r-full px-5 md:px-7 py-3 font-semibold text-sm transition-colors cursor-pointer whitespace-nowrap shrink-0"
       >
-        검색
+        {t('searchButton')}
       </button>
     </form>
   );
