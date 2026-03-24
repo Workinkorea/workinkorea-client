@@ -80,7 +80,7 @@ export default function ServicesSection() {
       <div className="relative z-10 page-container">
         {/* 섹션 헤더 */}
         <motion.div
-          className="text-center mb-12 sm:mb-14 lg:mb-16"
+          className="text-center mb-12"
           variants={headerVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
@@ -98,20 +98,20 @@ export default function ServicesSection() {
           </motion.div>
 
           {/* 타이틀 */}
-          <h2 className="text-title-3 sm:text-title-2 lg:text-[36px] font-extrabold text-slate-900 mb-3 sm:mb-4 leading-tight">
+          <h2 className="text-title-3 sm:text-title-2 lg:text-display-2 font-extrabold text-slate-900 mb-3 sm:mb-4 leading-tight">
             {t('title')}{' '}
             <span className="text-blue-600">{t('titleHighlight')}</span>
           </h2>
 
           {/* 부제 */}
-          <p className="text-caption-1 sm:text-body-3 lg:text-base text-slate-500 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-caption-1 sm:text-body-3 lg:text-body-1 text-slate-500 max-w-2xl mx-auto leading-relaxed">
             {t('subtitle')}
           </p>
         </motion.div>
 
         {/* 서비스 카드 그리드 */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
@@ -123,17 +123,14 @@ export default function ServicesSection() {
                 key={service.id}
                 variants={cardVariants}
                 className={cn(
-                  'group rounded-xl border-2 p-6 sm:p-7 lg:p-8',
+                  'group rounded-xl border-2 p-6 lg:p-8',
                   'bg-white transition-all duration-300 cursor-pointer relative overflow-hidden',
                   service.id === 'jobs'
-                    ? 'border-slate-200 hover:border-slate-300'
-                    : 'border-blue-200 hover:border-blue-300'
+                    ? 'border-slate-200 hover:border-slate-300 hover:shadow-lg'
+                    : 'border-blue-200 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100'
                 )}
                 whileHover={{
                   y: -8,
-                  boxShadow: service.id === 'jobs'
-                    ? '0 20px 25px -5px rgba(0,0,0,0.08)'
-                    : '0 20px 25px -5px rgba(37,99,235,0.12)',
                   transition: { type: 'spring', stiffness: 300, damping: 20 },
                 }}
               >

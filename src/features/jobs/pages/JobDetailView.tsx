@@ -182,7 +182,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
           {/* Back Button */}
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-slate-600 hover:text-blue-600 text-sm font-medium mb-4 sm:mb-6 cursor-pointer transition-colors"
+            className="flex items-center gap-2 text-slate-600 hover:text-blue-600 text-body-3 font-medium mb-4 sm:mb-6 cursor-pointer transition-colors"
           >
             <ChevronLeft size={18} />
             {t('backToListFull')}
@@ -194,7 +194,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
             <div className="space-y-6">
               {/* Hero Header Card */}
               <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                <div className="p-5 sm:p-7 lg:p-8 space-y-6">
+                <div className="p-6 lg:p-8 space-y-6">
                   {/* Top Row: Icon + Info + Actions */}
                   <div className="flex items-start gap-4 justify-between">
                     <div className="flex items-start gap-4 flex-1 min-w-0">
@@ -210,7 +210,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                         <div className="flex items-center gap-2 mb-3 flex-wrap">
                           {isUrgent && (
                             <motion.span
-                              className="inline-flex px-2.5 py-1 bg-red-500 text-white text-caption-3 font-bold rounded-md"
+                              className="inline-flex items-center px-2 py-0.5 bg-red-500 text-white text-caption-3 font-bold rounded-md"
                               animate={{ opacity: [1, 0.6, 1] }}
                               transition={{ duration: 1.5, repeat: Infinity }}
                             >
@@ -218,7 +218,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                             </motion.span>
                           )}
                           {isExpired && (
-                            <span className="inline-flex px-2.5 py-1 bg-slate-200 text-slate-500 text-caption-3 font-bold rounded-md">
+                            <span className="inline-flex items-center px-2 py-0.5 bg-slate-200 text-slate-500 text-caption-3 font-bold rounded-md">
                               {t('expiredBadge')}
                             </span>
                           )}
@@ -286,7 +286,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
 
               {/* Details Card */}
               <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-7 lg:p-8 space-y-6">
-                <h2 className="text-[18px] sm:text-title-4 font-extrabold text-slate-900">{t('jobDetails')}</h2>
+                <h2 className="text-title-5 sm:text-title-4 font-extrabold text-slate-900">{t('jobDetails')}</h2>
 
                 {/* Job Content Section */}
                 <div className="space-y-3">
@@ -333,7 +333,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                         {language.map((lang, index) => (
                           <span
                             key={index}
-                            className="inline-flex px-3 py-1.5 bg-blue-50 text-blue-700 text-caption-2 font-semibold rounded-lg border border-blue-200"
+                            className="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 text-caption-2 font-semibold rounded-full border border-blue-200"
                           >
                             {lang}
                           </span>
@@ -348,7 +348,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
             {/* Desktop Sidebar: Apply Card */}
             <div className="hidden lg:block">
               <motion.div
-                className="bg-white rounded-xl border border-slate-200 p-7 sticky top-[calc(65px+20px)] space-y-4"
+                className="bg-white rounded-xl border border-slate-200 p-6 sticky top-[calc(65px+20px)] space-y-4"
                 initial={{ y: 0 }}
                 whileInView={{ y: 0 }}
               >

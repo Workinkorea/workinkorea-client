@@ -47,14 +47,14 @@ export default function JobCard({ post }: JobCardProps) {
     <motion.div
       className={cn(
         'bg-white border border-slate-200 rounded-xl overflow-hidden',
-        'hover:border-blue-300 hover:shadow-lg transition-all duration-200 group',
+        'hover:border-blue-300 hover:shadow-md transition-all duration-200 group',
         isExpired && 'opacity-60'
       )}
       whileHover={{ y: -6 }}
       transition={{ type: 'spring', stiffness: 320, damping: 25 }}
     >
       <Link href={`/jobs/${post.id}`} className="block h-full">
-        <div className="p-5 sm:p-6 flex flex-col h-full">
+        <div className="p-4 sm:p-6 flex flex-col h-full">
           {/* Top Section: Icon + Type + Badges + Bookmark */}
           <div className="flex items-start gap-3 mb-4">
             {/* Company Icon */}
@@ -67,13 +67,13 @@ export default function JobCard({ post }: JobCardProps) {
               <p className="text-caption-2 font-semibold text-slate-400 mb-1">{tCard('companyPost')}</p>
               <div className="flex items-center gap-1.5 flex-wrap">
                 {isRecent && !isExpired && (
-                  <span className="inline-flex items-center px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-md tracking-wide">
+                  <span className="inline-flex items-center px-2 py-0.5 bg-blue-600 text-white text-caption-3 font-bold rounded-md tracking-wide">
                     NEW
                   </span>
                 )}
                 {isUrgent && (
                   <motion.span
-                    className="inline-flex items-center px-2 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded-md"
+                    className="inline-flex items-center px-2 py-0.5 bg-red-500 text-white text-caption-3 font-bold rounded-md"
                     animate={{ opacity: [1, 0.6, 1] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                   >
@@ -81,7 +81,7 @@ export default function JobCard({ post }: JobCardProps) {
                   </motion.span>
                 )}
                 {isExpired && (
-                  <span className="inline-flex items-center px-2 py-0.5 bg-slate-200 text-slate-500 text-[10px] font-bold rounded-md">
+                  <span className="inline-flex items-center px-2 py-0.5 bg-slate-200 text-slate-500 text-caption-3 font-bold rounded-md">
                     {tCommon('status.expired')}
                   </span>
                 )}

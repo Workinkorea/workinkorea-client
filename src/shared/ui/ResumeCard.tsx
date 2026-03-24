@@ -80,7 +80,7 @@ export function ResumeCard({
             <h3 className="text-body-2 font-semibold text-slate-900 truncate">
               {resume.title}
             </h3>
-            <div className={cn(`px-2 py-1 rounded-full text-caption-3 font-medium border`, getStatusColor(resume.status))}>
+            <div className={cn(`px-2 py-0.5 rounded-md text-caption-3 font-medium border`, getStatusColor(resume.status))}>
               {getStatusText(resume.status)}
             </div>
           </div>
