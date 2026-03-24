@@ -48,7 +48,7 @@ export function WorkConditionsSection({
   onNegotiableSalaryChange,
 }: WorkConditionsSectionProps) {
   return (
-    <div className="bg-background-default border border-line-400 rounded-xl p-5 md:p-6">
+    <div className="bg-white border border-slate-200 rounded-xl p-5 md:p-6">
       <SectionHeader
         step={2}
         icon={<Clock size={16} />}
@@ -89,7 +89,7 @@ export function WorkConditionsSection({
                 max="80"
                 className={cn(FIELD_BASE, FIELD_DEFAULT, 'flex-1')}
               />
-              <span className="text-sm text-label-500 shrink-0">시간 / 주</span>
+              <span className="text-body-3 text-slate-500 shrink-0">시간 / 주</span>
             </div>
           </FormField>
         </div>
@@ -101,7 +101,7 @@ export function WorkConditionsSection({
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
                 {/* DollarSign 아이콘: 입력 필드 내 왼쪽 고정 */}
-                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-label-400 pointer-events-none">
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                   <DollarSign size={15} />
                 </div>
                 <input
@@ -117,12 +117,12 @@ export function WorkConditionsSection({
                     'pl-9',
                     errors.salary ? FIELD_ERROR : FIELD_DEFAULT,
                     /* 협의 가능 선택 시 시각적 비활성 표시 강화 */
-                    isNegotiableSalary && 'bg-background-alternative text-label-400 cursor-not-allowed',
+                    isNegotiableSalary && 'bg-slate-100 text-slate-400 cursor-not-allowed',
                   )}
                   placeholder="예: 40000000"
                 />
               </div>
-              <span className="text-sm text-label-500 shrink-0">원 / 년</span>
+              <span className="text-body-3 text-slate-500 shrink-0">원 / 년</span>
             </div>
 
             {/* 급여 협의 체크박스 */}
@@ -134,7 +134,7 @@ export function WorkConditionsSection({
                 disabled={isSubmitting}
                 className="w-4 h-4 accent-blue-600 cursor-pointer rounded"
               />
-              <span className="text-caption-1 text-label-600 select-none group-hover:text-label-800 transition-colors">
+              <span className="text-caption-1 text-slate-600 select-none group-hover:text-slate-800 transition-colors">
                 급여 협의 가능
               </span>
             </label>

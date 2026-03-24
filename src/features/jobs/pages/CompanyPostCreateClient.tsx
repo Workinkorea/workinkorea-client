@@ -64,7 +64,7 @@ function CompanyPostCreateClient() {
   if (authLoading) {
     return (
       <Layout>
-        <main className="min-h-screen bg-background-alternative py-8">
+        <main className="min-h-screen bg-slate-100 py-8">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
               <div className="space-y-4">
@@ -93,7 +93,7 @@ function CompanyPostCreateClient() {
   if (!isAuthenticated || userType !== 'company') {
     return (
       <Layout>
-        <main className="min-h-screen bg-background-alternative py-8">
+        <main className="min-h-screen bg-slate-100 py-8">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
               <div className="space-y-4">
@@ -119,7 +119,7 @@ function CompanyPostCreateClient() {
 
   return (
     <Layout>
-      <main className="min-h-screen bg-background-alternative py-8">
+      <main className="min-h-screen bg-slate-100 py-8">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* ── 페이지 헤더 ────────────────────────────────────────────────

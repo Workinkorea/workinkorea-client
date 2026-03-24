@@ -168,7 +168,7 @@ const CompanyProfileEditClient = () => {
   if (authLoading || (profileLoading && !profile)) {
     return (
       <Layout>
-        <main className="flex-1 bg-background-alternative flex items-center justify-center min-h-[60vh]">
+        <main className="flex-1 bg-slate-100 flex items-center justify-center min-h-[60vh]">
           <div className="animate-spin w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full" />
         </main>
       </Layout>
@@ -177,7 +177,7 @@ const CompanyProfileEditClient = () => {
 
   return (
     <Layout>
-      <main className="flex-1 bg-background-alternative">
+      <main className="flex-1 bg-slate-100">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
           {/* 페이지 헤더 */}
