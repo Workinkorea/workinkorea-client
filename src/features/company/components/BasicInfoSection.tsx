@@ -69,7 +69,7 @@ export const BasicInfoSection = ({
             <option value="주식회사">주식회사</option>
             <option value="유한회사">유한회사</option>
             <option value="개인사업자">개인사업자</option>
-            <option value="외국계기업">외국계기업</option>
+            <option value="외국계기업">외국계 기업</option>
           </select>
           {errors.company_type && (
             <p className="mt-1 text-caption-3 text-red-500">{errors.company_type}</p>

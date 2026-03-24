@@ -62,9 +62,9 @@ export function generateAltText(
       if (location) jobParts.push(location);
 
       if (jobParts.length > 0) {
-        altText = `${jobParts.join(' ')} 채용공고 이미지`;
+        altText = `${jobParts.join(' ')} 채용 공고 이미지`;
       } else {
-        altText = '채용공고 이미지';
+        altText = '채용 공고 이미지';
       }
       break;
 
@@ -174,7 +174,7 @@ export function generateProfileAlt(userData: {
 }
 
 /**
- * 채용공고 이미지의 alt 텍스트를 생성합니다.
+ * 채용 공고 이미지의 alt 텍스트를 생성합니다.
  */
 export function generateJobAlt(jobData: {
   title?: string;

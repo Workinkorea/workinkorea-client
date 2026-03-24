@@ -1,7 +1,7 @@
 {
   "common": {
     "nav": {
-      "jobs": "채용공고",
+      "jobs": "채용 공고",
       "resume": "이력서",
       "diagnosis": "자가진단",
       "login": "로그인",
@@ -12,7 +12,7 @@
       "companyLogin": "기업 로그인",
       "companySignup": "기업 회원가입",
       "postJob": "인재채용",
-      "manageJobs": "채용공고 관리",
+      "manageJobs": "채용 공고 관리",
       "personal": "개인",
       "company": "기업",
       "myHome": "MY홈",
@@ -24,7 +24,7 @@
       "myProfile": "내 프로필",
       "resumeManage": "이력서 관리",
       "postJobMenu": "인재채용",
-      "manageJobsMenu": "채용공고 관리",
+      "manageJobsMenu": "채용 공고 관리",
       "candidateManage": "후보자 관리",
       "companyProfileMenu": "기업 프로필",
       "recruitManage": "채용 관리",
@@ -58,7 +58,7 @@
       "expired": "마감",
       "closed": "마감됨",
       "active": "모집중",
-      "recent": "신규등록"
+      "recent": "신규 등록"
     },
     "label": {
       "location": "근무지",
@@ -82,7 +82,7 @@
       "tagline": "외국인을 위한 한국 취업 플랫폼",
       "services": "서비스",
       "support": "고객지원",
-      "company": "회사정보",
+      "company": "기업 정보",
       "allRights": "© {year} WorkInKorea. All rights reserved.",
       "privacy": "개인정보처리방침",
       "terms": "이용약관",
@@ -107,7 +107,7 @@
       "stat3Value": "3,000+",
       "stat3Label": "취업 성공",
       "tagline": "한국 취업, 여기서 시작됩니다",
-      "loginPrompt": "맞춤형 채용공고 추천을 확인하려면 로그인하세요.",
+      "loginPrompt": "맞춤형 채용 공고 추천을 확인하려면 로그인하세요.",
       "getStarted": "시작하기"
     },
     "services": {
@@ -128,7 +128,7 @@
     "categories": {
       "overline": "직종 카테고리",
       "title": "직종별 채용정보",
-      "subtitle": "원하는 분야의 채용공고를 바로 찾아보세요",
+      "subtitle": "원하는 분야의 채용 공고를 바로 찾아보세요",
       "it": "IT",
       "marketing": "마케팅",
       "design": "디자인",
@@ -140,7 +140,7 @@
     },
     "popularJobs": {
       "title": "인기 공고",
-      "subtitle": "지금 가장 주목받는 기업들의 채용공고입니다",
+      "subtitle": "지금 가장 주목받는 기업들의 채용 공고입니다",
       "viewMore": "더 많은 공고 보기"
     },
     "events": {
@@ -156,7 +156,7 @@
       "overline": "지금 시작하세요",
       "title": "당신의 한국 취업,\nWork In Korea와 함께",
       "subtitle": "지금 바로 시작해 한국에서의 꿈을 이루세요. 수많은 외국인 구직자들이 Work In Korea를 통해 성공적인 취업에 도달했습니다.",
-      "primaryButton": "채용공고 보기",
+      "primaryButton": "채용 공고 보기",
       "secondaryButton": "AI 자가진단",
       "heading": "지금 시작하세요!",
       "description": "수많은 기업과 함께 새로운 미래를 시작하세요",
@@ -194,13 +194,13 @@
       "loadErrorSub": "네트워크 연결을 확인하고 다시 시도해주세요"
     },
     "card": {
-      "companyPost": "기업 채용공고",
+      "companyPost": "기업 채용 공고",
       "bookmarkAdd": "북마크 추가",
       "bookmarkRemove": "북마크 해제"
     },
     "detail": {
       "backToList": "목록으로",
-      "companyPost": "기업 채용공고",
+      "companyPost": "기업 채용 공고",
       "jobDetails": "공고 상세",
       "jobContent": "직무 내용",
       "experience": "경력",
@@ -228,7 +228,7 @@
       "workingHoursUnit": "{hours}시간"
     },
     "manage": {
-      "title": "채용공고 관리",
+      "title": "채용 공고 관리",
       "subtitle": "등록한 채용 공고를 관리하고 수정하세요",
       "createBtn": "새 공고 등록",
       "createBtnShort": "등록",
@@ -337,7 +337,7 @@
             "corporation": "주식회사",
             "limited": "유한회사",
             "individual": "개인사업자",
-            "foreign": "외국계기업"
+            "foreign": "외국계 기업"
           },
           "employeeAndDate": "직원 수 / 설립일",
           "employeeCount": "직원 수",
@@ -356,10 +356,10 @@
           "insuranceHint": "제공하는 보험 정보를 입력해주세요.",
           "address": "주소",
           "addressPlaceholder": "서울특별시 강남구 테헤란로 427",
-          "addressHint": "회사의 주소를 입력해주세요.",
+          "addressHint": "기업의 주소를 입력해주세요.",
           "website": "웹사이트",
           "websitePlaceholder": "https://example.com",
-          "websiteHint": "회사 홈페이지 주소를 입력해주세요. (https:// 포함)",
+          "websiteHint": "기업 홈페이지 주소를 입력해주세요. (https:// 포함)",
           "email": "이메일",
           "emailPlaceholder": "hr@example.com",
           "emailHint": "채용 담당자 이메일을 입력해주세요.",

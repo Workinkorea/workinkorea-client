@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 const links = [
-  { name: '채용공고 찾아보기', href: '/jobs' },
+  { name: '채용 공고 찾아보기', href: '/jobs' },
   { name: '이용약관', href: '/terms' },
   { name: '개인정보처리방침', href: '/privacy' },
   { name: '고객센터', href: '/support' },
