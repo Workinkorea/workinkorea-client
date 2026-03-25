@@ -223,7 +223,7 @@ function MyProfileClient() {
   if (authLoading || isLoading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-background-alternative py-8">
+        <div className="min-h-screen bg-slate-100 py-8">
           <div className="page-container">
             <div className="animate-pulse space-y-6">
               <div className="bg-slate-200 rounded-xl h-64"></div>
@@ -264,7 +264,7 @@ function MyProfileClient() {
   if (!profile) {
     return (
       <Layout>
-        <div className="min-h-screen bg-background-alternative py-16 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-slate-100 py-16 flex items-center justify-center px-4">
           <div className="text-center max-w-md mx-auto">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
               <Edit3 className="w-8 h-8 text-blue-600" />

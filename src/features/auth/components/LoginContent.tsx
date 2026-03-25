@@ -23,7 +23,7 @@ const itemVariants = {
 };
 
 const features = [
-  '맞춤형 채용공고 추천',
+  '맞춤형 채용 공고 추천',
   '이력서 관리 및 자동 저장',
   '자가진단 및 커리어 상담',
 ];
@@ -85,7 +85,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
 
           {/* 타이틀 */}
           <motion.h2
-            className="text-[36px] font-black text-white leading-tight mb-6 tracking-tight"
+            className="text-display-2 font-black text-white leading-tight mb-6 tracking-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -163,7 +163,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
               type="button"
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading}
-              className="w-full py-3.5 px-5 border-2 border-slate-200 rounded-xl font-semibold text-base text-slate-700 hover:border-blue-300 hover:bg-blue-50 transition-all cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3.5 px-5 border-2 border-slate-200 rounded-xl font-semibold text-body-1 text-slate-700 hover:border-blue-300 hover:bg-blue-50 transition-all cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
               whileHover={{ borderColor: '#93C5FD', backgroundColor: '#F0F9FF', scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
               aria-label="Google 계정으로 로그인"
@@ -185,7 +185,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
             {/* 기업 로그인 */}
             <motion.a
               href={companyLoginHref}
-              className="block w-full py-3.5 px-5 text-center border-2 border-slate-200 text-slate-700 rounded-xl font-semibold text-base hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer"
+              className="block w-full py-3.5 px-5 text-center border-2 border-slate-200 text-slate-700 rounded-xl font-semibold text-body-1 hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
             >

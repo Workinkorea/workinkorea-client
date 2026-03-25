@@ -111,7 +111,7 @@ export const ContactInfoSection = ({
             </p>
           )}
           {!formData.website_url && (
-            <p className="mt-1 text-caption-3 text-slate-500">회사 홈페이지 주소를 입력해주세요. (http:// 또는 https:// 포함)</p>
+            <p className="mt-1 text-caption-3 text-slate-500">기업 홈페이지 주소를 입력해주세요. (http:// 또는 https:// 포함)</p>
           )}
         </div>
 
@@ -141,7 +141,7 @@ export const ContactInfoSection = ({
             </p>
           )}
           {!touchedFields.address && (
-            <p className="mt-1 text-caption-3 text-slate-500">회사의 주소를 입력해주세요.</p>
+            <p className="mt-1 text-caption-3 text-slate-500">기업의 주소를 입력해주세요.</p>
           )}
         </div>
       </div>

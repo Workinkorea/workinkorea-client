@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
+import { cn } from '@/shared/lib/utils/utils';
 
 interface DaumPostcodeData {
   roadAddress: string;
@@ -32,13 +33,13 @@ interface DaumPostcodeSearchProps {
   error?: string;
 }
 
-const DaumPostcodeSearch: React.FC<DaumPostcodeSearchProps> = ({
+function DaumPostcodeSearch({
   value,
   onChange,
   placeholder = '주소를 검색하세요',
   className = '',
   error,
-}) => {
+}: DaumPostcodeSearchProps) {
   const [address, setAddress] = useState(value);
 
   useEffect(() => {
@@ -77,9 +78,11 @@ const DaumPostcodeSearch: React.FC<DaumPostcodeSearchProps> = ({
           readOnly
           placeholder={placeholder}
           onClick={handleSearchClick}
-          className={`flex-1 min-w-0 px-3 py-2 border ${
-            error ? 'border-red-500' : 'border-slate-200'
-          } rounded-lg text-body-3 bg-white focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 cursor-pointer`}
+          className={cn(
+            'flex-1 min-w-0 px-3 py-2 border rounded-lg text-body-3 bg-white',
+            'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 cursor-pointer',
+            error ? 'border-red-500' : 'border-slate-200',
+          )}
         />
         <button
           type="button"
@@ -95,6 +98,6 @@ const DaumPostcodeSearch: React.FC<DaumPostcodeSearchProps> = ({
       )}
     </div>
   );
-};
+}
 
 export default DaumPostcodeSearch;

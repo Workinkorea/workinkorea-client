@@ -94,10 +94,10 @@ const CompanyProfileClient = () => {
   if (isError && error instanceof FetchError && error.status === 403) {
     return (
       <Layout>
-        <div className="min-h-screen bg-background-alternative flex items-center justify-center">
+        <div className="min-h-screen bg-slate-100 flex items-center justify-center">
           <div className="bg-white rounded-xl border border-slate-200 p-8 text-center max-w-sm">
             <p className="text-slate-800 font-semibold mb-2">{t('accessDenied')}</p>
-            <p className="text-sm text-slate-500">{error.message}</p>
+            <p className="text-sm text-white0">{error.message}</p>
           </div>
         </div>
       </Layout>
@@ -108,7 +108,7 @@ const CompanyProfileClient = () => {
   if (authLoading || profileLoading || !profile) {
     return (
       <Layout>
-        <div className="min-h-screen bg-background-alternative">
+        <div className="min-h-screen bg-slate-100">
           <div className="bg-white border-b border-slate-100 px-6 py-5">
             <div className="max-w-[1100px] mx-auto flex items-center justify-between">
               <div className="space-y-2">
@@ -141,14 +141,14 @@ const CompanyProfileClient = () => {
   // ── 메인 렌더링 ────────────────────────────────────────────────────────────
   return (
     <Layout>
-      <div className="min-h-screen bg-background-alternative">
+      <div className="min-h-screen bg-slate-100">
 
         {/* ── 대시보드 상단 바 ───────────────────────────────────────────────── */}
         <div className="bg-white border-b border-slate-100">
           <div className="max-w-[1100px] mx-auto px-6 py-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
-                <Building2 size={18} className="text-slate-50" />
+                <Building2 size={18} className="text-white" />
               </div>
               <div className="min-w-0">
                 <p className="text-caption-3 font-semibold text-blue-600 uppercase tracking-widest leading-none mb-0.5">
@@ -176,7 +176,7 @@ const CompanyProfileClient = () => {
                 onClick={() => router.push('/company/posts/create')}
                 className={cn(
                   'inline-flex items-center gap-1.5 px-4 py-2',
-                  'bg-blue-600 text-slate-50 text-caption-1 font-semibold rounded-lg',
+                  'bg-blue-600 text-white text-caption-1 font-semibold rounded-lg',
                   'hover:bg-blue-700 transition-colors cursor-pointer',
                   'shadow-[0_4px_14px_rgba(79,70,229,0.25)]',
                   'focus:outline-none',
@@ -241,7 +241,7 @@ const CompanyProfileClient = () => {
                   </div>
                   {stat.action && <ChevronRight size={14} className="text-slate-300" />}
                 </div>
-                <p className="text-[26px] font-extrabold text-slate-900 leading-none mb-1">{stat.value}</p>
+                <p className="text-title-2 font-extrabold text-slate-900 leading-none mb-1">{stat.value}</p>
                 <p className="text-caption-2 text-slate-400">{stat.label}</p>
               </motion.div>
             ))}
@@ -260,7 +260,7 @@ const CompanyProfileClient = () => {
                     onClick={() => router.push('/company/jobs')}
                     className="flex items-center gap-1.5 text-body-3 font-bold text-slate-900 hover:text-blue-600 transition-colors group cursor-pointer"
                   >
-                    진행중인 채용공고
+                    진행중인 채용 공고
                     <span className="text-blue-600 font-extrabold ml-0.5">{activePosts.length}</span>
                     <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400 transition-colors" />
                   </button>
@@ -268,7 +268,7 @@ const CompanyProfileClient = () => {
                     onClick={() => router.push('/company/posts/create')}
                     className={cn(
                       'inline-flex items-center gap-1.5 px-3 py-1.5',
-                      'bg-blue-600 text-slate-50 text-caption-2 font-semibold rounded-lg',
+                      'bg-blue-600 text-white text-caption-2 font-semibold rounded-lg',
                       'hover:bg-blue-700 transition-colors cursor-pointer',
                     )}
                   >
@@ -312,7 +312,7 @@ const CompanyProfileClient = () => {
                           </div>
                           <div className="flex items-center gap-3 shrink-0">
                             <div className="text-right">
-                              <p className="text-caption-3 font-semibold text-slate-500">
+                              <p className="text-caption-3 font-semibold text-white0">
                                 미검토 <span className="text-blue-600 font-bold">0</span>명
                               </p>
                             </div>
@@ -334,12 +334,12 @@ const CompanyProfileClient = () => {
                       <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
                         <FileText size={22} className="text-slate-300" />
                       </div>
-                      <p className="text-caption-1 text-slate-500 mb-4">{t('noActivePosts')}</p>
+                      <p className="text-caption-1 text-white0 mb-4">{t('noActivePosts')}</p>
                       <button
                         onClick={() => router.push('/company/posts/create')}
                         className={cn(
                           'inline-flex items-center gap-1.5 px-4 py-2',
-                          'bg-blue-600 text-slate-50 text-caption-1 font-semibold rounded-lg',
+                          'bg-blue-600 text-white text-caption-1 font-semibold rounded-lg',
                           'hover:bg-blue-700 transition-colors cursor-pointer',
                         )}
                       >
@@ -378,7 +378,7 @@ const CompanyProfileClient = () => {
                         'flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-caption-2 font-semibold border transition-colors cursor-pointer',
                         activeTodoTab === tab.key
                           ? 'border-blue-500 bg-blue-50 text-blue-600'
-                          : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50',
+                          : 'border-slate-200 bg-white text-white0 hover:border-slate-300 hover:bg-slate-50',
                       )}
                     >
                       {tab.label}
@@ -447,7 +447,7 @@ const CompanyProfileClient = () => {
                     인재를 찾고 계신가요?
                   </p>
                   <p className="text-caption-2 text-blue-200 mb-4 leading-relaxed">
-                    채용공고를 등록하고<br />최적의 후보자를 만나보세요
+                    채용 공고를 등록하고<br />최적의 후보자를 만나보세요
                   </p>
                   <button
                     onClick={() => router.push('/company/posts/create')}
@@ -456,7 +456,7 @@ const CompanyProfileClient = () => {
                       'hover:bg-blue-50 transition-colors cursor-pointer',
                     )}
                   >
-                    + 채용공고 등록
+                    + 채용 공고 등록
                   </button>
                 </div>
               </div>
@@ -473,7 +473,7 @@ const CompanyProfileClient = () => {
                 <div className="p-4">
                   <div className="bg-blue-50 rounded-lg flex flex-col items-center py-5 text-center">
                     <Search size={20} className="text-blue-300 mb-2" />
-                    <p className="text-caption-2 text-slate-500 mb-3 leading-relaxed whitespace-pre-line">
+                    <p className="text-caption-2 text-white0 mb-3 leading-relaxed whitespace-pre-line">
                       {t('talentPoolCta')}
                     </p>
                     <button className="inline-flex items-center gap-1 text-caption-2 font-semibold text-blue-600 hover:underline transition-colors cursor-pointer">
@@ -497,19 +497,19 @@ const CompanyProfileClient = () => {
                 </div>
                 <div className="space-y-2">
                   {profile.address && (
-                    <div className="flex items-start gap-2 text-caption-2 text-slate-500">
+                    <div className="flex items-start gap-2 text-caption-2 text-white0">
                       <MapPin size={13} className="text-slate-300 mt-0.5 shrink-0" />
                       <span className="leading-relaxed line-clamp-2">{profile.address}</span>
                     </div>
                   )}
                   {profile.phone_number && (
-                    <div className="flex items-center gap-2 text-caption-2 text-slate-500">
+                    <div className="flex items-center gap-2 text-caption-2 text-white0">
                       <Phone size={13} className="text-slate-300 shrink-0" />
                       <span>{profile.phone_number}</span>
                     </div>
                   )}
                   {profile.website_url && (
-                    <div className="flex items-center gap-2 text-caption-2 text-slate-500">
+                    <div className="flex items-center gap-2 text-caption-2 text-white0">
                       <Globe size={13} className="text-slate-300 shrink-0" />
                       <a
                         href={profile.website_url}
@@ -537,13 +537,13 @@ const CompanyProfileClient = () => {
                     { icon: <Package  size={13} />, label: t('aptitude'),   status: '미이용' },
                   ].map(item => (
                     <div key={item.label} className="flex items-center justify-between px-4 py-3">
-                      <div className="flex items-center gap-2 text-caption-2 text-slate-500">
+                      <div className="flex items-center gap-2 text-caption-2 text-white0">
                         <span className="text-slate-300">{item.icon}</span>
                         {item.label}
                       </div>
                       <button className={cn(
                         'px-2.5 py-1 border border-slate-200 rounded',
-                        'text-caption-3 font-semibold text-slate-500 bg-white',
+                        'text-caption-3 font-semibold text-white0 bg-white',
                         'hover:bg-slate-50 transition-colors cursor-pointer',
                       )}>
                         {t('buyBtn')}
@@ -561,11 +561,11 @@ const CompanyProfileClient = () => {
                     {t('promoTitle')}
                   </p>
                 </div>
-                <p className="text-caption-2 text-slate-500 mb-3 leading-relaxed whitespace-pre-line">
+                <p className="text-caption-2 text-white0 mb-3 leading-relaxed whitespace-pre-line">
                   {t('promoSubtitle')}
                 </p>
                 <button className={cn(
-                  'w-full py-2 bg-blue-600 text-slate-50 text-caption-2 font-semibold rounded-lg',
+                  'w-full py-2 bg-blue-600 text-white text-caption-2 font-semibold rounded-lg',
                   'hover:bg-blue-700 transition-colors cursor-pointer',
                 )}>
                   {t('promoBtn')}

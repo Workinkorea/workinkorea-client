@@ -57,24 +57,24 @@ export default function SignupSelectContent() {
           </motion.div>
 
           {/* Title */}
-          <motion.div className="text-center mb-10 sm:mb-12" variants={itemVariants}>
-            <h1 className="text-title-2 sm:text-title-1 lg:text-title-1 font-extrabold text-slate-900 mb-2">
+          <motion.div className="text-center mb-8 sm:mb-12" variants={itemVariants}>
+            <h1 className="text-title-2 sm:text-title-1 font-extrabold text-slate-900 mb-2">
               {t('title')}
             </h1>
-            <p className="text-caption-1 sm:text-sm text-slate-600 mt-3">
+            <p className="text-caption-1 sm:text-body-3 text-slate-600 mt-3">
               {t('description')}
             </p>
           </motion.div>
 
           {/* Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
             {SIGNUP_OPTIONS.map(({ href, icon: Icon, title, description, features }) => (
               <motion.div key={href} variants={itemVariants}>
                 <Link href={href} className="block h-full">
                   <motion.div
                     className={cn(
                       'bg-white rounded-2xl border-t-4 border-t-blue-600 border border-slate-200',
-                      'p-5 sm:p-6 lg:p-7 min-h-[340px] sm:min-h-[360px] flex flex-col cursor-pointer',
+                      'p-6 lg:p-8 min-h-[340px] sm:min-h-[360px] flex flex-col cursor-pointer',
                       'hover:border-blue-200 hover:shadow-lg transition-all duration-200'
                     )}
                     style={{ transformStyle: 'preserve-3d', perspective: 1000 }}
@@ -117,8 +117,8 @@ export default function SignupSelectContent() {
                       {/* CTA Button */}
                       <motion.button
                         className={cn(
-                          'w-full mt-auto pt-4 px-5 py-2.5 bg-blue-600 text-white rounded-xl',
-                          'text-sm font-semibold hover:bg-blue-700 transition-colors duration-150',
+                          'w-full mt-auto pt-4 px-5 py-2.5 bg-blue-600 text-white rounded-lg',
+                          'text-body-3 font-semibold hover:bg-blue-700 transition-colors duration-150',
                           'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer'
                         )}
                         whileHover={{ y: -2 }}
@@ -135,7 +135,7 @@ export default function SignupSelectContent() {
 
           {/* Login Link */}
           <motion.div className="text-center" variants={itemVariants}>
-            <p className="text-caption-1 sm:text-sm text-slate-600">
+            <p className="text-caption-1 sm:text-body-3 text-slate-600">
               {t('alreadyMember')}{' '}
               <Link href="/login-select" className="text-blue-600 hover:text-blue-700 font-semibold">
                 {t('loginButton')}

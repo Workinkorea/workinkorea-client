@@ -89,7 +89,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
   if (authLoading || postLoading) {
     return (
       <Layout>
-        <main className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
+        <main className="min-h-screen bg-slate-100 py-8 flex items-center justify-center">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
               <div className="space-y-4">
@@ -120,7 +120,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
   if (!post) {
     return (
       <Layout>
-        <main className="min-h-screen bg-background-alternative py-8 flex items-center justify-center">
+        <main className="min-h-screen bg-slate-100 py-8 flex items-center justify-center">
           <div className="text-center">
             <p className="text-slate-500 text-body-2">{t('notFound')}</p>
             <button
@@ -156,7 +156,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
 
   return (
     <Layout>
-      <main className="min-h-screen bg-background-alternative py-8">
+      <main className="min-h-screen bg-slate-100 py-8">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* ── 페이지 헤더 ──────────────────────────────────────────────── */}

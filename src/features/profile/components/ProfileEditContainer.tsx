@@ -430,7 +430,7 @@ function ProfileEditContainer() {
   if (isLoading) {
     return (
       <Layout>
-        <main className="flex-1 bg-background-alternative flex items-center justify-center min-h-[60vh]">
+        <main className="flex-1 bg-slate-100 flex items-center justify-center min-h-[60vh]">
           <div className="animate-spin w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full" />
         </main>
       </Layout>
@@ -443,7 +443,7 @@ function ProfileEditContainer() {
   if (error || !profile) {
     return (
       <Layout>
-        <main className="flex-1 bg-background-alternative flex items-center justify-center min-h-[60vh]">
+        <main className="flex-1 bg-slate-100 flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
             <h2 className="text-title-3 font-semibold text-slate-900 mb-2">
@@ -469,7 +469,7 @@ function ProfileEditContainer() {
    */
   return (
     <Layout>
-      <main className="flex-1 bg-background-alternative">
+      <main className="flex-1 bg-slate-100">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Page Header */}
           <motion.div
@@ -494,13 +494,13 @@ function ProfileEditContainer() {
                     setIsMobileNavOpen(false);
                   }}
                   className={cn(
-                    'shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer',
+                    'shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-body-3 font-medium transition-colors cursor-pointer',
                     activeSection === section.key
                       ? 'bg-blue-600 text-white'
                       : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
                   )}
                 >
-                  <Icon size={15} />
+                  <Icon size={16} />
                   {section.label}
                 </button>
               );
@@ -508,7 +508,7 @@ function ProfileEditContainer() {
           </div>
 
           {/* 2-column layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-6 items-start">
             {/* ─── 좌측: 폼 ─── */}
             <motion.div
               className="space-y-4"
@@ -602,7 +602,7 @@ function ProfileEditContainer() {
               </Button>
 
               {/* 섹션 네비게이션 */}
-              <div className="bg-white border border-slate-200 rounded-xl p-5">
+              <div className="bg-white border border-slate-200 rounded-xl p-6">
                 <nav className="space-y-2">
                   {sections.map((section) => {
                     const Icon = section.icon;
@@ -611,13 +611,13 @@ function ProfileEditContainer() {
                         key={section.key}
                         onClick={() => setActiveSection(section.key as SectionType)}
                         className={cn(
-                          'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer text-sm font-medium',
+                          'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer text-body-3 font-medium',
                           activeSection === section.key
                             ? 'bg-blue-50 text-blue-700 border border-blue-200'
                             : 'text-slate-700 hover:bg-slate-100'
                         )}
                       >
-                        <Icon size={18} />
+                        <Icon size={16} />
                         <span>{section.label}</span>
                         {updateProfileMutation.isSuccess && activeSection === section.key && (
                           <CheckCircle size={16} className="text-emerald-500 ml-auto" />

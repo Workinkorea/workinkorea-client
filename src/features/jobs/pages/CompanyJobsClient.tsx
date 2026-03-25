@@ -47,7 +47,7 @@ function CompanyJobsClient() {
               </div>
               <div className="skeleton-shimmer h-10 w-32 rounded-lg shrink-0" />
             </div>
-            <div className="bg-white rounded-xl p-5 sm:p-6 shadow-sm space-y-4">
+            <div className="bg-white rounded-xl p-6 shadow-sm space-y-4">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="border border-slate-100 rounded-lg p-4 space-y-3">
                   <div className="skeleton-shimmer h-5 w-2/3 rounded" />
@@ -78,14 +78,14 @@ function CompanyJobsClient() {
           >
             <div>
               <h1 className="text-title-3 sm:text-title-2 font-extrabold text-slate-900">{t('title')}</h1>
-              <p className="text-caption-1 sm:text-sm text-slate-500 mt-1">
+              <p className="text-caption-1 sm:text-body-3 text-slate-500 mt-1">
                 {t('subtitle')}
               </p>
             </div>
             <button
               onClick={() => router.push('/company/posts/create')}
               className={cn(
-                'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold',
+                'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-body-3 font-semibold',
                 'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
                 'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
                 'shadow-[0_4px_14px_rgba(37,99,235,0.25)] shrink-0'
@@ -222,7 +222,7 @@ function CompanyJobsClient() {
                 <motion.button
                   onClick={() => router.push('/company/posts/create')}
                   className={cn(
-                    'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold',
+                    'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-body-3 font-semibold',
                     'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
                     'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
                   )}

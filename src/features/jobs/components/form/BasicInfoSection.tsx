@@ -40,8 +40,7 @@ export function BasicInfoSection({
   onChange,
 }: BasicInfoSectionProps) {
   return (
-    /* 카드 컨테이너: bg-background-default(white) + border-line-400 + rounded-xl */
-    <div className="bg-background-default border border-line-400 rounded-xl p-5 md:p-6">
+    <div className="bg-white border border-slate-200 rounded-xl p-5 md:p-6">
       <SectionHeader
         step={1}
         icon={<Briefcase size={16} />}
@@ -112,7 +111,7 @@ export function BasicInfoSection({
 
           <FormField label="언어 요건">
             <div className="relative">
-              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-label-400 pointer-events-none">
+              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                 <Languages size={15} />
               </div>
               <select

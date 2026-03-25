@@ -56,7 +56,7 @@ export default function CTASection() {
 
         {/* 부제 */}
         <motion.p
-          className="text-body-3 sm:text-body-2 lg:text-[18px] text-blue-100 mb-8 sm:mb-10 lg:mb-12 max-w-2xl mx-auto leading-relaxed"
+          className="text-body-3 sm:text-body-2 lg:text-body-1 text-blue-100 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed"
           variants={itemVariants}
         >
           {t('description')}
@@ -64,7 +64,7 @@ export default function CTASection() {
 
         {/* CTA 버튼 그룹 */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-5 justify-center flex-wrap"
+          className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap"
           variants={itemVariants}
         >
           {/* Primary CTA */}
@@ -77,10 +77,10 @@ export default function CTASection() {
               href="/signup"
               className={cn(
                 'inline-flex items-center justify-center gap-2',
-                'px-5 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4',
+                'px-5 sm:px-7 lg:px-8 py-3 sm:py-3.5',
                 'bg-white text-blue-600',
-                'text-caption-1 sm:text-body-3 lg:text-base font-semibold',
-                'rounded-lg lg:rounded-xl',
+                'text-caption-1 sm:text-body-3 lg:text-body-1 font-semibold',
+                'rounded-lg',
                 'hover:bg-blue-50 transition-all duration-200',
                 'shadow-lg hover:shadow-xl',
                 'cursor-pointer'
@@ -101,10 +101,10 @@ export default function CTASection() {
               href="/jobs"
               className={cn(
                 'inline-flex items-center justify-center gap-2',
-                'px-5 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4',
+                'px-5 sm:px-7 lg:px-8 py-3 sm:py-3.5',
                 'bg-transparent text-white',
-                'text-caption-1 sm:text-body-3 lg:text-base font-semibold',
-                'rounded-lg lg:rounded-xl',
+                'text-caption-1 sm:text-body-3 lg:text-body-1 font-semibold',
+                'rounded-lg',
                 'border-2 border-white/50 hover:border-white',
                 'hover:bg-white/10 transition-all duration-200',
                 'backdrop-blur-sm',

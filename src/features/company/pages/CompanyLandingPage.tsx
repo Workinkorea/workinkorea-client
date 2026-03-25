@@ -90,14 +90,14 @@ const stats = [
 // ── 채용 단계 ────────────────────────────────────────────────────────────────
 const steps = [
   { num: '01', title: '기업 회원가입', desc: '간단한 정보 입력으로 30초 만에 가입 완료' },
-  { num: '02', title: '채용공고 작성', desc: '직무·급여·복지 정보를 상세하게 등록하세요' },
+  { num: '02', title: '채용 공고 작성', desc: '직무·급여·복지 정보를 상세하게 등록하세요' },
   { num: '03', title: '지원자 관리', desc: '지원서를 검토하고 단계별로 관리하세요' },
   { num: '04', title: '채용 완료', desc: '최적의 인재와 함께 성장하세요' },
 ];
 
 export function CompanyLandingPage() {
   return (
-    <div className="min-h-screen bg-background-alternative">
+    <div className="min-h-screen bg-slate-100">
       <div className="max-w-[1100px] mx-auto px-6 py-6">
 
         {/* ── 상단 그리드: 메인 + 사이드바 ─────────────────────────────── */}
@@ -248,12 +248,12 @@ export function CompanyLandingPage() {
               className="bg-white border border-slate-200 rounded-xl p-5"
             >
               <p className="text-body-3 font-extrabold text-slate-900 mb-0.5">환영합니다.</p>
-              <p className="text-caption-2 text-slate-500 mb-4">로그인 후 이용하세요.</p>
+              <p className="text-caption-2 text-white0 mb-4">로그인 후 이용하세요.</p>
               <div className="flex gap-2">
                 <Link
                   href="/company-login"
                   className={cn(
-                    'flex-1 py-2.5 bg-blue-600 text-slate-50 text-caption-1 font-semibold rounded-lg text-center',
+                    'flex-1 py-2.5 bg-blue-600 text-white text-caption-1 font-semibold rounded-lg text-center',
                     'hover:bg-blue-700 transition-colors cursor-pointer',
                   )}
                 >
@@ -282,7 +282,7 @@ export function CompanyLandingPage() {
                 <p className="text-caption-1 font-bold text-slate-900">채용 시작하기</p>
               </div>
               {[
-                { label: '채용공고 등록', href: '/company-login', icon: <FileText size={14} className="text-blue-500" /> },
+                { label: '채용 공고 등록', href: '/company-login', icon: <FileText size={14} className="text-blue-500" /> },
                 { label: '인재 검색하기',  href: '/company-login', icon: <Search  size={14} className="text-teal-500" /> },
                 { label: '기업 회원가입',  href: '/company-signup', icon: <Star    size={14} className="text-violet-500" /> },
               ].map(item => (
@@ -313,7 +313,7 @@ export function CompanyLandingPage() {
               </div>
               <ul className="space-y-1.5">
                 {[
-                  '채용공고 1건 무료 등록',
+                  '채용 공고 1건 무료 등록',
                   '외국인 인재 DB 무료 열람',
                   '전담 매니저 1:1 상담',
                 ].map(benefit => (
@@ -327,7 +327,7 @@ export function CompanyLandingPage() {
                 href="/company-signup"
                 className={cn(
                   'mt-4 flex items-center justify-center gap-1.5 w-full py-2',
-                  'bg-blue-600 text-slate-50 text-caption-2 font-semibold rounded-lg',
+                  'bg-blue-600 text-white text-caption-2 font-semibold rounded-lg',
                   'hover:bg-blue-700 transition-colors cursor-pointer',
                 )}
               >
@@ -349,7 +349,7 @@ export function CompanyLandingPage() {
                   <Phone size={13} className="text-slate-400" />
                   <span className="font-bold text-slate-800">02-0000-0000</span>
                 </div>
-                <div className="flex items-center gap-2 text-caption-2 text-slate-500">
+                <div className="flex items-center gap-2 text-caption-2 text-white0">
                   <Mail size={13} className="text-slate-400" />
                   <span>help@workinkorea.net</span>
                 </div>
@@ -372,7 +372,7 @@ export function CompanyLandingPage() {
         >
           <div>
             <p className="text-caption-1 font-bold text-slate-900 mb-0.5">구직자이신가요?</p>
-            <p className="text-caption-2 text-slate-500">한국 취업을 원하는 외국인 구직자라면 개인 페이지를 이용하세요</p>
+            <p className="text-caption-2 text-white0">한국 취업을 원하는 외국인 구직자라면 개인 페이지를 이용하세요</p>
           </div>
           <Link
             href="/"
