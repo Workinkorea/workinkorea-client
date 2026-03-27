@@ -553,8 +553,8 @@ function ProfileEditClient() {
       <Layout>
         <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="animate-pulse text-center">
-            <div className="w-16 h-16 bg-blue-200 rounded-full mx-auto mb-4"></div>
-            <p className="text-slate-500">{t('loadingText')}</p>
+            <div className="w-16 h-16 bg-primary-200 rounded-full mx-auto mb-4"></div>
+            <p className="text-label-500">{t('loadingText')}</p>
           </div>
         </div>
       </Layout>
@@ -566,16 +566,16 @@ function ProfileEditClient() {
       <Layout>
         <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="text-center">
-            <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
-            <h2 className="text-title-3 font-semibold text-slate-900 mb-2">
+            <AlertCircle size={48} className="text-status-error mx-auto mb-4" />
+            <h2 className="text-title-3 font-semibold text-label-900 mb-2">
               {t('errorTitle')}
             </h2>
-            <p className="text-sm text-slate-500 mb-4">
+            <p className="text-body-3 text-label-500 mb-4">
               {t('errorRetry')}
             </p>
             <button
               onClick={handleBack}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
+              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors cursor-pointer"
             >
               {t('goBack')}
             </button>
@@ -595,8 +595,8 @@ function ProfileEditClient() {
               style={{ backgroundImage: `url(${imagePreview || profile.profile_image_url})` }}
             />
           ) : (
-            <div className="w-20 h-20 rounded-full bg-slate-100 border-4 border-blue-100 flex items-center justify-center">
-              <span className="text-2xl font-semibold text-slate-500">
+            <div className="w-20 h-20 rounded-full bg-label-100 border-4 border-blue-100 flex items-center justify-center">
+              <span className="text-title-3 font-semibold text-label-500">
                 {profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}
               </span>
             </div>
@@ -604,7 +604,7 @@ function ProfileEditClient() {
           <button
             type="button"
             onClick={handleImageButtonClick}
-            className="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition-colors cursor-pointer"
+            className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white hover:bg-primary-600 transition-colors cursor-pointer"
           >
             <Camera size={16} />
           </button>
@@ -617,8 +617,8 @@ function ProfileEditClient() {
           />
         </div>
         <div>
-          <h3 className="text-body-2 font-semibold text-slate-900">{t('profilePhoto')}</h3>
-          <p className="text-caption-3 text-slate-500">{t('profilePhotoHint')}</p>
+          <h3 className="text-body-2 font-semibold text-label-900">{t('profilePhoto')}</h3>
+          <p className="text-caption-3 text-label-500">{t('profilePhotoHint')}</p>
         </div>
       </div>
 
@@ -682,12 +682,12 @@ function ProfileEditClient() {
                 rows={4}
                 maxLength={500}
                 className={cn(
-                  "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent resize-none",
-                  "border-slate-200 focus:ring-blue-500",
+                  "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-body-3 transition-colors focus:ring-2 focus:border-transparent resize-none",
+                  "border-line-400 focus:ring-primary-500",
                   basicForm.formState.errors.introduction && "border-red-500 focus:ring-red-500"
                 )}
               />
-              <div className="text-right text-caption-3 text-slate-400 mt-1">
+              <div className="text-right text-caption-3 text-label-400 mt-1">
                 {field.value?.length || 0}/500
               </div>
             </div>
@@ -704,8 +704,8 @@ function ProfileEditClient() {
               {...field}
               id={fieldId}
               className={cn(
-                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                "border-slate-200 focus:ring-blue-500",
+                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-body-3 transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary-500",
                 preferencesForm.formState.errors.job_status && "border-red-500 focus:ring-red-500"
               )}
             >
@@ -727,8 +727,8 @@ function ProfileEditClient() {
               {...field}
               id={fieldId}
               className={cn(
-                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                "border-slate-200 focus:ring-blue-500",
+                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-body-3 transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary-500",
                 basicForm.formState.errors.career && "border-red-500 focus:ring-red-500"
               )}
             >
@@ -753,14 +753,14 @@ function ProfileEditClient() {
 
         {/* 포트폴리오 파일 업로드 */}
         <div className="space-y-2">
-          <label className="text-caption-3 font-medium text-slate-900">
+          <label className="text-caption-3 font-medium text-label-900">
             {t('portfolioLabel')}
           </label>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={handlePortfolioButtonClick}
-              className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-caption-3 text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-caption-3 text-label-700 hover:bg-label-100 transition-colors cursor-pointer"
             >
               <Camera size={16} />
               {t('portfolioSelectFile')}
@@ -774,20 +774,20 @@ function ProfileEditClient() {
             />
             {(portfolioFileName || profile.portfolio_url) && (
               <div className="flex items-center gap-2 flex-1">
-                <span className="text-caption-3 text-slate-600 truncate">
+                <span className="text-caption-3 text-label-600 truncate">
                   {portfolioFileName || profile.portfolio_url}
                 </span>
                 <button
                   type="button"
                   onClick={handleRemovePortfolio}
-                  className="text-red-500 hover:text-red-500/80 cursor-pointer"
+                  className="text-status-error hover:text-status-error/80 cursor-pointer"
                 >
                   <X size={16} />
                 </button>
               </div>
             )}
           </div>
-          <p className="text-caption-3 text-slate-500">
+          <p className="text-caption-3 text-label-500">
             {t('portfolioFileHint')}
           </p>
         </div>
@@ -806,8 +806,8 @@ function ProfileEditClient() {
                 value={field.value ?? ''}
                 onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                 className={cn(
-                  "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                  "border-slate-200 focus:ring-blue-500",
+                  "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-body-3 transition-colors focus:ring-2 focus:border-transparent",
+                  "border-line-400 focus:ring-primary-500",
                   basicForm.formState.errors.position_id && "border-red-500 focus:ring-red-500"
                 )}
               >
@@ -840,8 +840,8 @@ function ProfileEditClient() {
               value={field.value ?? 122}
               onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 122)}
               className={cn(
-                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                "border-slate-200 focus:ring-blue-500",
+                "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-body-3 transition-colors focus:ring-2 focus:border-transparent",
+                "border-line-400 focus:ring-primary-500",
                 basicForm.formState.errors.country_id && "border-red-500 focus:ring-red-500"
               )}
             >
@@ -857,11 +857,11 @@ function ProfileEditClient() {
         {/* 언어 스킬 */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-caption-3 font-medium text-slate-900">{t('languageSkillsLabel')}</label>
+            <label className="text-caption-3 font-medium text-label-900">{t('languageSkillsLabel')}</label>
             <button
               type="button"
               onClick={() => appendLanguage({ language_type: '', level: '' })}
-              className="flex items-center gap-1 text-blue-500 hover:text-blue-600 text-caption-3 cursor-pointer"
+              className="flex items-center gap-1 text-primary-500 hover:text-primary-600 text-caption-3 cursor-pointer"
             >
               <Plus size={16} />
               <span>{t('languageSkillsAdd')}</span>
@@ -869,18 +869,18 @@ function ProfileEditClient() {
           </div>
 
           {languageFields.length === 0 && (
-            <p className="text-caption-3 text-slate-400">{t('languageSkillsEmpty')}</p>
+            <p className="text-caption-3 text-label-400">{t('languageSkillsEmpty')}</p>
           )}
 
           <div className="space-y-3">
             {languageFields.map((field, index) => (
-              <div key={field.id} className="border border-slate-100 rounded-lg p-4 space-y-3">
+              <div key={field.id} className="border border-line-200 rounded-lg p-4 space-y-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-caption-3 font-medium text-slate-700">{t('languageN', { n: index + 1 })}</span>
+                  <span className="text-caption-3 font-medium text-label-700">{t('languageN', { n: index + 1 })}</span>
                   <button
                     type="button"
                     onClick={() => removeLanguage(index)}
-                    className="text-red-500 hover:text-red-500/80 cursor-pointer"
+                    className="text-status-error hover:text-status-error/80 cursor-pointer"
                   >
                     <X size={16} />
                   </button>
@@ -896,8 +896,8 @@ function ProfileEditClient() {
                       {...field}
                       id={fieldId}
                       className={cn(
-                        "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                        "border-slate-200 focus:ring-blue-500",
+                        "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-body-3 transition-colors focus:ring-2 focus:border-transparent",
+                        "border-line-400 focus:ring-primary-500",
                         basicForm.formState.errors.language_skills?.[index]?.language_type && "border-red-500 focus:ring-red-500"
                       )}
                     >
@@ -926,8 +926,8 @@ function ProfileEditClient() {
                       {...field}
                       id={fieldId}
                       className={cn(
-                        "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-sm transition-colors focus:ring-2 focus:border-transparent",
-                        "border-slate-200 focus:ring-blue-500",
+                        "w-full border rounded-lg text-caption-3 px-3 py-2.5 text-body-3 transition-colors focus:ring-2 focus:border-transparent",
+                        "border-line-400 focus:ring-primary-500",
                         basicForm.formState.errors.language_skills?.[index]?.level && "border-red-500 focus:ring-red-500"
                       )}
                     >
@@ -1022,9 +1022,9 @@ function ProfileEditClient() {
     <div className="space-y-8">
       {/* 비밀번호 변경 */}
       {/* <div className="space-y-4">
-        <div className="border-b border-slate-100 pb-3">
-          <h4 className="text-body-2 font-semibold text-slate-700">비밀번호 변경</h4>
-          <p className="text-caption-3 text-slate-500 mt-1">
+        <div className="border-b border-line-200 pb-3">
+          <h4 className="text-body-2 font-semibold text-label-700">비밀번호 변경</h4>
+          <p className="text-caption-3 text-label-500 mt-1">
             보안을 위해 정기적으로 비밀번호를 변경하세요
           </p>
         </div>
@@ -1077,7 +1077,7 @@ function ProfileEditClient() {
           )}
         />
 
-        <div className="text-caption-3 text-slate-500 bg-slate-100 p-3 rounded-lg">
+        <div className="text-caption-3 text-label-500 bg-label-100 p-3 rounded-lg">
           <div className="font-medium mb-1">비밀번호 요구사항:</div>
           <ul className="list-disc list-inside space-y-1">
             <li>최소 8자 이상</li>
@@ -1089,9 +1089,9 @@ function ProfileEditClient() {
 
       {/* 알림 설정 */}
       <div className="space-y-4">
-        <div className="border-b border-slate-100 pb-3">
-          <h4 className="text-body-2 font-semibold text-slate-700">{t('notificationsTitle')}</h4>
-          <p className="text-caption-3 text-slate-500 mt-1">
+        <div className="border-b border-line-200 pb-3">
+          <h4 className="text-body-2 font-semibold text-label-700">{t('notificationsTitle')}</h4>
+          <p className="text-caption-3 text-label-500 mt-1">
             {t('notificationsSubtitle')}
           </p>
         </div>
@@ -1104,10 +1104,10 @@ function ProfileEditClient() {
             render={(field, fieldId) => {
               const { value, ...fieldWithoutValue } = field;
               return (
-                <label className="flex items-center justify-between p-3 bg-slate-100 rounded-lg cursor-pointer">
+                <label className="flex items-center justify-between p-3 bg-label-100 rounded-lg cursor-pointer">
                   <div>
-                    <span className="text-sm font-medium">{t('snsNotificationLabel')}</span>
-                    <p className="text-caption-3 text-slate-500">{t('snsNotificationDesc')}</p>
+                    <span className="text-body-3 font-medium">{t('snsNotificationLabel')}</span>
+                    <p className="text-caption-3 text-label-500">{t('snsNotificationDesc')}</p>
                   </div>
                   <input
                     {...fieldWithoutValue}
@@ -1115,7 +1115,7 @@ function ProfileEditClient() {
                     type="checkbox"
                     checked={value}
                     onChange={(e) => field.onChange(e.target.checked)}
-                    className="w-4 h-4 text-blue-500 rounded focus:ring-blue-500-500"
+                    className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500-500"
                   />
                 </label>
               );
@@ -1129,10 +1129,10 @@ function ProfileEditClient() {
             render={(field, fieldId) => {
               const { value, ...fieldWithoutValue } = field;
               return (
-                <label className="flex items-center justify-between p-3 bg-slate-100 rounded-lg cursor-pointer">
+                <label className="flex items-center justify-between p-3 bg-label-100 rounded-lg cursor-pointer">
                   <div>
-                    <span className="text-sm font-medium">{t('emailNotificationLabel')}</span>
-                    <p className="text-caption-3 text-slate-500">{t('emailNotificationDesc')}</p>
+                    <span className="text-body-3 font-medium">{t('emailNotificationLabel')}</span>
+                    <p className="text-caption-3 text-label-500">{t('emailNotificationDesc')}</p>
                   </div>
                   <input
                     {...fieldWithoutValue}
@@ -1140,7 +1140,7 @@ function ProfileEditClient() {
                     type="checkbox"
                     checked={value}
                     onChange={(e) => field.onChange(e.target.checked)}
-                    className="w-4 h-4 text-blue-500 rounded focus:ring-blue-500-500"
+                    className="w-4 h-4 text-primary-500 rounded focus:ring-primary-500-500"
                   />
                 </label>
               );
@@ -1153,14 +1153,14 @@ function ProfileEditClient() {
       {/* 위험 영역 */}
       <div className="space-y-4">
         <div className="border-b border-red-500 pb-3">
-          <h4 className="text-body-2 font-semibold text-red-500">{t('accountManagementTitle')}</h4>
-          <p className="text-caption-3 text-slate-500 mt-1">
+          <h4 className="text-body-2 font-semibold text-status-error">{t('accountManagementTitle')}</h4>
+          <p className="text-caption-3 text-label-500 mt-1">
             {t('accountManagementSubtitle')}
           </p>
         </div>
 
         <div className="space-y-3">
-          <button className="w-full text-left p-3 border border-red-500 rounded-lg text-sm text-red-500 hover:bg-slate-100 transition-colors cursor-pointer">
+          <button className="w-full text-left p-3 border border-red-500 rounded-lg text-body-3 text-status-error hover:bg-label-100 transition-colors cursor-pointer">
             {t('deleteAccountButton')}
           </button>
         </div>
@@ -1182,20 +1182,20 @@ function ProfileEditClient() {
             <div className="flex items-center gap-4">
               <button
                 onClick={handleBack}
-                className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
+                className="flex items-center gap-2 text-label-600 hover:text-label-800 transition-colors cursor-pointer"
               >
                 <ArrowLeft size={20} />
                 <span>{t('back')}</span>
               </button>
               <div>
-                <h1 className="text-title-2 font-bold text-slate-900">{t('pageTitle')}</h1>
-                <p className="text-sm text-slate-500">{t('pageSubtitle')}</p>
+                <h1 className="text-title-2 font-bold text-label-900">{t('pageTitle')}</h1>
+                <p className="text-body-3 text-label-500">{t('pageSubtitle')}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
               {hasUnsavedChanges && (
-                <div className="flex items-center gap-2 text-amber-500 text-caption-3">
+                <div className="flex items-center gap-2 text-status-caution text-caption-3">
                   <AlertCircle size={16} />
                   <span>{t('unsavedChanges')}</span>
                 </div>
@@ -1204,7 +1204,7 @@ function ProfileEditClient() {
               <button
                 onClick={handleSave}
                 disabled={updateProfileMutation.isPending}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors disabled:opacity-50 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {updateProfileMutation.isPending ? (
                   <>
@@ -1240,14 +1240,14 @@ function ProfileEditClient() {
                         className={cn(
                           'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer',
                           activeSection === section.key
-                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                            : 'text-slate-700 hover:bg-slate-100'
+                            ? 'bg-primary-50 text-primary-700 border border-primary-200'
+                            : 'text-label-700 hover:bg-label-100'
                         )}
                       >
                         <Icon size={18} />
-                        <span className="text-sm font-medium">{section.label}</span>
+                        <span className="text-body-3 font-medium">{section.label}</span>
                         {updateProfileMutation.isSuccess && activeSection === section.key && (
-                          <CheckCircle size={16} className="text-emerald-500 ml-auto" />
+                          <CheckCircle size={16} className="text-status-correct ml-auto" />
                         )}
                       </button>
                     );

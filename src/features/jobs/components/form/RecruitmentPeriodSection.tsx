@@ -29,7 +29,7 @@ export function RecruitmentPeriodSection({
   onChange,
 }: RecruitmentPeriodSectionProps) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-5 md:p-6">
+    <div className="bg-white border border-line-400 rounded-xl p-5 md:p-6">
       <SectionHeader
         step={3}
         icon={<Calendar size={16} />}

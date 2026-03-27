@@ -18,7 +18,7 @@ export default function StatCards({ stats }: StatCardsProps) {
       title: '전체 일반 회원',
       value: stats.totalUsers,
       link: '/admin/users',
-      color: 'bg-blue-500',
+      color: 'bg-primary-500',
     },
     {
       title: '전체 기업 회원',

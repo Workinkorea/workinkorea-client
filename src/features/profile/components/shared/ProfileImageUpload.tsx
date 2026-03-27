@@ -157,7 +157,7 @@ function ProfileImageUpload({
                 height: `${size}px`,
               }}
             >
-              <span className="text-3xl font-semibold text-blue-600">
+              <span className="text-title-2 font-semibold text-primary-600">
                 {getInitials(userName)}
               </span>
             </div>
@@ -169,9 +169,9 @@ function ProfileImageUpload({
             onClick={handleButtonClick}
             className="
               absolute -bottom-2 -right-2
-              w-9 h-9 bg-blue-600 rounded-full
+              w-9 h-9 bg-primary-600 rounded-full
               flex items-center justify-center
-              text-white hover:bg-blue-700
+              text-white hover:bg-primary-700
               transition-colors cursor-pointer
               shadow-md border-2 border-white
             "
@@ -183,12 +183,12 @@ function ProfileImageUpload({
 
         {/* Description text */}
         <div>
-          <h3 className="text-body-2 font-semibold text-slate-900">프로필 사진</h3>
-          <p className="text-caption-3 text-slate-500 mt-1">
+          <h3 className="text-body-2 font-semibold text-label-900">프로필 사진</h3>
+          <p className="text-caption-3 text-label-500 mt-1">
             채용 담당자에게 보여질<br />
             전문적인 사진을 등록하세요
           </p>
-          <p className="text-caption-3 text-slate-400 mt-2">
+          <p className="text-caption-3 text-label-400 mt-2">
             JPG, PNG • 최대 {maxSizeMB}MB
           </p>
         </div>
@@ -199,19 +199,19 @@ function ProfileImageUpload({
         className={cn(
           'border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors',
           isDragging
-            ? 'border-blue-500 bg-blue-50'
-            : 'border-slate-200 hover:border-blue-400 hover:bg-blue-50'
+            ? 'border-primary-500 bg-primary-50'
+            : 'border-line-400 hover:border-blue-400 hover:bg-primary-50'
         )}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={handleButtonClick}
       >
-        <UploadCloud size={32} className="text-slate-400 mx-auto mb-2" />
-        <p className="text-caption-1 font-semibold text-slate-800 mb-1">
+        <UploadCloud size={32} className="text-label-400 mx-auto mb-2" />
+        <p className="text-caption-1 font-semibold text-label-800 mb-1">
           사진을 드래그하거나 클릭하여 업로드
         </p>
-        <p className="text-caption-3 text-slate-500">
+        <p className="text-caption-3 text-label-500">
           JPG, PNG • 최대 {maxSizeMB}MB
         </p>
       </div>

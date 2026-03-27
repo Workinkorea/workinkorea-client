@@ -19,16 +19,16 @@ export const ContactInfoSection = ({
 }: ContactInfoSectionProps) => {
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-title-4 font-semibold text-slate-900 mb-4 flex items-center gap-2">
+      <h2 className="text-title-4 font-semibold text-label-900 mb-4 flex items-center gap-2">
         <Phone size={20} />
         연락 정보
       </h2>
       <div className="space-y-4">
         {/* 이메일 */}
         <div>
-          <label htmlFor="email" className="text-caption-1 font-semibold text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="email" className="text-caption-1 font-semibold text-label-700 mb-2 flex items-center gap-2">
             <Mail size={16} />
-            이메일 <span className="text-red-500 ml-1">*</span>
+            이메일 <span className="text-status-error ml-1">*</span>
           </label>
           <Input
             type="email"
@@ -42,23 +42,23 @@ export const ContactInfoSection = ({
             success={!errors.email && touchedFields.email && !!formData.email}
           />
           {errors.email && (
-            <p className="mt-1 text-caption-3 text-red-500">{errors.email}</p>
+            <p className="mt-1 text-caption-3 text-status-error">{errors.email}</p>
           )}
           {!errors.email && touchedFields.email && formData.email && (
-            <p className="mt-1 text-caption-3 text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
+            <p className="mt-1 text-caption-3 text-status-correct flex items-center gap-1">
+              <span className="text-status-correct">✓</span> 입력 완료
             </p>
           )}
           {!touchedFields.email && (
-            <p className="mt-1 text-caption-3 text-slate-500">채용 담당자 이메일을 입력해주세요.</p>
+            <p className="mt-1 text-caption-3 text-label-500">채용 담당자 이메일을 입력해주세요.</p>
           )}
         </div>
 
         {/* 전화번호 */}
         <div>
-          <label htmlFor="phone_number" className="text-caption-1 font-semibold text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="phone_number" className="text-caption-1 font-semibold text-label-700 mb-2 flex items-center gap-2">
             <Phone size={16} />
-            전화번호 <span className="text-red-500 ml-1">*</span>
+            전화번호 <span className="text-status-error ml-1">*</span>
           </label>
 
           <Input
@@ -73,23 +73,23 @@ export const ContactInfoSection = ({
             success={!errors.phone_number && touchedFields.phone_number && !!formData.phone_number}
           />
           {errors.phone_number && (
-            <p className="mt-1 text-caption-3 text-red-500">{errors.phone_number}</p>
+            <p className="mt-1 text-caption-3 text-status-error">{errors.phone_number}</p>
           )}
           {!errors.phone_number && touchedFields.phone_number && formData.phone_number && (
-            <p className="mt-1 text-caption-3 text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
+            <p className="mt-1 text-caption-3 text-status-correct flex items-center gap-1">
+              <span className="text-status-correct">✓</span> 입력 완료
             </p>
           )}
           {!touchedFields.phone_number && (
-            <p className="mt-1 text-caption-3 text-slate-500">010, 011, 016~019로 시작하는 번호를 입력하세요.</p>
+            <p className="mt-1 text-caption-3 text-label-500">010, 011, 016~019로 시작하는 번호를 입력하세요.</p>
           )}
         </div>
 
         {/* 웹사이트 */}
         <div>
-          <label htmlFor="website_url" className="text-caption-1 font-semibold text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="website_url" className="text-caption-1 font-semibold text-label-700 mb-2 flex items-center gap-2">
             <Globe size={16} />
-            웹사이트 <span className="text-caption-3 px-2 py-0.5 bg-slate-100 text-slate-600 rounded ml-2">선택</span>
+            웹사이트 <span className="text-caption-3 px-2 py-0.5 bg-label-100 text-label-600 rounded ml-2">선택</span>
           </label>
           <Input
             type="url"
@@ -103,23 +103,23 @@ export const ContactInfoSection = ({
             success={!errors.website_url && !!formData.website_url}
           />
           {errors.website_url && (
-            <p className="mt-1 text-caption-3 text-red-500">{errors.website_url}</p>
+            <p className="mt-1 text-caption-3 text-status-error">{errors.website_url}</p>
           )}
           {!errors.website_url && formData.website_url && (
-            <p className="mt-1 text-caption-3 text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
+            <p className="mt-1 text-caption-3 text-status-correct flex items-center gap-1">
+              <span className="text-status-correct">✓</span> 입력 완료
             </p>
           )}
           {!formData.website_url && (
-            <p className="mt-1 text-caption-3 text-slate-500">기업 홈페이지 주소를 입력해주세요. (http:// 또는 https:// 포함)</p>
+            <p className="mt-1 text-caption-3 text-label-500">기업 홈페이지 주소를 입력해주세요. (http:// 또는 https:// 포함)</p>
           )}
         </div>
 
         {/* 주소 */}
         <div>
-          <label htmlFor="address" className="text-caption-1 font-semibold text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="address" className="text-caption-1 font-semibold text-label-700 mb-2 flex items-center gap-2">
             <MapPin size={16} />
-            주소 <span className="text-red-500 ml-1">*</span>
+            주소 <span className="text-status-error ml-1">*</span>
           </label>
           <Input
             type="text"
@@ -133,15 +133,15 @@ export const ContactInfoSection = ({
             success={!errors.address && touchedFields.address && !!formData.address}
           />
           {errors.address && (
-            <p className="mt-1 text-caption-3 text-red-500">{errors.address}</p>
+            <p className="mt-1 text-caption-3 text-status-error">{errors.address}</p>
           )}
           {!errors.address && touchedFields.address && formData.address && (
-            <p className="mt-1 text-caption-3 text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
+            <p className="mt-1 text-caption-3 text-status-correct flex items-center gap-1">
+              <span className="text-status-correct">✓</span> 입력 완료
             </p>
           )}
           {!touchedFields.address && (
-            <p className="mt-1 text-caption-3 text-slate-500">기업의 주소를 입력해주세요.</p>
+            <p className="mt-1 text-caption-3 text-label-500">기업의 주소를 입력해주세요.</p>
           )}
         </div>
       </div>

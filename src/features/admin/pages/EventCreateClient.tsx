@@ -36,17 +36,17 @@ const INITIAL_FORM: EventFormData = {
 
 function FormLabel({ required, children }: { required?: boolean; children: React.ReactNode }) {
   return (
-    <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">
+    <label className="block text-caption-1 font-semibold text-label-700 mb-1.5">
       {children}
-      {required && <span className="text-red-500 ml-0.5">*</span>}
+      {required && <span className="text-status-error ml-0.5">*</span>}
     </label>
   );
 }
 
 function FormSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="bg-white border border-slate-200 rounded-xl p-6 space-y-5">
-      <h3 className="text-body-2 font-bold text-slate-900 pb-3 border-b border-slate-100">
+    <section className="bg-white border border-line-400 rounded-xl p-6 space-y-5">
+      <h3 className="text-body-2 font-bold text-label-900 pb-3 border-b border-line-200">
         {title}
       </h3>
       {children}
@@ -109,15 +109,15 @@ export function EventCreateClient() {
       {/* 페이지 헤더 */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-caption-2 font-semibold text-blue-600 uppercase tracking-widest mb-1">
+          <p className="text-caption-2 font-semibold text-primary-600 uppercase tracking-widest mb-1">
             Admin
           </p>
-          <h2 className="text-title-3 font-extrabold text-slate-900">{t('pageTitle')}</h2>
+          <h2 className="text-title-3 font-extrabold text-label-900">{t('pageTitle')}</h2>
         </div>
         <button
           type="button"
           onClick={() => router.back()}
-          className="text-caption-1 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
+          className="text-caption-1 text-label-500 hover:text-label-900 transition-colors cursor-pointer"
         >
           {t('backToList')}
         </button>
@@ -135,9 +135,9 @@ export function EventCreateClient() {
               onChange={(e) => set('title', e.target.value)}
               placeholder={t('fieldEventTitlePlaceholder')}
               className={cn(
-                'w-full px-3.5 py-2.5 border border-slate-200 rounded-lg',
-                'text-body-3 text-slate-800 placeholder:text-slate-400 bg-white',
-                'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
+                'text-body-3 text-label-800 placeholder:text-label-400 bg-white',
+                'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
                 'transition-colors',
               )}
             />
@@ -151,9 +151,9 @@ export function EventCreateClient() {
                 value={form.type}
                 onChange={(e) => set('type', e.target.value as EventType)}
                 className={cn(
-                  'w-full px-3.5 py-2.5 border border-slate-200 rounded-lg',
-                  'text-body-3 text-slate-800 bg-white',
-                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                  'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
+                  'text-body-3 text-label-800 bg-white',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
                   'transition-colors cursor-pointer',
                 )}
               >
@@ -169,9 +169,9 @@ export function EventCreateClient() {
                 value={form.target}
                 onChange={(e) => set('target', e.target.value as EventTarget)}
                 className={cn(
-                  'w-full px-3.5 py-2.5 border border-slate-200 rounded-lg',
-                  'text-body-3 text-slate-800 bg-white',
-                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                  'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
+                  'text-body-3 text-label-800 bg-white',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
                   'transition-colors cursor-pointer',
                 )}
               >
@@ -191,9 +191,9 @@ export function EventCreateClient() {
                 value={form.start_date}
                 onChange={(e) => set('start_date', e.target.value)}
                 className={cn(
-                  'w-full px-3.5 py-2.5 border border-slate-200 rounded-lg',
-                  'text-body-3 text-slate-800 bg-white',
-                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                  'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
+                  'text-body-3 text-label-800 bg-white',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
                   'transition-colors cursor-pointer',
                 )}
               />
@@ -206,9 +206,9 @@ export function EventCreateClient() {
                 onChange={(e) => set('end_date', e.target.value)}
                 min={form.start_date}
                 className={cn(
-                  'w-full px-3.5 py-2.5 border border-slate-200 rounded-lg',
-                  'text-body-3 text-slate-800 bg-white',
-                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                  'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
+                  'text-body-3 text-label-800 bg-white',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
                   'transition-colors cursor-pointer',
                 )}
               />
@@ -226,9 +226,9 @@ export function EventCreateClient() {
               rows={8}
               placeholder={t('fieldContentPlaceholder')}
               className={cn(
-                'w-full px-3.5 py-2.5 border border-slate-200 rounded-lg',
-                'text-body-3 text-slate-800 placeholder:text-slate-400 bg-white',
-                'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
+                'text-body-3 text-label-800 placeholder:text-label-400 bg-white',
+                'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
                 'transition-colors resize-none',
               )}
             />
@@ -242,13 +242,13 @@ export function EventCreateClient() {
               onChange={(e) => set('banner_url', e.target.value)}
               placeholder="https://..."
               className={cn(
-                'w-full px-3.5 py-2.5 border border-slate-200 rounded-lg',
-                'text-body-3 text-slate-800 placeholder:text-slate-400 bg-white',
-                'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
+                'text-body-3 text-label-800 placeholder:text-label-400 bg-white',
+                'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
                 'transition-colors',
               )}
             />
-            <p className="text-caption-2 text-slate-400 mt-1">{t('fieldBannerUrlHint')}</p>
+            <p className="text-caption-2 text-label-400 mt-1">{t('fieldBannerUrlHint')}</p>
           </div>
         </FormSection>
 
@@ -262,10 +262,10 @@ export function EventCreateClient() {
                   key={val}
                   className={cn(
                     'flex items-center gap-2.5 px-4 py-2.5 rounded-lg border-2 cursor-pointer',
-                    'text-sm font-medium transition-colors',
+                    'text-body-3 font-medium transition-colors',
                     form.status === val
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
-                      : 'border-slate-200 bg-white text-slate-600 hover:border-blue-200',
+                      ? 'border-primary-500 bg-primary-50 text-primary-700'
+                      : 'border-line-400 bg-white text-label-600 hover:border-primary-200',
                   )}
                 >
                   <input
@@ -279,11 +279,11 @@ export function EventCreateClient() {
                   <span
                     className={cn(
                       'w-4 h-4 rounded-full border-2 flex items-center justify-center',
-                      form.status === val ? 'border-blue-500' : 'border-slate-300',
+                      form.status === val ? 'border-primary-500' : 'border-line-400',
                     )}
                   >
                     {form.status === val && (
-                      <span className="w-2 h-2 rounded-full bg-blue-500" />
+                      <span className="w-2 h-2 rounded-full bg-primary-500" />
                     )}
                   </span>
                   {val === 'active' ? t('statusActive') : t('statusInactive')}
@@ -300,9 +300,9 @@ export function EventCreateClient() {
             onClick={() => router.back()}
             className={cn(
               'px-5 py-2.5 rounded-lg text-body-3 font-semibold transition-colors cursor-pointer',
-              'border border-slate-200 bg-white text-slate-700',
-              'hover:bg-slate-100',
-              'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+              'border border-line-400 bg-white text-label-700',
+              'hover:bg-label-100',
+              'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
             )}
           >
             {t('cancel')}
@@ -312,8 +312,8 @@ export function EventCreateClient() {
             disabled={isSubmitting}
             className={cn(
               'px-5 py-2.5 rounded-lg text-body-3 font-semibold transition-colors cursor-pointer',
-              'bg-blue-600 text-white hover:bg-blue-700',
-              'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+              'bg-primary-600 text-white hover:bg-primary-700',
+              'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
               'disabled:opacity-50 disabled:cursor-not-allowed',
             )}
           >

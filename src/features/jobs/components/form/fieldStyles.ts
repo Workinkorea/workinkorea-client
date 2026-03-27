@@ -11,10 +11,10 @@
 
 /** 기본 Input/Select/Textarea 클래스 */
 export const FIELD_BASE = [
-  'w-full px-3.5 py-2.5 border rounded-lg text-sm transition-colors',
+  'w-full px-3.5 py-2.5 border rounded-lg text-body-3 transition-colors',
   'text-label-800 bg-background-default',              // 본문 텍스트 + 흰 배경
   'placeholder:text-label-400',                        // placeholder: slate-400
-  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
   'disabled:bg-background-alternative disabled:text-label-400 disabled:cursor-not-allowed',
 ].join(' ');
 

@@ -258,13 +258,13 @@ function UserProfileClient() {
       <Layout>
         <div className="min-h-screen bg-white py-16 sm:py-20 lg:py-24 flex items-center justify-center px-4 sm:px-6">
           <div className="text-center max-w-md mx-auto">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 rounded-full bg-blue-100 flex items-center justify-center">
-              <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 rounded-full bg-primary-100 flex items-center justify-center">
+              <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-primary-600" />
             </div>
-            <h2 className="text-[18px] sm:text-xl font-extrabold text-slate-900 mb-2">
+            <h2 className="text-title-5 sm:text-title-4 font-extrabold text-label-900 mb-2">
               {t('loadingError')}
             </h2>
-            <p className="text-caption-1 sm:text-sm text-slate-500 mb-6 sm:mb-8">
+            <p className="text-caption-1 sm:text-body-3 text-label-500 mb-6 sm:mb-8">
               {!resumeList?.length
                 ? t('noResumeHint')
                 : t('retryHint')}
@@ -272,7 +272,7 @@ function UserProfileClient() {
             {!resumeList?.length && (
               <button
                 onClick={() => router.push('/user/resume/create')}
-                className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-1 sm:text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+                className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-primary-600 text-white text-caption-1 sm:text-body-3 font-semibold rounded-lg hover:bg-primary-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
               >
                 <FileText size={16} />
                 {t('writeResume')}
@@ -296,22 +296,22 @@ function UserProfileClient() {
         title={t('deleteModalTitle')}
         size="sm"
       >
-        <p className="text-sm text-slate-700 mb-6">
+        <p className="text-body-3 text-label-700 mb-6">
           &ldquo;{confirmDelete?.title}&rdquo; {t('deleteConfirmText')}
           <br />
-          <span className="text-slate-500 text-xs mt-1 block">{t('deleteCannotUndo')}</span>
+          <span className="text-label-500 text-caption-2 mt-1 block">{t('deleteCannotUndo')}</span>
         </p>
         <div className="flex gap-3 justify-end">
           <button
             onClick={() => setConfirmDelete(null)}
-            className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors cursor-pointer"
+            className="px-4 py-2 border border-line-400 text-label-700 rounded-lg text-body-3 font-medium hover:bg-label-50 transition-colors cursor-pointer"
           >
             {t('cancel')}
           </button>
           <button
             onClick={handleConfirmDelete}
             disabled={deleteResumeMutation.isPending}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 bg-status-error-bg0 text-white rounded-lg text-body-3 font-medium hover:bg-red-600 transition-colors disabled:opacity-50 cursor-pointer"
           >
             {deleteResumeMutation.isPending ? t('deleting') : t('delete')}
           </button>
@@ -323,7 +323,7 @@ function UserProfileClient() {
           {/* 상단 제목 및 액션 버튼 */}
           <div className="flex items-center justify-between gap-4">
             <motion.h1
-              className="text-title-4 sm:text-title-3 font-extrabold text-slate-900"
+              className="text-title-4 sm:text-title-3 font-extrabold text-label-900"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
@@ -338,7 +338,7 @@ function UserProfileClient() {
                   router.push('/user/resume/create');
                 }
               }}
-              className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
+              className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-primary-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0, x: 20 }}
@@ -368,7 +368,7 @@ function UserProfileClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
           >
-            <div className="flex gap-1 min-w-max sm:min-w-0 bg-white rounded-xl border border-slate-200 p-1.5 sm:p-2">
+            <div className="flex gap-1 min-w-max sm:min-w-0 bg-white rounded-xl border border-line-400 p-1.5 sm:p-2">
               {[
                 { key: 'dashboard', label: t('tabDashboard'), icon: '📊' },
                 { key: 'resume', label: t('tabResume'), icon: '📄' },
@@ -379,17 +379,17 @@ function UserProfileClient() {
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
                   className={cn(
-                    'relative px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-caption-2 sm:text-sm font-semibold',
+                    'relative px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-caption-2 sm:text-body-3 font-semibold',
                     'whitespace-nowrap transition-colors duration-200 cursor-pointer',
                     activeTab === tab.key
                       ? 'text-white'
-                      : 'text-slate-600 hover:text-slate-700 hover:bg-slate-50'
+                      : 'text-label-600 hover:text-label-700 hover:bg-label-50'
                   )}
                 >
                   {activeTab === tab.key && (
                     <motion.div
                       layoutId="tab-bg"
-                      className="absolute inset-0 bg-blue-600 rounded-lg shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+                      className="absolute inset-0 bg-primary-600 rounded-lg shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
                       style={{ zIndex: -1 }}
                       transition={{ type: 'spring', stiffness: 340, damping: 28 }}
                     />
@@ -430,27 +430,27 @@ function UserProfileClient() {
 
                   return (
                     <motion.div
-                      className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-slate-200 hover:border-blue-200 hover:shadow-md transition-all duration-200"
+                      className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-line-400 hover:border-primary-200 hover:shadow-md transition-all duration-200"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.3 }}
                     >
                       <div className="flex items-center justify-between mb-4 sm:mb-5">
-                        <h3 className="text-body-3 sm:text-body-2 font-bold text-slate-900">{t('profileCompletion')}</h3>
+                        <h3 className="text-body-3 sm:text-body-2 font-bold text-label-900">{t('profileCompletion')}</h3>
                         <span className={cn(
-                          'text-[18px] sm:text-lg font-extrabold',
-                          pct >= 80 ? 'text-blue-600' : pct >= 50 ? 'text-amber-500' : 'text-slate-400'
+                          'text-title-5 sm:text-title-5 font-extrabold',
+                          pct >= 80 ? 'text-primary-600' : pct >= 50 ? 'text-status-caution' : 'text-label-400'
                         )}>
                           {pct}%
                         </span>
                       </div>
 
                       {/* 프로그레스 바 */}
-                      <div className="h-2.5 sm:h-3 bg-slate-100 rounded-full overflow-hidden mb-5 sm:mb-6">
+                      <div className="h-2.5 sm:h-3 bg-label-100 rounded-full overflow-hidden mb-5 sm:mb-6">
                         <motion.div
                           className={cn(
                             'h-full rounded-full',
-                            pct >= 80 ? 'bg-blue-600' : pct >= 50 ? 'bg-amber-500' : 'bg-slate-300'
+                            pct >= 80 ? 'bg-primary-600' : pct >= 50 ? 'bg-status-caution-bg0' : 'bg-label-300'
                           )}
                           initial={{ width: 0 }}
                           animate={{ width: `${pct}%` }}
@@ -466,15 +466,15 @@ function UserProfileClient() {
                             className={cn(
                               'flex items-center gap-1.5 sm:gap-2 text-caption-3 sm:text-caption-2 font-medium px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors',
                               item.done
-                                ? 'text-slate-700 bg-slate-50'
-                                : 'text-slate-400 bg-slate-50/50'
+                                ? 'text-label-700 bg-label-50'
+                                : 'text-label-400 bg-label-50/50'
                             )}
                           >
                             <span className={cn(
-                              'w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-bold shrink-0',
+                              'w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full flex items-center justify-center text-caption-3 font-bold shrink-0',
                               item.done
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-slate-200 text-slate-400'
+                                ? 'bg-primary-600 text-white'
+                                : 'bg-label-100 text-label-400'
                             )}>
                               {item.done ? '✓' : ''}
                             </span>
@@ -485,12 +485,12 @@ function UserProfileClient() {
 
                       {pct < 100 && (
                         <motion.p
-                          className="text-caption-3 sm:text-caption-2 text-slate-400 leading-relaxed"
+                          className="text-caption-3 sm:text-caption-2 text-label-400 leading-relaxed"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.6 }}
                         >
-                          <span className="font-semibold text-slate-600">{t('completionTip')}:</span> {items.filter(i => !i.done).map(i => i.label).join(', ')}{t('completionTipSuffix')}
+                          <span className="font-semibold text-label-600">{t('completionTip')}:</span> {items.filter(i => !i.done).map(i => i.label).join(', ')}{t('completionTipSuffix')}
                         </motion.p>
                       )}
                     </motion.div>
@@ -498,12 +498,12 @@ function UserProfileClient() {
                 })()}
 
                 <motion.div
-                  className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-slate-200 hover:border-blue-200 hover:shadow-md transition-all duration-200"
+                  className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-line-400 hover:border-primary-200 hover:shadow-md transition-all duration-200"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  <h3 className="text-body-2 sm:text-body-1 font-bold text-slate-900 mb-4 sm:mb-6 text-center">
+                  <h3 className="text-body-2 sm:text-body-1 font-bold text-label-900 mb-4 sm:mb-6 text-center">
                     {t('radarTitle')}
                   </h3>
                   <div className="flex justify-center">
@@ -523,18 +523,18 @@ function UserProfileClient() {
               <div className="space-y-5 sm:space-y-6">
                 {/* 파일 업로드 섹션 */}
                 <motion.div
-                  className="bg-linear-to-br from-blue-50 to-blue-100/50 rounded-xl p-4 sm:p-6 border border-blue-200 hover:border-blue-300 transition-colors"
+                  className="bg-linear-to-br from-blue-50 to-blue-100/50 rounded-xl p-4 sm:p-6 border border-primary-200 hover:border-blue-300 transition-colors"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
                 >
                   <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-5">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/60 flex items-center justify-center shrink-0">
-                      <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                      <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600" />
                     </div>
                     <div>
-                      <h4 className="text-body-3 sm:text-body-2 font-bold text-slate-900">{t('imageUploadTitle')}</h4>
-                      <p className="text-caption-2 sm:text-caption-1 text-slate-500 mt-0.5">{t('imageUploadHint')}</p>
+                      <h4 className="text-body-3 sm:text-body-2 font-bold text-label-900">{t('imageUploadTitle')}</h4>
+                      <p className="text-caption-2 sm:text-caption-1 text-label-500 mt-0.5">{t('imageUploadHint')}</p>
                     </div>
                   </div>
 
@@ -546,8 +546,8 @@ function UserProfileClient() {
                         accept="image/*"
                         className="absolute inset-0 opacity-0 cursor-pointer"
                       />
-                      <div className="px-4 py-2.5 sm:py-3 bg-white border-2 border-dashed border-blue-300 rounded-lg text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-colors">
-                        <p className="text-caption-2 sm:text-caption-1 font-semibold text-slate-700">
+                      <div className="px-4 py-2.5 sm:py-3 bg-white border-2 border-dashed border-blue-300 rounded-lg text-center cursor-pointer hover:border-blue-400 hover:bg-primary-50/30 transition-colors">
+                        <p className="text-caption-2 sm:text-caption-1 font-semibold text-label-700">
                           {selectedFile ? selectedFile.name : t('clickToSelect')}
                         </p>
                       </div>
@@ -555,7 +555,7 @@ function UserProfileClient() {
                     <motion.button
                       onClick={handleUploadImage}
                       disabled={!selectedFile || uploadImageMutation.isPending}
-                      className="px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+                      className="px-4 sm:px-6 py-2.5 sm:py-3 bg-primary-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -572,26 +572,26 @@ function UserProfileClient() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.4, delay: 0.1 }}
                   >
-                    <h4 className="text-body-3 sm:text-body-2 font-bold text-slate-900 px-2 sm:px-0">{t('resumeListTitle', { count: resumeList.length })}</h4>
+                    <h4 className="text-body-3 sm:text-body-2 font-bold text-label-900 px-2 sm:px-0">{t('resumeListTitle', { count: resumeList.length })}</h4>
                     {resumeList.map((resume, idx) => (
                       <motion.div
                         key={resume.id}
-                        className="flex items-center gap-4 p-4 sm:p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-200 hover:shadow-sm transition-all duration-200 cursor-pointer group"
+                        className="flex items-center gap-4 p-4 sm:p-5 bg-white rounded-xl border border-line-400 hover:border-primary-200 hover:shadow-sm transition-all duration-200 cursor-pointer group"
                         onClick={() => router.push(`/user/resume/edit/${resume.id}`)}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: idx * 0.05 }}
                         whileHover={{ x: 4 }}
                       >
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors">
-                          <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-primary-50 flex items-center justify-center shrink-0 group-hover:bg-primary-100 transition-colors">
+                          <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600" />
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <p className="text-caption-1 sm:text-body-3 font-semibold text-slate-900 truncate">
+                          <p className="text-caption-1 sm:text-body-3 font-semibold text-label-900 truncate">
                             {resume.title || '이력서'}
                           </p>
-                          <p className="text-caption-3 sm:text-caption-2 text-slate-400 mt-1">
+                          <p className="text-caption-3 sm:text-caption-2 text-label-400 mt-1">
                             {resume.updated_at ? new Date(resume.updated_at).toLocaleDateString('ko-KR', { year: 'numeric', month: 'short', day: 'numeric' }) : '날짜 정보 없음'}
                           </p>
                         </div>
@@ -602,7 +602,7 @@ function UserProfileClient() {
                             handleDeleteResume(resume.id, resume.title || '이력서');
                           }}
                           disabled={deleteResumeMutation.isPending}
-                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-caption-3 sm:text-caption-2 font-semibold text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-caption-3 sm:text-caption-2 font-semibold text-status-error border border-status-error-bg rounded-lg hover:bg-status-error-bg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
@@ -612,14 +612,14 @@ function UserProfileClient() {
                     ))}
                   </motion.div>
                 ) : (
-                  <div className="text-center py-12 sm:py-16 bg-white rounded-xl border border-slate-200">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-slate-100 flex items-center justify-center">
-                      <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400" />
+                  <div className="text-center py-12 sm:py-16 bg-white rounded-xl border border-line-400">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-label-100 flex items-center justify-center">
+                      <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-label-400" />
                     </div>
-                    <p className="text-caption-1 sm:text-sm text-slate-500 mb-4 sm:mb-6">{t('noResumeEmpty')}</p>
+                    <p className="text-caption-1 sm:text-body-3 text-label-500 mb-4 sm:mb-6">{t('noResumeEmpty')}</p>
                     <button
                       onClick={() => router.push('/user/resume/create')}
-                      className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+                      className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-primary-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-primary-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
                     >
                       <FileText size={16} />
                       {t('writeResume')}
@@ -642,16 +642,16 @@ function UserProfileClient() {
               <div className="space-y-5 sm:space-y-6">
                 {/* 교육 이력 섹션 */}
                 <motion.div
-                  className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-slate-200"
+                  className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-line-400"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
                 >
                   <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                      <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+                      <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600" />
                     </div>
-                    <h3 className="text-body-3 sm:text-body-2 font-bold text-slate-900">{t('educationTitle')}</h3>
+                    <h3 className="text-body-3 sm:text-body-2 font-bold text-label-900">{t('educationTitle')}</h3>
                   </div>
 
                   <div className="space-y-3">
@@ -668,14 +668,14 @@ function UserProfileClient() {
                               transition={{ duration: 0.3, delay: idx * 0.05 }}
                             >
                               {/* 타임라인 점 */}
-                              <div className="absolute -left-6 sm:-left-8 top-1 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-blue-600 border-2 border-white shadow-sm" />
+                              <div className="absolute -left-6 sm:-left-8 top-1 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-primary-600 border-2 border-white shadow-sm" />
 
-                              <div className="bg-slate-50 rounded-lg p-3 sm:p-4 border border-slate-100 hover:border-blue-200 hover:shadow-sm transition-all">
-                                <p className="text-caption-1 sm:text-body-3 font-bold text-slate-900">{edu.institution}</p>
-                                <p className="text-caption-2 sm:text-caption-1 text-slate-600 mt-1">
+                              <div className="bg-label-50 rounded-lg p-3 sm:p-4 border border-line-200 hover:border-primary-200 hover:shadow-sm transition-all">
+                                <p className="text-caption-1 sm:text-body-3 font-bold text-label-900">{edu.institution}</p>
+                                <p className="text-caption-2 sm:text-caption-1 text-label-600 mt-1">
                                   {edu.degree} • {edu.field}
                                 </p>
-                                <p className="text-caption-3 sm:text-caption-2 text-slate-400 mt-2">
+                                <p className="text-caption-3 sm:text-caption-2 text-label-400 mt-2">
                                   {edu.startDate} ~ {edu.endDate || t('present')}
                                 </p>
                               </div>
@@ -684,7 +684,7 @@ function UserProfileClient() {
                         </div>
                       </>
                     ) : (
-                      <p className="text-caption-2 sm:text-caption-1 text-slate-400 text-center py-4">{t('noEducation')}</p>
+                      <p className="text-caption-2 sm:text-caption-1 text-label-400 text-center py-4">{t('noEducation')}</p>
                     )}
                   </div>
                 </motion.div>
@@ -692,16 +692,16 @@ function UserProfileClient() {
                 {/* 자격증 섹션 */}
                 {resumeData.certifications.length > 0 && (
                   <motion.div
-                    className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-slate-200"
+                    className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-line-400"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.1 }}
                   >
                     <div className="flex items-center gap-3 mb-4 sm:mb-5">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-                        <Award className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-status-caution-bg flex items-center justify-center shrink-0">
+                        <Award className="w-4 h-4 sm:w-5 sm:h-5 text-status-caution" />
                       </div>
-                      <h3 className="text-body-3 sm:text-body-2 font-bold text-slate-900">{t('certTitle')}</h3>
+                      <h3 className="text-body-3 sm:text-body-2 font-bold text-label-900">{t('certTitle')}</h3>
                     </div>
 
                     <div className="flex flex-wrap gap-2 sm:gap-3">

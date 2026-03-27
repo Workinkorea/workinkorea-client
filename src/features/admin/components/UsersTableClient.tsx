@@ -79,34 +79,34 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
     <>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="bg-label-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-caption-2 font-medium text-label-500 uppercase tracking-wider">
                 ID
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-caption-2 font-medium text-label-500 uppercase tracking-wider">
                 이메일
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-caption-2 font-medium text-label-500 uppercase tracking-wider">
                 여권 인증
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-caption-2 font-medium text-label-500 uppercase tracking-wider">
                 작업
               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <tr key={user.id} className="hover:bg-label-50">
+                <td className="px-6 py-4 whitespace-nowrap text-body-3 text-label-900">
                   {user.id}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-body-3 text-label-900">
                   {user.email}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                <td className="px-6 py-4 whitespace-nowrap text-body-3">
                   <span
-                    className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    className={`inline-flex px-2 py-1 text-caption-2 font-semibold rounded-full ${
                       user.passport_certi
                         ? 'bg-green-100 text-green-800'
                         : 'bg-red-100 text-red-800'
@@ -115,16 +115,16 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
                     {user.passport_certi ? '인증됨' : '미인증'}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td className="px-6 py-4 whitespace-nowrap text-right text-body-3 font-medium">
                   <button
                     onClick={() => openEditModal(user)}
-                    className="text-blue-600 hover:text-blue-900 mr-4 cursor-pointer"
+                    className="text-primary-600 hover:text-primary-900 mr-4 cursor-pointer"
                   >
                     수정
                   </button>
                   <button
                     onClick={() => handleDelete(user.id)}
-                    className="text-red-600 hover:text-red-900 cursor-pointer"
+                    className="text-status-error hover:text-red-900 cursor-pointer"
                   >
                     삭제
                   </button>
@@ -137,21 +137,21 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
 
       {/* Pagination */}
       <div className="flex items-center justify-between mt-6">
-        <div className="text-sm text-gray-700">
+        <div className="text-body-3 text-label-700">
           페이지 {page} (현재 {users.length}개 표시)
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-gray-300 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             이전
           </button>
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={users.length < limit}
-            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-gray-300 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             다음
           </button>
@@ -162,18 +162,18 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
       {showModal && editingUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">회원 수정</h3>
+            <h3 className="text-title-5 font-medium text-label-900 mb-4">회원 수정</h3>
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-body-3 font-medium text-label-700 mb-1">
                     이메일
                   </label>
                   <input
                     type="email"
                     disabled
                     value={editingUser.email}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-gray-100"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3 bg-label-100"
                   />
                 </div>
                 <div>
@@ -182,9 +182,9 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
                       type="checkbox"
                       checked={passportCerti}
                       onChange={(e) => setPassportCerti(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                     />
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-body-3 font-medium text-label-700">
                       여권 인증
                     </span>
                   </label>
@@ -194,14 +194,14 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 cursor-pointer"
+                  className="flex-1 rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-gray-300 hover:bg-label-50 cursor-pointer"
                 >
                   취소
                 </button>
                 <button
                   type="submit"
                   disabled={updateMutation.isPending}
-                  className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 cursor-pointer disabled:opacity-50"
+                  className="flex-1 rounded-md bg-primary-600 px-4 py-2 text-body-3 font-medium text-white hover:bg-primary-500 cursor-pointer disabled:opacity-50"
                 >
                   {updateMutation.isPending ? '처리 중...' : '수정'}
                 </button>

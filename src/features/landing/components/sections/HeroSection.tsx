@@ -46,7 +46,7 @@ export default function HeroSection() {
         {/* 브랜드 타이틀 */}
         <motion.h1
           variants={item}
-          className="font-['Plus_Jakarta_Sans'] text-display-2 sm:text-display-1 font-extrabold text-blue-600 tracking-tight mb-3"
+          className="font-['Plus_Jakarta_Sans'] text-display-2 sm:text-display-1 font-extrabold text-primary-600 tracking-tight mb-3"
         >
           Work In Korea
         </motion.h1>
@@ -54,7 +54,7 @@ export default function HeroSection() {
         {/* 서브타이틀 */}
         <motion.p
           variants={item}
-          className="text-title-4 sm:text-title-3 font-bold text-slate-900 mb-3"
+          className="text-title-4 sm:text-title-3 font-bold text-label-900 mb-3"
         >
           {t('tagline')}
         </motion.p>
@@ -62,7 +62,7 @@ export default function HeroSection() {
         {/* 설명 */}
         <motion.p
           variants={item}
-          className="text-caption-1 sm:text-body-3 text-slate-500 mb-8"
+          className="text-caption-1 sm:text-body-3 text-label-500 mb-8"
         >
           {t('loginPrompt')}
         </motion.p>
@@ -71,7 +71,7 @@ export default function HeroSection() {
         <motion.div variants={item} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
           <Link
             href="/login-select"
-            className="inline-flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-8 py-3.5 rounded-lg font-semibold text-body-2 transition-all shadow-md hover:shadow-lg"
+            className="inline-flex items-center gap-2 bg-primary-600 text-white hover:bg-primary-700 px-8 py-3.5 rounded-lg font-semibold text-body-2 transition-all shadow-md hover:shadow-lg"
           >
             {t('getStarted')}
             <ArrowRight className="w-4 h-4" />

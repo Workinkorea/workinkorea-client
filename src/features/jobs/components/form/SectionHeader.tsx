@@ -13,21 +13,21 @@ interface SectionHeaderProps {
  */
 export function SectionHeader({ step, icon, title, description }: SectionHeaderProps) {
   return (
-    <div className="flex items-start gap-3 mb-5 md:mb-6 pb-4 md:pb-5 border-b border-slate-100">
-      {/* 아이콘 배경: bg-blue-50(indigo-50)으로 섹션 시작을 시각적으로 구분 */}
-      <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 shrink-0 mt-0.5">
+    <div className="flex items-start gap-3 mb-5 md:mb-6 pb-4 md:pb-5 border-b border-line-200">
+      {/* 아이콘 배경: bg-primary-50(indigo-50)으로 섹션 시작을 시각적으로 구분 */}
+      <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center text-primary-600 shrink-0 mt-0.5">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
           {/* STEP 배지 */}
-          <span className="text-caption-3 font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded tracking-wide">
+          <span className="text-caption-3 font-bold text-primary-600 bg-primary-50 px-1.5 py-0.5 rounded tracking-wide">
             STEP {step}
           </span>
-          <h2 className="text-body-2 font-bold text-slate-900">{title}</h2>
+          <h2 className="text-body-2 font-bold text-label-900">{title}</h2>
         </div>
         {description && (
-          <p className="text-caption-2 text-slate-400 leading-relaxed">{description}</p>
+          <p className="text-caption-2 text-label-400 leading-relaxed">{description}</p>
         )}
       </div>
     </div>

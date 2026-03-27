@@ -226,10 +226,10 @@ export default function BusinessSignupComponent() {
     <div className="min-h-screen bg-white flex flex-col lg:flex-row">
 
       {/* Left: Terms */}
-      <div className="w-full lg:w-1/2 lg:border-r lg:border-slate-200 px-4 sm:px-6 py-8 sm:py-12 lg:p-12">
+      <div className="w-full lg:w-1/2 lg:border-r lg:border-line-400 px-4 sm:px-6 py-8 sm:py-12 lg:p-12">
         <div className="max-w-xl mx-auto space-y-6">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <h2 className="text-body-2 font-bold text-slate-900 mb-4">{t('termsTitle')}</h2>
+            <h2 className="text-body-2 font-bold text-label-900 mb-4">{t('termsTitle')}</h2>
           </motion.div>
 
           <motion.div
@@ -241,9 +241,9 @@ export default function BusinessSignupComponent() {
                 type="checkbox"
                 checked={terms.allAgree}
                 onChange={(e) => handleAllAgree(e.target.checked)}
-                className="w-5 h-5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                className="w-5 h-5 text-primary-600 border-line-400 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
               />
-              <span className="ml-3 text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">{t('agreeAll')}</span>
+              <span className="ml-3 text-body-3 font-semibold text-label-900 group-hover:text-primary-600 transition-colors">{t('agreeAll')}</span>
             </label>
           </motion.div>
 
@@ -251,7 +251,7 @@ export default function BusinessSignupComponent() {
             {TERM_KEYS.map(({ key, required }, index) => (
               <motion.div
                 key={key}
-                className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-sm hover:border-blue-200 transition-colors"
+                className="bg-white border border-line-400 rounded-xl p-5 sm:p-6 shadow-sm hover:border-primary-200 transition-colors"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.05 * index }}
               >
                 <label className="flex items-start cursor-pointer group gap-3">
@@ -259,20 +259,20 @@ export default function BusinessSignupComponent() {
                     type="checkbox"
                     checked={terms[key]}
                     onChange={(e) => handleTermChange(key, e.target.checked)}
-                    className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer shrink-0"
+                    className="w-4 h-4 mt-0.5 text-primary-600 border-line-400 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                      <span className="text-sm text-slate-900 group-hover:text-blue-600 transition-colors">
+                      <span className="text-body-3 text-label-900 group-hover:text-primary-600 transition-colors">
                         {required
-                          ? <span className="text-blue-600 font-semibold">{t('required')} </span>
-                          : <span className="text-slate-400 font-semibold">{t('optional')} </span>
+                          ? <span className="text-primary-600 font-semibold">{t('required')} </span>
+                          : <span className="text-label-400 font-semibold">{t('optional')} </span>
                         }
                         {t(`termLabels.${key}`)}
                       </span>
                       <button
                         type="button"
-                        className="text-caption-3 text-slate-500 hover:text-blue-600 underline cursor-pointer whitespace-nowrap shrink-0"
+                        className="text-caption-3 text-label-500 hover:text-primary-600 underline cursor-pointer whitespace-nowrap shrink-0"
                         onClick={(e) => { e.preventDefault(); openTermsModal(key); }}
                       >
                         {t('viewButton')}
@@ -292,19 +292,19 @@ export default function BusinessSignupComponent() {
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-6 py-8 sm:py-12 lg:p-12 bg-white">
         <div className="max-w-xl mx-auto w-full space-y-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <h1 className="text-title-3 sm:text-title-2 font-bold text-slate-900 mb-2">{t('title')}</h1>
-            <p className="text-sm text-slate-500">{t('formSubtitle')}</p>
+            <h1 className="text-title-3 sm:text-title-2 font-bold text-label-900 mb-2">{t('title')}</h1>
+            <p className="text-body-3 text-label-500">{t('formSubtitle')}</p>
           </motion.div>
 
           {/* Progress */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}>
-            <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="text-slate-500">{t('progressLabel')}</span>
-              <span className="text-blue-600 font-semibold">{currentProgress}%</span>
+            <div className="flex items-center justify-between text-caption-2 mb-1.5">
+              <span className="text-label-500">{t('progressLabel')}</span>
+              <span className="text-primary-600 font-semibold">{currentProgress}%</span>
             </div>
-            <div className="w-full bg-slate-100 rounded-full h-1.5">
+            <div className="w-full bg-label-100 rounded-full h-1.5">
               <motion.div
-                className="bg-blue-600 h-1.5 rounded-full"
+                className="bg-primary-600 h-1.5 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${currentProgress}%` }}
                 transition={{ duration: 0.4 }}
@@ -318,8 +318,8 @@ export default function BusinessSignupComponent() {
             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
           >
             {/* 사업자 정보 */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
-              <h3 className="text-body-2 font-bold text-slate-900">{t('bizInfo')}</h3>
+            <div className="bg-white border border-line-400 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
+              <h3 className="text-body-2 font-bold text-label-900">{t('bizInfo')}</h3>
               <FormField
                 name="businessNumber" control={control} label={t('bizNumber')} error={errors.businessNumber?.message}
                 render={(field, fieldId) => (
@@ -327,7 +327,7 @@ export default function BusinessSignupComponent() {
                     <div className="flex gap-2">
                       <input
                         {...field} id={fieldId} type="text"
-                        className="flex-1 border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
+                        className="flex-1 border border-line-400 rounded-lg px-3.5 py-2.5 text-body-3 focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
                         placeholder={t('bizNumberPlaceholder')} maxLength={12}
                         onChange={(e) => {
                           const formatted = formatBusinessNumber(e.target.value.replace(/[^0-9]/g, ''));
@@ -340,12 +340,12 @@ export default function BusinessSignupComponent() {
                         type="button"
                         onClick={() => field.value && handleBusinessNumberCheck(field.value)}
                         disabled={!field.value || !isValidBusinessNumber(field.value) || formState.isVerifying || formState.isBusinessNumberVerified}
-                        className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
-                          formState.isVerifying ? 'bg-blue-500 text-white cursor-not-allowed'
+                        className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-body-3 whitespace-nowrap transition-colors ${
+                          formState.isVerifying ? 'bg-primary-500 text-white cursor-not-allowed'
                           : field.value && isValidBusinessNumber(field.value)
-                            ? formState.isBusinessNumberVerified ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                              : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-                            : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                            ? formState.isBusinessNumberVerified ? 'bg-label-100 text-label-400 cursor-not-allowed'
+                              : 'bg-primary-600 text-white hover:bg-primary-700 cursor-pointer'
+                            : 'bg-label-100 text-label-400 cursor-not-allowed'
                         }`}
                         whileTap={field.value && isValidBusinessNumber(field.value) && !formState.isBusinessNumberVerified && !formState.isVerifying ? { scale: 0.95 } : {}}
                       >
@@ -353,7 +353,7 @@ export default function BusinessSignupComponent() {
                       </motion.button>
                     </div>
                     {formState.isBusinessNumberVerified && formState.businessNumberMessage && (
-                      <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} className="text-caption-3 text-blue-600">
+                      <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} className="text-caption-3 text-primary-600">
                         {formState.businessNumberMessage}
                       </motion.p>
                     )}
@@ -366,8 +366,8 @@ export default function BusinessSignupComponent() {
             </div>
 
             {/* 담당자 정보 */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
-              <h3 className="text-body-2 font-bold text-slate-900">{t('managerInfo')}</h3>
+            <div className="bg-white border border-line-400 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
+              <h3 className="text-body-2 font-bold text-label-900">{t('managerInfo')}</h3>
               <FormField name="name" control={control} label={t('managerName')}
                 render={(field, fieldId) => <Input {...field} id={fieldId} placeholder={t('managerNamePlaceholder')} error={!!errors.name} />}
               />
@@ -381,9 +381,9 @@ export default function BusinessSignupComponent() {
                             type="radio" name="phoneType" value={type}
                             checked={formState.phoneType === type}
                             onChange={() => { setFormState((prev) => ({ ...prev, phoneType: type })); field.onChange(''); clearErrors('phoneNumber'); }}
-                            className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                            className="w-4 h-4 text-primary-600 focus:ring-primary-500"
                           />
-                          <span className="text-caption-1 text-slate-700">{type === 'MOBILE' ? t('mobile') : t('landline')}</span>
+                          <span className="text-caption-1 text-label-700">{type === 'MOBILE' ? t('mobile') : t('landline')}</span>
                         </label>
                       ))}
                     </div>
@@ -412,8 +412,8 @@ export default function BusinessSignupComponent() {
                       }}
                       error={!!errors.email}
                     />
-                    <p className="text-caption-2 text-slate-500 flex items-center gap-1">
-                      <span className="text-blue-500">ℹ</span>
+                    <p className="text-caption-2 text-label-500 flex items-center gap-1">
+                      <span className="text-primary-500">ℹ</span>
                       {t('emailLoginHint')}
                     </p>
                   </div>
@@ -422,8 +422,8 @@ export default function BusinessSignupComponent() {
             </div>
 
             {/* 비밀번호 */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
-              <h3 className="text-body-2 font-bold text-slate-900">{t('passwordSection')}</h3>
+            <div className="bg-white border border-line-400 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
+              <h3 className="text-body-2 font-bold text-label-900">{t('passwordSection')}</h3>
               <FormField name="password" control={control} label={t('passwordLabel')} error={errors.password?.message}
                 render={(field, fieldId) => (
                   <Input {...field} id={fieldId} variant="password" placeholder={t('passwordPlaceholder')}
@@ -447,13 +447,13 @@ export default function BusinessSignupComponent() {
             <div className="space-y-3">
               <motion.button
                 type="submit" disabled={!isFormValid}
-                className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-colors ${isFormValid ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}
+                className={`w-full py-3 px-4 rounded-lg font-semibold text-body-3 transition-colors ${isFormValid ? 'bg-primary-600 text-white hover:bg-primary-700 cursor-pointer' : 'bg-label-100 text-label-400 cursor-not-allowed'}`}
                 whileTap={isFormValid ? { scale: 0.98 } : {}}
               >
                 {t('signupButton')}
               </motion.button>
               {!requiredAgreed && (
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-caption-3 text-red-500 text-center">
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-caption-3 text-status-error text-center">
                   {t('termsRequired')}
                 </motion.p>
               )}

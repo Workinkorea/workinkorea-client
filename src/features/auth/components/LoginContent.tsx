@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import { GoogleIcon } from '@/shared/ui/AccessibleIcon';
+import { Divider } from '@/shared/ui/Divider';
 import { API_BASE_URL } from '@/shared/api/fetchClient';
 import { saveCallbackUrl } from '@/shared/lib/callbackUrl';
 
@@ -129,17 +130,17 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
         >
           {/* 모바일 로고 */}
           <motion.div variants={itemVariants} className="mb-8 lg:hidden">
-            <p className="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-blue-600">
+            <p className="font-['Plus_Jakarta_Sans'] text-title-3 font-extrabold text-primary-600">
               Work In Korea
             </p>
           </motion.div>
 
           {/* 타이틀 */}
           <motion.div variants={itemVariants} className="mb-8">
-            <h1 className="text-title-2 sm:text-title-1 font-black text-slate-900 mb-2 tracking-tight">
+            <h1 className="text-title-2 sm:text-title-1 font-black text-label-900 mb-2 tracking-tight">
               개인 로그인
             </h1>
-            <p className="text-body-3 text-slate-500">
+            <p className="text-body-3 text-label-500">
               Google 계정으로 간편하게 시작하세요
             </p>
           </motion.div>
@@ -148,7 +149,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
           {errorMessage && (
             <motion.div
               variants={itemVariants}
-              className="flex items-start gap-2.5 px-4 py-3 mb-6 rounded-lg bg-red-50 border border-red-200 text-caption-1 font-medium text-red-600"
+              className="flex items-start gap-2.5 px-4 py-3 mb-6 rounded-lg bg-status-error-bg border border-status-error-bg text-caption-1 font-medium text-status-error"
               role="alert"
               aria-live="polite"
             >
@@ -163,7 +164,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
               type="button"
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading}
-              className="w-full py-3.5 px-5 border-2 border-slate-200 rounded-xl font-semibold text-body-1 text-slate-700 hover:border-blue-300 hover:bg-blue-50 transition-all cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3.5 px-5 border-2 border-line-400 rounded-xl font-semibold text-body-1 text-label-700 hover:border-blue-300 hover:bg-primary-50 transition-all cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
               whileHover={{ borderColor: '#93C5FD', backgroundColor: '#F0F9FF', scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
               aria-label="Google 계정으로 로그인"
@@ -173,19 +174,12 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
             </motion.button>
 
             {/* 구분선 */}
-            <div className="relative py-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="px-3 bg-white text-caption-1 text-slate-500 font-medium">또는</span>
-              </div>
-            </div>
+            <Divider label="또는" className="py-2" />
 
             {/* 기업 로그인 */}
             <motion.a
               href={companyLoginHref}
-              className="block w-full py-3.5 px-5 text-center border-2 border-slate-200 text-slate-700 rounded-xl font-semibold text-body-1 hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer"
+              className="block w-full py-3.5 px-5 text-center border-2 border-line-400 text-label-700 rounded-xl font-semibold text-body-1 hover:bg-label-50 hover:border-line-400 transition-all cursor-pointer"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -194,10 +188,10 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
           </motion.div>
 
           {/* 회원가입 */}
-          <motion.div variants={itemVariants} className="mt-8 pt-6 border-t border-slate-200">
-            <p className="text-center text-body-3 text-slate-600">
+          <motion.div variants={itemVariants} className="mt-8 pt-6 border-t border-line-400">
+            <p className="text-center text-body-3 text-label-600">
               아직 회원이 아니신가요?{' '}
-              <Link href={signupHref} className="text-blue-600 hover:text-blue-700 font-semibold transition-colors inline-flex items-center gap-1">
+              <Link href={signupHref} className="text-primary-600 hover:text-primary-700 font-semibold transition-colors inline-flex items-center gap-1">
                 회원가입
                 <ArrowRight className="w-4 h-4" />
               </Link>
@@ -207,7 +201,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
           {/* 하단 텍스트 */}
           <motion.p
             variants={itemVariants}
-            className="text-center text-caption-2 text-slate-400 mt-6"
+            className="text-center text-caption-2 text-label-400 mt-6"
           >
             로그인함으로써 이용약관 및 개인정보처리방침에 동의합니다.
           </motion.p>

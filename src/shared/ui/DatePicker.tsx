@@ -48,11 +48,11 @@ const DatePicker: React.FC<DatePickerProps> = ({
         showYearDropdown
         showMonthDropdown
         dropdownMode="select"
-        className={`w-full px-3 py-2 pr-10 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100 disabled:cursor-not-allowed ${className || ''}`}
+        className={`w-full px-3 py-2 pr-10 border border-line-400 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-label-100 disabled:cursor-not-allowed ${className || ''}`}
       />
       <Calendar
         size={16}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-label-400 pointer-events-none"
       />
     </div>
   );

@@ -67,10 +67,10 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
       >
         {/* 헤더 */}
         <motion.div variants={itemVariants} className="text-center mb-12 sm:mb-14">
-          <h1 className="text-title-2 sm:text-title-1 lg:text-display-2 font-black text-slate-900 leading-tight tracking-tight mb-3 sm:mb-4">
+          <h1 className="text-title-2 sm:text-title-1 lg:text-display-2 font-black text-label-900 leading-tight tracking-tight mb-3 sm:mb-4">
             {t('memberTypeTitle')}
           </h1>
-          <p className="text-body-3 sm:text-body-2 text-slate-500 max-w-lg mx-auto">
+          <p className="text-body-3 sm:text-body-2 text-label-500 max-w-lg mx-auto">
             {t('memberTypeDesc')}
           </p>
         </motion.div>
@@ -84,7 +84,7 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
             <motion.div key={href} variants={cardVariants}>
               <Link href={href}>
                 <motion.div
-                  className="group relative h-full border-2 border-slate-200 rounded-2xl p-6 sm:p-8 bg-white cursor-pointer transition-all overflow-hidden"
+                  className="group relative h-full border-2 border-line-400 rounded-2xl p-6 sm:p-8 bg-white cursor-pointer transition-all overflow-hidden"
                   whileHover={{
                     borderColor: '#2563EB',
                     backgroundColor: '#F0F9FF',
@@ -99,23 +99,23 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
                   <div className="relative z-10 flex flex-col h-full">
                     {/* 아이콘 */}
                     <div className="mb-5">
-                      <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                        <Icon className="w-7 h-7 text-blue-600" />
+                      <div className="w-14 h-14 rounded-2xl bg-primary-50 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
+                        <Icon className="w-7 h-7 text-primary-600" />
                       </div>
                     </div>
 
                     {/* 텍스트 */}
                     <div className="flex-1 mb-6">
-                      <h2 className="text-title-4 font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+                      <h2 className="text-title-4 font-bold text-label-900 mb-2 group-hover:text-primary-600 transition-colors">
                         {title}
                       </h2>
-                      <p className="text-caption-1 text-slate-500 group-hover:text-slate-600 transition-colors">
+                      <p className="text-caption-1 text-label-500 group-hover:text-label-600 transition-colors">
                         {description}
                       </p>
                     </div>
 
                     {/* CTA */}
-                    <div className="flex items-center text-blue-600 group-hover:text-blue-700 font-semibold text-sm gap-2 transition-colors">
+                    <div className="flex items-center text-primary-600 group-hover:text-primary-700 font-semibold text-body-3 gap-2 transition-colors">
                       <span>{t('loginButton')}</span>
                       <motion.div
                         initial={{ x: 0 }}
@@ -133,10 +133,10 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
         </motion.div>
 
         {/* 회원가입 링크 */}
-        <motion.div variants={itemVariants} className="text-center pt-6 sm:pt-8 border-t border-slate-200">
-          <p className="text-body-3 text-slate-600">
+        <motion.div variants={itemVariants} className="text-center pt-6 sm:pt-8 border-t border-line-400">
+          <p className="text-body-3 text-label-600">
             {t('notMemberYet')}{' '}
-            <Link href={signupHref} className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+            <Link href={signupHref} className="text-primary-600 hover:text-primary-700 font-semibold transition-colors">
               {t('signupButton')}
             </Link>
           </p>

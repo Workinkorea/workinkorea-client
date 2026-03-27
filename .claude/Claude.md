@@ -59,3 +59,4 @@
 - @.claude/skills/testing-patterns/SKILL.md
 - @.claude/skills/hooks-patterns.md
 - @.claude/skills/ui-patterns.md
+- @.claude/skills/idempotency-patterns.md

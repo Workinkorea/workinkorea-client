@@ -97,10 +97,10 @@ const DiagnosisClient = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-slate-900 mb-2">
+            <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-label-900 mb-2">
               한국 취업 자가진단
             </h1>
-            <p className="text-caption-1 sm:text-sm text-slate-500">
+            <p className="text-caption-1 sm:text-body-3 text-label-500">
               당신에게 딱 맞는 직업을 찾기 위한 맞춤형 진단을 시작해보세요
             </p>
           </motion.div>
@@ -111,7 +111,7 @@ const DiagnosisClient = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className={cn(
-              'bg-white rounded-xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-6',
+              'bg-white rounded-xl border border-line-400 shadow-sm p-4 sm:p-6 mb-6',
               'overflow-x-auto sm:overflow-visible'
             )}
           >
@@ -124,7 +124,7 @@ const DiagnosisClient = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className={cn(
-              'bg-white border border-slate-200 rounded-xl shadow-sm',
+              'bg-white border border-line-400 rounded-xl shadow-sm',
               'p-5 sm:p-7 lg:p-8'
             )}
           >

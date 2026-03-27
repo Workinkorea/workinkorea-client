@@ -88,11 +88,11 @@ export interface BasicInfoSectionProps {
 const FieldRow = ({ label, required, optional, children }: {
   label: string; required?: boolean; optional?: boolean; children: React.ReactNode;
 }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0 items-start">
-    <span className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
+  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-line-200 last:border-0 items-start">
+    <span className="text-caption-1 font-semibold text-label-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
       {label}
-      {required && <span className="text-red-500">*</span>}
-      {optional && <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">선택</span>}
+      {required && <span className="text-status-error">*</span>}
+      {optional && <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-label-100 text-label-500 rounded">선택</span>}
     </span>
     <div>{children}</div>
   </div>
@@ -117,14 +117,14 @@ function BasicInfoSection({
   return (
     <div className="space-y-4">
       {/* Card 1: Profile Image */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
-          <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-            <FileText size={16} className="text-blue-600" />
+      <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-line-200">
+          <span className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+            <FileText size={16} className="text-primary-600" />
           </span>
           <div>
-            <h2 className="text-body-2 font-bold text-slate-900">프로필 사진</h2>
-            <p className="text-caption-3 text-slate-400 mt-0.5">채용 담당자에게 보여질 사진을 등록하세요</p>
+            <h2 className="text-body-2 font-bold text-label-900">프로필 사진</h2>
+            <p className="text-caption-3 text-label-400 mt-0.5">채용 담당자에게 보여질 사진을 등록하세요</p>
           </div>
         </div>
         <div className="px-5 sm:px-7 py-5">
@@ -138,14 +138,14 @@ function BasicInfoSection({
       </div>
 
       {/* Card 2: Basic Information */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
-          <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-            <Briefcase size={16} className="text-blue-600" />
+      <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-line-200">
+          <span className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+            <Briefcase size={16} className="text-primary-600" />
           </span>
           <div>
-            <h2 className="text-body-2 font-bold text-slate-900">기본 정보</h2>
-            <p className="text-caption-3 text-slate-400 mt-0.5">개인 정보를 입력해주세요</p>
+            <h2 className="text-body-2 font-bold text-label-900">기본 정보</h2>
+            <p className="text-caption-3 text-label-400 mt-0.5">개인 정보를 입력해주세요</p>
           </div>
         </div>
 
@@ -163,7 +163,7 @@ function BasicInfoSection({
               />
             )}
           />
-          {errors.name && <p id="name-error" className="text-caption-2 text-red-500 mt-1">{errors.name.message}</p>}
+          {errors.name && <p id="name-error" className="text-caption-2 text-status-error mt-1">{errors.name.message}</p>}
         </FieldRow>
 
         {/* Location & Address */}
@@ -179,7 +179,7 @@ function BasicInfoSection({
               />
             )}
           />
-          {errors.location && <p className="text-caption-2 text-red-500 mt-1">{errors.location.message}</p>}
+          {errors.location && <p className="text-caption-2 text-status-error mt-1">{errors.location.message}</p>}
         </FieldRow>
 
         <FieldRow label="주소" optional>
@@ -194,7 +194,7 @@ function BasicInfoSection({
               />
             )}
           />
-          {errors.address && <p className="text-caption-2 text-red-500 mt-1">{errors.address.message}</p>}
+          {errors.address && <p className="text-caption-2 text-status-error mt-1">{errors.address.message}</p>}
         </FieldRow>
 
         {/* Job Status & Career */}
@@ -206,9 +206,9 @@ function BasicInfoSection({
               <select
                 {...field}
                 className={cn(
-                  'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800 bg-white transition-colors appearance-none cursor-pointer',
-                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
-                  'border-slate-200',
+                  'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800 bg-white transition-colors appearance-none cursor-pointer',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'border-line-400',
                   errors.job_status && 'border-red-500 focus:ring-red-100'
                 )}
               >
@@ -219,7 +219,7 @@ function BasicInfoSection({
               </select>
             )}
           />
-          {errors.job_status && <p className="text-caption-2 text-red-500 mt-1">{errors.job_status.message}</p>}
+          {errors.job_status && <p className="text-caption-2 text-status-error mt-1">{errors.job_status.message}</p>}
         </FieldRow>
 
         <FieldRow label="경력" optional>
@@ -230,9 +230,9 @@ function BasicInfoSection({
               <select
                 {...field}
                 className={cn(
-                  'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800 bg-white transition-colors appearance-none cursor-pointer',
-                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
-                  'border-slate-200',
+                  'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800 bg-white transition-colors appearance-none cursor-pointer',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'border-line-400',
                   errors.career && 'border-red-500 focus:ring-red-100'
                 )}
               >
@@ -245,19 +245,19 @@ function BasicInfoSection({
               </select>
             )}
           />
-          {errors.career && <p className="text-caption-2 text-red-500 mt-1">{errors.career.message}</p>}
+          {errors.career && <p className="text-caption-2 text-status-error mt-1">{errors.career.message}</p>}
         </FieldRow>
       </div>
 
       {/* Card 3: Professional Information */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
-          <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-            <Briefcase size={16} className="text-blue-600" />
+      <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-line-200">
+          <span className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+            <Briefcase size={16} className="text-primary-600" />
           </span>
           <div>
-            <h2 className="text-body-2 font-bold text-slate-900">직무 정보</h2>
-            <p className="text-caption-3 text-slate-400 mt-0.5">커리어 정보를 입력해주세요</p>
+            <h2 className="text-body-2 font-bold text-label-900">직무 정보</h2>
+            <p className="text-caption-3 text-label-400 mt-0.5">커리어 정보를 입력해주세요</p>
           </div>
         </div>
 
@@ -271,9 +271,9 @@ function BasicInfoSection({
                 value={field.value ?? ''}
                 onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                 className={cn(
-                  'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800 bg-white transition-colors appearance-none cursor-pointer',
-                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
-                  'border-slate-200',
+                  'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800 bg-white transition-colors appearance-none cursor-pointer',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'border-line-400',
                   errors.position_id && 'border-red-500 focus:ring-red-100'
                 )}
               >
@@ -292,7 +292,7 @@ function BasicInfoSection({
               </select>
             )}
           />
-          {errors.position_id && <p className="text-caption-2 text-red-500 mt-1">{errors.position_id.message}</p>}
+          {errors.position_id && <p className="text-caption-2 text-status-error mt-1">{errors.position_id.message}</p>}
         </FieldRow>
 
         {/* Country */}
@@ -305,9 +305,9 @@ function BasicInfoSection({
                 value={field.value ?? 122}
                 onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 122)}
                 className={cn(
-                  'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800 bg-white transition-colors appearance-none cursor-pointer',
-                  'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
-                  'border-slate-200',
+                  'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800 bg-white transition-colors appearance-none cursor-pointer',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'border-line-400',
                   errors.country_id && 'border-red-500 focus:ring-red-100'
                 )}
               >
@@ -319,33 +319,33 @@ function BasicInfoSection({
               </select>
             )}
           />
-          {errors.country_id && <p className="text-caption-2 text-red-500 mt-1">{errors.country_id.message}</p>}
+          {errors.country_id && <p className="text-caption-2 text-status-error mt-1">{errors.country_id.message}</p>}
         </FieldRow>
 
         {/* Portfolio Upload */}
         <FieldRow label="포트폴리오" optional>
-          <div className="border-2 border-dashed border-slate-200 rounded-xl p-5 flex items-center gap-4 hover:border-blue-300 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-              <FileText size={20} className="text-blue-600" />
+          <div className="border-2 border-dashed border-line-400 rounded-xl p-5 flex items-center gap-4 hover:border-blue-300 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+              <FileText size={20} className="text-primary-600" />
             </div>
             <div className="flex-1 min-w-0">
               {selectedPortfolioFileName || profile.portfolio_url ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-caption-1 text-slate-700 font-medium truncate">
+                  <span className="text-caption-1 text-label-700 font-medium truncate">
                     {selectedPortfolioFileName || profile.portfolio_url}
                   </span>
                   <button
                     type="button"
                     onClick={onRemovePortfolio}
-                    className="text-red-500 hover:text-red-600 cursor-pointer shrink-0"
+                    className="text-status-error hover:text-status-error cursor-pointer shrink-0"
                   >
                     <X size={16} />
                   </button>
                 </div>
               ) : (
-                <p className="text-caption-1 text-slate-600">파일을 선택하거나 드래그하세요</p>
+                <p className="text-caption-1 text-label-600">파일을 선택하거나 드래그하세요</p>
               )}
-              <p className="text-caption-3 text-slate-400 mt-0.5">PDF, DOCX, 이미지 (최대 10MB)</p>
+              <p className="text-caption-3 text-label-400 mt-0.5">PDF, DOCX, 이미지 (최대 10MB)</p>
             </div>
             <FileUploadButton
               fileType="portfolio"
@@ -367,14 +367,14 @@ function BasicInfoSection({
       </div>
 
       {/* Card 4: Introduction & Language Skills */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
-          <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-            <Globe size={16} className="text-blue-600" />
+      <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-line-200">
+          <span className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+            <Globe size={16} className="text-primary-600" />
           </span>
           <div>
-            <h2 className="text-body-2 font-bold text-slate-900">자기소개 & 언어 스킬</h2>
-            <p className="text-caption-3 text-slate-400 mt-0.5">전문성을 표현해주세요</p>
+            <h2 className="text-body-2 font-bold text-label-900">자기소개 & 언어 스킬</h2>
+            <p className="text-caption-3 text-label-400 mt-0.5">전문성을 표현해주세요</p>
           </div>
         </div>
 
@@ -391,24 +391,24 @@ function BasicInfoSection({
                   rows={4}
                   maxLength={500}
                   className={cn(
-                    'w-full px-3.5 py-2.5 border rounded-lg text-sm text-slate-800',
-                    'transition-colors focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 resize-none',
-                    'border-slate-200',
+                    'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800',
+                    'transition-colors focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100 resize-none',
+                    'border-line-400',
                     errors.introduction && 'border-red-500 focus:ring-red-100'
                   )}
                 />
-                <div className="text-right text-caption-3 text-slate-400 mt-1">
+                <div className="text-right text-caption-3 text-label-400 mt-1">
                   {field.value?.length || 0}/500
                 </div>
               </div>
             )}
           />
-          {errors.introduction && <p className="text-caption-2 text-red-500 mt-1">{errors.introduction.message}</p>}
+          {errors.introduction && <p className="text-caption-2 text-status-error mt-1">{errors.introduction.message}</p>}
         </FieldRow>
 
         {/* Language Skills */}
-        <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0">
-          <span className="text-caption-1 font-semibold text-slate-700 mb-4 block">언어 스킬</span>
+        <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-line-200 last:border-0">
+          <span className="text-caption-1 font-semibold text-label-700 mb-4 block">언어 스킬</span>
           <LanguageSkillsInput control={control} errors={errors} />
         </div>
       </div>

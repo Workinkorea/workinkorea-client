@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -292,14 +292,14 @@ function ResumeEditor({
       <form onSubmit={handleSubmit(onSubmit)} id="resume-form" className="space-y-6">
         {/* 헤더 */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
-            <FileText size={20} className="text-blue-600" />
+          <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center shrink-0">
+            <FileText size={20} className="text-primary-600" />
           </div>
           <div>
-            <h1 className="text-[22px] font-extrabold text-slate-900">
+            <h1 className="text-title-3 font-extrabold text-label-900">
               {isEditMode ? '이력서 편집' : '새 이력서 작성'}
             </h1>
-            <p className="text-caption-1 text-slate-500 mt-0.5">
+            <p className="text-caption-1 text-label-500 mt-0.5">
               {templateType} 템플릿으로 이력서를 작성하고 있습니다
             </p>
           </div>
@@ -311,20 +311,20 @@ function ResumeEditor({
           <div className="space-y-4">
           {/* 기본 정보 */}
           <motion.div
-            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
+            className="bg-white border border-line-400 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center gap-3">
-              <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
-                <FileText size={18} className="text-blue-600" />
+            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center gap-3">
+              <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
+                <FileText size={18} className="text-primary-600" />
               </div>
               <div>
-                <h3 className="text-body-2 font-bold text-slate-900">
+                <h3 className="text-body-2 font-bold text-label-900">
                   기본 정보
                 </h3>
-                <p className="text-caption-2 text-slate-500 mt-0.5">
+                <p className="text-caption-2 text-label-500 mt-0.5">
                   이력서 제목과 프로필 사진을 설정하세요
                 </p>
               </div>
@@ -343,13 +343,13 @@ function ResumeEditor({
                   id={fieldId}
                   type="text"
                   placeholder="예: 프론트엔드 개발자 이력서"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               )}
             />
 
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-2">
+              <label className="block text-caption-2 font-medium text-label-700 mb-2">
                 프로필 이미지
               </label>
               <div className="flex items-start gap-4">
@@ -361,12 +361,12 @@ function ResumeEditor({
                       alt="프로필 미리보기"
                       width={96}
                       height={96}
-                      className="w-24 h-24 rounded-lg object-cover border border-slate-200"
+                      className="w-24 h-24 rounded-lg object-cover border border-line-400"
                     />
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors cursor-pointer"
+                      className="absolute -top-2 -right-2 bg-status-error-bg0 text-white rounded-full p-1 hover:bg-red-600 transition-colors cursor-pointer"
                     >
                       <X size={14} />
                     </button>
@@ -377,7 +377,7 @@ function ResumeEditor({
                 <div className="flex-1">
                   <label
                     htmlFor="profile-image-upload"
-                    className={`flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-slate-200 rounded-lg text-sm text-slate-600 hover:border-primary-500 hover:text-blue-600 transition-colors cursor-pointer ${
+                    className={`flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-line-400 rounded-lg text-body-3 text-label-600 hover:border-primary-500 hover:text-primary-600 transition-colors cursor-pointer ${
                       uploadingImage ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
@@ -392,7 +392,7 @@ function ResumeEditor({
                     disabled={uploadingImage}
                     className="hidden"
                   />
-                  <p className="text-caption-3 text-slate-500 mt-2">
+                  <p className="text-caption-3 text-label-500 mt-2">
                     JPG, PNG, GIF 파일 (최대 5MB)
                   </p>
                 </div>
@@ -403,21 +403,21 @@ function ResumeEditor({
 
           {/* 자기소개 */}
           <motion.div
-            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
+            className="bg-white border border-line-400 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center justify-between">
+            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
-                  <MessageSquare size={18} className="text-blue-600" />
+                <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
+                  <MessageSquare size={18} className="text-primary-600" />
                 </div>
                 <div>
-                  <h3 className="text-body-2 font-bold text-slate-900">
+                  <h3 className="text-body-2 font-bold text-label-900">
                     자기소개
                   </h3>
-                  <p className="text-caption-2 text-slate-500 mt-0.5">
+                  <p className="text-caption-2 text-label-500 mt-0.5">
                     자신을 소개하는 글을 작성하세요
                   </p>
                 </div>
@@ -425,7 +425,7 @@ function ResumeEditor({
               <button
                 type="button"
                 onClick={() => appendIntro({ title: '자기소개', content: '' })}
-                className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-medium cursor-pointer whitespace-nowrap ml-3"
+                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
               >
                 <Plus size={14} />
                 추가
@@ -437,7 +437,7 @@ function ResumeEditor({
             {introFields.map((field, index) => (
               <motion.div
                 key={field.id}
-                className="px-5 sm:px-7 py-4 border-b border-slate-100 last:border-0"
+                className="px-5 sm:px-7 py-4 border-b border-line-200 last:border-0"
                 initial={{ opacity: 0, height: 0, scale: 0.96 }}
                 animate={{ opacity: 1, height: 'auto', scale: 1 }}
                 exit={{ opacity: 0, height: 0, scale: 0.96 }}
@@ -445,11 +445,11 @@ function ResumeEditor({
                 style={{ overflow: 'hidden' }}
               >
                 <div className="flex justify-between items-start mb-3">
-                  <h4 className="text-sm font-semibold">자기소개 {index + 1}</h4>
+                  <h4 className="text-body-3 font-semibold">자기소개 {index + 1}</h4>
                   <button
                     type="button"
                     onClick={() => removeIntro(index)}
-                    className="text-red-600 hover:bg-red-50 p-1 rounded cursor-pointer"
+                    className="text-status-error hover:bg-status-error-bg p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -464,7 +464,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -477,7 +477,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       rows={4}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm resize-none"
+                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3 resize-none"
                     />
                   )}
                 />
@@ -489,21 +489,21 @@ function ResumeEditor({
 
           {/* 경력사항 */}
           <motion.div
-            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
+            className="bg-white border border-line-400 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center justify-between">
+            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
-                  <Briefcase size={18} className="text-blue-600" />
+                <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
+                  <Briefcase size={18} className="text-primary-600" />
                 </div>
                 <div>
-                  <h3 className="text-body-2 font-bold text-slate-900">
+                  <h3 className="text-body-2 font-bold text-label-900">
                     경력사항
                   </h3>
-                  <p className="text-caption-2 text-slate-500 mt-0.5">
+                  <p className="text-caption-2 text-label-500 mt-0.5">
                     회사 경력을 입력하세요
                   </p>
                 </div>
@@ -519,7 +519,7 @@ function ResumeEditor({
                   position_title: '',
                   main_role: ''
                 })}
-                className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-medium cursor-pointer whitespace-nowrap ml-3"
+                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
               >
                 <Plus size={14} />
                 추가
@@ -531,7 +531,7 @@ function ResumeEditor({
             {careerFields.map((field, index) => (
               <motion.div
                 key={field.id}
-                className="px-5 sm:px-7 py-5 border-b border-slate-100 last:border-0"
+                className="px-5 sm:px-7 py-5 border-b border-line-200 last:border-0"
                 initial={{ opacity: 0, height: 0, scale: 0.96 }}
                 animate={{ opacity: 1, height: 'auto', scale: 1 }}
                 exit={{ opacity: 0, height: 0, scale: 0.96 }}
@@ -539,11 +539,11 @@ function ResumeEditor({
                 style={{ overflow: 'hidden' }}
               >
                 <div className="flex justify-between items-start mb-4">
-                  <h4 className="text-sm font-semibold">경력 {index + 1}</h4>
+                  <h4 className="text-body-3 font-semibold">경력 {index + 1}</h4>
                   <button
                     type="button"
                     onClick={() => removeCareer(index)}
-                    className="text-red-600 hover:bg-red-50 p-1 rounded cursor-pointer"
+                    className="text-status-error hover:bg-status-error-bg p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -560,7 +560,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -574,7 +574,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -587,7 +587,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -629,7 +629,7 @@ function ResumeEditor({
                           onChange={(e) => field.onChange(e.target.checked)}
                           className="w-4 h-4"
                         />
-                        <span className="text-xs text-slate-700">재직중</span>
+                        <span className="text-caption-2 text-label-700">재직중</span>
                       </label>
                     )}
                   />
@@ -644,7 +644,7 @@ function ResumeEditor({
                         {...field}
                         id={fieldId}
                         rows={3}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm resize-none"
+                        className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3 resize-none"
                       />
                     )}
                   />
@@ -657,21 +657,21 @@ function ResumeEditor({
 
           {/* 학력사항 */}
           <motion.div
-            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
+            className="bg-white border border-line-400 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center justify-between">
+            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
-                  <GraduationCap size={18} className="text-blue-600" />
+                <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
+                  <GraduationCap size={18} className="text-primary-600" />
                 </div>
                 <div>
-                  <h3 className="text-body-2 font-bold text-slate-900">
+                  <h3 className="text-body-2 font-bold text-label-900">
                     학력사항
                   </h3>
-                  <p className="text-caption-2 text-slate-500 mt-0.5">
+                  <p className="text-caption-2 text-label-500 mt-0.5">
                     학력 정보를 입력하세요
                   </p>
                 </div>
@@ -685,7 +685,7 @@ function ResumeEditor({
                   end_date: undefined,
                   is_graduated: false
                 })}
-                className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-medium cursor-pointer whitespace-nowrap ml-3"
+                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
               >
                 <Plus size={14} />
                 추가
@@ -697,7 +697,7 @@ function ResumeEditor({
             {schoolFields.map((field, index) => (
               <motion.div
                 key={field.id}
-                className="px-5 sm:px-7 py-5 border-b border-slate-100 last:border-0"
+                className="px-5 sm:px-7 py-5 border-b border-line-200 last:border-0"
                 initial={{ opacity: 0, height: 0, scale: 0.96 }}
                 animate={{ opacity: 1, height: 'auto', scale: 1 }}
                 exit={{ opacity: 0, height: 0, scale: 0.96 }}
@@ -705,11 +705,11 @@ function ResumeEditor({
                 style={{ overflow: 'hidden' }}
               >
                 <div className="flex justify-between items-start mb-4">
-                  <h4 className="text-sm font-semibold">학력 {index + 1}</h4>
+                  <h4 className="text-body-3 font-semibold">학력 {index + 1}</h4>
                   <button
                     type="button"
                     onClick={() => removeSchool(index)}
-                    className="text-red-600 hover:bg-red-50 p-1 rounded cursor-pointer"
+                    className="text-status-error hover:bg-status-error-bg p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -739,7 +739,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -780,7 +780,7 @@ function ResumeEditor({
                           onChange={(e) => field.onChange(e.target.checked)}
                           className="w-4 h-4"
                         />
-                        <span className="text-xs text-slate-700">졸업</span>
+                        <span className="text-caption-2 text-label-700">졸업</span>
                       </label>
                     )}
                   />
@@ -793,21 +793,21 @@ function ResumeEditor({
 
           {/* 언어 능력 */}
           <motion.div
-            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
+            className="bg-white border border-line-400 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center justify-between">
+            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
-                  <Globe size={18} className="text-blue-600" />
+                <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
+                  <Globe size={18} className="text-primary-600" />
                 </div>
                 <div>
-                  <h3 className="text-body-2 font-bold text-slate-900">
+                  <h3 className="text-body-2 font-bold text-label-900">
                     언어 능력
                   </h3>
-                  <p className="text-caption-2 text-slate-500 mt-0.5">
+                  <p className="text-caption-2 text-label-500 mt-0.5">
                     구사 가능한 언어를 입력하세요
                   </p>
                 </div>
@@ -815,7 +815,7 @@ function ResumeEditor({
               <button
                 type="button"
                 onClick={() => appendLanguage({ language_type: '', level: '' })}
-                className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-medium cursor-pointer whitespace-nowrap ml-3"
+                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
               >
                 <Plus size={14} />
                 추가
@@ -827,7 +827,7 @@ function ResumeEditor({
             {languageFields.map((field, index) => (
               <motion.div
                 key={field.id}
-                className="px-5 sm:px-7 py-4 border-b border-slate-100 last:border-0"
+                className="px-5 sm:px-7 py-4 border-b border-line-200 last:border-0"
                 initial={{ opacity: 0, height: 0, scale: 0.96 }}
                 animate={{ opacity: 1, height: 'auto', scale: 1 }}
                 exit={{ opacity: 0, height: 0, scale: 0.96 }}
@@ -835,11 +835,11 @@ function ResumeEditor({
                 style={{ overflow: 'hidden' }}
               >
                 <div className="flex justify-between items-start mb-3">
-                  <h4 className="text-sm font-semibold">언어 {index + 1}</h4>
+                  <h4 className="text-body-3 font-semibold">언어 {index + 1}</h4>
                   <button
                     type="button"
                     onClick={() => removeLanguage(index)}
-                    className="text-red-600 hover:bg-red-50 p-1 rounded cursor-pointer"
+                    className="text-status-error hover:bg-status-error-bg p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -855,7 +855,7 @@ function ResumeEditor({
                     <select
                       {...field}
                       id={fieldId}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     >
                       <option value="">언어 선택</option>
                       <option value="한국어">한국어</option>
@@ -884,7 +884,7 @@ function ResumeEditor({
                     <select
                       {...field}
                       id={fieldId}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     >
                       <option value="">선택하세요</option>
                       <option value="beginner">초급</option>
@@ -902,21 +902,21 @@ function ResumeEditor({
 
           {/* 자격증 */}
           <motion.div
-            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
+            className="bg-white border border-line-400 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center justify-between">
+            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
-                  <Award size={18} className="text-blue-600" />
+                <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
+                  <Award size={18} className="text-primary-600" />
                 </div>
                 <div>
-                  <h3 className="text-body-2 font-bold text-slate-900">
+                  <h3 className="text-body-2 font-bold text-label-900">
                     자격증
                   </h3>
-                  <p className="text-caption-2 text-slate-500 mt-0.5">
+                  <p className="text-caption-2 text-label-500 mt-0.5">
                     보유한 자격증을 입력하세요
                   </p>
                 </div>
@@ -924,7 +924,7 @@ function ResumeEditor({
               <button
                 type="button"
                 onClick={() => appendLicense({ license_name: '', license_agency: '', license_date: '' })}
-                className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-xs font-medium cursor-pointer whitespace-nowrap ml-3"
+                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
               >
                 <Plus size={14} />
                 추가
@@ -936,7 +936,7 @@ function ResumeEditor({
             {licenseFields.map((field, index) => (
               <motion.div
                 key={field.id}
-                className="px-5 sm:px-7 py-4 border-b border-slate-100 last:border-0"
+                className="px-5 sm:px-7 py-4 border-b border-line-200 last:border-0"
                 initial={{ opacity: 0, height: 0, scale: 0.96 }}
                 animate={{ opacity: 1, height: 'auto', scale: 1 }}
                 exit={{ opacity: 0, height: 0, scale: 0.96 }}
@@ -944,11 +944,11 @@ function ResumeEditor({
                 style={{ overflow: 'hidden' }}
               >
                 <div className="flex justify-between items-start mb-3">
-                  <h4 className="text-sm font-semibold">자격증 {index + 1}</h4>
+                  <h4 className="text-body-3 font-semibold">자격증 {index + 1}</h4>
                   <button
                     type="button"
                     onClick={() => removeLicense(index)}
-                    className="text-red-600 hover:bg-red-50 p-1 rounded cursor-pointer"
+                    className="text-status-error hover:bg-status-error-bg p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -965,7 +965,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -978,7 +978,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -1004,7 +1004,7 @@ function ResumeEditor({
           {/* Right sidebar: Save buttons and tips */}
           <div className="hidden lg:block sticky top-6 space-y-4">
             {/* Save card */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 space-y-3">
+            <div className="bg-white border border-line-400 rounded-xl p-5 space-y-3">
               <Button
                 type="submit"
                 form="resume-form"
@@ -1027,24 +1027,24 @@ function ResumeEditor({
             </div>
 
             {/* Tips card */}
-            <div className="bg-blue-50 rounded-xl p-4 space-y-2">
+            <div className="bg-primary-50 rounded-xl p-4 space-y-2">
               <div className="flex items-center gap-2">
-                <Lightbulb size={16} className="text-blue-600 shrink-0" />
-                <h4 className="text-sm font-semibold text-slate-900">
+                <Lightbulb size={16} className="text-primary-600 shrink-0" />
+                <h4 className="text-body-3 font-semibold text-label-900">
                   이력서 작성 팁
                 </h4>
               </div>
-              <ul className="space-y-1.5 text-xs text-slate-600">
+              <ul className="space-y-1.5 text-caption-2 text-label-600">
                 <li className="flex gap-2">
-                  <span className="text-blue-600">•</span>
+                  <span className="text-primary-600">•</span>
                   <span>구체적인 업무 경험을 작성하세요</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-blue-600">•</span>
+                  <span className="text-primary-600">•</span>
                   <span>성과 위주의 내용을 포함하세요</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-blue-600">•</span>
+                  <span className="text-primary-600">•</span>
                   <span>최신 정보를 유지하세요</span>
                 </li>
               </ul>

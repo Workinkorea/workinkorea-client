@@ -2,11 +2,12 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
 import { SignupStep2Data, Step2Form } from '@/features/auth/types/signup.types';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/shared/ui/FormField';
 import { Input } from '@/shared/ui/Input';
+import { Button } from '@/shared/ui/Button';
+import { RadioGroup } from '@/shared/ui/Radio';
 import { formatBusinessNumber, isValidBusinessNumber, validateConfirmPassword, validatePassword } from '@/shared/lib/utils/validation';
 import { toast } from 'sonner';
 import { authApi } from '@/features/auth/api/authApi';
@@ -261,16 +262,16 @@ export default function BusinessSignupStep2({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-title-2 sm:text-title-1 text-slate-900 text-center mb-4 leading-tight">
+          <h1 className="text-title-2 sm:text-title-1 text-label-900 text-center mb-4 leading-tight">
             <p>{t('title')}</p>
           </h1>
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center justify-between text-body-3">
             <div />
-            <span className="text-blue-600">{currentProgress}%</span>
+            <span className="text-primary-600">{currentProgress}%</span>
           </div>
           <div className="mt-2">
-            <div className="w-full bg-slate-100 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${currentProgress}%` }}></div>
+            <div className="w-full bg-label-100 rounded-full h-2">
+              <div className="bg-primary-600 h-2 rounded-full" style={{ width: `${currentProgress}%` }}></div>
             </div>
           </div>
         </motion.div>
@@ -290,11 +291,11 @@ export default function BusinessSignupStep2({
                 render={(field, fieldId) => (
                   <div className="space-y-1.5">
                     <div className="flex gap-2">
-                      <input
+                      <Input
                         {...field}
                         id={fieldId}
                         type="text"
-                        className="flex-1 border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
+                        className="flex-1"
                         placeholder={t('bizNumberPlaceholder')}
                         maxLength={12}
                         onChange={(e) => {
@@ -310,30 +311,19 @@ export default function BusinessSignupStep2({
                           clearErrors('businessNumber');
                         }}
                       />
-                      <motion.button
+                      <Button
                         type="button"
-                        onClick={() => field.value && handleBusinessNumberCheck(field.value)}
+                        variant={formState.isBusinessNumberVerified ? 'outline' : 'primary'}
+                        size="md"
+                        isLoading={formState.isVerifying}
                         disabled={!field.value || !isValidBusinessNumber(field.value) || formState.isVerifying || formState.isBusinessNumberVerified}
-                        className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
-                          formState.isVerifying
-                            ? 'bg-blue-500 text-white cursor-not-allowed'
-                            : field.value && isValidBusinessNumber(field.value)
-                              ? formState.isBusinessNumberVerified
-                                ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                                : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-                              : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                        }`}
-                        whileTap={field.value && isValidBusinessNumber(field.value) && !formState.isBusinessNumberVerified && !formState.isVerifying ? { scale: 0.95 } : {}}
+                        onClick={() => field.value && handleBusinessNumberCheck(field.value)}
+                        className="whitespace-nowrap"
                       >
-                        {formState.isVerifying ? (
-                          <>
-                            <Loader2 size={14} className="animate-spin" />
-                            {t('verifying')}
-                          </>
-                        ) : formState.isBusinessNumberVerified ? t('verified') : t('verify')}
-                      </motion.button>
+                        {formState.isVerifying ? t('verifying') : formState.isBusinessNumberVerified ? t('verified') : t('verify')}
+                      </Button>
                     </div>
-                    <p className='text-right text-caption-2 underline hover:text-slate-700 cursor-pointer'
+                    <p className='text-right text-caption-2 underline hover:text-label-700 cursor-pointer'
                       onClick={() => window.open(
                         "https://github.com/Workinkorea/workinkorea-client",
                         "_blank"
@@ -346,7 +336,7 @@ export default function BusinessSignupStep2({
               />
 
               {formState.isBusinessNumberVerified && formState.businessNumberMessage && (
-                <p className="text-caption-3 text-blue-600 mt-1">
+                <p className="text-caption-3 text-primary-600 mt-1">
                   {formState.businessNumberMessage}
                 </p>
               )}
@@ -389,38 +379,21 @@ export default function BusinessSignupStep2({
                 render={(field, fieldId) => (
                   <div className="space-y-3">
                     {/* Phone Type Selection */}
-                    <div className="flex gap-4">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="phoneType"
-                          value="MOBILE"
-                          checked={formState.phoneType === 'MOBILE'}
-                          onChange={() => {
-                            setFormState(prev => ({ ...prev, phoneType: 'MOBILE' }));
-                            field.onChange('');  // Reset phone number when type changes
-                            clearErrors('phoneNumber');
-                          }}
-                          className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="text-caption-1 text-slate-700">{t('mobile')}</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="phoneType"
-                          value="LANDLINE"
-                          checked={formState.phoneType === 'LANDLINE'}
-                          onChange={() => {
-                            setFormState(prev => ({ ...prev, phoneType: 'LANDLINE' }));
-                            field.onChange('');  // Reset phone number when type changes
-                            clearErrors('phoneNumber');
-                          }}
-                          className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="text-caption-1 text-slate-700">{t('landline')}</span>
-                      </label>
-                    </div>
+                    <RadioGroup
+                      name="phoneType"
+                      layout="horizontal"
+                      size="sm"
+                      value={formState.phoneType}
+                      onChange={(value) => {
+                        setFormState(prev => ({ ...prev, phoneType: value as PhoneType }));
+                        field.onChange('');
+                        clearErrors('phoneNumber');
+                      }}
+                      options={[
+                        { value: 'MOBILE', label: t('mobile') },
+                        { value: 'LANDLINE', label: t('landline') },
+                      ]}
+                    />
 
                     {/* Phone Number Input */}
                     <Input
@@ -450,7 +423,7 @@ export default function BusinessSignupStep2({
 
                     {/* Helper Text */}
                     {!errors.phoneNumber && field.value && (
-                      <p className="text-caption-3 text-slate-500">
+                      <p className="text-caption-3 text-label-500">
                         {formState.phoneType === 'MOBILE'
                           ? t('phoneHintMobile')
                           : t('phoneHintLandline')}
@@ -485,8 +458,8 @@ export default function BusinessSignupStep2({
                       }}
                       error={!!errors.email}
                     />
-                    <p className="text-xs text-slate-500 flex items-center gap-1">
-                      <span className="text-blue-500">ℹ</span>
+                    <p className="text-caption-2 text-label-500 flex items-center gap-1">
+                      <span className="text-primary-500">ℹ</span>
                       {t('emailLoginHint')}
                     </p>
                   </div>
@@ -543,24 +516,21 @@ export default function BusinessSignupStep2({
               />
             </div>
 
-            <motion.div 
+            <motion.div
               className="mt-8 flex gap-3"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
             >
-              <motion.button
+              <Button
                 type="submit"
+                variant="primary"
+                size="lg"
                 disabled={!isFormValid}
-                className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
-                  isFormValid
-                    ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                }`}
-                whileTap={isFormValid ? { scale: 0.98 } : {}}
+                className="w-full"
               >
                 {t('signupButton')}
-              </motion.button>
+              </Button>
             </motion.div>
           </motion.div>
         </form>
