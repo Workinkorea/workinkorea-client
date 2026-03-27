@@ -218,7 +218,7 @@ export default function BusinessLoginForm() {
           <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center">
             <Building2 size={20} className="text-white" />
           </div>
-          <span className="text-white font-['Plus_Jakarta_Sans'] text-xl font-extrabold tracking-[-0.5px]">
+          <span className="text-white font-['Plus_Jakarta_Sans'] text-title-4 font-extrabold tracking-[-0.5px]">
             WorkInKorea
           </span>
         </div>
@@ -276,13 +276,13 @@ export default function BusinessLoginForm() {
             animate="visible"
             className="space-y-1 mb-8"
           >
-            <motion.p variants={fadeUp} className="text-caption-2 font-bold text-blue-600 uppercase tracking-[1.5px]">
+            <motion.p variants={fadeUp} className="text-caption-2 font-bold text-primary-600 uppercase tracking-[1.5px]">
               {t('overline')}
             </motion.p>
-            <motion.h1 variants={fadeUp} className="text-title-2 font-extrabold text-slate-900">
+            <motion.h1 variants={fadeUp} className="text-title-2 font-extrabold text-label-900">
               {t('title')}
             </motion.h1>
-            <motion.p variants={fadeUp} className="text-caption-1 text-slate-500">
+            <motion.p variants={fadeUp} className="text-caption-1 text-label-500">
               {t('subtitle')}
             </motion.p>
           </motion.div>
@@ -346,14 +346,14 @@ export default function BusinessLoginForm() {
                     <input
                       id={fieldId}
                       type="checkbox"
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-200 rounded cursor-pointer"
+                      className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-line-400 rounded cursor-pointer"
                       name={field.name}
                       ref={field.ref}
                       checked={!!field.value}
                       onChange={(e) => field.onChange(e.target.checked)}
                       onBlur={field.onBlur}
                     />
-                    <label htmlFor={fieldId} className="ml-2 block text-caption-1 text-slate-700 cursor-pointer">
+                    <label htmlFor={fieldId} className="ml-2 block text-caption-1 text-label-700 cursor-pointer">
                       {t('rememberEmail')}
                     </label>
                   </div>
@@ -365,10 +365,10 @@ export default function BusinessLoginForm() {
               <motion.button
                 type="submit"
                 disabled={isLoading || !isFormValid}
-                className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-colors flex items-center justify-center gap-2 ${
+                className={`w-full py-3 px-4 rounded-lg font-semibold text-body-3 transition-colors flex items-center justify-center gap-2 ${
                   isLoading || !isFormValid
-                    ? 'bg-slate-100 cursor-not-allowed text-slate-400'
-                    : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]'
+                    ? 'bg-label-100 cursor-not-allowed text-label-400'
+                    : 'bg-primary-600 text-white hover:bg-primary-700 cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]'
                 }`}
                 whileTap={isFormValid && !isLoading ? { scale: 0.98 } : {}}
               >
@@ -385,12 +385,12 @@ export default function BusinessLoginForm() {
                   transition={{ duration: 0.25 }}
                   className={`flex items-start gap-2.5 px-4 py-3 rounded-lg text-caption-1 font-medium ${
                     loginError.type === 'network'
-                      ? 'bg-slate-50 border border-slate-200 text-slate-600'
+                      ? 'bg-label-50 border border-line-400 text-label-600'
                       : loginError.type === 'server'
-                        ? 'bg-amber-50 border border-amber-200 text-amber-700'
+                        ? 'bg-status-caution-bg border border-amber-200 text-amber-700'
                         : loginError.type === 'rateLimit'
-                          ? 'bg-amber-50 border border-amber-200 text-amber-700'
-                          : 'bg-red-50 border border-red-200 text-red-600'
+                          ? 'bg-status-caution-bg border border-amber-200 text-amber-700'
+                          : 'bg-status-error-bg border border-status-error-bg text-status-error'
                   }`}
                   role="alert"
                   aria-live="polite"
@@ -406,7 +406,7 @@ export default function BusinessLoginForm() {
               <motion.button
                 type="button"
                 onClick={() => router.push('/company-signup/step1')}
-                className="w-full py-3 px-4 border border-slate-200 text-blue-600 rounded-lg font-semibold text-sm hover:bg-blue-50 transition-colors cursor-pointer"
+                className="w-full py-3 px-4 border border-line-400 text-primary-600 rounded-lg font-semibold text-body-3 hover:bg-primary-50 transition-colors cursor-pointer"
                 whileTap={{ scale: 0.98 }}
               >
                 {t('signupButton')}
@@ -416,7 +416,7 @@ export default function BusinessLoginForm() {
 
           {/* 개인 회원 로그인 링크 */}
           <motion.p
-            className="mt-8 text-center text-caption-1 text-slate-400"
+            className="mt-8 text-center text-caption-1 text-label-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
@@ -425,7 +425,7 @@ export default function BusinessLoginForm() {
             <button
               type="button"
               onClick={() => router.push('/login')}
-              className="text-blue-600 font-semibold hover:underline cursor-pointer"
+              className="text-primary-600 font-semibold hover:underline cursor-pointer"
             >
               {t('personalLogin')}
             </button>

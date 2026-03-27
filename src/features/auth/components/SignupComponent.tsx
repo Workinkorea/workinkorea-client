@@ -7,6 +7,10 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { FormField } from '@/shared/ui/FormField';
 import { SelectSearchInput } from '@/shared/ui/SelectSearchInput';
+import { Input } from '@/shared/ui/Input';
+import { Checkbox } from '@/shared/ui/Checkbox';
+import { Button } from '@/shared/ui/Button';
+import { cn } from '@/shared/lib/utils/utils';
 import { COUNTRIES } from '@/shared/constants/countries';
 import { validateEmail } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
@@ -199,14 +203,14 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
   return (
     <div className="min-h-screen bg-white flex flex-col lg:flex-row">
       {/* 약관 동의 섹션 - 모바일: 전체 너비, 데스크탑: 좌측 */}
-      <div className="w-full lg:w-1/2 lg:border-r lg:border-slate-200 px-4 sm:px-6 py-8 sm:py-12 lg:p-12">
+      <div className="w-full lg:w-1/2 lg:border-r lg:border-line-400 px-4 sm:px-6 py-8 sm:py-12 lg:p-12">
         <div className="max-w-xl mx-auto space-y-6">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-body-2 font-bold text-slate-900 mb-4">{t('termsTitle')}</h2>
+            <h2 className="text-body-2 font-bold text-label-900 mb-4">{t('termsTitle')}</h2>
           </motion.div>
 
           {/* 모두 동의 */}
@@ -216,17 +220,12 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <label className="flex items-center cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={termsAgreement.allAgree}
-                onChange={(e) => handleAllAgreeChange(e.target.checked)}
-                className="w-5 h-5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
-              />
-              <span className="ml-3 text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-                {t('agreeAll')}
-              </span>
-            </label>
+            <Checkbox
+              checked={termsAgreement.allAgree}
+              onChange={(e) => handleAllAgreeChange(e.target.checked)}
+              label={t('agreeAll')}
+              size="md"
+            />
           </motion.div>
 
           {/* 개별 약관 */}
@@ -239,37 +238,39 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             {TERM_KEYS.map((key, index) => (
               <motion.div
                 key={key}
-                className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-sm hover:border-blue-200 transition-colors"
+                className="bg-white border border-line-400 rounded-xl p-5 sm:p-6 shadow-sm hover:border-primary-200 transition-colors"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.05 * index }}
               >
-                <label className="flex items-start cursor-pointer group gap-3">
-                  <input
-                    type="checkbox"
+                <div className="flex items-start gap-3">
+                  <Checkbox
                     checked={termsAgreement[key]}
                     onChange={(e) => handleTermChange(key, e.target.checked)}
-                    className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer shrink-0"
+                    size="sm"
+                    className="mt-0.5 shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                      <span className="text-sm text-slate-900 group-hover:text-blue-600 transition-colors">
-                        <span className="text-blue-600 font-semibold">{t('required')}</span>{' '}
+                      <span className="text-body-3 text-label-900">
+                        <span className="text-primary-600 font-semibold">{t('required')}</span>{' '}
                         {t(`termLabels.${key}`)}
                       </span>
-                      <button
+                      <Button
                         type="button"
-                        className="text-caption-3 text-slate-500 hover:text-blue-600 underline cursor-pointer whitespace-nowrap shrink-0"
+                        variant="ghost"
+                        size="sm"
                         onClick={(e) => {
                           e.preventDefault();
                           openTermsModal(key);
                         }}
+                        className="text-caption-3 text-label-500 hover:text-primary-600 underline whitespace-nowrap shrink-0 !px-0 !py-0 h-auto"
                       >
                         {t('viewButton')}
-                      </button>
+                      </Button>
                     </div>
                   </div>
-                </label>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -292,8 +293,8 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-title-3 sm:text-title-2 font-bold text-slate-900 mb-2">{t('personalTitle')}</h1>
-            <p className="text-caption-1 text-slate-500">{t('formSubtitle')}</p>
+            <h1 className="text-title-3 sm:text-title-2 font-bold text-label-900 mb-2">{t('personalTitle')}</h1>
+            <p className="text-caption-1 text-label-500">{t('formSubtitle')}</p>
           </motion.div>
 
           <motion.form
@@ -304,9 +305,9 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             {/* 폼 카드 래퍼 */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm space-y-4">
+            <div className="bg-white border border-line-400 rounded-xl p-5 sm:p-7 shadow-sm space-y-4">
               <div className="mb-2">
-                <h3 className="text-body-2 font-bold text-slate-900 mb-4">{t('basicInfo')}</h3>
+                <h3 className="text-body-2 font-bold text-label-900 mb-4">{t('basicInfo')}</h3>
               </div>
 
               <div className="mb-6">
@@ -316,7 +317,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                   label={t('email')}
                   render={(field, fieldId) => (
                     <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                      <input
+                      <Input
                         {...field}
                         id={fieldId}
                         type="email"
@@ -328,28 +329,19 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                           setFormState(prev => ({ ...prev, isEmailSent: false, isEmailVerified: false }));
                           clearErrors('email');
                         }}
-                        className={`flex-1 border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors ${
-                          isEmailFromParam ? 'bg-slate-50 cursor-not-allowed' : ''
-                        }`}
+                        className={cn('flex-1', isEmailFromParam && 'bg-label-50')}
                       />
                       {!isEmailFromParam && (
-                        <motion.button
+                        <Button
                           type="button"
+                          variant="primary"
+                          size="md"
                           onClick={() => emailValue && handleSendVerificationCode(emailValue)}
                           disabled={!emailValue || validateEmail(emailValue) !== null || formState.isEmailSent}
-                          className={`px-4 sm:px-5 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors cursor-pointer ${
-                            emailValue && validateEmail(emailValue) === null && !formState.isEmailSent
-                              ? 'bg-blue-600 text-white hover:bg-blue-700'
-                              : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                          }`}
-                          whileTap={
-                            emailValue && validateEmail(emailValue) === null && !formState.isEmailSent
-                              ? { scale: 0.95 }
-                              : {}
-                          }
+                          className="whitespace-nowrap"
                         >
                           {formState.isEmailSent ? t('codeSent') : t('sendCode')}
-                        </motion.button>
+                        </Button>
                       )}
                     </div>
                   )}
@@ -361,7 +353,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center gap-2 text-emerald-600 text-caption-2 -mt-2"
+                  className="flex items-center gap-2 text-status-correct text-caption-2 -mt-2"
                 >
                   <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path
@@ -388,7 +380,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                     render={(field, fieldId) => (
                       <div className="space-y-2">
                         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                          <input
+                          <Input
                             {...field}
                             id={fieldId}
                             type="text"
@@ -402,36 +394,25 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                               setFormState(prev => ({ ...prev, verificationCode: value }));
                               clearErrors('verificationCode');
                             }}
-                            className={`flex-1 border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors ${
-                              formState.isEmailVerified ? 'bg-slate-50 cursor-not-allowed' : ''
-                            }`}
+                            className={cn('flex-1', formState.isEmailVerified && 'bg-label-50')}
                           />
-                          <motion.button
+                          <Button
                             type="button"
+                            variant="primary"
+                            size="md"
                             onClick={() => emailValue && codeValue && handleVerifyCode(emailValue, codeValue)}
                             disabled={formState.isEmailVerified || !codeValue || codeValue.length !== 6}
-                            className={`px-4 sm:px-5 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors cursor-pointer ${
-                              formState.isEmailVerified
-                                ? 'bg-green-500 text-white cursor-not-allowed'
-                                : codeValue && codeValue.length === 6
-                                ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-                                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                            }`}
-                            whileTap={
-                              !formState.isEmailVerified && codeValue && codeValue.length === 6
-                                ? { scale: 0.95 }
-                                : {}
-                            }
+                            className="whitespace-nowrap"
                           >
                             {formState.isEmailVerified ? t('codeVerified') : t('verify')}
-                          </motion.button>
+                          </Button>
                         </div>
                         {formState.isEmailVerified && (
                           <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="flex items-center gap-2 text-emerald-600 text-caption-2"
+                            className="flex items-center gap-2 text-status-correct text-caption-2"
                           >
                             <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                               <path
@@ -454,13 +435,12 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                 control={control}
                 label={t('nameLabel')}
                 render={(field, fieldId) => (
-                  <input
+                  <Input
                     {...field}
                     id={fieldId}
                     type="text"
                     value={field.value || ''}
                     placeholder="Hong Gildong"
-                    className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
                   />
                 )}
               />
@@ -470,7 +450,7 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                 control={control}
                 label={t('birthLabel')}
                 render={(field, fieldId) => (
-                  <input
+                  <Input
                     {...field}
                     id={fieldId}
                     type="text"
@@ -481,7 +461,6 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
                       const value = e.target.value.replace(/\D/g, '');
                       field.onChange(value);
                     }}
-                    className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
                   />
                 )}
               />
@@ -503,23 +482,20 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
 
             {/* 제출 버튼 */}
             <div className="space-y-3">
-              <motion.button
+              <Button
                 type="submit"
-                className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-colors cursor-pointer ${
-                  isFormValid
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                }`}
+                variant="primary"
+                size="lg"
                 disabled={!isFormValid}
-                whileTap={isFormValid ? { scale: 0.98 } : {}}
+                className="w-full"
               >
                 {t('signupButton')}
-              </motion.button>
+              </Button>
               {!allTermsAgreed && (
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-caption-3 text-red-500 text-center"
+                  className="text-caption-3 text-status-error text-center"
                 >
                   {t('termsRequired')}
                 </motion.p>
