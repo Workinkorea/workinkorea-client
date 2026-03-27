@@ -162,19 +162,19 @@ const DiagnosisResultClient = () => {
       <Layout>
         <div className="min-h-screen bg-white flex items-center justify-center px-4 py-8">
           <div className="text-center max-w-md">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-50 rounded-full mb-4">
-              <AlertCircle className="text-red-500 w-8 h-8" />
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-status-error-bg rounded-full mb-4">
+              <AlertCircle className="text-status-error w-8 h-8" />
             </div>
-            <p className="text-base text-slate-700 mb-2">{error}</p>
-            <p className="text-sm text-slate-500 mb-6">
+            <p className="text-body-1 text-label-700 mb-2">{error}</p>
+            <p className="text-body-3 text-label-500 mb-6">
               {t('retryHint')}
             </p>
             <motion.button
               onClick={() => router.push('/diagnosis')}
               className={cn(
-                'px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg',
-                'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
-                'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+                'px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-lg',
+                'hover:bg-primary-700 transition-colors duration-150 cursor-pointer',
+                'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2'
               )}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -196,7 +196,7 @@ const DiagnosisResultClient = () => {
               <div className="skeleton-shimmer rounded-full w-24 h-24 sm:w-32 sm:h-32 mx-auto" />
               <div className="skeleton-shimmer h-8 w-48 rounded mx-auto" />
               <div className="skeleton-shimmer h-4 w-64 rounded mx-auto" />
-              <p className="text-caption-1 text-slate-400 mt-4">{t('analyzing')}</p>
+              <p className="text-caption-1 text-label-400 mt-4">{t('analyzing')}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -224,11 +224,11 @@ const DiagnosisResultClient = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
             className={cn(
-              'bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 lg:p-10',
+              'bg-white rounded-2xl border border-line-400 shadow-sm p-6 sm:p-8 lg:p-10',
               'text-center mb-6 sm:mb-8'
             )}
           >
-            <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-slate-900 mb-6">
+            <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-label-900 mb-6">
               {t('resultTitle')}
             </h1>
             <div className="inline-grid w-32 h-32 sm:w-40 sm:h-40 mb-6">
@@ -257,15 +257,15 @@ const DiagnosisResultClient = () => {
               </svg>
               <div className="col-start-1 row-start-1 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-3xl sm:text-4xl font-bold text-blue-600">{result.score}%</div>
-                  <div className="text-xs text-slate-500 mt-1">{t('readinessLabel')}</div>
+                  <div className="text-title-2 sm:text-title-1 font-bold text-primary-600">{result.score}%</div>
+                  <div className="text-caption-2 text-label-500 mt-1">{t('readinessLabel')}</div>
                 </div>
               </div>
             </div>
-            <p className="text-body-3 sm:text-base text-slate-700">
+            <p className="text-body-3 sm:text-body-1 text-label-700">
               {t.rich('readinessMessage', {
                 score: result.score,
-                bold: (chunks) => <span className="font-bold text-blue-600">{chunks}</span>,
+                bold: (chunks) => <span className="font-bold text-primary-600">{chunks}</span>,
               })}
             </p>
           </motion.div>
@@ -278,20 +278,20 @@ const DiagnosisResultClient = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
               className={cn(
-                'bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6 lg:p-7'
+                'bg-white rounded-xl border border-line-400 shadow-sm p-5 sm:p-6 lg:p-7'
               )}
             >
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="inline-flex items-center justify-center w-8 h-8 bg-emerald-50 rounded-lg">
-                  <CheckCircle className="text-emerald-600" size={20} />
+                <div className="inline-flex items-center justify-center w-8 h-8 bg-status-correct-bg rounded-lg">
+                  <CheckCircle className="text-status-correct" size={20} />
                 </div>
-                <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">{t('strengthsTitle')}</h2>
+                <h2 className="text-body-1 sm:text-title-5 font-bold text-label-900">{t('strengthsTitle')}</h2>
               </div>
               <ul className="space-y-2.5">
                 {result.strengths.map((strength, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="text-emerald-600 font-bold mt-0.5">✓</span>
-                    <span className="text-caption-1 sm:text-sm text-slate-700 leading-relaxed">{strength}</span>
+                    <span className="text-status-correct font-bold mt-0.5">✓</span>
+                    <span className="text-caption-1 sm:text-body-3 text-label-700 leading-relaxed">{strength}</span>
                   </li>
                 ))}
               </ul>
@@ -303,20 +303,20 @@ const DiagnosisResultClient = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
               className={cn(
-                'bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6 lg:p-7'
+                'bg-white rounded-xl border border-line-400 shadow-sm p-5 sm:p-6 lg:p-7'
               )}
             >
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="inline-flex items-center justify-center w-8 h-8 bg-amber-50 rounded-lg">
-                  <AlertCircle className="text-amber-600" size={20} />
+                <div className="inline-flex items-center justify-center w-8 h-8 bg-status-caution-bg rounded-lg">
+                  <AlertCircle className="text-status-caution" size={20} />
                 </div>
-                <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">{t('improvementsTitle')}</h2>
+                <h2 className="text-body-1 sm:text-title-5 font-bold text-label-900">{t('improvementsTitle')}</h2>
               </div>
               <ul className="space-y-2.5">
                 {result.improvements.map((improvement, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="text-amber-600 font-bold mt-0.5">!</span>
-                    <span className="text-caption-1 sm:text-sm text-slate-700 leading-relaxed">{improvement}</span>
+                    <span className="text-status-caution font-bold mt-0.5">!</span>
+                    <span className="text-caption-1 sm:text-body-3 text-label-700 leading-relaxed">{improvement}</span>
                   </li>
                 ))}
               </ul>
@@ -329,14 +329,14 @@ const DiagnosisResultClient = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
             className={cn(
-              'bg-white rounded-xl border border-slate-200 shadow-sm p-5 sm:p-6 lg:p-7 mb-6 sm:mb-8'
+              'bg-white rounded-xl border border-line-400 shadow-sm p-5 sm:p-6 lg:p-7 mb-6 sm:mb-8'
             )}
           >
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="inline-flex items-center justify-center w-8 h-8 bg-blue-50 rounded-lg">
-                <Briefcase className="text-blue-600" size={20} />
+              <div className="inline-flex items-center justify-center w-8 h-8 bg-primary-50 rounded-lg">
+                <Briefcase className="text-primary-600" size={20} />
               </div>
-              <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">{t('recommendedJobsTitle')}</h2>
+              <h2 className="text-body-1 sm:text-title-5 font-bold text-label-900">{t('recommendedJobsTitle')}</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
               {result.recommendedJobs.map((job, index) => (
@@ -346,11 +346,11 @@ const DiagnosisResultClient = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   className={cn(
-                    'px-3 py-2.5 bg-blue-50 border border-blue-100 rounded-lg text-center',
-                    'hover:bg-blue-100 transition-colors duration-150'
+                    'px-3 py-2.5 bg-primary-50 border border-blue-100 rounded-lg text-center',
+                    'hover:bg-primary-100 transition-colors duration-150'
                   )}
                 >
-                  <span className="text-caption-2 sm:text-caption-1 font-semibold text-blue-700 line-clamp-2">
+                  <span className="text-caption-2 sm:text-caption-1 font-semibold text-primary-700 line-clamp-2">
                     {job}
                   </span>
                 </motion.div>
@@ -375,7 +375,7 @@ const DiagnosisResultClient = () => {
             <h2 className="text-title-4 sm:text-[22px] font-extrabold mb-2">
               {t('ctaTitle')}
             </h2>
-            <p className="text-caption-1 sm:text-sm opacity-90 mb-6">
+            <p className="text-caption-1 sm:text-body-3 opacity-90 mb-6">
               {t('ctaSubtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -383,10 +383,10 @@ const DiagnosisResultClient = () => {
                 <motion.button
                   onClick={handleSignup}
                   className={cn(
-                    'px-6 py-2.5 bg-white text-blue-600 font-semibold rounded-lg',
-                    'hover:bg-slate-50 transition-colors duration-150 cursor-pointer',
+                    'px-6 py-2.5 bg-white text-primary-600 font-semibold rounded-lg',
+                    'hover:bg-label-50 transition-colors duration-150 cursor-pointer',
                     'focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2',
-                    'text-sm sm:text-base'
+                    'text-body-3 sm:text-body-1'
                   )}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -400,7 +400,7 @@ const DiagnosisResultClient = () => {
                   'px-6 py-2.5 bg-white/20 backdrop-blur text-white font-semibold rounded-lg',
                   'hover:bg-white/30 transition-colors duration-150 border border-white/50 cursor-pointer',
                   'focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2',
-                  'text-sm sm:text-base'
+                  'text-body-3 sm:text-body-1'
                 )}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -415,7 +415,7 @@ const DiagnosisResultClient = () => {
             <motion.button
               onClick={handleRestart}
               className={cn(
-                'text-caption-1 sm:text-sm text-slate-500 hover:text-slate-700',
+                'text-caption-1 sm:text-body-3 text-label-500 hover:text-label-700',
                 'underline cursor-pointer font-medium'
               )}
               whileHover={{ scale: 1.05 }}

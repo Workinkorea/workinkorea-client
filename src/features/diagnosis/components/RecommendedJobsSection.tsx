@@ -47,14 +47,14 @@ export function RecommendedJobsSection({ diagnosisData }: RecommendedJobsSection
       {/* Section Header */}
       <div className="flex items-center justify-between mb-4 sm:mb-5">
         <div className="flex items-center gap-2.5">
-          <div className="inline-flex items-center justify-center w-8 h-8 bg-blue-50 rounded-lg">
-            <Briefcase className="text-blue-600" size={18} />
+          <div className="inline-flex items-center justify-center w-8 h-8 bg-primary-50 rounded-lg">
+            <Briefcase className="text-primary-600" size={18} />
           </div>
-          <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">{t('sectionTitle')}</h2>
+          <h2 className="text-body-1 sm:text-title-5 font-bold text-label-900">{t('sectionTitle')}</h2>
         </div>
         <Link
           href="/jobs"
-          className="text-caption-2 sm:text-caption-1 text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 transition-colors"
+          className="text-caption-2 sm:text-caption-1 text-primary-600 hover:text-primary-700 font-semibold flex items-center gap-1 transition-colors"
         >
           {t('viewAll')}
           <ArrowRight size={14} />
@@ -65,7 +65,7 @@ export function RecommendedJobsSection({ diagnosisData }: RecommendedJobsSection
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6 space-y-3">
+            <div key={i} className="bg-white rounded-xl border border-line-400 p-5 sm:p-6 space-y-3">
               <div className="flex items-start gap-3">
                 <div className="skeleton-shimmer w-12 h-12 rounded-xl shrink-0" />
                 <div className="flex-1 space-y-2">
@@ -105,10 +105,10 @@ export function RecommendedJobsSection({ diagnosisData }: RecommendedJobsSection
             <Link href="/jobs">
               <motion.span
                 className={cn(
-                  'inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white',
-                  'rounded-xl font-semibold text-sm cursor-pointer',
-                  'hover:bg-blue-700 transition-colors duration-150',
-                  'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+                  'inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white',
+                  'rounded-xl font-semibold text-body-3 cursor-pointer',
+                  'hover:bg-primary-700 transition-colors duration-150',
+                  'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2'
                 )}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
