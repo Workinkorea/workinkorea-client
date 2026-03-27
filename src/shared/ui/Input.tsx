@@ -48,11 +48,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       "flex items-center border rounded-lg bg-white transition-colors",
       error && "border-red-500 focus-within:border-red-500 focus-within:ring-[3px] focus-within:ring-red-100",
       success && "border-emerald-500 focus-within:border-emerald-500 focus-within:ring-[3px] focus-within:ring-emerald-100",
-      !error && !success && "border-slate-200 focus-within:border-blue-500 focus-within:ring-[3px] focus-within:ring-blue-100",
+      !error && !success && "border-line-400 focus-within:border-primary-500 focus-within:ring-[3px] focus-within:ring-primary-100",
       className
     );
 
-    const inputClasses = "flex-1 min-w-0 px-3.5 py-2.5 text-sm text-slate-800 font-sans bg-transparent outline-none placeholder:text-slate-400";
+    const inputClasses = "flex-1 min-w-0 px-3.5 py-2.5 text-body-3 text-label-800 font-sans bg-transparent outline-none placeholder:text-label-400";
 
     // null 값을 빈 문자열로 변환하여 controlled input 오류 방지
     const safeValue = value === null ? '' : value;
@@ -71,7 +71,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <button
             type="button"
             onClick={onTogglePassword}
-            className="px-3 shrink-0 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+            className="px-3 shrink-0 text-label-400 hover:text-label-600 transition-colors cursor-pointer"
           >
             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>

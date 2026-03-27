@@ -46,7 +46,7 @@ export const SelectSearchInput = ({
   return (
     <div className="relative">
       <div
-        className="w-full px-3 py-2.5 border border-slate-300 rounded-lg transition-colors focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent cursor-pointer text-sm"
+        className="w-full px-3 py-2.5 border border-line-400 rounded-lg transition-colors focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent cursor-pointer text-body-3"
         onClick={handleInputClick}
       >
         <div className="flex items-center justify-between">
@@ -60,13 +60,13 @@ export const SelectSearchInput = ({
               autoFocus
             />
           ) : (
-            <span className={selectedOption ? "" : "text-gray-400"}>
+            <span className={selectedOption ? "" : "text-label-400"}>
               {selectedOption ? selectedOption.label : placeholder}
             </span>
           )}
           <div className="ml-2 pointer-events-none">
             <svg
-              className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+              className={`w-5 h-5 text-label-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -78,13 +78,13 @@ export const SelectSearchInput = ({
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-md max-h-60 overflow-y-auto">
+        <div className="absolute z-10 w-full mt-1 bg-white border border-line-400 rounded-lg shadow-md max-h-60 overflow-y-auto">
           {filteredOptions.length > 0 ? (
             filteredOptions.map((option) => (
               <div
                 key={option.value}
-                className={`px-3 py-2 cursor-pointer text-sm hover:bg-gray-50 transition-colors ${
-                  value === option.value ? 'bg-blue-50 text-blue-600' : ''
+                className={`px-3 py-2 cursor-pointer text-body-3 hover:bg-label-50 transition-colors ${
+                  value === option.value ? 'bg-primary-50 text-primary-600' : ''
                 }`}
                 onClick={() => handleSelect(option.value)}
               >
@@ -92,7 +92,7 @@ export const SelectSearchInput = ({
               </div>
             ))
           ) : (
-            <div className="px-3 py-2 text-sm text-gray-400">검색 결과가 없습니다.</div>
+            <div className="px-3 py-2 text-body-3 text-label-400">검색 결과가 없습니다.</div>
           )}
         </div>
       )}
