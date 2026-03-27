@@ -33,23 +33,23 @@ export function FormField({
       transition={{ duration: 0.35 }}
     >
       {/* 레이블: text-label-700 = #334155(slate-700), 13px semibold */}
-      <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">
+      <label className="block text-caption-1 font-semibold text-label-700 mb-1.5">
         {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+        {required && <span className="text-status-error ml-0.5">*</span>}
       </label>
 
       {children}
 
       {/* 힌트 텍스트 (에러가 없을 때만 표시) */}
       {hint && !error && (
-        <p className="mt-1 text-caption-2 text-slate-400">{hint}</p>
+        <p className="mt-1 text-caption-2 text-label-400">{hint}</p>
       )}
 
       {/* 에러 메시지: 등장/퇴장 애니메이션 포함 */}
       <AnimatePresence>
         {error && (
           <motion.p
-            className="mt-1 text-caption-3 text-red-500"
+            className="mt-1 text-caption-3 text-status-error"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}

@@ -64,7 +64,7 @@ function CompanyPostCreateClient() {
   if (authLoading) {
     return (
       <Layout>
-        <main className="min-h-screen bg-slate-100 py-8">
+        <main className="min-h-screen bg-label-100 py-8">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
               <div className="space-y-4">
@@ -72,7 +72,7 @@ function CompanyPostCreateClient() {
                 <div className="skeleton-shimmer h-8 w-64 rounded" />
                 {/* 폼 섹션 스켈레톤 4개 */}
                 {[180, 140, 220, 120].map((h, i) => (
-                  <div key={i} className="bg-white rounded-xl border border-slate-200 p-6">
+                  <div key={i} className="bg-white rounded-xl border border-line-400 p-6">
                     <div className="skeleton-shimmer h-5 w-32 rounded mb-5" />
                     <div className="space-y-3">
                       <div className="skeleton-shimmer h-10 w-full rounded-lg" />
@@ -93,14 +93,14 @@ function CompanyPostCreateClient() {
   if (!isAuthenticated || userType !== 'company') {
     return (
       <Layout>
-        <main className="min-h-screen bg-slate-100 py-8">
+        <main className="min-h-screen bg-label-100 py-8">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
               <div className="space-y-4">
                 <div className="skeleton-shimmer h-6 w-40 rounded" />
                 <div className="skeleton-shimmer h-8 w-64 rounded" />
                 {[180, 140, 220, 120].map((h, i) => (
-                  <div key={i} className="bg-white rounded-xl border border-slate-200 p-6">
+                  <div key={i} className="bg-white rounded-xl border border-line-400 p-6">
                     <div className="skeleton-shimmer h-5 w-32 rounded mb-5" />
                     <div className="space-y-3">
                       <div className="skeleton-shimmer h-10 w-full rounded-lg" />
@@ -119,7 +119,7 @@ function CompanyPostCreateClient() {
 
   return (
     <Layout>
-      <main className="min-h-screen bg-slate-100 py-8">
+      <main className="min-h-screen bg-label-100 py-8">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* ── 페이지 헤더 ────────────────────────────────────────────────
@@ -134,12 +134,12 @@ function CompanyPostCreateClient() {
           >
             {/* 페이지 제목 */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
-                <FileText size={20} className="text-blue-600" />
+              <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center shrink-0">
+                <FileText size={20} className="text-primary-600" />
               </div>
               <div>
-                <h1 className="text-[22px] font-extrabold text-slate-900">채용 공고 등록</h1>
-                <p className="text-caption-1 text-slate-500 mt-0.5">
+                <h1 className="text-[22px] font-extrabold text-label-900">채용 공고 등록</h1>
+                <p className="text-caption-1 text-label-500 mt-0.5">
                   외국인 인재를 위한 채용 공고를 작성해주세요
                 </p>
               </div>
@@ -189,22 +189,22 @@ function CompanyPostCreateClient() {
               </Button>
 
               {/* 작성 팁 카드 */}
-              <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+              <div className="bg-primary-50 rounded-xl p-4 border border-blue-100">
                 <div className="flex items-start gap-3">
-                  <Lightbulb size={16} className="text-blue-600 shrink-0 mt-1" />
+                  <Lightbulb size={16} className="text-primary-600 shrink-0 mt-1" />
                   <div>
-                    <h3 className="text-caption-1 font-bold text-slate-900 mb-2">작성 팁</h3>
-                    <ul className="space-y-1.5 text-caption-2 text-slate-600">
+                    <h3 className="text-caption-1 font-bold text-label-900 mb-2">작성 팁</h3>
+                    <ul className="space-y-1.5 text-caption-2 text-label-600">
                       <li className="flex gap-2">
-                        <span className="text-blue-600 shrink-0">•</span>
+                        <span className="text-primary-600 shrink-0">•</span>
                         <span>명확하고 구체적인 직무 제목을 사용하세요</span>
                       </li>
                       <li className="flex gap-2">
-                        <span className="text-blue-600 shrink-0">•</span>
+                        <span className="text-primary-600 shrink-0">•</span>
                         <span>필수 자격사항과 우대사항을 명확히 구분하세요</span>
                       </li>
                       <li className="flex gap-2">
-                        <span className="text-blue-600 shrink-0">•</span>
+                        <span className="text-primary-600 shrink-0">•</span>
                         <span>정확한 급여 정보를 제공하면 지원율이 높아집니다</span>
                       </li>
                     </ul>

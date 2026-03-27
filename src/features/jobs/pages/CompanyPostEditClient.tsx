@@ -89,14 +89,14 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
   if (authLoading || postLoading) {
     return (
       <Layout>
-        <main className="min-h-screen bg-slate-100 py-8 flex items-center justify-center">
+        <main className="min-h-screen bg-label-100 py-8 flex items-center justify-center">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
               <div className="space-y-4">
                 <div className="skeleton-shimmer h-6 w-40 rounded" />
                 <div className="skeleton-shimmer h-8 w-64 rounded" />
                 {[180, 140, 220, 120].map((h, i) => (
-                  <div key={i} className="bg-white rounded-xl border border-slate-200 p-6">
+                  <div key={i} className="bg-white rounded-xl border border-line-400 p-6">
                     <div className="skeleton-shimmer h-5 w-32 rounded mb-5" />
                     <div className="space-y-3">
                       <div className="skeleton-shimmer h-10 w-full rounded-lg" />
@@ -120,12 +120,12 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
   if (!post) {
     return (
       <Layout>
-        <main className="min-h-screen bg-slate-100 py-8 flex items-center justify-center">
+        <main className="min-h-screen bg-label-100 py-8 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-slate-500 text-body-2">{t('notFound')}</p>
+            <p className="text-label-500 text-body-2">{t('notFound')}</p>
             <button
               onClick={() => router.push('/company')}
-              className="mt-4 text-blue-600 hover:text-blue-700 text-body-3 font-medium cursor-pointer"
+              className="mt-4 text-primary-600 hover:text-primary-700 text-body-3 font-medium cursor-pointer"
             >
               {t('backToDashboard')}
             </button>
@@ -156,7 +156,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
 
   return (
     <Layout>
-      <main className="min-h-screen bg-slate-100 py-8">
+      <main className="min-h-screen bg-label-100 py-8">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* ── 페이지 헤더 ──────────────────────────────────────────────── */}
@@ -167,12 +167,12 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
             className="mb-6"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
-                <FileText size={20} className="text-blue-600" />
+              <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center shrink-0">
+                <FileText size={20} className="text-primary-600" />
               </div>
               <div>
-                <h1 className="text-[22px] font-extrabold text-slate-900">{t('title')}</h1>
-                <p className="text-caption-1 text-slate-500 mt-0.5">
+                <h1 className="text-[22px] font-extrabold text-label-900">{t('title')}</h1>
+                <p className="text-caption-1 text-label-500 mt-0.5">
                   {t('subtitle')}
                 </p>
               </div>
@@ -227,7 +227,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
               <Button
                 type="button"
                 size="lg"
-                className="w-full border border-red-200 text-red-500 hover:bg-red-50 bg-white"
+                className="w-full border border-status-error-bg text-status-error hover:bg-status-error-bg bg-white"
                 onClick={handleDelete}
                 disabled={deletePostMutation.isPending}
               >
