@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -296,7 +296,7 @@ function ResumeEditor({
             <FileText size={20} className="text-primary-600" />
           </div>
           <div>
-            <h1 className="text-[22px] font-extrabold text-label-900">
+            <h1 className="text-title-3 font-extrabold text-label-900">
               {isEditMode ? '이력서 편집' : '새 이력서 작성'}
             </h1>
             <p className="text-caption-1 text-label-500 mt-0.5">

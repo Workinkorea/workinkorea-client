@@ -16,15 +16,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-label-100">
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex h-16 items-center justify-between">
-            <h1 className="text-title-3 font-bold text-slate-900">관리자 페이지</h1>
+            <h1 className="text-title-3 font-bold text-label-900">관리자 페이지</h1>
             <Link
               href="/"
-              className="text-body-3 text-slate-600 hover:text-slate-900 transition-colors"
+              className="text-body-3 text-label-600 hover:text-label-900 transition-colors"
             >
               메인으로 돌아가기
             </Link>
@@ -45,8 +45,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     href={item.path}
                     className={`block rounded-lg px-4 py-2 text-body-3 font-medium transition-colors cursor-pointer ${
                       isActive
-                        ? 'bg-blue-50 text-blue-700'
-                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                        ? 'bg-primary-50 text-primary-700'
+                        : 'text-label-700 hover:bg-label-100 hover:text-label-900'
                     }`}
                   >
                     {item.name}

@@ -372,7 +372,7 @@ const DiagnosisResultClient = () => {
             )}
           >
             <TrendingUp size={40} className="mx-auto mb-4 sm:mb-5" />
-            <h2 className="text-title-4 sm:text-[22px] font-extrabold mb-2">
+            <h2 className="text-title-4 sm:text-title-3 font-extrabold mb-2">
               {t('ctaTitle')}
             </h2>
             <p className="text-caption-1 sm:text-body-3 opacity-90 mb-6">

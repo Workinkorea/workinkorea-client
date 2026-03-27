@@ -171,7 +171,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
                 <FileText size={20} className="text-primary-600" />
               </div>
               <div>
-                <h1 className="text-[22px] font-extrabold text-label-900">{t('title')}</h1>
+                <h1 className="text-title-3 font-extrabold text-label-900">{t('title')}</h1>
                 <p className="text-caption-1 text-label-500 mt-0.5">
                   {t('subtitle')}
                 </p>

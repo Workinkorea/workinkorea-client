@@ -138,7 +138,7 @@ function CompanyPostCreateClient() {
                 <FileText size={20} className="text-primary-600" />
               </div>
               <div>
-                <h1 className="text-[22px] font-extrabold text-label-900">채용 공고 등록</h1>
+                <h1 className="text-title-3 font-extrabold text-label-900">채용 공고 등록</h1>
                 <p className="text-caption-1 text-label-500 mt-0.5">
                   외국인 인재를 위한 채용 공고를 작성해주세요
                 </p>

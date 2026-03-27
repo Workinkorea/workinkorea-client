@@ -261,7 +261,7 @@ function UserProfileClient() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 rounded-full bg-primary-100 flex items-center justify-center">
               <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-primary-600" />
             </div>
-            <h2 className="text-[18px] sm:text-title-4 font-extrabold text-label-900 mb-2">
+            <h2 className="text-title-5 sm:text-title-4 font-extrabold text-label-900 mb-2">
               {t('loadingError')}
             </h2>
             <p className="text-caption-1 sm:text-body-3 text-label-500 mb-6 sm:mb-8">
@@ -438,7 +438,7 @@ function UserProfileClient() {
                       <div className="flex items-center justify-between mb-4 sm:mb-5">
                         <h3 className="text-body-3 sm:text-body-2 font-bold text-label-900">{t('profileCompletion')}</h3>
                         <span className={cn(
-                          'text-[18px] sm:text-title-5 font-extrabold',
+                          'text-title-5 sm:text-title-5 font-extrabold',
                           pct >= 80 ? 'text-primary-600' : pct >= 50 ? 'text-status-caution' : 'text-label-400'
                         )}>
                           {pct}%
@@ -471,7 +471,7 @@ function UserProfileClient() {
                             )}
                           >
                             <span className={cn(
-                              'w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-bold shrink-0',
+                              'w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full flex items-center justify-center text-caption-3 font-bold shrink-0',
                               item.done
                                 ? 'bg-primary-600 text-white'
                                 : 'bg-label-100 text-label-400'
