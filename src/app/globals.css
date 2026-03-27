@@ -13,6 +13,7 @@
   --breakpoint-desktop: 1440px;
 
   /* ─── Typography Scale ─── */
+  --text-display-hero: 72px;
   --text-display-1: 48px;
   --text-display-2: 40px;
 
@@ -210,6 +211,13 @@ body {
 }
 
 /* ─── Typography Utility Classes ─── */
+.text-display-hero {
+  font-size: var(--text-display-hero);
+  line-height: 1;
+  letter-spacing: var(--tracking-hero);
+  font-weight: var(--font-weight-bold);
+}
+
 .text-display-1 {
   font-size: var(--text-display-1);
   line-height: var(--leading-display-1);

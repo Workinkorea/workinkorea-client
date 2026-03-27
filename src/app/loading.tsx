@@ -29,7 +29,7 @@ export default function Loading() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="rounded-xl border-2 border-blue-200 p-6 sm:p-7 lg:p-8 space-y-5">
+              <div key={i} className="rounded-xl border-2 border-primary-200 p-6 sm:p-7 lg:p-8 space-y-5">
                 <div className="flex justify-center">
                   <Skeleton className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl" />
                 </div>
@@ -47,7 +47,7 @@ export default function Loading() {
       </section>
 
       {/* JobCategories Section 스켈레톤 */}
-      <section className="bg-white border-t border-slate-100 py-12 sm:py-16 lg:py-20">
+      <section className="bg-white border-t border-line-100 py-12 sm:py-16 lg:py-20">
         <div className="page-container">
           <div className="text-center mb-8 sm:mb-12 space-y-2.5">
             <Skeleton className="h-6 w-24 rounded-full mx-auto" />
@@ -58,7 +58,7 @@ export default function Loading() {
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-white border border-slate-200 rounded-xl px-3 py-4 sm:py-5 flex flex-col items-center gap-2.5"
+                className="bg-white border border-line-200 rounded-xl px-3 py-4 sm:py-5 flex flex-col items-center gap-2.5"
               >
                 <Skeleton className="w-11 h-11 rounded-xl" />
                 <Skeleton variant="text" className="h-3.5 w-10 sm:w-12" />
@@ -77,7 +77,7 @@ export default function Loading() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-white border border-slate-200 rounded-xl p-4 md:p-6">
+              <div key={i} className="bg-white border border-line-200 rounded-xl p-4 md:p-6">
                 <div className="flex items-start justify-between mb-3 md:mb-4">
                   <div className="flex items-center gap-2 md:gap-3">
                     <Skeleton className="w-10 h-10 md:w-12 md:h-12 rounded-lg shrink-0" />
@@ -107,7 +107,7 @@ export default function Loading() {
       </section>
 
       {/* CTA Section 스켈레톤 */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 py-16 sm:py-20 lg:py-28">
+      <section className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 py-16 sm:py-20 lg:py-28">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 sm:space-y-5">
           <Skeleton className="h-10 sm:h-12 lg:h-14 w-40 sm:w-52 mx-auto bg-white/20" />
           <Skeleton variant="text" className="h-4 sm:h-5 w-56 sm:w-80 mx-auto bg-white/20" />
