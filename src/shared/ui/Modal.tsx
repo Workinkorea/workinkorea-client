@@ -150,11 +150,11 @@ export function Modal({
                 >
                   {/* 헤더 */}
                   {(title || showCloseButton) && (
-                    <div className="flex items-center justify-between p-6 pb-4 border-b border-slate-100">
+                    <div className="flex items-center justify-between p-6 pb-4 border-b border-line-200">
                       {title && (
                         <h2
                           id="modal-title"
-                          className="text-lg font-semibold text-slate-900"
+                          className="text-title-5 font-semibold text-label-900"
                         >
                           {title}
                         </h2>
@@ -163,7 +163,7 @@ export function Modal({
                       {showCloseButton && (
                         <motion.button
                           onClick={onClose}
-                          className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                          className="p-1 text-label-400 hover:text-label-600 hover:bg-label-100 rounded-lg transition-colors cursor-pointer"
                           aria-label="모달 닫기"
                           whileHover={{ rotate: 90 }}
                           transition={{ type: 'spring', stiffness: 320, damping: 20 }}

@@ -5,17 +5,17 @@ import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { FormField } from '@/shared/ui/FormField';
 import { Input } from '@/shared/ui/Input';
-import { toast } from 'sonner';
-import TermsModal from '@/shared/ui/TermsModal';
-import { authApi } from '@/features/auth/api/authApi';
 import {
   formatBusinessNumber,
   isValidBusinessNumber,
-  validatePassword,
   validateConfirmPassword,
+  validatePassword,
 } from '@/shared/lib/utils/validation';
+import { toast } from 'sonner';
+import { authApi } from '@/features/auth/api/authApi';
 import {
   formatPhoneByType,
   validatePhoneType,
@@ -23,6 +23,7 @@ import {
   PhoneType,
 } from '@/shared/lib/utils/phoneUtils';
 import { extractErrorMessage, logError, getErrorStatus } from '@/shared/lib/utils/errorHandler';
+import TermsModal from '@/shared/ui/TermsModal';
 import {
   TERMS_OF_SERVICE,
   PRIVACY_POLICY,
@@ -30,18 +31,11 @@ import {
   COPYRIGHT_POLICY,
   COOKIE_POLICY,
 } from '@/shared/constants/terms';
+import { Step2Form } from '@/features/auth/types/signup.types';
 
-interface BusinessSignupFormData {
-  businessNumber: string;
-  company: string;
-  name: string;
-  phoneNumber: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+type TermKey = 'termsOfService' | 'privacyPolicy' | 'personalInfo' | 'thirdParty' | 'marketing';
 
-interface TermsAgreement {
+interface TermsState {
   allAgree: boolean;
   termsOfService: boolean;
   privacyPolicy: boolean;
@@ -50,30 +44,27 @@ interface TermsAgreement {
   marketing: boolean;
 }
 
-type TermKey = Exclude<keyof TermsAgreement, 'allAgree'>;
-
-const TERMS: { key: TermKey; label: string; required: boolean }[] = [
-  { key: 'termsOfService', label: '서비스 이용약관', required: true },
-  { key: 'privacyPolicy', label: '개인(신용)정보 수집 및 이용동의', required: true },
-  { key: 'personalInfo', label: '개인(신용)정보 제공 및 위탁동의', required: true },
-  { key: 'thirdParty', label: '개인(신용)정보 조회 동의', required: true },
-  { key: 'marketing', label: '마케팅 활용 및 광고성 정보 수신동의', required: false },
-];
-
-const TERMS_CONTENT: Record<TermKey, { title: string; content: string }> = {
-  termsOfService: { title: '서비스 이용약관', content: TERMS_OF_SERVICE },
-  privacyPolicy: { title: '개인(신용)정보 수집 및 이용동의', content: PRIVACY_POLICY },
-  personalInfo: { title: '개인(신용)정보 제공 및 위탁동의', content: PRIVACY_POLICY_HOLD },
-  thirdParty: { title: '개인(신용)정보 조회 동의', content: COPYRIGHT_POLICY },
-  marketing: { title: '마케팅 활용 및 광고성 정보 수신동의', content: COOKIE_POLICY },
+const TERMS_CONTENT_RAW: Record<TermKey, string> = {
+  termsOfService: TERMS_OF_SERVICE,
+  privacyPolicy: PRIVACY_POLICY,
+  personalInfo: PRIVACY_POLICY_HOLD,
+  thirdParty: COPYRIGHT_POLICY,
+  marketing: COOKIE_POLICY,
 };
 
-const REQUIRED_KEYS: TermKey[] = ['termsOfService', 'privacyPolicy', 'personalInfo', 'thirdParty'];
+const TERM_KEYS: { key: TermKey; required: boolean }[] = [
+  { key: 'termsOfService', required: true },
+  { key: 'privacyPolicy', required: true },
+  { key: 'personalInfo', required: true },
+  { key: 'thirdParty', required: true },
+  { key: 'marketing', required: false },
+];
 
 export default function BusinessSignupComponent() {
   const router = useRouter();
+  const t = useTranslations('auth.companySignup');
 
-  const [termsAgreement, setTermsAgreement] = useState<TermsAgreement>({
+  const [terms, setTerms] = useState<TermsState>({
     allAgree: false,
     termsOfService: false,
     privacyPolicy: false,
@@ -82,11 +73,34 @@ export default function BusinessSignupComponent() {
     marketing: false,
   });
 
-  const [modalState, setModalState] = useState<{
-    isOpen: boolean;
-    title: string;
-    content: string;
-  }>({ isOpen: false, title: '', content: '' });
+  const [modalState, setModalState] = useState<{ isOpen: boolean; title: string; content: string }>({
+    isOpen: false,
+    title: '',
+    content: '',
+  });
+
+  const openTermsModal = (key: TermKey) => {
+    setModalState({ isOpen: true, title: t(`termLabels.${key}`), content: TERMS_CONTENT_RAW[key] });
+  };
+  const closeModal = () => setModalState({ isOpen: false, title: '', content: '' });
+
+  const handleAllAgree = (checked: boolean) => {
+    setTerms({ allAgree: checked, termsOfService: checked, privacyPolicy: checked, personalInfo: checked, thirdParty: checked, marketing: checked });
+  };
+
+  const handleTermChange = (key: TermKey, checked: boolean) => {
+    const next = { ...terms, [key]: checked };
+    const all: TermKey[] = ['termsOfService', 'privacyPolicy', 'personalInfo', 'thirdParty', 'marketing'];
+    next.allAgree = all.every((k) => next[k]);
+    setTerms(next);
+  };
+
+  const requiredAgreed = terms.termsOfService && terms.privacyPolicy && terms.personalInfo && terms.thirdParty;
+
+  const { control, handleSubmit, watch, formState: { errors }, setError, clearErrors } = useForm<Step2Form>({
+    mode: 'onChange',
+    defaultValues: { businessNumber: '', password: '', confirmPassword: '', company: '', name: '', phoneNumber: '', email: '' },
+  });
 
   const [formState, setFormState] = useState({
     showPassword: false,
@@ -95,237 +109,202 @@ export default function BusinessSignupComponent() {
     isVerifying: false,
     businessNumberMessage: '',
     businessNumberVerifyToken: '',
+    companyInfo: null as { company: string; owner: string } | null,
     phoneType: 'MOBILE' as PhoneType,
   });
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    formState: { errors },
-    setError,
-    clearErrors,
-  } = useForm<BusinessSignupFormData>({
-    mode: 'onChange',
-    defaultValues: {
-      businessNumber: '',
-      company: '',
-      name: '',
-      phoneNumber: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    },
-  });
-
   const businessNumber = watch('businessNumber');
-  const company = watch('company');
   const name = watch('name');
   const phoneNumber = watch('phoneNumber');
   const email = watch('email');
   const password = watch('password');
   const confirmPassword = watch('confirmPassword');
+  const company = watch('company');
 
-  const openTermsModal = (key: TermKey) => {
-    const { title, content } = TERMS_CONTENT[key];
-    setModalState({ isOpen: true, title, content });
+  const handlePasswordBlur = (val: string) => {
+    if (!val) return;
+    const err = validatePassword(val);
+    if (err) setError('password', { type: 'manual', message: err });
+    else clearErrors('password');
   };
 
-  const closeModal = () => setModalState({ isOpen: false, title: '', content: '' });
-
-  const handleAllAgreeChange = (checked: boolean) => {
-    setTermsAgreement({
-      allAgree: checked,
-      termsOfService: checked,
-      privacyPolicy: checked,
-      personalInfo: checked,
-      thirdParty: checked,
-      marketing: checked,
-    });
+  const handleConfirmPasswordBlur = (val: string) => {
+    if (!val) return;
+    const err = validateConfirmPassword(password, val);
+    if (err) setError('confirmPassword', { type: 'manual', message: err });
+    else clearErrors('confirmPassword');
   };
 
-  const handleTermChange = (key: TermKey, checked: boolean) => {
-    const newTerms = { ...termsAgreement, [key]: checked };
-    setTermsAgreement({ ...newTerms, allAgree: TERMS.every(({ key: k }) => newTerms[k]) });
-  };
-
-  const handleBusinessNumberCheck = async (value: string) => {
-    if (!isValidBusinessNumber(value)) {
-      setError('businessNumber', { type: 'manual', message: '사업자등록번호 10자리를 입력해주세요.' });
+  const handleBusinessNumberCheck = async (bn: string) => {
+    if (!isValidBusinessNumber(bn)) {
+      setError('businessNumber', { type: 'manual', message: t('errorBizNumberRequired') });
       return;
     }
-    setFormState(prev => ({ ...prev, isVerifying: true }));
+    setFormState((prev) => ({ ...prev, isVerifying: true }));
     try {
-      const response = await authApi.verifyBusinessNumber(value);
-      if (response.status_code === 'OK' && response.data && response.data.length > 0) {
-        const businessData = response.data[0];
-        if (businessData.b_stt_cd !== '01') {
-          setError('businessNumber', { type: 'manual', message: `해당 사업자는 ${businessData.b_stt} 상태입니다.` });
-          toast.error(`사업자 상태: ${businessData.b_stt}`);
+      const response = await authApi.verifyBusinessNumber(bn);
+      if (response.status_code === 'OK' && response.data?.length > 0) {
+        const bizData = response.data[0];
+        if (bizData.b_stt_cd !== '01') {
+          setError('businessNumber', { type: 'manual', message: t('errorBizStatus', { status: bizData.b_stt }) });
+          toast.error(t('errorBizStatus', { status: bizData.b_stt }));
           return;
         }
-        setFormState(prev => ({
+        setFormState((prev) => ({
           ...prev,
           isBusinessNumberVerified: true,
-          businessNumberMessage: '사업자등록번호 인증이 완료되었습니다.',
-          businessNumberVerifyToken: `verified_${value}_${Date.now()}`,
+          businessNumberMessage: t('bizVerifiedMsg'),
+          businessNumberVerifyToken: `verified_${bn}_${Date.now()}`,
+          companyInfo: { company: bizData.tax_type || '', owner: bizData.b_stt || '' },
         }));
         clearErrors('businessNumber');
-        toast.success('사업자등록번호 인증이 완료되었습니다.');
+        toast.success(t('toastBizVerified'));
       } else {
-        setError('businessNumber', { type: 'manual', message: '유효하지 않은 사업자등록번호입니다.' });
-        toast.error('유효하지 않은 사업자등록번호입니다.');
+        setError('businessNumber', { type: 'manual', message: t('toastBizInvalid') });
+        toast.error(t('toastBizInvalid'));
       }
     } catch {
-      setError('businessNumber', { type: 'manual', message: '사업자등록번호 인증에 실패했습니다.' });
-      toast.error('사업자등록번호 인증에 실패했습니다. 다시 시도해주세요.');
+      setError('businessNumber', { type: 'manual', message: t('toastBizError') });
+      toast.error(t('toastBizError'));
     } finally {
-      setFormState(prev => ({ ...prev, isVerifying: false }));
+      setFormState((prev) => ({ ...prev, isVerifying: false }));
     }
   };
 
-  const allRequiredAgreed = REQUIRED_KEYS.every(k => termsAgreement[k]);
-
   const calculateProgress = useCallback(() => {
-    let progress = 0;
-    if (formState.isBusinessNumberVerified) progress += 20;
-    if (password && password.length >= 8 && !errors.password) progress += 15;
-    if (confirmPassword && confirmPassword === password && !errors.confirmPassword) progress += 15;
-    if (company && !errors.company) progress += 15;
-    if (name && !errors.name) progress += 10;
-    if (phoneNumber && phoneNumber.length >= 12 && !errors.phoneNumber) progress += 15;
-    if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && !errors.email) progress += 10;
-    return Math.min(progress, 100);
+    let p = 0;
+    if (formState.isBusinessNumberVerified) p += 20;
+    if (password && password.length >= 8 && !errors.password) p += 15;
+    if (confirmPassword && confirmPassword === password && !errors.confirmPassword) p += 15;
+    if (company && !errors.company) p += 15;
+    if (name && !errors.name) p += 10;
+    if (phoneNumber && phoneNumber.length >= 12 && !errors.phoneNumber) p += 15;
+    if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && !errors.email) p += 10;
+    return Math.min(p, 100);
   }, [formState.isBusinessNumberVerified, password, confirmPassword, company, name, phoneNumber, email, errors]);
 
   const currentProgress = useMemo(() => calculateProgress(), [calculateProgress]);
 
   const isFormValid =
-    allRequiredAgreed &&
+    requiredAgreed &&
     formState.isBusinessNumberVerified &&
     company && name &&
     phoneNumber && phoneNumber.length >= 12 &&
     email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
     password && password.length >= 8 &&
     confirmPassword && password === confirmPassword &&
-    !errors.businessNumber && !errors.company && !errors.name &&
-    !errors.phoneNumber && !errors.email && !errors.password && !errors.confirmPassword;
+    !errors.businessNumber && !errors.password && !errors.confirmPassword &&
+    !errors.company && !errors.name && !errors.phoneNumber && !errors.email;
 
-  const onSubmit = async (data: BusinessSignupFormData) => {
-    if (!allRequiredAgreed) {
-      toast.error('필수 약관에 모두 동의해주세요.');
-      return;
-    }
-    const companySignupData = {
-      company_number: data.businessNumber.replace(/[^0-9]/g, ''),
-      company_name: data.company,
-      email: data.email,
-      password: data.password,
-      name: data.name,
-      phone: data.phoneNumber.replace(/[^0-9]/g, ''),
-      phone_type: formState.phoneType,
-    };
+  const onSubmit = async (data: Step2Form) => {
+    if (!requiredAgreed) { toast.error(t('toastRequiredTerms')); return; }
     try {
-      await authApi.companySignup(companySignupData);
-      toast.success('기업 회원가입이 완료되었습니다. 로그인 해주세요.');
+      await authApi.companySignup({
+        company_number: data.businessNumber.replace(/[^0-9]/g, ''),
+        company_name: data.company,
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        phone: data.phoneNumber.replace(/[^0-9]/g, ''),
+      });
+      toast.success(t('toastSuccess'));
       router.push('/company-login?signup=success');
     } catch (error: unknown) {
       logError(error, 'BusinessSignupComponent.onSubmit');
       const rawMessage = extractErrorMessage(error, '');
       const status = getErrorStatus(error);
       if (status === 400 && rawMessage.toLowerCase().includes('already exists')) {
-        setError('email', { type: 'manual', message: '이미 사용 중인 이메일입니다.' });
-        toast.error('이미 사용 중인 이메일입니다.');
+        setError('email', { type: 'manual', message: t('errorEmailDuplicate') });
+        toast.error(t('toastEmailDuplicate'));
       } else {
-        toast.error(rawMessage || '회원가입 중 오류가 발생했습니다.');
+        toast.error(rawMessage || t('toastError'));
       }
     }
   };
 
   return (
-    <div className="w-full flex">
-      {/* 약관 동의 섹션 */}
-      <div className="w-full bg-slate-50 p-8 border-r border-slate-200">
-        <div className="max-w-[500px] mx-auto space-y-6">
-          <h2 className="text-xl text-slate-900 mb-6">약관 동의</h2>
+    <div className="min-h-screen bg-white flex flex-col lg:flex-row">
 
-          {/* 모두 동의 */}
-          <div className="bg-white rounded-lg p-4 border-2 border-blue-600">
+      {/* Left: Terms */}
+      <div className="w-full lg:w-1/2 lg:border-r lg:border-line-400 px-4 sm:px-6 py-8 sm:py-12 lg:p-12">
+        <div className="max-w-xl mx-auto space-y-6">
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <h2 className="text-body-2 font-bold text-label-900 mb-4">{t('termsTitle')}</h2>
+          </motion.div>
+
+          <motion.div
+            className="bg-white border-2 border-blue-600 rounded-xl p-5 sm:p-6 shadow-sm"
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
+          >
             <label className="flex items-center cursor-pointer group">
               <input
                 type="checkbox"
-                checked={termsAgreement.allAgree}
-                onChange={(e) => handleAllAgreeChange(e.target.checked)}
-                className="w-5 h-5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                checked={terms.allAgree}
+                onChange={(e) => handleAllAgree(e.target.checked)}
+                className="w-5 h-5 text-primary-600 border-line-400 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
               />
-              <span className="ml-3 text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-                전체 동의
-              </span>
+              <span className="ml-3 text-body-3 font-semibold text-label-900 group-hover:text-primary-600 transition-colors">{t('agreeAll')}</span>
             </label>
-          </div>
+          </motion.div>
 
-          {/* 개별 약관 */}
-          <div className="space-y-3">
-            {TERMS.map(({ key, label, required }) => (
-              <div key={key} className="bg-white rounded-lg p-4 border border-slate-200">
-                <label className="flex items-start cursor-pointer group">
+          <motion.div className="space-y-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.2 }}>
+            {TERM_KEYS.map(({ key, required }, index) => (
+              <motion.div
+                key={key}
+                className="bg-white border border-line-400 rounded-xl p-5 sm:p-6 shadow-sm hover:border-primary-200 transition-colors"
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.05 * index }}
+              >
+                <label className="flex items-start cursor-pointer group gap-3">
                   <input
                     type="checkbox"
-                    checked={termsAgreement[key]}
+                    checked={terms[key]}
                     onChange={(e) => handleTermChange(key, e.target.checked)}
-                    className="w-4 h-4 mt-0.5 text-blue-600 border-slate-300 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                    className="w-4 h-4 mt-0.5 text-primary-600 border-line-400 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer shrink-0"
                   />
-                  <div className="ml-3 flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-900 group-hover:text-blue-600 transition-colors">
-                        <span className={required ? 'text-blue-600' : 'text-slate-400'}>
-                          [{required ? '필수' : '선택'}]
-                        </span>{' '}
-                        {label}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                      <span className="text-body-3 text-label-900 group-hover:text-primary-600 transition-colors">
+                        {required
+                          ? <span className="text-primary-600 font-semibold">{t('required')} </span>
+                          : <span className="text-label-400 font-semibold">{t('optional')} </span>
+                        }
+                        {t(`termLabels.${key}`)}
                       </span>
                       <button
                         type="button"
-                        className="text-[11px] text-slate-500 hover:text-blue-600 underline cursor-pointer"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          openTermsModal(key);
-                        }}
+                        className="text-caption-3 text-label-500 hover:text-primary-600 underline cursor-pointer whitespace-nowrap shrink-0"
+                        onClick={(e) => { e.preventDefault(); openTermsModal(key); }}
                       >
-                        보기
+                        {t('viewButton')}
                       </button>
                     </div>
                   </div>
                 </label>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* 약관 모달 */}
-      <TermsModal
-        isOpen={modalState.isOpen}
-        onClose={closeModal}
-        title={modalState.title}
-        content={modalState.content}
-      />
+      <TermsModal isOpen={modalState.isOpen} onClose={closeModal} title={modalState.title} content={modalState.content} />
 
-      {/* 회원가입 폼 섹션 */}
-      <div className="flex justify-center w-full py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[400px] w-full space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-[28px] text-slate-900 mb-2">기업 회원가입</h1>
-            <div className="flex items-center justify-between text-sm mb-1">
-              <span className="text-slate-500 text-xs">입력 진행도</span>
-              <span className="text-blue-600">{currentProgress}%</span>
+      {/* Right: Form */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-6 py-8 sm:py-12 lg:p-12 bg-white">
+        <div className="max-w-xl mx-auto w-full space-y-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <h1 className="text-title-3 sm:text-title-2 font-bold text-label-900 mb-2">{t('title')}</h1>
+            <p className="text-body-3 text-label-500">{t('formSubtitle')}</p>
+          </motion.div>
+
+          {/* Progress */}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}>
+            <div className="flex items-center justify-between text-caption-2 mb-1.5">
+              <span className="text-label-500">{t('progressLabel')}</span>
+              <span className="text-primary-600 font-semibold">{currentProgress}%</span>
             </div>
-            <div className="w-full bg-slate-100 rounded-full h-1.5">
+            <div className="w-full bg-label-100 rounded-full h-1.5">
               <motion.div
-                className="bg-blue-600 h-1.5 rounded-full"
+                className="bg-primary-600 h-1.5 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${currentProgress}%` }}
                 transition={{ duration: 0.4 }}
@@ -336,35 +315,24 @@ export default function BusinessSignupComponent() {
           <motion.form
             className="space-y-6"
             onSubmit={handleSubmit(onSubmit)}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
           >
-            {/* 사업자등록번호 */}
-            <div>
+            {/* 사업자 정보 */}
+            <div className="bg-white border border-line-400 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
+              <h3 className="text-body-2 font-bold text-label-900">{t('bizInfo')}</h3>
               <FormField
-                name="businessNumber"
-                control={control}
-                label="사업자등록번호 (ID)"
-                error={errors.businessNumber?.message}
+                name="businessNumber" control={control} label={t('bizNumber')} error={errors.businessNumber?.message}
                 render={(field, fieldId) => (
                   <div className="space-y-1.5">
                     <div className="flex gap-2">
                       <input
-                        {...field}
-                        id={fieldId}
-                        type="text"
-                        className="flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                        placeholder="-제외 10자리 입력"
-                        maxLength={12}
+                        {...field} id={fieldId} type="text"
+                        className="flex-1 border border-line-400 rounded-lg px-3.5 py-2.5 text-body-3 focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
+                        placeholder={t('bizNumberPlaceholder')} maxLength={12}
                         onChange={(e) => {
-                          const value = e.target.value.replace(/[^0-9]/g, '');
-                          field.onChange(formatBusinessNumber(value));
-                          setFormState(prev => ({
-                            ...prev,
-                            isBusinessNumberVerified: false,
-                            businessNumberMessage: '',
-                          }));
+                          const formatted = formatBusinessNumber(e.target.value.replace(/[^0-9]/g, ''));
+                          field.onChange(formatted);
+                          setFormState((prev) => ({ ...prev, isBusinessNumberVerified: false, businessNumberMessage: '', companyInfo: null }));
                           clearErrors('businessNumber');
                         }}
                       />
@@ -372,150 +340,81 @@ export default function BusinessSignupComponent() {
                         type="button"
                         onClick={() => field.value && handleBusinessNumberCheck(field.value)}
                         disabled={!field.value || !isValidBusinessNumber(field.value) || formState.isVerifying || formState.isBusinessNumberVerified}
-                        className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm whitespace-nowrap transition-colors ${
-                          formState.isVerifying
-                            ? 'bg-blue-500 text-white cursor-not-allowed'
-                            : field.value && isValidBusinessNumber(field.value)
-                              ? formState.isBusinessNumberVerified
-                                ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                                : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-                              : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                        className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-body-3 whitespace-nowrap transition-colors ${
+                          formState.isVerifying ? 'bg-primary-500 text-white cursor-not-allowed'
+                          : field.value && isValidBusinessNumber(field.value)
+                            ? formState.isBusinessNumberVerified ? 'bg-label-100 text-label-400 cursor-not-allowed'
+                              : 'bg-primary-600 text-white hover:bg-primary-700 cursor-pointer'
+                            : 'bg-label-100 text-label-400 cursor-not-allowed'
                         }`}
                         whileTap={field.value && isValidBusinessNumber(field.value) && !formState.isBusinessNumberVerified && !formState.isVerifying ? { scale: 0.95 } : {}}
                       >
-                        {formState.isVerifying ? (
-                          <>
-                            <Loader2 size={14} className="animate-spin" />
-                            인증 중
-                          </>
-                        ) : formState.isBusinessNumberVerified ? '인증완료' : '인증하기'}
+                        {formState.isVerifying ? <><Loader2 size={14} className="animate-spin" />{t('verifying')}</> : formState.isBusinessNumberVerified ? t('verified') : t('verify')}
                       </motion.button>
                     </div>
-                    {formState.isBusinessNumberVerified && (
-                      <p className="text-[11px] text-blue-600">{formState.businessNumberMessage}</p>
+                    {formState.isBusinessNumberVerified && formState.businessNumberMessage && (
+                      <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} className="text-caption-3 text-primary-600">
+                        {formState.businessNumberMessage}
+                      </motion.p>
                     )}
                   </div>
                 )}
+              />
+              <FormField name="company" control={control} label={t('companyLabel')}
+                render={(field, fieldId) => <Input {...field} id={fieldId} placeholder={t('companyPlaceholder')} error={!!errors.company} />}
               />
             </div>
 
-            <div className="space-y-4">
-              {/* 기업명 */}
-              <FormField
-                name="company"
-                control={control}
-                label="기업명"
-                render={(field, fieldId) => (
-                  <Input {...field} id={fieldId} placeholder="기업명 입력" error={!!errors.company} />
-                )}
+            {/* 담당자 정보 */}
+            <div className="bg-white border border-line-400 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
+              <h3 className="text-body-2 font-bold text-label-900">{t('managerInfo')}</h3>
+              <FormField name="name" control={control} label={t('managerName')}
+                render={(field, fieldId) => <Input {...field} id={fieldId} placeholder={t('managerNamePlaceholder')} error={!!errors.name} />}
               />
-
-              {/* 담당자명 */}
-              <FormField
-                name="name"
-                control={control}
-                label="담당자명"
-                render={(field, fieldId) => (
-                  <Input {...field} id={fieldId} placeholder="담당자명 입력" error={!!errors.name} />
-                )}
-              />
-
-              {/* 전화번호 */}
-              <FormField
-                name="phoneNumber"
-                control={control}
-                label="담당자 전화번호"
-                error={errors.phoneNumber?.message}
+              <FormField name="phoneNumber" control={control} label={t('managerPhone')} error={errors.phoneNumber?.message}
                 render={(field, fieldId) => (
                   <div className="space-y-3">
                     <div className="flex gap-4">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="phoneType"
-                          value="MOBILE"
-                          checked={formState.phoneType === 'MOBILE'}
-                          onChange={() => {
-                            setFormState(prev => ({ ...prev, phoneType: 'MOBILE' }));
-                            field.onChange('');
-                            clearErrors('phoneNumber');
-                          }}
-                          className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="text-sm text-slate-700">휴대전화</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="phoneType"
-                          value="LANDLINE"
-                          checked={formState.phoneType === 'LANDLINE'}
-                          onChange={() => {
-                            setFormState(prev => ({ ...prev, phoneType: 'LANDLINE' }));
-                            field.onChange('');
-                            clearErrors('phoneNumber');
-                          }}
-                          className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="text-sm text-slate-700">일반전화</span>
-                      </label>
+                      {(['MOBILE', 'LANDLINE'] as PhoneType[]).map((type) => (
+                        <label key={type} className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="radio" name="phoneType" value={type}
+                            checked={formState.phoneType === type}
+                            onChange={() => { setFormState((prev) => ({ ...prev, phoneType: type })); field.onChange(''); clearErrors('phoneNumber'); }}
+                            className="w-4 h-4 text-primary-600 focus:ring-primary-500"
+                          />
+                          <span className="text-caption-1 text-label-700">{type === 'MOBILE' ? t('mobile') : t('landline')}</span>
+                        </label>
+                      ))}
                     </div>
                     <Input
-                      {...field}
-                      id={fieldId}
-                      type="tel"
+                      {...field} id={fieldId} type="tel"
                       placeholder={getPhonePlaceholder(formState.phoneType)}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, '');
-                        field.onChange(formatPhoneByType(value, formState.phoneType));
-                      }}
+                      onChange={(e) => field.onChange(formatPhoneByType(e.target.value.replace(/[^0-9]/g, ''), formState.phoneType))}
                       onBlur={(e) => {
-                        const phoneError = validatePhoneType(e.target.value, formState.phoneType);
-                        if (phoneError) {
-                          setError('phoneNumber', { type: 'manual', message: phoneError });
-                        } else {
-                          clearErrors('phoneNumber');
-                        }
+                        const err = validatePhoneType(e.target.value, formState.phoneType);
+                        if (err) setError('phoneNumber', { type: 'manual', message: err });
+                        else clearErrors('phoneNumber');
                       }}
-                      maxLength={13}
-                      error={!!errors.phoneNumber}
+                      maxLength={13} error={!!errors.phoneNumber}
                     />
-                    {!errors.phoneNumber && field.value && (
-                      <p className="text-[11px] text-slate-500">
-                        {formState.phoneType === 'MOBILE'
-                          ? '휴대전화: 010, 011, 016-019로 시작'
-                          : '일반전화: 지역번호(예: 02, 031, 051) 포함'}
-                      </p>
-                    )}
                   </div>
                 )}
               />
-
-              {/* 이메일 */}
-              <FormField
-                name="email"
-                control={control}
-                label="담당자 이메일"
-                error={errors.email?.message}
+              <FormField name="email" control={control} label={t('managerEmail')} error={errors.email?.message}
                 render={(field, fieldId) => (
                   <div className="space-y-1.5">
                     <Input
-                      {...field}
-                      id={fieldId}
-                      type="email"
-                      placeholder="이메일 입력"
+                      {...field} id={fieldId} type="email" placeholder={t('emailPlaceholder')}
                       onBlur={(e) => {
-                        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value)) {
-                          setError('email', { type: 'manual', message: '이메일 형식이 올바르지 않습니다.' });
-                        } else {
-                          clearErrors('email');
-                        }
+                        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value)) setError('email', { type: 'manual', message: t('errorEmailFormat') });
+                        else clearErrors('email');
                       }}
                       error={!!errors.email}
                     />
-                    <p className="text-xs text-slate-500 flex items-center gap-1">
-                      <span className="text-blue-500">ℹ</span>
-                      이 이메일은 추후 <span className="font-semibold text-slate-700">로그인 아이디</span>로 사용됩니다.
+                    <p className="text-caption-2 text-label-500 flex items-center gap-1">
+                      <span className="text-primary-500">ℹ</span>
+                      {t('emailLoginHint')}
                     </p>
                   </div>
                 )}
@@ -523,69 +422,40 @@ export default function BusinessSignupComponent() {
             </div>
 
             {/* 비밀번호 */}
-            <FormField
-              name="password"
-              control={control}
-              label="비밀번호"
-              error={errors.password?.message}
-              render={(field, fieldId) => (
-                <Input
-                  {...field}
-                  id={fieldId}
-                  variant="password"
-                  placeholder="8~15자리/영문, 숫자, 특수문자 조합 입력"
-                  error={!!errors.password}
-                  showPassword={formState.showPassword}
-                  onTogglePassword={() => setFormState(prev => ({ ...prev, showPassword: !prev.showPassword }))}
-                  onBlur={(e) => {
-                    const err = validatePassword(e.target.value);
-                    if (err) setError('password', { type: 'manual', message: err });
-                    else clearErrors('password');
-                  }}
-                  maxLength={15}
-                />
-              )}
-            />
+            <div className="bg-white border border-line-400 rounded-xl p-5 sm:p-7 shadow-sm space-y-5">
+              <h3 className="text-body-2 font-bold text-label-900">{t('passwordSection')}</h3>
+              <FormField name="password" control={control} label={t('passwordLabel')} error={errors.password?.message}
+                render={(field, fieldId) => (
+                  <Input {...field} id={fieldId} variant="password" placeholder={t('passwordPlaceholder')}
+                    error={!!errors.password} showPassword={formState.showPassword}
+                    onTogglePassword={() => setFormState((prev) => ({ ...prev, showPassword: !prev.showPassword }))}
+                    onBlur={(e) => handlePasswordBlur(e.target.value)} maxLength={15}
+                  />
+                )}
+              />
+              <FormField name="confirmPassword" control={control} label={t('confirmPasswordLabel')} error={errors.confirmPassword?.message}
+                render={(field, fieldId) => (
+                  <Input {...field} id={fieldId} variant="password" placeholder={t('confirmPasswordPlaceholder')}
+                    error={!!errors.confirmPassword} showPassword={formState.showConfirmPassword}
+                    onTogglePassword={() => setFormState((prev) => ({ ...prev, showConfirmPassword: !prev.showConfirmPassword }))}
+                    onBlur={(e) => handleConfirmPasswordBlur(e.target.value)} maxLength={15}
+                  />
+                )}
+              />
+            </div>
 
-            {/* 비밀번호 확인 */}
-            <FormField
-              name="confirmPassword"
-              control={control}
-              error={errors.confirmPassword?.message}
-              render={(field, fieldId) => (
-                <Input
-                  {...field}
-                  id={fieldId}
-                  variant="password"
-                  placeholder="8~15자리/영문, 숫자, 특수문자 조합 재입력"
-                  error={!!errors.confirmPassword}
-                  showPassword={formState.showConfirmPassword}
-                  onTogglePassword={() => setFormState(prev => ({ ...prev, showConfirmPassword: !prev.showConfirmPassword }))}
-                  onBlur={(e) => {
-                    const err = validateConfirmPassword(password, e.target.value);
-                    if (err) setError('confirmPassword', { type: 'manual', message: err });
-                    else clearErrors('confirmPassword');
-                  }}
-                  maxLength={15}
-                />
-              )}
-            />
-
-            <div className="space-y-3 mt-6">
+            <div className="space-y-3">
               <motion.button
-                type="submit"
-                className={`w-full py-3 px-4 rounded-lg font-medium text-sm transition-colors ${
-                  isFormValid
-                    ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                }`}
-                disabled={!isFormValid}
+                type="submit" disabled={!isFormValid}
+                className={`w-full py-3 px-4 rounded-lg font-semibold text-body-3 transition-colors ${isFormValid ? 'bg-primary-600 text-white hover:bg-primary-700 cursor-pointer' : 'bg-label-100 text-label-400 cursor-not-allowed'}`}
                 whileTap={isFormValid ? { scale: 0.98 } : {}}
               >
-                기업 회원가입
+                {t('signupButton')}
               </motion.button>
-              {!allRequiredAgreed && (
-                <p className="text-[11px] text-red-500 text-center">필수 약관에 모두 동의해주세요</p>
+              {!requiredAgreed && (
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-caption-3 text-status-error text-center">
+                  {t('termsRequired')}
+                </motion.p>
               )}
             </div>
           </motion.form>

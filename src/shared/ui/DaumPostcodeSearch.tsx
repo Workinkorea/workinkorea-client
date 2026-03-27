@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
+import { cn } from '@/shared/lib/utils/utils';
 
 interface DaumPostcodeData {
   roadAddress: string;
@@ -32,13 +33,13 @@ interface DaumPostcodeSearchProps {
   error?: string;
 }
 
-const DaumPostcodeSearch: React.FC<DaumPostcodeSearchProps> = ({
+function DaumPostcodeSearch({
   value,
   onChange,
   placeholder = '주소를 검색하세요',
   className = '',
   error,
-}) => {
+}: DaumPostcodeSearchProps) {
   const [address, setAddress] = useState(value);
 
   useEffect(() => {
@@ -77,24 +78,26 @@ const DaumPostcodeSearch: React.FC<DaumPostcodeSearchProps> = ({
           readOnly
           placeholder={placeholder}
           onClick={handleSearchClick}
-          className={`flex-1 min-w-0 px-3 py-2 border ${
-            error ? 'border-red-500' : 'border-slate-200'
-          } rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer`}
+          className={cn(
+            'flex-1 min-w-0 px-3 py-2 border rounded-lg text-body-3 bg-white',
+            'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100 cursor-pointer',
+            error ? 'border-status-error' : 'border-line-400',
+          )}
         />
         <button
           type="button"
           onClick={handleSearchClick}
-          className="shrink-0 px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-1.5 cursor-pointer"
+          className="shrink-0 px-3 py-1.5 bg-primary-600 text-white rounded hover:bg-primary-700 flex items-center gap-1.5 cursor-pointer"
         >
           <Search size={14} />
-          <span className="text-xs font-medium">주소검색</span>
+          <span className="text-caption-2 font-medium">주소검색</span>
         </button>
       </div>
       {error && (
-        <p className="mt-1 text-[11px] text-red-500">{error}</p>
+        <p className="mt-1 text-caption-3 text-status-error">{error}</p>
       )}
     </div>
   );
-};
+}
 
 export default DaumPostcodeSearch;

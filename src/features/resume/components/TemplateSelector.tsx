@@ -21,7 +21,7 @@ function TemplateSelector({
       name: '모던',
       description: '깔끔하고 현대적인 디자인으로 IT 업계에 적합',
       preview: '📝',
-      color: 'bg-blue-50 border-blue-200 text-blue-700',
+      color: 'bg-primary-50 border-primary-200 text-primary-700',
       features: ['심플한 레이아웃', '아이콘 활용', '컬러 포인트']
     },
     {
@@ -29,7 +29,7 @@ function TemplateSelector({
       name: '클래식',
       description: '전통적이고 신뢰감 있는 스타일로 모든 업계에 적합',
       preview: '📄',
-      color: 'bg-gray-50 border-gray-200 text-gray-700',
+      color: 'bg-label-50 border-line-400 text-label-700',
       features: ['정형화된 구조', '읽기 쉬운 폰트', '안정적인 인상']
     },
     {
@@ -62,10 +62,10 @@ function TemplateSelector({
     <div className="space-y-6">
       {/* 헤더 */}
       <div className="text-center">
-        <h2 className="text-[28px] font-bold text-slate-900 mb-2">
+        <h2 className="text-title-2 font-bold text-label-900 mb-2">
           이력서 템플릿 선택
         </h2>
-        <p className="text-sm text-slate-600">
+        <p className="text-body-3 text-label-600">
           나에게 맞는 템플릿을 선택해서 이력서를 작성해보세요
         </p>
       </div>
@@ -78,8 +78,8 @@ function TemplateSelector({
             onClick={() => onTemplateSelect(template.type)}
             className={`relative p-6 border-2 rounded-lg text-left transition-all hover:shadow-sm ${
               selectedTemplate === template.type
-                ? 'border-blue-500 bg-blue-50 shadow-sm'
-                : 'border-slate-200 bg-white hover:border-blue-300'
+                ? 'border-primary-500 bg-primary-50 shadow-sm'
+                : 'border-line-400 bg-white hover:border-blue-300'
             }`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -95,20 +95,20 @@ function TemplateSelector({
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <CheckCircle size={24} className="text-blue-600" />
+                <CheckCircle size={24} className="text-primary-600" />
               </motion.div>
             )}
 
             {/* 템플릿 프리뷰 */}
             <div className="flex items-start gap-4 mb-4">
-              <div className={`w-16 h-16 rounded-lg flex items-center justify-center text-2xl ${template.color}`}>
+              <div className={`w-16 h-16 rounded-lg flex items-center justify-center text-title-3 ${template.color}`}>
                 {template.preview}
               </div>
               <div className="flex-1">
-                <h3 className="text-[15px] font-semibold text-slate-900 mb-1">
+                <h3 className="text-body-2 font-semibold text-label-900 mb-1">
                   {template.name}
                 </h3>
-                <p className="text-xs text-slate-600 line-clamp-2">
+                <p className="text-caption-2 text-label-600 line-clamp-2">
                   {template.description}
                 </p>
               </div>
@@ -116,11 +116,11 @@ function TemplateSelector({
 
             {/* 특징 */}
             <div className="space-y-2">
-              <h4 className="text-xs font-semibold text-slate-700">주요 특징</h4>
+              <h4 className="text-caption-2 font-semibold text-label-700">주요 특징</h4>
               <ul className="space-y-1">
                 {template.features.map((feature, idx) => (
-                  <li key={idx} className="text-[11px] text-slate-600 flex items-center gap-2">
-                    <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
+                  <li key={idx} className="text-caption-3 text-label-600 flex items-center gap-2">
+                    <div className="w-1 h-1 bg-primary-500 rounded-full"></div>
                     {feature}
                   </li>
                 ))}
@@ -131,8 +131,8 @@ function TemplateSelector({
             <motion.div
               className={`absolute inset-0 rounded-lg pointer-events-none ${
                 selectedTemplate === template.type
-                  ? 'bg-blue-500 opacity-5'
-                  : 'bg-blue-500 opacity-0 hover:opacity-3'
+                  ? 'bg-primary-500 opacity-5'
+                  : 'bg-primary-500 opacity-0 hover:opacity-3'
               }`}
               transition={{ duration: 0.2 }}
             />
@@ -145,10 +145,10 @@ function TemplateSelector({
         <motion.button
           onClick={onNext}
           disabled={!selectedTemplate}
-          className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all ${
+          className={`flex items-center gap-2 px-6 py-3 rounded-lg text-body-3 font-medium transition-all ${
             selectedTemplate
-              ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-sm'
-              : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+              ? 'bg-primary-500 text-white hover:bg-primary-600 shadow-sm'
+              : 'bg-label-100 text-label-400 cursor-not-allowed'
           }`}
           whileHover={selectedTemplate ? { scale: 1.02 } : {}}
           whileTap={selectedTemplate ? { scale: 0.98 } : {}}
@@ -160,7 +160,7 @@ function TemplateSelector({
 
       {/* 안내 메시지 */}
       <div className="text-center">
-        <p className="text-[11px] text-slate-500">
+        <p className="text-caption-3 text-label-500">
           템플릿은 나중에 변경할 수 있습니다
         </p>
       </div>

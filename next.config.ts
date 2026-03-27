@@ -1,4 +1,7 @@
+import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from "next";
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   output: 'standalone',
@@ -39,7 +42,7 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               // Next.js 개발 모드 및 빌드 최적화를 위해 필요
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://t1.daumcdn.net",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://t1.daumcdn.net https://static.cloudflareinsights.com",
               // Tailwind CSS 및 인라인 스타일 허용
               "style-src 'self' 'unsafe-inline'",
               // 이미지는 자체 도메인 + data URI + HTTPS
@@ -47,7 +50,7 @@ const nextConfig: NextConfig = {
               // 폰트는 자체 도메인만
               "font-src 'self' data:",
 
-              `connect-src 'self' https://wik-dev.moon-core.com https://t1.daumcdn.net`,
+              `connect-src 'self' https://wik-dev.moon-core.com https://t1.daumcdn.net https://static.cloudflareinsights.com`,
               // iframe 허용 안 함 (frame-ancestors와 함께 사용)
               "frame-src 'none'",
               // 객체 임베드 차단
@@ -102,4 +105,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

@@ -3,6 +3,8 @@
 import { useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { consumeCallbackUrl } from '@/shared/lib/callbackUrl';
+import { tokenStore } from '@/shared/api/tokenStore';
 
 function CallbackContent() {
   const searchParams = useSearchParams();
@@ -24,25 +26,34 @@ function CallbackContent() {
       // 로그인 성공
       if (status === 'success' && token) {
         // HttpOnly Cookie는 백엔드가 이미 설정함
+        // access_token을 메모리에 저장 (인증 상태 복원용)
+        tokenStore.set(token);
+
         // rememberMe 처리
         localStorage.removeItem('googleLoginRememberMe');
 
         login('user');
 
-        window.location.href = '/';
+        // 로그인 전 방문 중이던 페이지로 복귀 (없으면 메인)
+        const callbackUrl = consumeCallbackUrl();
+        window.location.href = callbackUrl ?? '/';
         return;
       }
 
       // 에러
       if (status === 'error') {
-        console.error('Google login failed:', message || 'Authentication failed');
-        router.push('/login');
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Google login failed:', message || 'Authentication failed');
+        }
+        router.push(`/login?error=oauth_failed`);
         return;
       }
 
       // 예상치 못한 상태
-      console.error('Invalid callback parameters');
-      router.push('/login');
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Invalid callback parameters');
+      }
+      router.push('/login?error=unknown');
     };
 
     handleCallback();

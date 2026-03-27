@@ -22,7 +22,7 @@ const Layout: LayoutComponent = ({ children, className = '' }) => {
 const LayoutMain = ({ children, className = '' }: LayoutProps) => {
   return (
     <main className={`flex-1 ${className}`}>
-      <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
       </div>
     </main>

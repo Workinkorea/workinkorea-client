@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, Clock, Building2, Bookmark } from 'lucide-react';
+import { MapPin, Briefcase, Building2, Bookmark } from 'lucide-react';
 import type { CompanyPost } from '@/shared/types/api';
 import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
 import { motion, useAnimation } from 'framer-motion';
+import { cn } from '@/shared/lib/utils/utils';
+import { useTranslations } from 'next-intl';
 
 interface JobCardProps {
   post: CompanyPost;
@@ -19,6 +21,8 @@ function getDaysLeft(endDate: string): number | null {
 export default function JobCard({ post }: JobCardProps) {
   const { toggle, isBookmarked } = useBookmarks();
   const bookmarkControls = useAnimation();
+  const tCard = useTranslations('jobs.card');
+  const tCommon = useTranslations('common');
 
   const isRecent = new Date(post.start_date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const daysLeft = getDaysLeft(post.end_date);
@@ -34,99 +38,121 @@ export default function JobCard({ post }: JobCardProps) {
     await bookmarkControls.start({
       rotate: [0, -15, 360],
       scale: [1, 1.3, 1],
-      transition: { duration: 0.45, ease: 'easeInOut' },
+      transition: { duration: 0.45, ease: 'easeInOut' as const },
     });
     bookmarkControls.set({ rotate: 0 });
   };
 
   return (
     <motion.div
-      className="bg-white border border-slate-200 rounded-xl p-6 group hover:border-blue-200 hover:shadow-lg transition-colors duration-200"
-      whileHover={{ y: -4, scale: 1.015 }}
+      className={cn(
+        'bg-white border border-line-400 rounded-xl overflow-hidden',
+        'hover:border-blue-300 hover:shadow-md transition-all duration-200 group',
+        isExpired && 'opacity-60'
+      )}
+      whileHover={{ y: -6 }}
       transition={{ type: 'spring', stiffness: 320, damping: 25 }}
     >
-      <Link href={`/jobs/${post.id}`} className="block">
-        {/* 회사 정보 + 북마크 */}
-        <div className="flex items-start gap-3 mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white shrink-0">
-            <Building2 className="w-6 h-6" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-[15px] text-slate-700 group-hover:text-blue-600 transition-colors">
-              기업 채용공고
-            </h3>
-            <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-              {isRecent && (
-                <motion.span
-                  className="inline-flex items-center gap-1 text-xs text-blue-600 font-medium"
-                  animate={{ opacity: [1, 0.45, 1] }}
-                  transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <Clock className="w-3 h-3" />
-                  신규
-                </motion.span>
-              )}
-              {isUrgent && (
-                <motion.span
-                  className="inline-flex items-center text-xs text-red-500 font-semibold"
-                  animate={{ x: [0, -2, 2, -2, 2, 0] }}
-                  transition={{ duration: 0.35, repeat: Infinity, repeatDelay: 2.5 }}
-                >
-                  마감 D-{daysLeft}
-                </motion.span>
-              )}
-              {isExpired && (
-                <span className="text-xs text-slate-400 font-medium">마감</span>
-              )}
+      <Link href={`/jobs/${post.id}`} className="block h-full">
+        <div className="p-4 sm:p-6 flex flex-col h-full">
+          {/* Top Section: Icon + Type + Badges + Bookmark */}
+          <div className="flex items-start gap-3 mb-4">
+            {/* Company Icon */}
+            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shrink-0 shadow-sm">
+              <Building2 className="w-6 h-6" />
             </div>
-          </div>
-          {/* 북마크 버튼 */}
-          <motion.button
-            onClick={handleBookmark}
-            className="shrink-0 p-1.5 rounded-lg cursor-pointer focus:outline-none"
-            whileHover={{ backgroundColor: '#EFF6FF', scale: 1.1 }}
-            whileTap={{ scale: 0.85 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            aria-label={bookmarked ? '북마크 해제' : '북마크 추가'}
-          >
-            <motion.div animate={bookmarkControls}>
-              <Bookmark
-                size={18}
-                className={`transition-colors duration-200 ${
-                  bookmarked ? 'fill-blue-600 text-blue-600' : 'text-slate-400'
-                }`}
-              />
-            </motion.div>
-          </motion.button>
-        </div>
 
-        {/* 포지션 */}
-        <h4 className="text-[17px] font-medium text-slate-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
-          {post.title}
-        </h4>
+            {/* Type Label + Badges */}
+            <div className="flex-1 min-w-0">
+              <p className="text-caption-2 font-semibold text-label-400 mb-1">{tCard('companyPost')}</p>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {isRecent && !isExpired && (
+                  <span className="inline-flex items-center px-2 py-0.5 bg-primary-600 text-white text-caption-3 font-bold rounded-md tracking-wide">
+                    NEW
+                  </span>
+                )}
+                {isUrgent && (
+                  <motion.span
+                    className="inline-flex items-center px-2 py-0.5 bg-status-error-bg0 text-white text-caption-3 font-bold rounded-md"
+                    animate={{ opacity: [1, 0.6, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    D-{daysLeft}
+                  </motion.span>
+                )}
+                {isExpired && (
+                  <span className="inline-flex items-center px-2 py-0.5 bg-label-100 text-label-500 text-caption-3 font-bold rounded-md">
+                    {tCommon('status.expired')}
+                  </span>
+                )}
+              </div>
+            </div>
 
-        {/* 위치와 급여 */}
-        <div className="space-y-2 mb-4">
-          <div className="flex items-center gap-2 text-slate-600">
-            <MapPin className="w-4 h-4" />
-            <span className="text-sm">{post.work_location}</span>
-            <span className="text-sm">• {post.employment_type}</span>
-          </div>
-          <p className="text-blue-600 font-semibold text-[15px]">
-            {post.salary ? `${post.salary.toLocaleString()}원` : '연봉 협의'}
-          </p>
-        </div>
-
-        {/* 태그 */}
-        <div className="flex flex-wrap gap-2">
-          {language.slice(0, 3).map((lang, index) => (
-            <span
-              key={index}
-              className="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-md"
+            {/* Bookmark Button */}
+            <motion.button
+              onClick={handleBookmark}
+              className="shrink-0 p-1.5 rounded-lg cursor-pointer focus:outline-none hover:bg-primary-50 transition-colors"
+              whileTap={{ scale: 0.85 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+              aria-label={bookmarked ? tCard('bookmarkRemove') : tCard('bookmarkAdd')}
             >
-              {lang}
-            </span>
-          ))}
+              <motion.div animate={bookmarkControls}>
+                <Bookmark
+                  size={18}
+                  className={cn(
+                    'transition-colors duration-200',
+                    bookmarked ? 'fill-blue-600 text-primary-600' : 'text-label-300 group-hover:text-label-400'
+                  )}
+                />
+              </motion.div>
+            </motion.button>
+          </div>
+
+          {/* Job Title */}
+          <h3 className="text-body-1 sm:text-title-5 font-bold text-label-900 line-clamp-2 group-hover:text-primary-700 transition-colors mb-3 leading-snug">
+            {post.title}
+          </h3>
+
+          {/* Location & Employment Type */}
+          <div className="flex items-center gap-1.5 text-caption-2 sm:text-caption-1 text-label-500 mb-2">
+            <MapPin className="w-3.5 h-3.5 shrink-0 text-label-400" />
+            <span className="truncate">{post.work_location || tCommon('label.location')}</span>
+            {post.employment_type && (
+              <>
+                <span className="text-label-300">•</span>
+                <Briefcase className="w-3.5 h-3.5 shrink-0 text-label-400" />
+                <span className="truncate">{post.employment_type}</span>
+              </>
+            )}
+          </div>
+
+          {/* Salary */}
+          <p className="text-body-2 sm:text-body-1 font-extrabold text-primary-600 mb-4">
+            {post.salary ? `${post.salary.toLocaleString()}원` : tCommon('label.negotiable')}
+          </p>
+
+          {/* Bottom: Language Tags */}
+          <div className="border-t border-line-200 pt-4 mt-auto">
+            {language.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5">
+                {language.slice(0, 3).map((lang, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-label-100 text-label-600 border border-line-400 group-hover:bg-primary-50 group-hover:text-primary-700 group-hover:border-primary-200 transition-colors"
+                  >
+                    {lang}
+                  </span>
+                ))}
+                {language.length > 3 && (
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold text-label-400">
+                    +{language.length - 3}
+                  </span>
+                )}
+              </div>
+            ) : (
+              <p className="text-caption-2 text-label-400">{tCommon('label.noData')}</p>
+            )}
+          </div>
         </div>
       </Link>
     </motion.div>

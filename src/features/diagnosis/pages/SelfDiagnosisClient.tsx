@@ -5,9 +5,8 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
 import { FormField } from '@/shared/ui/FormField';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useTranslations } from 'next-intl';
 
 interface SelfDiagnosisFormData {
   gender: 'male' | 'female' | '';
@@ -17,7 +16,8 @@ interface SelfDiagnosisFormData {
 
 const SelfDiagnosisClient = () => {
   const router = useRouter();
-  const { isAuthenticated, isLoading, userType, logout } = useAuth();
+  const t = useTranslations('diagnosis.selfDiagnosis');
+
   const {
     control,
     handleSubmit,
@@ -31,41 +31,39 @@ const SelfDiagnosisClient = () => {
     }
   });
 
-  const handleLogout = async () => {
-    await logout();
-  };
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = async (_data: SelfDiagnosisFormData) => {
     try {
-      toast.success('자가진단이 완료되었습니다!');
+      toast.success(t('toastSuccess'));
       // TODO: API 호출 및 결과 페이지로 이동
       router.push('/');
     } catch (error) {
-      toast.error('자가진단 제출 중 오류가 발생했습니다.');
+      toast.error(t('toastError'));
     }
   };
 
+  const koreanLevels = [
+    { value: '1', description: t('koreanLevel1') },
+    { value: '2', description: t('koreanLevel2') },
+    { value: '3', description: t('koreanLevel3') },
+    { value: '4', description: t('koreanLevel4') },
+    { value: '5', description: t('koreanLevel5') },
+  ];
+
   return (
     <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={isLoading}
-        onLogout={handleLogout}
-      />
-      <div className="min-h-screen bg-slate-50 py-12">
+      <div className="min-h-screen bg-white py-12">
         <div className="px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-[20px] md:text-[28px] font-bold text-slate-900 mb-4">
-              자가진단
+            <h1 className="text-title-4 md:text-title-2 font-bold text-label-900 mb-4">
+              {t('title')}
             </h1>
-            <p className="text-sm text-slate-500 mb-8">
-              아래 정보를 입력하시면 맞춤형 직업 정보를 제공해드립니다.
+            <p className="text-body-3 text-label-500 mb-8">
+              {t('subtitle')}
             </p>
           </motion.div>
 
@@ -80,8 +78,8 @@ const SelfDiagnosisClient = () => {
               <FormField
                 name="gender"
                 control={control}
-                label="성별"
-                rules={{ required: '성별을 선택해주세요.' }}
+                label={t('genderLabel')}
+                rules={{ required: t('genderRequired') }}
                 render={(field) => (
                   <div className="flex gap-4">
                     <label className="flex items-center gap-2 cursor-pointer">
@@ -90,9 +88,9 @@ const SelfDiagnosisClient = () => {
                         value="male"
                         checked={field.value === 'male'}
                         onChange={(e) => field.onChange(e.target.value)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        className="w-4 h-4 text-primary-600 focus:ring-primary-500 cursor-pointer"
                       />
-                      <span className="text-sm text-slate-700">남성</span>
+                      <span className="text-body-3 text-label-700">{t('male')}</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -100,9 +98,9 @@ const SelfDiagnosisClient = () => {
                         value="female"
                         checked={field.value === 'female'}
                         onChange={(e) => field.onChange(e.target.value)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        className="w-4 h-4 text-primary-600 focus:ring-primary-500 cursor-pointer"
                       />
-                      <span className="text-sm text-slate-700">여성</span>
+                      <span className="text-body-3 text-label-700">{t('female')}</span>
                     </label>
                   </div>
                 )}
@@ -112,26 +110,20 @@ const SelfDiagnosisClient = () => {
               <FormField
                 name="koreanLevel"
                 control={control}
-                label="한국어 레벨"
-                rules={{ required: '한국어 레벨을 선택해주세요.' }}
+                label={t('koreanLevelLabel')}
+                rules={{ required: t('koreanLevelRequired') }}
                 render={(field) => (
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-3">
-                      {[
-                        { value: '1', description: '한글 자모 및 간단한 인사' },
-                        { value: '2', description: '일상적인 대화 가능' },
-                        { value: '3', description: '업무 관련 대화 가능' },
-                        { value: '4', description: '전문적인 업무 수행 가능' },
-                        { value: '5', description: '원어민 수준' },
-                      ].map((level) => (
+                      {koreanLevels.map((level) => (
                         <button
                           key={level.value}
                           type="button"
                           onClick={() => field.onChange(level.value)}
-                          className={`px-6 py-3 rounded-lg font-medium text-sm transition-all border-2 cursor-pointer ${
+                          className={`px-6 py-3 rounded-lg font-medium text-body-3 transition-all border-2 cursor-pointer ${
                             field.value === level.value
-                              ? 'bg-blue-500 text-white border-blue-500 shadow-md'
-                              : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300 hover:bg-blue-50'
+                              ? 'bg-primary-500 text-white border-primary-500 shadow-md'
+                              : 'bg-white text-label-700 border-line-400 hover:border-blue-300 hover:bg-primary-50'
                           }`}
                         >
                           {level.description}
@@ -146,33 +138,33 @@ const SelfDiagnosisClient = () => {
               <FormField
                 name="desiredSalary"
                 control={control}
-                label="희망 연봉 (만원)"
+                label={t('salaryLabel')}
                 rules={{
-                  required: '희망 연봉을 입력해주세요.',
+                  required: t('salaryRequired'),
                   pattern: {
                     value: /^\d+$/,
-                    message: '숫자만 입력해주세요.'
+                    message: t('salaryPattern'),
                   },
                   min: {
                     value: 1,
-                    message: '1 이상의 값을 입력해주세요.'
+                    message: t('salaryMin'),
                   }
                 }}
                 render={(field, fieldId) => (
-                  <div className="flex items-center border border-slate-200 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 bg-white">
+                  <div className="flex items-center border border-line-400 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 bg-white">
                     <input
                       {...field}
                       id={fieldId}
                       type="text"
-                      placeholder="ex: 3000"
+                      placeholder={t('salaryPlaceholder')}
                       value={field.value || ''}
                       onChange={(e) => {
                         const value = e.target.value.replace(/\D/g, '');
                         field.onChange(value);
                       }}
-                      className="flex-1 min-w-0 px-4 py-3 text-sm bg-transparent outline-none"
+                      className="flex-1 min-w-0 px-4 py-3 text-body-3 bg-transparent outline-none"
                     />
-                    <span className="pr-4 text-sm text-slate-500 shrink-0">만원</span>
+                    <span className="pr-4 text-body-3 text-label-500 shrink-0">{t('salaryUnit')}</span>
                   </div>
                 )}
               />
@@ -181,14 +173,14 @@ const SelfDiagnosisClient = () => {
               <motion.button
                 type="submit"
                 disabled={!isValid}
-                className={`w-full py-4 rounded-lg font-semibold text-base transition-all ${
+                className={`w-full py-4 rounded-lg font-semibold text-body-1 transition-all ${
                   isValid
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer shadow-sm hover:shadow-md'
-                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                    ? 'bg-primary-600 hover:bg-primary-700 text-white cursor-pointer shadow-sm hover:shadow-md'
+                    : 'bg-label-100 text-label-400 cursor-not-allowed'
                 }`}
                 whileTap={isValid ? { scale: 0.98 } : {}}
               >
-                기본정보 입력 완료
+                {t('submitButton')}
               </motion.button>
             </form>
           </motion.div>

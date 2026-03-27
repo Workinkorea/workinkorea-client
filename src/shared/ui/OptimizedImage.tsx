@@ -77,11 +77,11 @@ export default function OptimizedImage({
       />
 
       {isLoading && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse rounded" />
+        <div className="absolute inset-0 bg-label-100 animate-pulse rounded" />
       )}
 
       {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400 text-xs">
+        <div className="absolute inset-0 flex items-center justify-center bg-label-100 text-label-400 text-caption-2">
           이미지 로딩 실패
         </div>
       )}

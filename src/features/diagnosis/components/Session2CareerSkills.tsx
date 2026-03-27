@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { FormField } from '@/shared/ui/FormField';
 import { useState } from 'react';
 import { X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface Session2Data {
   workExperience: string;
@@ -22,46 +23,10 @@ interface Session2Props {
   onBack: () => void;
 }
 
-const WORK_EXPERIENCE = [
-  { value: 'less1', label: '이제 막 시작했어요 (1년 미만)' },
-  { value: '1-3', label: '1~3년 정도요' },
-  { value: '3-5', label: '3~5년 정도요' },
-  { value: '5-10', label: '꽤 오래 했어요 (5~10년)' },
-  { value: '10plus', label: '베테랑이에요 (10년 이상)' },
-];
-
-const JOB_FIELDS = [
-  { value: 'it', label: 'IT/개발 (코딩, 프로그래밍)' },
-  { value: 'marketing', label: '마케팅/영업 (세일즈, 홍보)' },
-  { value: 'design', label: '디자인/크리에이티브' },
-  { value: 'education', label: '교육/강의' },
-  { value: 'manufacturing', label: '제조/엔지니어링' },
-  { value: 'service', label: '서비스/호스피탈리티' },
-  { value: 'other', label: '그 외 다른 분야' },
-];
-
-const EDUCATION = [
-  { value: 'phd', label: '박사 학위' },
-  { value: 'master', label: '석사 학위' },
-  { value: 'bachelor', label: '학사 학위 (4년제 대학)' },
-  { value: 'associate', label: '전문학사 (2-3년제)' },
-  { value: 'highschool', label: '고등학교 졸업' },
-  { value: 'other', label: '기타' },
-];
-
-const AVAILABLE_LANGUAGES = [
-  '영어', '중국어', '일본어', '스페인어', '프랑스어',
-  '베트남어', '태국어', '독일어', '러시아어', '아랍어'
-];
-
-const LANGUAGE_LEVELS = [
-  { value: 'native', label: '원어민 수준' },
-  { value: 'business', label: '비즈니스 레벨 (유창)' },
-  { value: 'intermediate', label: '중급 (업무 가능)' },
-  { value: 'beginner', label: '초급 (기본 회화)' },
-];
-
 export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Props) => {
+  const t = useTranslations('diagnosis.session2');
+  const tCommon = useTranslations('diagnosis');
+
   const { control, handleSubmit, setValue } = useForm<Session2Data>({
     defaultValues: {
       ...initialData,
@@ -76,6 +41,42 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [newLanguage, setNewLanguage] = useState('');
   const [newLanguageLevel, setNewLanguageLevel] = useState('');
+
+  const WORK_EXPERIENCE = [
+    { value: 'less1', label: t('workExperience.less1') },
+    { value: '1-3', label: t('workExperience.1-3') },
+    { value: '3-5', label: t('workExperience.3-5') },
+    { value: '5-10', label: t('workExperience.5-10') },
+    { value: '10plus', label: t('workExperience.10plus') },
+  ];
+
+  const JOB_FIELDS = [
+    { value: 'it', label: t('jobFields.it') },
+    { value: 'marketing', label: t('jobFields.marketing') },
+    { value: 'design', label: t('jobFields.design') },
+    { value: 'education', label: t('jobFields.education') },
+    { value: 'manufacturing', label: t('jobFields.manufacturing') },
+    { value: 'service', label: t('jobFields.service') },
+    { value: 'other', label: t('jobFields.other') },
+  ];
+
+  const EDUCATION = [
+    { value: 'phd', label: t('education.phd') },
+    { value: 'master', label: t('education.master') },
+    { value: 'bachelor', label: t('education.bachelor') },
+    { value: 'associate', label: t('education.associate') },
+    { value: 'highschool', label: t('education.highschool') },
+    { value: 'other', label: t('education.other') },
+  ];
+
+  const AVAILABLE_LANGUAGES = t.raw('languages') as string[];
+
+  const LANGUAGE_LEVELS = [
+    { value: 'native', label: t('languageLevels.native') },
+    { value: 'business', label: t('languageLevels.business') },
+    { value: 'intermediate', label: t('languageLevels.intermediate') },
+    { value: 'beginner', label: t('languageLevels.beginner') },
+  ];
 
   const addLanguage = () => {
     if (newLanguage && newLanguageLevel) {
@@ -108,11 +109,11 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
       transition={{ duration: 0.3 }}
     >
       <div>
-        <h2 className="text-xl font-bold text-slate-900 mb-2">
-          경력 및 스킬 💼
+        <h2 className="text-title-4 font-bold text-label-900 mb-2">
+          {t('title')}
         </h2>
-        <p className="text-sm text-slate-500 mb-6">
-          당신의 경험을 알려주세요
+        <p className="text-body-3 text-label-500 mb-6">
+          {t('subtitle')}
         </p>
       </div>
 
@@ -121,8 +122,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
         variant="diagnosis"
         name="workExperience"
         control={control}
-        label="Q4. 일한 경험은 얼마나 되시나요?"
-        rules={{ required: '경력을 선택해주세요.' }}
+        label={t('q4Label')}
+        rules={{ required: t('q4Required') }}
         render={(field) => (
           <div className="space-y-3">
             {WORK_EXPERIENCE.map((exp) => (
@@ -130,8 +131,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 key={exp.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === exp.value
-                    ? 'border-blue-600 bg-blue-50'
-                    : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
+                    ? 'border-blue-600 bg-primary-50'
+                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
                 }`}
               >
                 <input
@@ -139,9 +140,9 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                   value={exp.value}
                   checked={field.value === exp.value}
                   onChange={(e) => field.onChange(e.target.value)}
-                  className="w-5 h-5 text-blue-600 focus:ring-blue-500"
+                  className="w-5 h-5 text-primary-600 focus:ring-primary-500"
                 />
-                <span className="text-sm text-slate-700">{exp.label}</span>
+                <span className="text-body-3 text-label-700">{exp.label}</span>
               </label>
             ))}
           </div>
@@ -153,8 +154,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
         variant="diagnosis"
         name="jobField"
         control={control}
-        label="Q5. 어떤 일을 가장 잘하시나요? ⭐"
-        rules={{ required: '직무 분야를 선택해주세요.' }}
+        label={t('q5Label')}
+        rules={{ required: t('q5Required') }}
         render={(field) => (
           <div className="space-y-3">
             {JOB_FIELDS.map((job) => (
@@ -162,8 +163,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 key={job.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === job.value
-                    ? 'border-blue-600 bg-blue-50'
-                    : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
+                    ? 'border-blue-600 bg-primary-50'
+                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
                 }`}
               >
                 <input
@@ -171,9 +172,9 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                   value={job.value}
                   checked={field.value === job.value}
                   onChange={(e) => field.onChange(e.target.value)}
-                  className="w-5 h-5 text-blue-600 focus:ring-blue-500"
+                  className="w-5 h-5 text-primary-600 focus:ring-primary-500"
                 />
-                <span className="text-sm text-slate-700">{job.label}</span>
+                <span className="text-body-3 text-label-700">{job.label}</span>
               </label>
             ))}
           </div>
@@ -185,8 +186,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
         variant="diagnosis"
         name="education"
         control={control}
-        label="Q6. 최종 학력을 알려주세요 🎓"
-        rules={{ required: '학력을 선택해주세요.' }}
+        label={t('q6Label')}
+        rules={{ required: t('q6Required') }}
         render={(field) => (
           <div className="space-y-3">
             {EDUCATION.map((edu) => (
@@ -194,8 +195,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 key={edu.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === edu.value
-                    ? 'border-blue-600 bg-blue-50'
-                    : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
+                    ? 'border-blue-600 bg-primary-50'
+                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
                 }`}
               >
                 <input
@@ -203,9 +204,9 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                   value={edu.value}
                   checked={field.value === edu.value}
                   onChange={(e) => field.onChange(e.target.value)}
-                  className="w-5 h-5 text-blue-600 focus:ring-blue-500"
+                  className="w-5 h-5 text-primary-600 focus:ring-primary-500"
                 />
-                <span className="text-sm text-slate-700">{edu.label}</span>
+                <span className="text-body-3 text-label-700">{edu.label}</span>
               </label>
             ))}
           </div>
@@ -214,25 +215,25 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
 
       {/* Q7. 언어 */}
       <div>
-        <label className="text-slate-900 text-xl font-semibold mb-2 block">
-          Q7. 어떤 언어를 사용하실 수 있나요? 🗣️
+        <label className="text-label-900 text-title-4 font-semibold mb-2 block">
+          {t('q7Label')}
         </label>
-        <p className="text-sm text-slate-500 mb-4">여러 개 선택 가능</p>
+        <p className="text-body-3 text-label-500 mb-4">{t('q7Multiple')}</p>
 
         <div className="flex flex-wrap gap-2 mb-4">
           {selectedLanguages.map((lang, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full"
+              className="flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-700 rounded-full"
             >
-              <span className="text-sm font-medium">{lang.language}</span>
-              <span className="text-[11px]">
+              <span className="text-body-3 font-medium">{lang.language}</span>
+              <span className="text-caption-3">
                 ({LANGUAGE_LEVELS.find(l => l.value === lang.level)?.label})
               </span>
               <button
                 type="button"
                 onClick={() => removeLanguage(index)}
-                className="ml-1 hover:text-blue-900"
+                className="ml-1 hover:text-primary-900 cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -243,37 +244,37 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
         <motion.button
           type="button"
           onClick={() => setShowLanguageModal(true)}
-          className="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-all cursor-pointer"
+          className="px-6 py-3 border-2 border-blue-600 text-primary-600 rounded-lg font-medium hover:bg-primary-50 transition-all cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          + 언어 추가
+          {t('addLanguage')}
         </motion.button>
 
         {showLanguageModal && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-6 border-2 border-blue-300 rounded-lg bg-blue-50"
+            className="mt-4 p-6 border-2 border-blue-300 rounded-lg bg-primary-50"
           >
-            <h3 className="text-base font-semibold text-slate-900 mb-4">언어 선택</h3>
+            <h3 className="text-body-1 font-semibold text-label-900 mb-4">{t('languageModalTitle')}</h3>
             <div className="space-y-4">
               <div>
-                <label className="text-xs text-slate-400 mb-2 block">언어</label>
+                <label className="text-caption-2 text-label-400 mb-2 block">{t('languageLabel')}</label>
                 <select
                   value={newLanguage}
                   onChange={(e) => setNewLanguage(e.target.value)}
-                  className="w-full border-2 border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border-2 border-line-400 rounded-lg px-4 py-3 text-body-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
-                  <option value="">선택해주세요</option>
+                  <option value="">{t('selectPlaceholder')}</option>
                   {AVAILABLE_LANGUAGES.map((lang) => (
                     <option key={lang} value={lang}>{lang}</option>
                   ))}
-                  <option value="기타">기타</option>
+                  <option value={t('otherOption')}>{t('otherOption')}</option>
                 </select>
               </div>
               <div>
-                <label className="text-xs text-slate-400 mb-2 block">레벨</label>
+                <label className="text-caption-2 text-label-400 mb-2 block">{t('levelLabel')}</label>
                 <div className="space-y-2">
                   {LANGUAGE_LEVELS.map((level) => (
                     <label key={level.value} className="flex items-center gap-2 cursor-pointer">
@@ -282,9 +283,9 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                         value={level.value}
                         checked={newLanguageLevel === level.value}
                         onChange={(e) => setNewLanguageLevel(e.target.value)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                        className="w-4 h-4 text-primary-600 focus:ring-primary-500"
                       />
-                      <span className="text-sm text-slate-700">{level.label}</span>
+                      <span className="text-body-3 text-label-700">{level.label}</span>
                     </label>
                   ))}
                 </div>
@@ -293,11 +294,11 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 <motion.button
                   type="button"
                   onClick={addLanguage}
-                  className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 cursor-pointer"
+                  className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 cursor-pointer"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  추가
+                  {t('addButton')}
                 </motion.button>
                 <motion.button
                   type="button"
@@ -306,11 +307,11 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                     setNewLanguage('');
                     setNewLanguageLevel('');
                   }}
-                  className="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-300 cursor-pointer"
+                  className="flex-1 py-2 bg-label-100 text-label-700 rounded-lg font-medium hover:bg-label-300 cursor-pointer"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  취소
+                  {t('cancelButton')}
                 </motion.button>
               </div>
             </div>
@@ -323,19 +324,19 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
         <motion.button
           type="button"
           onClick={onBack}
-          className="flex-1 py-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-base rounded-lg transition-all cursor-pointer"
+          className="flex-1 py-4 bg-label-100 hover:bg-label-300 text-label-700 font-semibold text-body-1 rounded-lg transition-all cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          이전
+          {tCommon('back')}
         </motion.button>
         <motion.button
           type="submit"
-          className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base rounded-lg transition-all shadow-sm hover:shadow-md cursor-pointer"
+          className="flex-1 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold text-body-1 rounded-lg transition-all shadow-sm hover:shadow-md cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          다음
+          {tCommon('next')}
         </motion.button>
       </div>
     </motion.form>

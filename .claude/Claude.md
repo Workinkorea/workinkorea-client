@@ -1,282 +1,62 @@
-# Work in Korea - 프로젝트 가이드
+# Work in Korea - 핵심 가이드
 
-## 🤖 Claude AI 작업 지침 및 참조 파일 (필독)
+## 1. 프로젝트 스택 & 아키텍처
 
-이 프로젝트에서 코드를 작성하거나 수정할 때는, 아래 명시된 에이전트 역할과 스킬 패턴 파일들을 반드시 먼저 읽고 본 가이드의 규칙을 엄격히 준수하세요.
+- **Client**: Next.js 16 (App Router), React 19, TypeScript, TailwindCSS 4
+- **Server**: FastAPI, SQLAlchemy 2.0, PostgreSQL, Redis, MinIO
+- **Architecture**: FSD (Feature-Sliced Design)
+- **State**: Zustand (전역 클라이언트/인증), React Query (서버 데이터)
 
-### Agents
+## 2. 디자인 시스템 (Blue Design)
 
-- @agents/auth-specialist.md
-- @agents/code-reviewer.md
-- @agents/debugger.md
-- @agents/feature-architect.md
-- @agents/nextjs-specialist.md
-- @agents/planner.md
-- @agents/testing-specialist.md
-- @agents/ui-specialist.md
+- **Colors**: Primary `blue-600`, Text `slate-800`, Bg `white`
+- **Typography**:
+  - `Pretendard` (본문), `Plus Jakarta Sans` (로고/브랜드)
+  - ⚠️ **절대 규칙**: 임의의 픽셀(`text-[13px]`)이나 Tailwind 기본 크기(`text-sm`) **사용 금지**. 반드시 Canonical 클래스 사용 (`text-display-1`, `text-title-2`, `text-body-1`, `text-caption-1` 등)
+- **Spacing/Radius**: 4배수 간격, radius `sm`~`full`
 
-### Skills (Patterns)
+## 3. 개발/배포 규칙
 
-- @skills/api-patterns/SKILL.md
-- @skills/auth-patterns/SKILL.md
-- @skills/design-patterns/SKILL.md
-- @skills/form-patterns/SKILL.md
-- @skills/fsd-patterns/SKILL.md
-- @skills/testing-patterns/SKILL.md
+- **모듈/컴포넌트**: ES 모듈, Named export 지향, `React.FC` 및 `import React` 금지 (React 19)
+- **레이아웃**: `page.tsx` 내부에서 `max-w-*` 직접 사용 금지. 반드시 `layout.tsx`에서 주입.
+- **성능/최적화**: React Compiler(자동 메모이제이션), `next/image` 필수, `next/dynamic` 적극 활용.
 
-## 프로젝트 컨텍스트
+## 4. 폴더 구조 (FSD 요약)
 
-이 프로젝트는 외국인 근로자를 위한 한국 취업 지원 플랫폼입니다. Next.js 16 App Router, React 19, TypeScript를 기반으로 하며, 일반 회원(외국인 구직자)과 기업 회원을 위한 채용 공고, 이력서 관리, 자가 진단 시스템을 제공합니다. HttpOnly Cookie 기반 인증을 사용하고, Feature-Sliced Design 아키텍처를 따릅니다.
+- `app/`: 라우팅 및 페이지 레이아웃 (`(admin)`, `(auth)`, `(main)`)
+- `features/`: 11개 도메인 슬라이스 (admin, auth, company, diagnosis, jobs, 등)
+- `shared/`: 공용 API, 컴포넌트, UI, 훅, 상수, 유틸
 
-## 디자인 시스템 (Blue Design System)
+---
 
-모든 UI 컴포넌트는 아래 Blue Design System 토큰을 기반으로 구현합니다. 디자인 일관성이 최우선입니다.
+## 🤖 Claude AI 작업 지침 및 참조 파일
 
-### Color Tokens
+이 프로젝트에서 코드를 작성하거나 수정할 때는 본 가이드를 우선 숙지하고, **작업 맥락에 맞는 아래의 상세 가이드 파일을 반드시 먼저 읽으세요.**
 
-- **Primary**: blue-50(#EFF6FF) ~ blue-950(#172554), 메인 액션 색상은 **blue-600(#2563EB)**
-- **Neutral**: slate-50(#F8FAFC) ~ slate-900(#0F172A), 본문 기본 색상은 **slate-800(#1E293B)**
-- **Semantic**: success(#10B981), warning(#F59E0B), error(#EF4444), info(#3B82F6)
+### 📚 Core Guidelines (핵심 참조)
 
-### Typography
+- **상태 관리 및 커스텀 훅 가이드**: `.claude/skills/hooks-patterns.md` 읽기
+- **UI 컴포넌트 및 디자인 패턴 가이드**: `.claude/skills/ui-patterns.md` 읽기
 
-- **기본 폰트**: `Pretendard`, -apple-system, BlinkMacSystemFont, sans-serif
-- **로고/브랜드**: `Plus Jakarta Sans` (font-weight: 800, letter-spacing: -0.5px)
-- **제목 계층**: 44px(hero/900) → 28px(section/800) → 24px(page/800) → 17px(card/700) → 14-16px(body)
-- **캡션**: 11-13px, color slate-400~500
+### 🕵️‍♂️ Agents
 
-### Spacing & Radius
+- @.claude/agents/auth-specialist.md
+- @.claude/agents/nextjs-specialist.md
+- @.claude/agents/code-reviewer.md
+- @.claude/agents/debugger.md
+- @.claude/agents/feature-architect.md
+- @.claude/agents/planner.md
+- @.claude/agents/testing-specialist.md
+- @.claude/agents/ui-specialist.md
 
-- **Spacing**: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64 px
-- **Radius**: sm(6), md(8), lg(12), xl(16), 2xl(20), full(9999) px
-- **Shadow**: sm, md, lg, xl, blue(0 4px 14px rgba(37,99,235,0.25))
+### 🛠️ Skills (Patterns)
 
-### 컴포넌트 규칙
-
-- **Button**: primary(blue-600), secondary(blue-50+border), outline(white+border), ghost(transparent) / 크기: sm, md, lg
-- **Input**: border slate-200, focus시 border-blue-500 + ring blue-100 / label 13px 600 slate-700
-- **Card**: white bg, border slate-200, radius-lg / hover시 shadow-lg + border blue-200
-- **Badge**: radius-full, 11px 600 / blue, green, orange, red 변형
-- **Tab**: border-bottom 2px / active: blue-600 indicator
-- **아이콘 버튼 (Header 등)**: `focus:outline-none`만 사용, `focus:ring-*` 미적용
-
-## 코드 스타일
-
-### 기본 규칙
-
-- **모듈 시스템**: ES 모듈 사용 (import/export)
-- **TypeScript**: strict mode 활성화, 타입 안정성 최우선
-- **내보내기**: Named export 선호 (default export는 Next.js 페이지/라우트만 사용)
-- **컴포넌트**: 함수형 컴포넌트만 사용 (React 19 + React Compiler 활성화)
-
-### Path Alias
-
-```typescript
-@/*           -> ./src/*
-@/shared/*    -> ./src/shared/*
-@/features/*  -> ./src/features/*
-@/app/*       -> ./src/app/*
-```
-
-### 스타일링
-
-- **TailwindCSS 4** 사용 (`tailwind.config.ts`, `@tailwindcss/postcss`)
-- 인라인 Tailwind 클래스 사용, `clsx`와 `tailwind-merge`로 조건부 스타일 적용
-- CSS 모듈이나 Styled Components 사용 금지
-- **cn() 유틸** 필수 사용: `cn(...inputs)` = `twMerge(clsx(inputs))`
-
-### 폴더 구조 (Feature-Sliced Design)
-
-```
-src/
-  app/             # Next.js App Router (페이지 라우팅)
-    icon.svg       # favicon (Blue Design System blue-600 기반)
-    layout.tsx     # Root Layout
-    template.tsx   # 페이지 전환 애니메이션 (Framer Motion, 매 라우트마다 재마운트)
-  features/        # 도메인별 기능 (auth, jobs, profile, resume, etc.)
-    {feature}/
-      components/  # 해당 기능 전용 컴포넌트
-      pages/       # Client Component 페이지
-      hooks/       # 커스텀 훅
-      types/       # 타입 정의
-      validations/ # Zod 스키마
-  shared/          # 공유 리소스
-    components/    # 공통 컴포넌트 (Header, Footer, Layout)
-    ui/            # 재사용 가능한 UI 컴포넌트 (Button, Input, Card, Badge, Modal 등)
-    hooks/         # 공통 훅
-    lib/           # 유틸리티 함수
-    api/           # API 클라이언트 (fetchClient)
-    types/         # 공통 타입
-    constants/     # 상수 정의
-```
-
-### API 호출
-
-- **fetchClient 사용 필수** (`src/shared/api/fetchClient.ts`)
-- 절대 `fetch` 직접 사용 금지 (자동 토큰 갱신, 에러 핸들링 포함)
-
-```typescript
-import { fetchClient } from "@/shared/api/fetchClient";
-
-// GET 요청
-const data = await fetchClient.get<User>("/api/users/me");
-
-// POST 요청
-const result = await fetchClient.post("/api/posts/company", formData);
-```
-
-### 컴포넌트 작성 규칙
-
-- Server Component 기본, 상호작용 필요 시만 `'use client'` 추가
-- 클라이언트 전용 로직(useState, useEffect 등)이 있으면 파일명에 `Client` 접미사 추가
-  - 예: `DiagnosisClient.tsx`, `CompanyPostCreateClient.tsx`
-- Props 타입은 인터페이스로 정의 (`interface ComponentNameProps`)
-
-### Header 구조
-
-- 모바일·데스크탑 동일 레이아웃: **로고 + [검색 아이콘] [User 아이콘] [햄버거 메뉴]**
-- 반응형 분기 없음 (`hidden sm:flex` 데스크탑 전용 nav 없음)
-- **User 아이콘**: 비인증 → `/login-select`, 인증 → `/user/profile`(개인) 또는 `/company`(기업)
-- 로그인/회원가입 텍스트 링크 없음, User 아이콘으로 단일화
-- `src/shared/components/layout/Header.tsx` (Server Component)
-- `src/shared/components/layout/MobileNav.tsx` (Client Component, 슬라이드 패널)
-
-### UI 컴포넌트 작성 규칙 (디자인 시스템 준수)
-
-- **cn() 유틸 필수**: 모든 조건부 스타일링에 `cn()` 사용
-- **디자인 토큰 사용**: 하드코딩된 색상/spacing 금지, Tailwind 클래스로 토큰 참조
-- **variant/size 패턴**: 컴포넌트는 variant, size props로 시각적 변형 제공
-- **접근성 필수**: 시맨틱 HTML, aria-\* 속성 / 일반 버튼은 focus:ring 사용, 아이콘 버튼은 focus:outline-none만
-- **반응형 필수**: 모바일 우선 (기본 → sm → md → lg → xl)
-- **cursor-pointer 필수**: 클릭 가능한 모든 `<button>`, `<Link>`, 이벤트 요소에 반드시 추가
-
-```tsx
-// ✅ Good: 디자인 시스템 준수
-<button className={cn(
-  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors cursor-pointer",
-  "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
-  variant === "primary" && "bg-blue-600 text-white hover:bg-blue-700",
-  variant === "outline" && "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
-  size === "sm" && "px-3.5 py-1.5 text-[13px]",
-  size === "lg" && "px-7 py-3.5 text-[15px] rounded-xl",
-)}>
-
-// ✅ Good: 아이콘 버튼 (focus:ring 미사용)
-<button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none rounded-lg cursor-pointer">
-  <SearchIcon />
-</button>
-
-// ❌ Bad: 하드코딩, 토큰 미준수, cursor-pointer 누락
-<button className="bg-[#2563EB] text-white p-2">
-```
-
-## 명령어
-
-### 개발
-
-```bash
-npm run dev          # 개발 서버 시작 (localhost:3000)
-```
-
-### 빌드 및 배포
-
-```bash
-npm run build        # 프로덕션 빌드
-npm run start        # 프로덕션 서버 시작
-```
-
-### 코드 품질 검사
-
-```bash
-npm run lint         # ESLint 실행
-npm run lint:fix     # ESLint 자동 수정
-npm run typecheck    # TypeScript 타입 체크
-npm run check        # lint + typecheck 병렬 실행
-npm run check-all    # check + build 순차 실행
-```
-
-### Git 워크플로우
-
-- **메인 브랜치**: `main` (프로덕션)
-- **개발 브랜치**: `dev` (현재 작업 브랜치)
-- PR 생성 시 `dev` 브랜치를 베이스로 사용
-
-## 주의 사항
-
-### 1. 인증 시스템 (중요!)
-
-- **HttpOnly Cookie 기반 인증 사용**
-- `localStorage`, `sessionStorage`에 절대 토큰 저장 금지 (보안 취약점)
-- `fetchClient`가 자동으로 쿠키 전송 및 토큰 갱신 처리 (`credentials: 'include'`)
-- 401 에러 시 자동 `/api/auth/refresh` 호출 후 재시도
-- 쿠키 도메인 설정 주의: 클라이언트-서버 도메인 불일치 시 인증 실패 가능
-
-### 2. API 통신
-
-- **절대 경로 사용**: `/api/posts/company` (상대 경로 금지)
-- **Server Component에서 API 호출 시**:
-  - Next.js 캐싱 옵션 활용 (`next: { revalidate: 3600, tags: ['posts'] }`)
-  - 서버 환경에서는 `API_URL` 환경변수 사용 (`workinkorea-server:8000`)
-- **Client Component에서 API 호출 시**:
-  - 브라우저에서는 Next.js rewrites로 `/api/*` → 백엔드 프록시
-  - React Query(`@tanstack/react-query`) 사용 권장
-
-### 3. 환경변수
-
-- **공개 변수**: `NEXT_PUBLIC_API_URL` (클라이언트에서 접근 가능)
-- **비공개 변수**: `GOOGLE_CLIENT_ID`, `NTS_API_KEY` (서버 전용)
-- `.env` 파일은 절대 커밋 금지 (`.gitignore`에 포함됨)
-
-### 4. 보안 (CSP)
-
-- `next.config.ts`에 엄격한 Content Security Policy 설정됨
-- 외부 스크립트/이미지 추가 시 CSP 헤더 수정 필요
-- `'unsafe-eval'`, `'unsafe-inline'`은 개발 모드 전용 (프로덕션에서 제거)
-- **외부 스크립트 URL은 반드시 `https://` 명시** — 프로토콜 상대 URL(`//`) 사용 금지 (CSP 위반 원인)
-  - ✅ `<Script src="https://t1.daumcdn.net/...">`
-  - ❌ `<Script src="//t1.daumcdn.net/...">`
-
-### 5. 수정 금지 파일
-
-- `src/shared/api/fetchClient.ts` - 인증 로직 변경 금지 (토큰 갱신, 에러 핸들링)
-- `next.config.ts` - 보안 헤더 및 rewrites 설정 함부로 수정 금지
-- `.eslintrc.json`, `tsconfig.json` - 팀 전체 규칙이므로 협의 후 수정
-
-### 6. React 19 특성
-
-- `React.FC` 타입 사용 금지 (React 19에서 Deprecated)
-- `children` prop 명시적으로 타입 정의 필요
-- Server Component가 기본값 (클라이언트 로직 필요 시 명시적으로 `'use client'` 추가)
-
-### 7. 성능 최적화
-
-- **React Compiler 활성화**: 자동 메모이제이션 (수동 `useMemo`, `useCallback` 최소화)
-- **이미지 최적화**: `next/image` 사용 필수 (AVIF/WebP 자동 변환)
-- **Lazy Loading**: 대용량 컴포넌트는 `React.lazy()` 또는 `next/dynamic` 사용
-
-### 8. 특수 API 엔드포인트
-
-- **Daum Postcode API**: `https://t1.daumcdn.net` (주소 검색, CSP에 등록됨)
-  - `src/app/layout.tsx`에서 `next/script`로 로드, URL은 반드시 `https://` 명시
-  - 컴포넌트: `src/shared/ui/DaumPostcodeSearch.tsx`
-- **MinIO 파일 업로드**: `src/shared/api/minio.ts` 사용
-
-### 9. 디버깅
-
-- `console.log` 사용 시 개발 완료 후 반드시 삭제 (최근 커밋에서도 삭제 이력 확인)
-- React Query Devtools 활성화됨 (`@tanstack/react-query-devtools`)
-
-### 10. 배포
-
-- **출력 모드**: `standalone` (Docker 컨테이너 최적화)
-- **빌드 전 체크**: `npm run check-all` 실행 필수
-- **환경변수 확인**: 프로덕션 환경에서 `NEXT_PUBLIC_API_URL` 올바른지 검증
-
-## 추가 참고 자료
-
-- [Next.js 16 문서](https://nextjs.org/docs)
-- [React 19 릴리즈 노트](https://react.dev/blog/2024/12/05/react-19)
-- [TailwindCSS 4 문서](https://tailwindcss.com/docs)
-- [Feature-Sliced Design](https://feature-sliced.design/)
-
-- 디자인 레퍼런스: `file:///Users/apple/Downloads/workinkorea-redesign.html`
+- @.claude/skills/api-patterns/SKILL.md
+- @.claude/skills/auth-patterns/SKILL.md
+- @.claude/skills/design-patterns/SKILL.md
+- @.claude/skills/form-patterns/SKILL.md
+- @.claude/skills/fsd-patterns/SKILL.md
+- @.claude/skills/testing-patterns/SKILL.md
+- @.claude/skills/hooks-patterns.md
+- @.claude/skills/ui-patterns.md
+- @.claude/skills/idempotency-patterns.md

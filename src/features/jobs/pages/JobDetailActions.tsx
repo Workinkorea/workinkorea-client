@@ -11,7 +11,7 @@ export default function JobDetailActions() {
       {/* 뒤로가기 버튼 */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-6 transition-colors"
+        className="flex items-center gap-2 text-label-600 hover:text-label-900 mb-6 transition-colors cursor-pointer"
       >
         <ArrowLeft size={20} />
         <span>목록으로</span>

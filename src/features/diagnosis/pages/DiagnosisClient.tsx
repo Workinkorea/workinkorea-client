@@ -9,25 +9,19 @@ import { Session2CareerSkills } from '@/features/diagnosis/components/Session2Ca
 import { Session3Preferences } from '@/features/diagnosis/components/Session3Preferences';
 import { Session4Matching } from '@/features/diagnosis/components/Session4Matching';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
-import { useAuth } from '@/features/auth/hooks/useAuth';
 import { DiagnosisData } from '@/features/diagnosis/store/diagnosisStore';
 import { diagnosisApi } from '@/features/diagnosis/api/diagnosisApi';
 import { DiagnosisAnswerRequest } from '@/shared/types/api';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { cn } from '@/shared/lib/utils/utils';
 
 const TOTAL_STEPS = 4;
 
 const DiagnosisClient = () => {
   const router = useRouter();
-  const { isAuthenticated, isLoading, userType, logout } = useAuth();
   const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId, reset } = useDiagnosisStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleLogout = async () => {
-    await logout();
-  };
 
   const handleSession1Next = (data: Partial<DiagnosisData>) => {
     updateData(data);
@@ -94,31 +88,46 @@ const DiagnosisClient = () => {
 
   return (
     <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={isLoading}
-        onLogout={handleLogout}
-      />
-      <div className="min-h-screen bg-slate-50 py-12">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-white py-8 sm:py-12 lg:py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Page Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <h1 className="text-[20px] md:text-[28px] font-bold text-slate-900 mb-2">
+            <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-label-900 mb-2">
               한국 취업 자가진단
             </h1>
-            <p className="text-sm text-slate-500">
-              당신에게 딱 맞는 직업을 찾기 위한 몇 가지 질문에 답해주세요
+            <p className="text-caption-1 sm:text-body-3 text-label-500">
+              당신에게 딱 맞는 직업을 찾기 위한 맞춤형 진단을 시작해보세요
             </p>
           </motion.div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6 md:p-8">
+          {/* Progress Indicator (Mobile: horizontal scroll, Desktop: full) */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className={cn(
+              'bg-white rounded-xl border border-line-400 shadow-sm p-4 sm:p-6 mb-6',
+              'overflow-x-auto sm:overflow-visible'
+            )}
+          >
             <DiagnosisStepProgress currentStep={currentStep} totalSteps={TOTAL_STEPS} />
+          </motion.div>
 
+          {/* Question Card Container */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className={cn(
+              'bg-white border border-line-400 rounded-xl shadow-sm',
+              'p-5 sm:p-7 lg:p-8'
+            )}
+          >
             <AnimatePresence mode="wait">
               {currentStep === 1 && (
                 <Session1BasicInfo
@@ -153,7 +162,7 @@ const DiagnosisClient = () => {
                 />
               )}
             </AnimatePresence>
-          </div>
+          </motion.div>
         </div>
       </div>
     </Layout>

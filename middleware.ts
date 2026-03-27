@@ -65,8 +65,8 @@ export function middleware(request: NextRequest) {
   // User routes
   if (pathname.startsWith('/user')) {
     if (!userType) {
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
+      const loginUrl = new URL('/login-select', request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(loginUrl);
     }
     if (userType !== 'user') {
@@ -76,10 +76,12 @@ export function middleware(request: NextRequest) {
   }
 
   // Company routes
-  if (pathname.startsWith('/company')) {
+  // /company (exact) is public — shows landing or dashboard depending on auth
+  // /company/* sub-routes require company auth
+  if (pathname.startsWith('/company/')) {
     if (!userType) {
       const loginUrl = new URL('/company-login', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
+      loginUrl.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(loginUrl);
     }
     if (userType !== 'company') {
@@ -91,8 +93,8 @@ export function middleware(request: NextRequest) {
   // Admin routes
   if (pathname.startsWith('/admin')) {
     if (!userType) {
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
+      const loginUrl = new URL('/login-select', request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(loginUrl);
     }
     if (userType !== 'admin') {

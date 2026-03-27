@@ -114,8 +114,8 @@ function EditResumePage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-slate-500">이력서를 불러오는 중...</p>
+          <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-label-500">이력서를 불러오는 중...</p>
         </div>
       </div>
     );
@@ -125,10 +125,10 @@ function EditResumePage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-slate-900 mb-2">
+          <h2 className="text-title-4 font-semibold text-label-900 mb-2">
             이력서를 불러올 수 없습니다
           </h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-body-3 text-label-500">
             잠시 후 다시 시도해주세요.
           </p>
         </div>

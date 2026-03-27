@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://wik-dev.moon-core.com';
+export const API_BASE_URL = process.env.TEST_API_BASE_URL ?? 'http://localhost:8000';
 export { API_BASE_URL as apiBaseUrl };
 
 export interface ApiError {

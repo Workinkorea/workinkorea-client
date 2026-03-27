@@ -1,11 +1,44 @@
 'use client';
 
+/**
+ * CompanyPostForm — 채용 공고 등록/수정 폼 오케스트레이터
+ *
+ * [컴포넌트 분리 구조 (FSD)]
+ *   form/BasicInfoSection        — STEP 1: 공고 제목, 직무, 경력, 학력, 언어, 상세 설명
+ *   form/WorkConditionsSection   — STEP 2: 고용 형태, 주당 근무 시간, 연봉, 근무 위치
+ *   form/RecruitmentPeriodSection — STEP 3: 모집 시작일 / 종료일
+ *   form/ManagerInfoSection      — STEP 4: 담당자 이름, 연락처, 이메일 (기업 정보 자동입력)
+ *
+ * [반응형 전략]
+ *   Mobile  (<768px): 1단, 폼 전체에 pb-24 여백 → 하단 고정 버튼 바가 콘텐츠를 가리지 않음
+ *   Tablet  (≥768px): 섹션 내 연관 필드 2단 grid
+ *   Desktop (≥1024px): CompanyPostCreateClient의 max-w-4xl 컨테이너가 너비 제한
+ *
+ * [UX 포인트]
+ *   1. isSubmitting 오버레이: 제출 중 폼 전체 dim + 스피너 → 중복 제출 방지
+ *   2. 유효성 실패 시 첫 번째 에러 필드로 자동 스크롤
+ *   3. 모바일 sticky 버튼 바: 항상 화면 하단에 노출, 스크롤에도 접근성 유지
+ *   4. "내 기업 정보와 동일": fetchClient로 기업 프로필 조회 후 담당자 정보 자동 입력
+ */
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Trash2, Briefcase, MapPin, Calendar, DollarSign, Clock, GraduationCap, Languages } from 'lucide-react';
-import { CreateCompanyPostRequest, UpdateCompanyPostRequest } from '@/shared/types/api';
-import DaumPostcodeSearch from '@/shared/ui/DaumPostcodeSearch';
-import { POSITION_OPTIONS, WORK_EXPERIENCE_OPTIONS, EDUCATION_OPTIONS, LANGUAGE_OPTIONS } from '@/shared/constants/jobOptions';
+import { Save, Trash2, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { cn } from '@/shared/lib/utils/utils';
+import { fetchClient } from '@/shared/api/fetchClient';
+import {
+  CreateCompanyPostRequest,
+  UpdateCompanyPostRequest,
+  CompanyProfileResponse,
+} from '@/shared/types/api';
+
+import { BasicInfoSection } from './form/BasicInfoSection';
+import { WorkConditionsSection } from './form/WorkConditionsSection';
+import { RecruitmentPeriodSection } from './form/RecruitmentPeriodSection';
+import { ManagerInfoSection, type ManagerInfo } from './form/ManagerInfoSection';
+
+// ── 타입 ──────────────────────────────────────────────────────────────────────
 
 interface CompanyPostFormProps {
   mode: 'create' | 'edit';
@@ -15,6 +48,8 @@ interface CompanyPostFormProps {
   isSubmitting?: boolean;
 }
 
+// ── 메인 컴포넌트 ─────────────────────────────────────────────────────────────
+
 export function CompanyPostForm({
   mode,
   initialData,
@@ -22,413 +57,321 @@ export function CompanyPostForm({
   onDelete,
   isSubmitting = false,
 }: CompanyPostFormProps) {
+
+  // ── 폼 상태 ────────────────────────────────────────────────────────────────
+
   const [formData, setFormData] = useState<CreateCompanyPostRequest>({
-    title: '',
-    content: '',
+    title:           '',
+    content:         '',
     work_experience: '경력무관',
-    position_id: 1,
-    education: '학력무관',
-    language: '한국어 능통',
+    position_id:     1,
+    education:       '학력무관',
+    language:        '한국어 능통',
     employment_type: '정규직',
-    work_location: '',
-    working_hours: 40,
-    salary: 0,
+    work_location:   '',
+    working_hours:   40,
+    salary:          0,
     start_date: new Date().toISOString().split('T')[0],
-    end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    end_date:   new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     ...initialData,
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors,             setErrors]            = useState<Record<string, string>>({});
   const [isNegotiableSalary, setIsNegotiableSalary] = useState(false);
-  const [baseAddress, setBaseAddress] = useState('');
-  const [detailAddress, setDetailAddress] = useState('');
+  const [baseAddress,        setBaseAddress]        = useState('');
+  const [detailAddress,      setDetailAddress]      = useState('');
 
+  // 담당자 정보 — UI 전용 (현재 API payload 미포함, 추후 확장 가능)
+  const [managerInfo, setManagerInfo] = useState<ManagerInfo>({
+    manager_name:  '',
+    manager_phone: '',
+    manager_email: '',
+  });
+
+  // edit 모드: 기존 주소/급여 상태 복원
   useEffect(() => {
     if (initialData?.work_location) {
       const parts = initialData.work_location.split('|');
-      if (parts.length === 2) {
-        setBaseAddress(parts[0].trim());
-        setDetailAddress(parts[1].trim());
-      } else {
-        setBaseAddress(initialData.work_location);
-      }
+      setBaseAddress(parts[0].trim());
+      if (parts.length === 2) setDetailAddress(parts[1].trim());
     }
-    if (initialData?.salary === 0) {
-      setIsNegotiableSalary(true);
-    }
+    if (initialData?.salary === 0) setIsNegotiableSalary(true);
   }, [initialData]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  // ── 핸들러 ─────────────────────────────────────────────────────────────────
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [name]: name === 'working_hours' || name === 'salary' || name === 'position_id' ? Number(value) : value,
+      [name]: ['working_hours', 'salary', 'position_id'].includes(name)
+        ? Number(value)
+        : value,
     }));
-
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.title.trim()) {
-      newErrors.title = '공고 제목을 입력해주세요.';
-    }
-    if (!formData.content.trim()) {
-      newErrors.content = '상세 설명을 입력해주세요.';
-    }
-    if (!baseAddress) {
-      newErrors.work_location = '근무 위치를 입력해주세요.';
-    }
-    if (!isNegotiableSalary && formData.salary <= 0) {
-      newErrors.salary = '연봉을 입력해주세요.';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) {
-      return;
-    }
-
-    const fullAddress = detailAddress ? `${baseAddress} | ${detailAddress}` : baseAddress;
-    const submitData = {
-      ...formData,
-      work_location: fullAddress,
-      salary: isNegotiableSalary ? 0 : formData.salary,
-    };
-
-    onSubmit(submitData);
+    // 수정 즉시 해당 필드 에러 제거 → 긍정적 피드백
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleAddressComplete = (address: string) => {
     setBaseAddress(address);
-    setFormData((prev) => ({ ...prev, work_location: address }));
-    if (errors.work_location) {
-      setErrors((prev) => ({ ...prev, work_location: '' }));
+    if (errors.work_location) setErrors(prev => ({ ...prev, work_location: '' }));
+  };
+
+  const handleNegotiableSalaryChange = (checked: boolean) => {
+    setIsNegotiableSalary(checked);
+    if (checked) {
+      setFormData(prev => ({ ...prev, salary: 0 }));
+      setErrors(prev => ({ ...prev, salary: '' }));
     }
   };
 
+  const handleManagerInfoChange = (key: keyof ManagerInfo, value: string) => {
+    setManagerInfo(prev => ({ ...prev, [key]: value }));
+  };
+
+  /** "내 기업 정보와 동일" — 기업 프로필 API로 담당자 정보 자동 입력 */
+  const handleFillFromCompany = async () => {
+    try {
+      const profile = await fetchClient.get<CompanyProfileResponse>('/api/company-profile');
+      setManagerInfo({
+        manager_name:  '',
+        manager_phone: profile.phone_number ?? '',
+        manager_email: profile.email ?? '',
+      });
+      toast.success('기업 담당자 정보가 자동 입력되었습니다');
+    } catch {
+      toast.error('기업 정보를 불러오지 못했습니다');
+    }
+  };
+
+  // ── 유효성 검사 ────────────────────────────────────────────────────────────
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.title.trim())
+      newErrors.title         = '공고 제목을 입력해주세요.';
+    if (!formData.content.trim())
+      newErrors.content       = '상세 설명을 입력해주세요.';
+    if (!baseAddress)
+      newErrors.work_location = '근무 위치를 입력해주세요.';
+    if (!isNegotiableSalary && formData.salary <= 0)
+      newErrors.salary        = '연봉을 입력하거나 급여 협의 가능을 선택해주세요.';
+
+    setErrors(newErrors);
+
+    // 첫 번째 에러 필드로 자동 스크롤
+    const firstKey = Object.keys(newErrors)[0];
+    if (firstKey) {
+      const el = document.querySelector<HTMLElement>(`[name="${firstKey}"]`);
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // ── 폼 제출 ────────────────────────────────────────────────────────────────
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const fullAddress = detailAddress
+      ? `${baseAddress} | ${detailAddress}`
+      : baseAddress;
+
+    onSubmit({
+      ...formData,
+      work_location: fullAddress,
+      salary:        isNegotiableSalary ? 0 : formData.salary,
+    });
+  };
+
+  // ── 공용 액션 버튼 JSX ─────────────────────────────────────────────────────
+  // 데스크탑(md 이상)과 모바일 sticky 바에서 동일한 버튼을 재사용
+
+  const deleteButton = mode === 'edit' && onDelete && (
+    <motion.button
+      type="button"
+      onClick={onDelete}
+      disabled={isSubmitting}
+      className={cn(
+        'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-body-3',
+        'border border-red-300 text-status-error',
+        'hover:bg-status-error-bg hover:border-red-400 transition-colors',
+        'disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer',
+        'focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2',
+      )}
+      whileHover={!isSubmitting ? { scale: 1.01 } : {}}
+      whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+    >
+      <Trash2 size={15} />
+      공고 삭제
+    </motion.button>
+  );
+
+  const submitButton = (extraClassName?: string) => (
+    <motion.button
+      type="submit"
+      disabled={isSubmitting}
+      className={cn(
+        'inline-flex items-center justify-center gap-2 px-7 py-2.5 rounded-lg font-semibold text-body-3 text-white',
+        'bg-primary-600 hover:bg-primary-700 transition-colors',
+        'shadow-[0_4px_14px_rgba(79,70,229,0.25)]',   // --shadow-blue (indigo 기반)
+        'disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer',
+        'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+        extraClassName,
+      )}
+      whileHover={!isSubmitting ? { scale: 1.01 } : {}}
+      whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+    >
+      {isSubmitting ? (
+        <>
+          <Loader2 size={16} className="animate-spin" />
+          {mode === 'create' ? '등록 중...' : '수정 중...'}
+        </>
+      ) : (
+        <>
+          <Save size={16} />
+          {mode === 'create' ? '공고 등록하기' : '공고 수정하기'}
+        </>
+      )}
+    </motion.button>
+  );
+
+  // ── 렌더링 ─────────────────────────────────────────────────────────────────
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-6">
-      {/* 기본 정보 */}
-      <div className="bg-white rounded-lg p-6 shadow-sm">
-        <h2 className="text-[17px] font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Briefcase size={20} />
-          기본 정보
-        </h2>
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-slate-700 mb-2">
-              공고 제목 *
-            </label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border ${errors.title ? 'border-red-500' : 'border-slate-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
-              placeholder="예: 외국인 환영! 프론트엔드 개발자 모집"
-            />
-            {errors.title && (
-              <p className="mt-1 text-[11px] text-red-500">{errors.title}</p>
-            )}
-          </div>
+    <div className="relative">
 
-          <div>
-            <label htmlFor="position_id" className="block text-sm font-medium text-slate-700 mb-2">
-              포지션 *
-            </label>
-            <select
-              id="position_id"
-              name="position_id"
-              value={String(formData.position_id)}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            >
-              {POSITION_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="content" className="block text-sm font-medium text-slate-700 mb-2">
-              상세 설명 *
-            </label>
-            <textarea
-              id="content"
-              name="content"
-              value={formData.content}
-              onChange={handleChange}
-              rows={8}
-              className={`w-full px-4 py-2 border ${errors.content ? 'border-red-500' : 'border-slate-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
-              placeholder="채용 공고 상세 내용을 입력하세요..."
-            />
-            {errors.content && (
-              <p className="mt-1 text-[11px] text-red-500">{errors.content}</p>
-            )}
+      {/* 제출 중 오버레이
+          UX: 전체 폼 dim + 스피너 → 중복 제출 방지 + 진행 상태 명시 */}
+      {isSubmitting && (
+        <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 rounded-xl flex items-center justify-center pointer-events-none">
+          <div className="flex items-center gap-3 bg-white border border-line-400 rounded-xl px-5 py-3 shadow-lg">
+            <Loader2 size={18} className="text-primary-600 animate-spin" />
+            <span className="text-body-3 font-semibold text-label-700">
+              {mode === 'create' ? '공고를 등록하는 중...' : '공고를 수정하는 중...'}
+            </span>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* 자격 요건 */}
-      <div className="bg-white rounded-lg p-6 shadow-sm">
-        <h2 className="text-[17px] font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <GraduationCap size={20} />
-          자격 요건
-        </h2>
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="work_experience" className="block text-sm font-medium text-slate-700 mb-2">
-              경력 요건
-            </label>
-            <select
-              id="work_experience"
-              name="work_experience"
-              value={formData.work_experience}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            >
-              {WORK_EXPERIENCE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+      {/* 폼
+          pb-24 md:pb-0: 모바일에서 sticky 버튼 바(높이 ~72px)가 콘텐츠를 가리지 않도록 여백 확보 */}
+      <form
+        id="company-post-form"
+        onSubmit={handleSubmit}
+        className="space-y-3 md:space-y-4 pb-24 md:pb-0"
+      >
+        {/* STEP 1: 기본 정보 */}
+        <BasicInfoSection
+          formData={formData}
+          errors={errors}
+          isSubmitting={isSubmitting}
+          onChange={handleChange}
+        />
 
-          <div>
-            <label htmlFor="education" className="block text-sm font-medium text-slate-700 mb-2">
-              학력 요건
-            </label>
-            <select
-              id="education"
-              name="education"
-              value={formData.education}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            >
-              {EDUCATION_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        {/* STEP 2: 근무 조건 */}
+        <WorkConditionsSection
+          formData={formData}
+          errors={errors}
+          isSubmitting={isSubmitting}
+          isNegotiableSalary={isNegotiableSalary}
+          baseAddress={baseAddress}
+          detailAddress={detailAddress}
+          onChange={handleChange}
+          onAddressComplete={handleAddressComplete}
+          onDetailAddressChange={setDetailAddress}
+          onNegotiableSalaryChange={handleNegotiableSalaryChange}
+        />
 
-          <div>
-            <label htmlFor="language" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-              <Languages size={16} />
-              언어 요건
-            </label>
-            <select
-              id="language"
-              name="language"
-              value={formData.language}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            >
-              {LANGUAGE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        {/* STEP 3: 모집 기간 */}
+        <RecruitmentPeriodSection
+          formData={formData}
+          isSubmitting={isSubmitting}
+          onChange={handleChange}
+        />
+
+        {/* STEP 4: 담당자 정보 */}
+        <ManagerInfoSection
+          managerInfo={managerInfo}
+          isSubmitting={isSubmitting}
+          onManagerInfoChange={handleManagerInfoChange}
+          onFillFromCompany={handleFillFromCompany}
+        />
+
+        {/* ── 데스크탑 액션 버튼 (md 이상에서만 표시) ──────────────────────
+            Primary 버튼(blue-600)과 Destructive 버튼(red-300 border)을
+            색상으로 명확히 구분해 실수로 인한 삭제를 방지 */}
+        <div className="hidden md:flex gap-3 justify-end pt-2 pb-4">
+          {deleteButton}
+          {submitButton()}
         </div>
-      </div>
+      </form>
 
-      {/* 근무 조건 */}
-      <div className="bg-white rounded-lg p-6 shadow-sm">
-        <h2 className="text-[17px] font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Clock size={20} />
-          근무 조건
-        </h2>
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="employment_type" className="block text-sm font-medium text-slate-700 mb-2">
-              고용 형태
-            </label>
-            <select
-              id="employment_type"
-              name="employment_type"
-              value={formData.employment_type}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            >
-              <option value="정규직">정규직</option>
-              <option value="계약직">계약직</option>
-              <option value="인턴">인턴</option>
-              <option value="프리랜서">프리랜서</option>
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="work_location" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-              <MapPin size={16} />
-              근무 위치 *
-            </label>
-            <div className="space-y-2">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={baseAddress}
-                  readOnly
-                  className={`flex-1 px-4 py-2 border ${errors.work_location ? 'border-red-500' : 'border-slate-300'} rounded-lg bg-slate-100`}
-                  placeholder="주소 검색 버튼을 클릭하세요"
-                />
-                <DaumPostcodeSearch
-                  value={baseAddress}
-                  onChange={handleAddressComplete}
-                  error={errors.work_location}
-                />
-              </div>
-              <input
-                type="text"
-                value={detailAddress}
-                onChange={(e) => setDetailAddress(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                placeholder="상세 주소 (선택)"
-              />
-            </div>
-            {errors.work_location && (
-              <p className="mt-1 text-[11px] text-red-500">{errors.work_location}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="working_hours" className="block text-sm font-medium text-slate-700 mb-2">
-              주당 근무 시간
-            </label>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                id="working_hours"
-                name="working_hours"
-                value={formData.working_hours}
-                onChange={handleChange}
-                min="1"
-                max="80"
-                className="w-32 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-              />
-              <span className="text-sm text-slate-600">시간</span>
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="salary" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-              <DollarSign size={16} />
-              연봉
-            </label>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  id="salary"
-                  name="salary"
-                  value={formData.salary}
-                  onChange={handleChange}
-                  disabled={isNegotiableSalary}
-                  min="0"
-                  step="1000000"
-                  className={`flex-1 px-4 py-2 border ${errors.salary ? 'border-red-500' : 'border-slate-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-slate-100 disabled:text-slate-400`}
-                  placeholder="예: 40000000"
-                />
-                <span className="text-sm text-slate-600">원</span>
-              </div>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isNegotiableSalary}
-                  onChange={(e) => {
-                    setIsNegotiableSalary(e.target.checked);
-                    if (e.target.checked) {
-                      setFormData((prev) => ({ ...prev, salary: 0 }));
-                      setErrors((prev) => ({ ...prev, salary: '' }));
-                    }
-                  }}
-                  className="w-4 h-4 text-blue-600 rounded focus:ring-blue-600"
-                />
-                <span className="text-xs text-slate-600">급여 협의 가능</span>
-              </label>
-            </div>
-            {errors.salary && (
-              <p className="mt-1 text-[11px] text-red-500">{errors.salary}</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* 모집 기간 */}
-      <div className="bg-white rounded-lg p-6 shadow-sm">
-        <h2 className="text-[17px] font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Calendar size={20} />
-          모집 기간
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="start_date" className="block text-sm font-medium text-slate-700 mb-2">
-              시작일
-            </label>
-            <input
-              type="date"
-              id="start_date"
-              name="start_date"
-              value={formData.start_date}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
-          </div>
-          <div>
-            <label htmlFor="end_date" className="block text-sm font-medium text-slate-700 mb-2">
-              종료일
-            </label>
-            <input
-              type="date"
-              id="end_date"
-              name="end_date"
-              value={formData.end_date}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* 버튼 */}
-      <div className="flex gap-3 justify-end">
+      {/* ── 모바일 sticky 버튼 바 (md 미만에서만 표시) ───────────────────────
+          UX: 길어진 폼 양식에서도 제출 버튼에 즉시 접근 가능
+          fixed 포지셔닝으로 스크롤 위치와 무관하게 항상 하단 고정
+          shadow-[0_-4px_20px_...]: 위 방향 그림자로 sticky 느낌 강조 */}
+      <div
+        className={cn(
+          'md:hidden fixed bottom-0 left-0 right-0 z-20',
+          'flex items-center gap-3 px-4 py-3',
+          'bg-white border-t border-line-400',
+          'shadow-[0_-4px_20px_rgba(0,0,0,0.08)]',
+        )}
+      >
+        {/* 삭제 버튼 (edit 모드에서만) */}
         {mode === 'edit' && onDelete && (
-          <motion.button
+          <button
             type="button"
             onClick={onDelete}
-            className="px-6 py-3 border-2 border-red-500 text-red-500 rounded-lg font-medium hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            disabled={isSubmitting}
+            className={cn(
+              'inline-flex items-center gap-1.5 shrink-0',
+              'px-4 py-2.5 rounded-lg font-semibold text-body-3',
+              'border border-red-300 text-status-error',
+              'hover:bg-status-error-bg transition-colors',
+              'disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer',
+              'focus:outline-none',
+            )}
           >
-            <Trash2 size={18} />
+            <Trash2 size={15} />
             삭제
-          </motion.button>
+          </button>
         )}
-        <motion.button
+
+        {/* 등록/수정 버튼: flex-1로 가용 너비 모두 차지 */}
+        <button
           type="submit"
+          form="company-post-form"
           disabled={isSubmitting}
-          className="px-6 py-3 bg-blue-700 text-white rounded-lg font-medium hover:bg-blue-800 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          className={cn(
+            'flex-1 inline-flex items-center justify-center gap-2',
+            'py-2.5 rounded-lg font-semibold text-body-3 text-white',
+            'bg-primary-600 hover:bg-primary-700 transition-colors',
+            'shadow-[0_4px_14px_rgba(79,70,229,0.25)]',
+            'disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer',
+            'focus:outline-none',
+          )}
         >
-          <Save size={18} />
-          {mode === 'create' ? '등록하기' : '수정하기'}
-        </motion.button>
+          {isSubmitting ? (
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              {mode === 'create' ? '등록 중...' : '수정 중...'}
+            </>
+          ) : (
+            <>
+              <Save size={16} />
+              {mode === 'create' ? '공고 등록하기' : '공고 수정하기'}
+            </>
+          )}
+        </button>
       </div>
-    </form>
+
+    </div>
   );
 }

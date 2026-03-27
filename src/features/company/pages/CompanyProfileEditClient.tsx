@@ -1,26 +1,41 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save } from 'lucide-react';
+import { Building2, UserCircle, Check } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
+import { Button } from '@/shared/ui/Button';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { profileApi } from '../api/profileCompany';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CompanyProfileRequest } from '@/shared/types/api';
 import toast from 'react-hot-toast';
-import { detectPhoneType, formatPhoneByType, PhoneType } from '@/shared/lib/utils/phoneUtils';
+import { formatPhoneByType } from '@/shared/lib/utils/phoneUtils';
 import { extractErrorMessage, logError } from '@/shared/lib/utils/errorHandler';
 import { validateCompanyProfileField, validateCompanyProfileForm } from '../validations/companyProfileValidation';
 import { CompanyInfoSection } from '@/features/company/components/CompanyInfoSection';
 import { ContactPersonSection } from '@/features/company/components/ContactPersonSection';
+import { cn } from '@/shared/lib/utils/utils';
 
 const CompanyProfileEditClient = () => {
+  const t = useTranslations('company.profile.edit');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
+  const { isLoading: authLoading } = useAuth();
+
+  // 완성도 체크 항목 (inside component to use t())
+  type RequiredField = { key: keyof CompanyProfileRequest; label: string; section: 'info' | 'contact' };
+  const REQUIRED_FIELDS: RequiredField[] = [
+    { key: 'industry_type',       label: t('fields.requiredLabels.industryType'),       section: 'info' },
+    { key: 'company_type',        label: t('fields.requiredLabels.companyType'),         section: 'info' },
+    { key: 'employee_count',      label: t('fields.requiredLabels.employeeCount'),       section: 'info' },
+    { key: 'establishment_date',  label: t('fields.requiredLabels.establishmentDate'),   section: 'info' },
+    { key: 'address',             label: t('fields.requiredLabels.address'),             section: 'info' },
+    { key: 'email',               label: t('fields.requiredLabels.email'),               section: 'contact' },
+    { key: 'phone_number',        label: t('fields.requiredLabels.phoneNumber'),         section: 'contact' },
+  ];
 
   const [formData, setFormData] = useState<CompanyProfileRequest>({
     industry_type: '',
@@ -28,55 +43,33 @@ const CompanyProfileEditClient = () => {
     establishment_date: '',
     company_type: '',
     insurance: '',
-    company_phone: '',  // 기업 일반전화
-    phone_number: '',  // 담당자 휴대전화
-    phone_type: 'MOBILE',  // Default phone type
+    phone_number: '',
     address: '',
     website_url: '',
     email: '',
-    country_id: 0,
-    position_id: 0,
-    company_number: '',
-    representative_name: '',
   });
 
   const [originalData, setOriginalData] = useState<CompanyProfileRequest | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
-  const handleLogout = async () => {
-    await logout();
-  };
-
-  // 기존 프로필 조회
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['companyProfile'],
-    queryFn: () => profileApi.getProfileCompany()
+    queryFn: () => profileApi.getProfileCompany(),
   });
 
-  // 프로필 데이터가 로드되면 폼에 설정
   useEffect(() => {
     if (profile) {
-      // Detect phone type from existing phone number
-      const phoneNum = String(profile.phone_number || '');
-      const detectedType = detectPhoneType(phoneNum) || 'MOBILE';
-
-      const data = {
+      const data: CompanyProfileRequest = {
         industry_type: profile.industry_type || '',
         employee_count: profile.employee_count || 0,
         establishment_date: profile.establishment_date || '',
         company_type: profile.company_type || '',
         insurance: profile.insurance || '',
-        company_phone: profile.company_phone || '',  // 기업 일반전화
-        phone_number: phoneNum,  // 담당자 휴대전화
-        phone_type: (profile.phone_type as PhoneType) || detectedType,  // Use saved type or detect
+        phone_number: String(profile.phone_number || ''),
         address: profile.address || '',
         website_url: profile.website_url || '',
         email: profile.email || '',
-        country_id: profile.country_id || 0,
-        position_id: profile.position_id || 0,
-        company_number: profile.company_number || '',
-        representative_name: profile.representative_name || '',
       };
 
       setFormData(data);
@@ -84,78 +77,51 @@ const CompanyProfileEditClient = () => {
     }
   }, [profile]);
 
-  // 변경사항 확인
   const hasChanges = useMemo(() => {
     if (!originalData) {
-      // originalData가 없으면 기본값과 비교
-      const defaultData = {
-        industry_type: '',
-        employee_count: 0,
-        establishment_date: '',
-        company_type: '',
-        insurance: '',
-        company_phone: '',
-        phone_number: '',
-        phone_type: 'MOBILE' as PhoneType,
-        address: '',
-        website_url: '',
-        email: '',
-        country_id: 0,
-        position_id: 0,
-        company_number: '',
-        representative_name: '',
-      };
-      return JSON.stringify(formData) !== JSON.stringify(defaultData);
+      return Object.values(formData).some((v) => v !== '' && v !== 0);
     }
     return JSON.stringify(formData) !== JSON.stringify(originalData);
   }, [formData, originalData]);
 
+  // 완성도 계산
+  const { filledCount, progress } = useMemo(() => {
+    const filled = REQUIRED_FIELDS.filter(({ key }) => {
+      const val = formData[key];
+      return val !== '' && val !== 0 && val !== null && val !== undefined;
+    }).length;
+    return { filledCount: filled, progress: Math.round((filled / REQUIRED_FIELDS.length) * 100) };
+  }, [formData]);
+
+  const infoFields  = REQUIRED_FIELDS.filter((f) => f.section === 'info');
+  const contactFields = REQUIRED_FIELDS.filter((f) => f.section === 'contact');
+
   const updateProfileMutation = useMutation({
-    mutationFn: (data: CompanyProfileRequest) => {
-      if (profile) {
-        return profileApi.updateProfileCompany(data);
-      } else {
-        return profileApi.createProfileCompany(data);
-      }
-    },
+    mutationFn: (data: CompanyProfileRequest) =>
+      profile ? profileApi.updateProfileCompany(data) : profileApi.createProfileCompany(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyProfile'] });
-      const message = profile ? '프로필이 성공적으로 수정되었습니다.' : '프로필이 성공적으로 생성되었습니다.';
-      toast.success(message);
-      setTimeout(() => {
-        router.push('/company');
-      }, 1000);
+      toast.success(profile ? t('updateSuccess') : t('createSuccess'));
+      setTimeout(() => router.push('/company'), 1000);
     },
     onError: (error: unknown) => {
       logError(error, 'CompanyProfileEditClient.updateProfile');
-      const errorMessage = extractErrorMessage(error, '프로필 수정에 실패했습니다. 다시 시도해주세요.');
-      toast.error(errorMessage);
+      toast.error(extractErrorMessage(error, t('updateError')));
     },
   });
 
-
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    let processedValue: string | number | PhoneType = value;
+    let processedValue: string | number = value;
 
-    // 기업 일반전화는 LANDLINE 포맷팅
-    if (name === 'company_phone') {
-      processedValue = formatPhoneByType(value, 'LANDLINE');
-    }
-    // 담당자 휴대전화는 MOBILE 포맷팅
-    else if (name === 'phone_number') {
+    if (name === 'phone_number') {
       processedValue = formatPhoneByType(value, 'MOBILE');
-    } else if (name === 'employee_count' || name === 'country_id' || name === 'position_id') {
+    } else if (name === 'employee_count') {
       processedValue = value ? Number(value) : 0;
     }
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: processedValue,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: processedValue }));
 
-    // 실시간 유효성 검사 (해당 필드를 터치한 경우에만)
     if (touchedFields[name]) {
       const error = validateCompanyProfileField(name, processedValue, {
         ...formData,
@@ -166,165 +132,269 @@ const CompanyProfileEditClient = () => {
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
     setTouchedFields((prev) => ({ ...prev, [name]: true }));
-
-    const processedValue = name === 'employee_count' || name === 'phone_number' || name === 'company_phone' || name === 'country_id' || name === 'position_id'
-      ? formData[name as keyof CompanyProfileRequest]
-      : value;
-
-    const error = validateCompanyProfileField(name, processedValue as string | number, formData);
+    const val =
+      name === 'employee_count'
+        ? formData[name as keyof CompanyProfileRequest]
+        : e.target.value;
+    const error = validateCompanyProfileField(name, val as string | number, formData);
     setErrors((prev) => ({ ...prev, [name]: error }));
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors = validateCompanyProfileForm(formData);
-    const fields = Object.keys(formData) as Array<keyof CompanyProfileRequest>;
-
-    setErrors(newErrors);
-    setTouchedFields(
-      fields.reduce((acc, field) => ({ ...acc, [field]: true }), {})
-    );
-
-    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      toast.error('입력 항목을 확인해주세요.');
+    const newErrors = validateCompanyProfileForm(formData);
+    setErrors(newErrors);
+    setTouchedFields(
+      Object.keys(formData).reduce((acc, key) => ({ ...acc, [key]: true }), {}),
+    );
+
+    if (Object.keys(newErrors).length > 0) {
+      toast.error(t('validationError'));
       return;
     }
-
     if (!hasChanges) {
-      toast.error('변경된 내용이 없습니다.');
+      toast.error(t('noChanges'));
       return;
     }
 
     updateProfileMutation.mutate(formData);
   };
 
-  // 오늘 날짜 (미래 날짜 선택 방지)
   const today = new Date().toISOString().split('T')[0];
 
   if (authLoading || (profileLoading && !profile)) {
     return (
       <Layout>
-        <Header
-          type={userType === 'company' ? 'business' : 'homepage'}
-          isAuthenticated={isAuthenticated}
-          isLoading={authLoading}
-          onLogout={handleLogout}
-        />
-        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
-          <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-        </div>
+        <main className="flex-1 bg-label-100 flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full" />
+        </main>
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
+      <main className="flex-1 bg-label-100">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-      <div className="min-h-screen bg-slate-50 py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            className="mb-6"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <button
-              onClick={() => router.back()}
-              className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors mb-4"
-            >
-              <ArrowLeft size={20} />
-              <span className="text-sm">돌아가기</span>
-            </button>
-            <h1 className="text-[20px] md:text-[28px] font-bold text-slate-900">기업 프로필 수정</h1>
-            <p className="text-sm text-slate-500 mt-1">
-              기업 정보를 수정하세요
-            </p>
-          </motion.div>
+          {/* 페이지 헤더 */}
+          <div className="mb-6">
+            <h1 className="text-title-3 font-bold text-label-900">{t('title')}</h1>
+            <p className="text-body-3 text-label-500 mt-1">{t('subtitle')}</p>
+          </div>
 
-          <motion.form
-            onSubmit={handleSubmit}
-            className="space-y-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            {/* 담당 기업 정보 */}
-            <CompanyInfoSection
-              formData={formData}
-              errors={errors}
-              touchedFields={touchedFields}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              today={today}
-            />
+          {/* 2-column layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
 
-            {/* 담당자 정보 */}
-            <ContactPersonSection
-              formData={formData}
-              errors={errors}
-              touchedFields={touchedFields}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
+            {/* ─── 좌측: 폼 ─── */}
+            <form onSubmit={handleSubmit} className="space-y-4">
 
-            {/* 제출 버튼 */}
-            <div className="flex gap-4">
-              <button
+              {/* 기업 정보 섹션 */}
+              <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
+                <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-line-200">
+                  <span className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+                    <Building2 size={16} className="text-primary-600" />
+                  </span>
+                  <div>
+                    <h2 className="text-body-2 font-bold text-label-900">{t('sectionInfo')}</h2>
+                    <p className="text-caption-3 text-label-400 mt-0.5">{t('sectionInfoHint')}</p>
+                  </div>
+                </div>
+                <CompanyInfoSection
+                  formData={formData}
+                  errors={errors}
+                  touchedFields={touchedFields}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  today={today}
+                />
+              </div>
+
+              {/* 담당자 정보 섹션 */}
+              <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
+                <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-line-200">
+                  <span className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+                    <UserCircle size={16} className="text-primary-600" />
+                  </span>
+                  <div>
+                    <h2 className="text-body-2 font-bold text-label-900">{t('sectionContact')}</h2>
+                    <p className="text-caption-3 text-label-400 mt-0.5">{t('sectionContactHint')}</p>
+                  </div>
+                </div>
+                <ContactPersonSection
+                  formData={formData}
+                  errors={errors}
+                  touchedFields={touchedFields}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+              </div>
+
+              {/* 모바일 저장 버튼 (lg 이하에서만 표시) */}
+              <div className="flex gap-3 lg:hidden">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  className="flex-1"
+                  onClick={() => router.back()}
+                >
+                  {tCommon('button.cancel')}
+                </Button>
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="flex-1"
+                  isLoading={updateProfileMutation.isPending}
+                  disabled={!hasChanges}
+                >
+                  {updateProfileMutation.isPending ? t('saving') : t('saveBtn')}
+                </Button>
+              </div>
+            </form>
+
+            {/* ─── 우측: 사이드바 ─── */}
+            <aside className="hidden lg:flex flex-col gap-4 sticky top-20">
+
+              {/* 저장 버튼 */}
+              <Button
                 type="button"
+                size="lg"
+                className="w-full shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
+                isLoading={updateProfileMutation.isPending}
+                disabled={!hasChanges}
+                onClick={handleSubmit}
+              >
+                {updateProfileMutation.isPending ? t('saving') : t('saveBtn')}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="w-full"
                 onClick={() => router.back()}
-                className="flex-1 px-6 py-3 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               >
-                취소
-              </button>
-              <button
-                type="submit"
-                disabled={updateProfileMutation.isPending || !hasChanges}
-                className={`flex-1 px-6 py-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-                  updateProfileMutation.isPending || !hasChanges
-                    ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
-                }`}
-                title={!hasChanges ? '변경된 내용이 없습니다' : ''}
-              >
-                {updateProfileMutation.isPending ? (
-                  <>
-                    <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
-                    수정 중...
-                  </>
-                ) : (
-                  <>
-                    <Save size={18} />
-                    {hasChanges ? '수정 완료' : '변경사항 없음'}
-                  </>
-                )}
-              </button>
-            </div>
+                {tCommon('button.cancel')}
+              </Button>
 
-            {hasChanges && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-[11px] text-amber-600 text-center"
-              >
-                * 저장되지 않은 변경사항이 있습니다.
-              </motion.p>
-            )}
-          </motion.form>
+              {/* 완성도 카드 */}
+              <div className="bg-white border border-line-400 rounded-xl p-5">
+                {/* 진행률 */}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="relative w-12 h-12 shrink-0">
+                    <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
+                      <circle
+                        cx="24" cy="24" r="20"
+                        fill="none" strokeWidth="4"
+                        className="stroke-slate-100"
+                      />
+                      <circle
+                        cx="24" cy="24" r="20"
+                        fill="none" strokeWidth="4"
+                        strokeDasharray={`${2 * Math.PI * 20}`}
+                        strokeDashoffset={`${2 * Math.PI * 20 * (1 - progress / 100)}`}
+                        strokeLinecap="round"
+                        className="stroke-blue-600 transition-all duration-500"
+                      />
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center text-caption-3 font-bold text-primary-600">
+                      {progress}%
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-caption-1 font-bold text-label-900">
+                      {t('completionTitle')}{' '}
+                      <span className="text-primary-600">{progress}%</span>
+                    </p>
+                    <p className="text-caption-3 text-label-400 mt-0.5">
+                      {t('completionCount', { filled: filledCount, total: REQUIRED_FIELDS.length })}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="h-1.5 bg-label-100 rounded-full overflow-hidden mb-5">
+                  <div
+                    className="h-full bg-primary-600 rounded-full transition-all duration-500"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+
+                {/* 기업 정보 체크리스트 */}
+                <p className="text-caption-3 font-bold text-label-500 uppercase tracking-wider mb-2">
+                  {t('checklistInfo')}
+                </p>
+                <ul className="space-y-1.5 mb-4">
+                  {infoFields.map(({ key, label }) => {
+                    const val = formData[key];
+                    const filled = val !== '' && val !== 0;
+                    return (
+                      <li key={key} className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            'w-4 h-4 rounded-full flex items-center justify-center shrink-0',
+                            filled ? 'bg-primary-600' : 'bg-label-100',
+                          )}
+                        >
+                          {filled && <Check size={10} className="text-white" strokeWidth={3} />}
+                        </span>
+                        <span
+                          className={cn(
+                            'text-caption-2',
+                            filled ? 'text-label-700 font-medium' : 'text-label-400',
+                          )}
+                        >
+                          {label}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                {/* 담당자 정보 체크리스트 */}
+                <p className="text-caption-3 font-bold text-label-500 uppercase tracking-wider mb-2">
+                  {t('checklistContact')}
+                </p>
+                <ul className="space-y-1.5">
+                  {contactFields.map(({ key, label }) => {
+                    const val = formData[key];
+                    const filled = val !== '' && val !== 0;
+                    return (
+                      <li key={key} className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            'w-4 h-4 rounded-full flex items-center justify-center shrink-0',
+                            filled ? 'bg-primary-600' : 'bg-label-100',
+                          )}
+                        >
+                          {filled && <Check size={10} className="text-white" strokeWidth={3} />}
+                        </span>
+                        <span
+                          className={cn(
+                            'text-caption-2',
+                            filled ? 'text-label-700 font-medium' : 'text-label-400',
+                          )}
+                        >
+                          {label}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                {hasChanges && (
+                  <p className="mt-4 text-caption-3 text-status-caution flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                    {t('unsavedChanges')}
+                  </p>
+                )}
+              </div>
+            </aside>
+          </div>
         </div>
-      </div>
+      </main>
     </Layout>
   );
 };

@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { MapPin, Mail, Github, Linkedin, ExternalLink, Calendar, Briefcase } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { UserProfile } from '@/features/user/types/user';
 import { cn } from '@/shared/lib/utils/utils';
 
@@ -18,32 +19,34 @@ function UserProfileHeader({
   onEditClick,
   className = ''
 }: UserProfileHeaderProps) {
+  const t = useTranslations('user.profile.header');
+
   // 가용성 상태에 따른 스타일
   const getAvailabilityStyle = (jobStatus: UserProfile['job_status']) => {
       switch (jobStatus) {
         case 'available':
           return {
-            bg: 'bg-emerald-500',
+            bg: 'bg-status-correct-bg0',
             text: 'text-white',
-            label: '구직중'
+            label: t('statusAvailable')
           };
         case 'busy':
           return {
-            bg: 'bg-amber-500',
+            bg: 'bg-status-caution-bg0',
             text: 'text-white',
-            label: '바쁨'
+            label: t('statusBusy')
           };
         case 'not-looking':
           return {
-            bg: 'bg-slate-400',
+            bg: 'bg-label-400',
             text: 'text-white',
-            label: '구직안함'
+            label: t('statusNotLooking')
           };
         default:
           return {
-            bg: 'bg-slate-100',
-            text: 'text-slate-700',
-            label: '미정'
+            bg: 'bg-label-100',
+            text: 'text-label-700',
+            label: t('statusUndecided')
           };
       }
     };
@@ -53,10 +56,10 @@ function UserProfileHeader({
   // 언어 숙련도 라벨
   const getProficiencyLabel = (proficiency: string) => {
     switch (proficiency) {
-      case 'beginner': return '초급';
-      case 'intermediate': return '중급';
-      case 'advanced': return '고급';
-      case 'native': return '모국어';
+      case 'beginner': return t('proficiencyBeginner');
+      case 'intermediate': return t('proficiencyIntermediate');
+      case 'advanced': return t('proficiencyAdvanced');
+      case 'native': return t('proficiencyNative');
       default: return proficiency;
     }
   };
@@ -71,7 +74,7 @@ function UserProfileHeader({
       <div className="flex flex-col md:flex-row gap-6">
         {/* 프로필 이미지 */}
         <motion.div 
-          className="flex-shrink-0"
+          className="shrink-0"
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.3, delay: 0.2 }}
@@ -80,8 +83,8 @@ function UserProfileHeader({
             {profile.profileImage ? (
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-blue-100 bg-cover bg-center" style={{backgroundImage: `url(${profile.profileImage})`}} aria-label={`${profile.name}의 프로필`} />
             ) : (
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-slate-100 border-4 border-blue-100 flex items-center justify-center">
-                <span className="text-2xl md:text-3xl font-semibold text-slate-400">
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-label-100 border-4 border-blue-100 flex items-center justify-center">
+                <span className="text-title-3 md:text-title-2 font-semibold text-label-400">
                   {profile.name.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -106,11 +109,11 @@ function UserProfileHeader({
             <div className="flex-1">
               {/* 이름과 직책 */}
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-[28px] font-extrabold text-slate-900">
+                <h1 className="text-title-2 font-extrabold text-label-900">
                   {profile.name}
                 </h1>
                 <span className={cn(
-                  'text-[11px] px-3 py-1 rounded-full font-medium',
+                  'text-caption-3 px-3 py-1 rounded-full font-medium',
                   availabilityStyle.bg,
                   availabilityStyle.text
                 )}>
@@ -119,13 +122,13 @@ function UserProfileHeader({
               </div>
 
               {profile.position && (
-                <p className="text-[15px] text-blue-600 font-medium mb-3">
+                <p className="text-body-2 text-primary-600 font-medium mb-3">
                   {profile.position}
                 </p>
               )}
 
               {/* 기본 정보 */}
-              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 mb-4">
+              <div className="flex flex-wrap items-center gap-4 text-body-3 text-label-600 mb-4">
                 {profile.location && (
                   <div className="flex items-center gap-1">
                     <MapPin size={16} />
@@ -136,19 +139,19 @@ function UserProfileHeader({
                 {profile.experience > 0 && (
                   <div className="flex items-center gap-1">
                     <Briefcase size={16} />
-                    <span>{profile.experience}년 경력</span>
+                    <span>{t('experienceYears', { years: profile.experience })}</span>
                   </div>
                 )}
 
                 <div className="flex items-center gap-1">
                   <Calendar size={16} />
-                  <span>가입일 {new Date(profile.createdAt).toLocaleDateString('ko-KR')}</span>
+                  <span>{t('joinDate', { date: new Date(profile.createdAt).toLocaleDateString('ko-KR') })}</span>
                 </div>
               </div>
 
               {/* 소개 */}
               {profile.introduction && (
-                <p className="text-sm text-slate-700 mb-4 leading-relaxed">
+                <p className="text-body-3 text-label-700 mb-4 leading-relaxed">
                   {profile.introduction}
                 </p>
               )}
@@ -156,12 +159,12 @@ function UserProfileHeader({
               {/* 언어 */}
               {profile.languages.length > 0 && (
                 <div className="mb-4">
-                  <span className="text-sm text-slate-600 font-medium mr-2">언어:</span>
+                  <span className="text-caption-1 text-label-600 font-medium mr-2">{t('languagesLabel')}</span>
                   <div className="inline-flex flex-wrap gap-2">
                     {profile.languages.map((lang, index) => (
                       <span
                         key={index}
-                        className="text-[11px] bg-slate-100 text-slate-700 px-2 py-1 rounded"
+                        className="text-caption-3 bg-label-100 text-label-700 px-2 py-1 rounded"
                       >
                         {lang.name} ({getProficiencyLabel(lang.proficiency)})
                       </span>
@@ -178,9 +181,9 @@ function UserProfileHeader({
                   {onEditClick && (
                     <button
                       onClick={onEditClick}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+                      className="px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer"
                     >
-                      프로필 편집
+                      {t('editProfile')}
                     </button>
                   )}
                 </>
@@ -188,11 +191,11 @@ function UserProfileHeader({
 
               {!isOwnProfile && (
                 <>
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer">
-                    연락하기
+                  <button className="px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer">
+                    {t('contact')}
                   </button>
-                  <button className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors cursor-pointer">
-                    즐겨찾기
+                  <button className="px-4 py-2 border border-blue-600 text-primary-600 rounded-lg text-caption-1 font-medium hover:bg-primary-50 transition-colors cursor-pointer">
+                    {t('favorite')}
                   </button>
                 </>
               )}
@@ -203,7 +206,7 @@ function UserProfileHeader({
 
       {/* 연락처 및 링크 */}
       <motion.div
-        className="mt-6 pt-6 border-t border-slate-100"
+        className="mt-6 pt-6 border-t border-line-200"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.6 }}
@@ -213,7 +216,7 @@ function UserProfileHeader({
           {profile.email && (
             <a
               href={`mailto:${profile.email}`}
-              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-600 transition-colors"
             >
               <Mail size={16} />
               <span>{profile.email}</span>
@@ -226,7 +229,7 @@ function UserProfileHeader({
               href={profile.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-600 transition-colors"
             >
               <Github size={16} />
               <span>GitHub</span>
@@ -240,7 +243,7 @@ function UserProfileHeader({
               href={profile.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-600 transition-colors"
             >
               <Linkedin size={16} />
               <span>LinkedIn</span>
@@ -254,7 +257,7 @@ function UserProfileHeader({
               href={profile.portfolioUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-2 text-body-3 text-label-600 hover:text-primary-600 transition-colors"
             >
               <ExternalLink size={16} />
               <span>Portfolio</span>
@@ -267,12 +270,12 @@ function UserProfileHeader({
       {/* 희망 연봉 (있는 경우) */}
       {/* {profile.preferredSalary && (
         <motion.div
-          className="mt-4 p-4 bg-slate-100 rounded-lg"
+          className="mt-4 p-4 bg-label-100 rounded-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.8 }}
         >
-          <div className="text-sm text-slate-600">
+          <div className="text-body-3 text-label-600">
             <span className="font-medium">희망 연봉:</span>
             <span className="ml-2">
               {profile.preferredSalary.min.toLocaleString()} - {profile.preferredSalary.max.toLocaleString()} {profile.preferredSalary.currency}

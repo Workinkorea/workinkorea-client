@@ -45,15 +45,23 @@ function setCookie(name: string, value: string, days: number = 7): void {
 
 /**
  * Cookie 삭제 (Public Cookie 전용)
+ *
+ * 브라우저는 domain 속성이 다르면 별개의 쿠키로 취급한다.
+ * 백엔드가 `.dev.workinkorea.net`(dot prefix), 프론트가 도메인 없이 각각 설정할 수
+ * 있으므로 세 가지 변형을 모두 제거한다.
  */
 function deleteCookie(name: string): void {
   if (typeof window === 'undefined') return;
 
-  // setCookie와 동일한 domain 설정 (쿠키 삭제를 위해 domain이 일치해야 함)
-  const domain = window.location.hostname.includes('moon-core.com') ? '.moon-core.com' : '';
-  const domainAttr = domain ? `domain=${domain};` : '';
+  const hostname = window.location.hostname;
+  const expired = 'expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax';
 
-  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;${domainAttr}`;
+  // 1. 도메인 속성 없음 (hostname 기본)
+  document.cookie = `${name}=;${expired}`;
+  // 2. dot prefix 포함 (백엔드 Set-Cookie 방식)
+  document.cookie = `${name}=;${expired};domain=.${hostname}`;
+  // 3. dot prefix 없음 (명시적 hostname)
+  document.cookie = `${name}=;${expired};domain=${hostname}`;
 }
 
 export const cookieManager = {
