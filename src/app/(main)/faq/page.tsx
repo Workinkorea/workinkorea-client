@@ -29,13 +29,13 @@ const faqs = [
 
 export default function FaqPage() {
   return (
-    <main className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-2xl font-bold text-slate-900 mb-8">자주 묻는 질문</h1>
+    <main>
+      <h1 className="text-title-3 font-bold text-label-900 mb-8">자주 묻는 질문</h1>
       <div className="space-y-4">
         {faqs.map((faq, i) => (
-          <div key={i} className="bg-white border border-slate-200 rounded-xl p-6">
-            <p className="font-semibold text-slate-800 mb-2">Q. {faq.q}</p>
-            <p className="text-sm text-slate-600">A. {faq.a}</p>
+          <div key={i} className="bg-white border border-line-200 rounded-xl p-6">
+            <p className="font-semibold text-label-800 mb-2">Q. {faq.q}</p>
+            <p className="text-body-3 text-label-600">A. {faq.a}</p>
           </div>
         ))}
       </div>
