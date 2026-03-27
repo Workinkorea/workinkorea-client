@@ -68,7 +68,7 @@ export function ProfileStats({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
+        <h3 className="text-title-5 font-semibold text-label-900 mb-4">
           {t('statsTitle')}
         </h3>
 
@@ -117,7 +117,7 @@ export function ProfileStats({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
+        <h3 className="text-title-5 font-semibold text-label-900 mb-4">
           {t('skillAnalysisTitle')}
         </h3>
 
@@ -166,7 +166,7 @@ export function ProfileStats({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
+        <h3 className="text-title-5 font-semibold text-label-900 mb-4">
           {t('careerTitle')}
         </h3>
 
@@ -207,23 +207,23 @@ export function ProfileStats({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        <h3 className="text-title-5 font-semibold text-slate-900 mb-4">
+        <h3 className="text-title-5 font-semibold text-label-900 mb-4">
           {t('skillDistributionTitle')}
         </h3>
 
         <div className="space-y-4">
           {/* 최고 스킬 카테고리 강조 */}
-          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="p-4 bg-primary-50 rounded-lg border border-primary-200">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="text-caption-1 font-semibold text-blue-700 mb-1">
+                <h4 className="text-caption-1 font-semibold text-primary-700 mb-1">
                   {t('topStrengthTitle')}
                 </h4>
-                <p className="text-body-3 text-blue-600">
+                <p className="text-body-3 text-primary-600">
                   {t('topStrengthDesc', { category: getSkillCategoryLabel(skillStats.topSkillCategory) })}
                 </p>
               </div>
-              <div className="text-xl font-bold text-blue-600">
+              <div className="text-title-4 font-bold text-primary-600">
                 #{1}
               </div>
             </div>
@@ -238,14 +238,14 @@ export function ProfileStats({
                 : 0;
 
               return (
-                <div key={category} className="p-3 bg-slate-100 rounded-lg">
-                  <div className="text-title-5 font-semibold text-slate-700 mb-1">
+                <div key={category} className="p-3 bg-label-100 rounded-lg">
+                  <div className="text-title-5 font-semibold text-label-700 mb-1">
                     {avgScore}점
                   </div>
-                  <div className="text-caption-3 text-slate-500">
+                  <div className="text-caption-3 text-label-500">
                     {getSkillCategoryLabel(category)}
                   </div>
-                  <div className="text-caption-3 text-slate-400">
+                  <div className="text-caption-3 text-label-400">
                     {categorySkills.length}개 스킬
                   </div>
                 </div>
