@@ -8,28 +8,28 @@ export default function JobCategoriesSection() {
   const t = useTranslations('landing.categories');
 
   const jobCategories = [
-    { id: 'it',        title: t('it'),        icon: Monitor,       bgColor: 'bg-blue-50',   iconColor: 'text-blue-600' },
-    { id: 'marketing', title: t('marketing'), icon: Megaphone,     bgColor: 'bg-blue-50',   iconColor: 'text-blue-600' },
+    { id: 'it',        title: t('it'),        icon: Monitor,       bgColor: 'bg-primary-50',   iconColor: 'text-primary-600' },
+    { id: 'marketing', title: t('marketing'), icon: Megaphone,     bgColor: 'bg-primary-50',   iconColor: 'text-primary-600' },
     { id: 'design',    title: t('design'),    icon: Palette,       bgColor: 'bg-purple-50', iconColor: 'text-purple-600' },
     { id: 'sales',     title: t('sales'),     icon: TrendingUp,    bgColor: 'bg-orange-50', iconColor: 'text-orange-600' },
     { id: 'finance',   title: t('finance'),   icon: Building,      bgColor: 'bg-yellow-50', iconColor: 'text-yellow-600' },
     { id: 'education', title: t('education'), icon: GraduationCap, bgColor: 'bg-indigo-50', iconColor: 'text-indigo-600' },
-    { id: 'food',      title: t('food'),      icon: ChefHat,       bgColor: 'bg-red-50',    iconColor: 'text-red-600' },
+    { id: 'food',      title: t('food'),      icon: ChefHat,       bgColor: 'bg-status-error-bg',    iconColor: 'text-status-error' },
     { id: 'startup',   title: t('startup'),   icon: Rocket,        bgColor: 'bg-teal-50',   iconColor: 'text-teal-600' },
   ];
 
   return (
-    <section id="job-categories" className="py-12 sm:py-16 lg:py-20 bg-white border-t border-slate-100">
+    <section id="job-categories" className="py-12 sm:py-16 lg:py-20 bg-white border-t border-line-200">
       <div className="page-container">
         {/* 섹션 헤더 */}
         <div className="text-center mb-8 sm:mb-12">
-          <span className="inline-block bg-blue-50 text-blue-600 text-caption-2 font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
+          <span className="inline-block bg-primary-50 text-primary-600 text-caption-2 font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
             {t('overline')}
           </span>
-          <h2 className="text-title-3 sm:text-title-1 font-extrabold text-slate-900 mb-3">
+          <h2 className="text-title-3 sm:text-title-1 font-extrabold text-label-900 mb-3">
             {t('title')}
           </h2>
-          <p className="text-caption-1 sm:text-body-2 text-slate-500">
+          <p className="text-caption-1 sm:text-body-2 text-label-500">
             {t('subtitle')}
           </p>
         </div>
@@ -42,12 +42,12 @@ export default function JobCategoriesSection() {
               <Link
                 key={category.id}
                 href={`/jobs?q=${encodeURIComponent(category.title)}`}
-                className="flex flex-col items-center gap-2.5 bg-white border border-slate-200 rounded-xl px-3 py-4 sm:py-5 hover:border-blue-200 hover:shadow-md cursor-pointer group transition-all duration-200"
+                className="flex flex-col items-center gap-2.5 bg-white border border-line-400 rounded-xl px-3 py-4 sm:py-5 hover:border-primary-200 hover:shadow-md cursor-pointer group transition-all duration-200"
               >
                 <div className={`${category.bgColor} rounded-xl p-3 flex items-center justify-center group-hover:scale-105 transition-transform`}>
                   <IconComponent className={`w-5 h-5 sm:w-6 sm:h-6 ${category.iconColor}`} />
                 </div>
-                <span className="text-caption-2 sm:text-caption-1 font-semibold text-slate-700 group-hover:text-blue-700 transition-colors text-center">
+                <span className="text-caption-2 sm:text-caption-1 font-semibold text-label-700 group-hover:text-primary-700 transition-colors text-center">
                   {category.title}
                 </span>
               </Link>
