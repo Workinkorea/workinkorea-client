@@ -46,6 +46,9 @@ export { Portal } from './Portal';
 export { BackToTop } from './BackToTop';
 
 // ─── Feedback / Status ────────────────────────────────────────────
+export { LoadingSpinner } from './LoadingSpinner';
+export type { LoadingSpinnerProps } from './LoadingSpinner';
+
 export { Badge, NumericBadge, DotBadge, IndicatorBadge } from './Badge';
 export type { ContentBadgeProps, NumericBadgeProps, DotBadgeProps, IndicatorBadgeProps } from './Badge';
 
