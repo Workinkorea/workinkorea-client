@@ -30,6 +30,7 @@ import { FetchError } from '@/shared/api/fetchClient';
 import Layout from '@/shared/components/layout/Layout';
 import { profileApi } from '../api/profileCompany';
 import { postsApi } from '@/features/jobs/api/postsApi';
+import type { CompanyPost } from '@/shared/types/api';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
 type TodoTab = 'unread' | 'accepted' | 'interview' | 'evaluated';
@@ -85,10 +86,10 @@ const CompanyProfileClient = () => {
     }
   }, [isError, error, router]);
 
-  const posts       = postsData ?? [];
+  const posts: CompanyPost[] = postsData ?? [];
   const now         = new Date();
-  const activePosts = posts.filter(p => new Date(p.end_date) > now);
-  const expiredPosts = posts.filter(p => new Date(p.end_date) <= now);
+  const activePosts = posts.filter((p: CompanyPost) => new Date(p.end_date) > now);
+  const expiredPosts = posts.filter((p: CompanyPost) => new Date(p.end_date) <= now);
 
   // ── 에러: 403 ─────────────────────────────────────────────────────────────
   if (isError && error instanceof FetchError && error.status === 403) {
