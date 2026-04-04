@@ -156,7 +156,7 @@ export default function BusinessSignupStep1({
               variant="ghost"
               size="sm"
               shape="circle"
-              aria-label="서비스 이용약관 보기"
+              label="서비스 이용약관 보기"
               type="button"
               onClick={() => handleViewTerms('서비스 이용약관')}
             />
@@ -181,7 +181,7 @@ export default function BusinessSignupStep1({
               variant="ghost"
               size="sm"
               shape="circle"
-              aria-label="개인정보 수집 및 이용 보기"
+              label="개인정보 수집 및 이용 보기"
               type="button"
               onClick={() => handleViewTerms('개인정보 수집 및 이용')}
             />
@@ -206,7 +206,7 @@ export default function BusinessSignupStep1({
               variant="ghost"
               size="sm"
               shape="circle"
-              aria-label="개인정보 제공 및 위탁 보기"
+              label="개인정보 제공 및 위탁 보기"
               type="button"
               onClick={() => handleViewTerms('개인정보 제공 및 위탁')}
             />
@@ -231,7 +231,7 @@ export default function BusinessSignupStep1({
               variant="ghost"
               size="sm"
               shape="circle"
-              aria-label="개인정보 조회 보기"
+              label="개인정보 조회 보기"
               type="button"
               onClick={() => handleViewTerms('개인정보 조회')}
             />

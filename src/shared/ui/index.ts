@@ -26,7 +26,7 @@ export { default as DatePicker } from './DatePicker';
 export { SelectSearchInput } from './SelectSearchInput';
 export type { SelectOption } from './SelectSearchInput';
 
-export { DaumPostcodeSearch } from './DaumPostcodeSearch';
+export { default as DaumPostcodeSearch } from './DaumPostcodeSearch';
 export { default as SchoolSearch } from './SchoolSearch';
 
 // ─── Layout / Structure ───────────────────────────────────────────

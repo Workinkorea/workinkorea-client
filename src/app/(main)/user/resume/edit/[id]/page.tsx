@@ -65,7 +65,7 @@ function EditResumePage() {
             address: profileData?.address || '',
             profileImage: response.profile_url || profileData?.profile_image_url
           },
-          objective: objective,
+          objective: objective ?? undefined,
           workExperience: response.career_history.map(career => ({
             id: `${career.company_name}-${career.start_date}`,
             company: career.company_name,
