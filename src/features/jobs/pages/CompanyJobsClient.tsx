@@ -8,6 +8,7 @@ import { Edit3, Plus, MapPin, FileText } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Layout from '@/shared/components/layout/Layout';
 import { postsApi } from '@/features/jobs/api/postsApi';
+import type { CompanyPost } from '@/shared/types/api';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/shared/lib/utils/utils';
 
@@ -143,7 +144,7 @@ function CompanyJobsClient() {
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                  {posts.map((post) => (
+                  {posts.map((post: CompanyPost) => (
                     <motion.div
                       key={post.id}
                       initial={{ opacity: 0, y: 10 }}

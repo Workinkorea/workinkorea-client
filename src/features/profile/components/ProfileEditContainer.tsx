@@ -378,7 +378,6 @@ function ProfileEditContainer() {
           const formValues = contactForm.getValues();
           const contactData: ContactUpdateRequest = {
             ...formValues,
-            user_id: profile?.user_id || undefined,
           };
           updateContactMutation.mutate(contactData);
         }

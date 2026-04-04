@@ -140,7 +140,7 @@ function UserProfileClient() {
       };
 
       // language_skills를 UserSkill 형태로 변환
-      const languageSkills: UserSkill[] = response.language_skills
+      const languageSkills: UserSkill[] = (response.language_skills ?? [])
         .filter(lang => lang.language_type && lang.level)
         .map((lang, index) => ({
           id: `lang-${index}`,
@@ -160,20 +160,20 @@ function UserProfileClient() {
         position_id: profileData?.position_id || undefined,
         location: profileData?.location || '',
         introduction: response.introduction?.[0]?.content || profileData?.introduction || '',
-        experience: calculateExperience(response.career_history),
+        experience: calculateExperience(response.career_history ?? []),
         completedProjects: 0, // API에서 제공하지 않음
-        certifications: response.licenses.map(l => l.license_name),
+        certifications: (response.licenses ?? []).map(l => l.license_name).filter((name): name is string => !!name),
         job_status: 'available',
         skills: languageSkills, // language_skills를 UserSkill 형태로 변환하여 추가
-        education: response.schools.map(school => ({
+        education: (response.schools ?? []).map(school => ({
           id: `${school.school_name}-${school.start_date}`,
           institution: school.school_name,
           degree: school.is_graduated ? '졸업' : '재학',
           field: school.major_name,
           startDate: school.start_date,
-          endDate: school.end_date
+          endDate: school.end_date ?? undefined
         })),
-        languages: response.language_skills
+        languages: (response.language_skills ?? [])
           .filter(lang => lang.language_type && lang.level)
           .map(lang => ({
             name: lang.language_type || '',

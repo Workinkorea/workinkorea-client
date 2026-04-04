@@ -8,6 +8,7 @@ import { postsApi } from '@/features/jobs/api/postsApi';
 import JobCard from '@/features/jobs/components/JobCard';
 import { cn } from '@/shared/lib/utils/utils';
 import type { DiagnosisData } from '@/features/diagnosis/store/diagnosisStore';
+import type { CompanyPost } from '@/shared/types/api';
 import { useTranslations } from 'next-intl';
 
 interface RecommendedJobsSectionProps {
@@ -29,7 +30,7 @@ export function RecommendedJobsSection({ diagnosisData }: RecommendedJobsSection
     const posts = data?.company_posts ?? [];
     if (!diagnosisData?.employmentType) return posts.slice(0, 4);
     const filtered = posts.filter(
-      (p) => p.employment_type === diagnosisData.employmentType
+      (p: CompanyPost) => p.employment_type === diagnosisData.employmentType
     );
     return (filtered.length > 0 ? filtered : posts).slice(0, 4);
   })();
@@ -87,7 +88,7 @@ export function RecommendedJobsSection({ diagnosisData }: RecommendedJobsSection
             'sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0',
             'lg:grid-cols-4'
           )}>
-            {jobs.map((post, index) => (
+            {jobs.map((post: CompanyPost, index: number) => (
               <motion.div
                 key={post.id}
                 initial={{ opacity: 0, y: 12 }}
