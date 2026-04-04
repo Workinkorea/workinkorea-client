@@ -1,10 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { SignupStep1Data } from '@/features/auth/types/signup.types';
 import { toast } from 'sonner';
+import { Checkbox } from '@/shared/ui/Checkbox';
+import { Button } from '@/shared/ui/Button';
+import { IconButton } from '@/shared/ui/IconButton';
 
 interface BusinessSignupStep1Props {
   initialData?: SignupStep1Data;
@@ -106,255 +109,148 @@ export default function BusinessSignupStep1({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-[28px] sm:text-[36px] text-slate-900 text-center mb-4 leading-tight">
+          <h1 className="text-title-2 sm:text-title-1 text-label-900 text-center mb-4 leading-tight">
             <p>회원가입 정보동의</p>
           </h1>
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center justify-between text-body-3">
             <div />
-            <span className="text-blue-600">{progressPercentage}%</span>
+            <span className="text-primary-600">{progressPercentage}%</span>
           </div>
           <div className="mt-2">
-            <div className="w-full bg-slate-100 rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
+            <div className="w-full bg-label-100 rounded-full h-2">
+              <div className="bg-primary-600 h-2 rounded-full" style={{ width: `${progressPercentage}%` }} />
             </div>
           </div>
         </motion.div>
 
+        {/* 전체 동의 */}
         <motion.div
-          className="pb-4 border-b border-slate-200"
+          className="pb-4 border-b border-line-400"
           whileTap={{ scale: 0.98 }}
         >
-          <label className="flex items-center cursor-pointer">
-            <div className="relative">
-              <input
-                type="checkbox"
-                checked={agreements.all}
-                onChange={(e) => handleAllAgreement(e.target.checked)}
-                className="sr-only"
-              />
-              <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200`}>
-                {agreements.all && (
-                  <motion.svg
-                    className="w-4 h-4 text-component-dark"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </motion.svg>
-                )}
-              </div>
-            </div>
-            <span className="ml-3 text-xl text-slate-900">전체 동의</span>
-          </label>
+          <Checkbox
+            checked={agreements.all}
+            onChange={(e) => handleAllAgreement(e.target.checked)}
+            label="전체 동의"
+            size="md"
+          />
         </motion.div>
 
         <div className="space-y-4">
+          {/* 서비스 이용약관 */}
           <motion.div
             className="flex items-center justify-between pt-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: 0.3 }}
           >
-            <label className="flex items-center cursor-pointer flex-1">
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={agreements.termsOfService}
-                  onChange={(e) => handleIndividualAgreement('termsOfService', e.target.checked)}
-                  className="sr-only"
-                />
-                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200`}>
-                  {agreements.termsOfService && (
-                    <motion.svg
-                      className="w-4 h-4 text-component-dark"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </motion.svg>
-                  )}
-                </div>
-              </div>
-              <span className="ml-3 text-base text-slate-700">
-                서비스 이용약관 동의 (필수)
-              </span>
-            </label>
-            <button
+            <Checkbox
+              checked={agreements.termsOfService}
+              onChange={(e) => handleIndividualAgreement('termsOfService', e.target.checked)}
+              label="서비스 이용약관 동의 (필수)"
+              size="md"
+              className="flex-1"
+            />
+            <IconButton
+              icon={ChevronRight}
+              variant="ghost"
+              size="sm"
+              shape="circle"
+              aria-label="서비스 이용약관 보기"
+              type="button"
               onClick={() => handleViewTerms('서비스 이용약관')}
-              className="p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
-            >
-              <ChevronRight className="w-6 h-6 text-slate-400" />
-            </button>
+            />
           </motion.div>
 
+          {/* 개인정보 수집 및 이용 */}
           <motion.div
             className="flex items-center justify-between"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: 0.4 }}
           >
-            <label className="flex items-center cursor-pointer flex-1">
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={agreements.privacyPolicy}
-                  onChange={(e) => handleIndividualAgreement('privacyPolicy', e.target.checked)}
-                  className="sr-only"
-                />
-                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200`}>
-                  {agreements.privacyPolicy && (
-                    <motion.svg
-                      className="w-4 h-4 text-component-dark"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </motion.svg>
-                  )}
-                </div>
-              </div>
-              <span className="ml-3 text-base text-slate-700">
-                개인(신용)정보 수집 및 이용동의 (필수)
-              </span>
-            </label>
-            <button
+            <Checkbox
+              checked={agreements.privacyPolicy}
+              onChange={(e) => handleIndividualAgreement('privacyPolicy', e.target.checked)}
+              label="개인(신용)정보 수집 및 이용동의 (필수)"
+              size="md"
+              className="flex-1"
+            />
+            <IconButton
+              icon={ChevronRight}
+              variant="ghost"
+              size="sm"
+              shape="circle"
+              aria-label="개인정보 수집 및 이용 보기"
+              type="button"
               onClick={() => handleViewTerms('개인정보 수집 및 이용')}
-              className="p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
-            >
-              <ChevronRight className="w-6 h-6 text-slate-400" />
-            </button>
+            />
           </motion.div>
 
+          {/* 개인정보 제공 및 위탁 */}
           <motion.div
             className="flex items-center justify-between"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: 0.5 }}
           >
-            <label className="flex items-center cursor-pointer flex-1">
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={agreements.personalInfo}
-                  onChange={(e) => handleIndividualAgreement('personalInfo', e.target.checked)}
-                  className="sr-only"
-                />
-                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200`}>
-                  {agreements.personalInfo && (
-                    <motion.svg
-                      className="w-4 h-4 text-component-dark"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </motion.svg>
-                  )}
-                </div>
-              </div>
-              <span className="ml-3 text-base text-slate-700">
-                개인(신용)정보 제공 및 위탁동의 (필수)
-              </span>
-            </label>
-            <button
+            <Checkbox
+              checked={agreements.personalInfo}
+              onChange={(e) => handleIndividualAgreement('personalInfo', e.target.checked)}
+              label="개인(신용)정보 제공 및 위탁동의 (필수)"
+              size="md"
+              className="flex-1"
+            />
+            <IconButton
+              icon={ChevronRight}
+              variant="ghost"
+              size="sm"
+              shape="circle"
+              aria-label="개인정보 제공 및 위탁 보기"
+              type="button"
               onClick={() => handleViewTerms('개인정보 제공 및 위탁')}
-              className="p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
-            >
-              <ChevronRight className="w-6 h-6 text-slate-400" />
-            </button>
+            />
           </motion.div>
 
+          {/* 개인정보 조회 */}
           <motion.div
             className="flex items-center justify-between"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: 0.6 }}
           >
-            <label className="flex items-center cursor-pointer flex-1">
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={agreements.thirdParty}
-                  onChange={(e) => handleIndividualAgreement('thirdParty', e.target.checked)}
-                  className="sr-only"
-                />
-                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200`}>
-                  {agreements.thirdParty && (
-                    <motion.svg
-                      className="w-4 h-4 text-component-dark"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </motion.svg>
-                  )}
-                </div>
-              </div>
-              <span className="ml-3 text-base text-slate-700">
-                개인(신용)정보 조회 동의 (필수)
-              </span>
-            </label>
-            <button
+            <Checkbox
+              checked={agreements.thirdParty}
+              onChange={(e) => handleIndividualAgreement('thirdParty', e.target.checked)}
+              label="개인(신용)정보 조회 동의 (필수)"
+              size="md"
+              className="flex-1"
+            />
+            <IconButton
+              icon={ChevronRight}
+              variant="ghost"
+              size="sm"
+              shape="circle"
+              aria-label="개인정보 조회 보기"
+              type="button"
               onClick={() => handleViewTerms('개인정보 조회')}
-              className="p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
-            >
-              <ChevronRight className="w-6 h-6 text-slate-400" />
-            </button>
+            />
           </motion.div>
 
+          {/* 마케팅 (선택) */}
           <motion.div
             className="flex items-center justify-between mt-6"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: 0.7 }}
           >
-            <label className="flex items-center cursor-pointer flex-1">
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={agreements.marketing}
-                  onChange={(e) => handleIndividualAgreement('marketing', e.target.checked)}
-                  className="sr-only"
-                />
-                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200`}>
-                  {agreements.marketing && (
-                    <motion.svg
-                      className="w-4 h-4 text-component-dark"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </motion.svg>
-                  )}
-                </div>
-              </div>
-              <span className="ml-3 text-base text-slate-700">
-                마케팅 활용 및 광고성 정보 수신동의
-              </span>
-            </label>
+            <Checkbox
+              checked={agreements.marketing}
+              onChange={(e) => handleIndividualAgreement('marketing', e.target.checked)}
+              label="마케팅 활용 및 광고성 정보 수신동의"
+              size="md"
+              className="flex-1"
+            />
           </motion.div>
         </div>
 
@@ -364,18 +260,15 @@ export default function BusinessSignupStep1({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <motion.button
+          <Button
             onClick={handleNext}
             disabled={!isRequiredAgreementsChecked}
-            className={`flex-1 py-4 rounded-xl font-semibold text-white transition-all duration-300 ${isRequiredAgreementsChecked
-              ? 'bg-blue-600 hover:bg-blue-700 shadow-lg cursor-pointer'
-              : 'bg-slate-200 cursor-not-allowed'
-              }`}
-            whileTap={{ scale: isRequiredAgreementsChecked ? 0.98 : 1 }}
-            whileHover={{ scale: isRequiredAgreementsChecked ? 1.02 : 1 }}
+            variant="primary"
+            size="lg"
+            className="flex-1"
           >
             다음
-          </motion.button>
+          </Button>
         </motion.div>
       </div>
     </div>

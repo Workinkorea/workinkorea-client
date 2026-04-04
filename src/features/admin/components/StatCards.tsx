@@ -18,7 +18,7 @@ export default function StatCards({ stats }: StatCardsProps) {
       title: '전체 일반 회원',
       value: stats.totalUsers,
       link: '/admin/users',
-      color: 'bg-blue-500',
+      color: 'bg-primary-500',
     },
     {
       title: '전체 기업 회원',
@@ -43,10 +43,10 @@ export default function StatCards({ stats }: StatCardsProps) {
           className="overflow-hidden rounded-lg bg-white shadow hover:shadow-lg transition-shadow"
         >
           <div className={`${card.color} px-4 py-5 sm:p-6`}>
-            <dt className="text-sm font-medium text-white truncate">
+            <dt className="text-caption-1 font-medium text-white truncate">
               {card.title}
             </dt>
-            <dd className="mt-1 text-3xl font-semibold text-white">
+            <dd className="mt-1 text-title-1 font-semibold text-white">
               {card.value}
             </dd>
           </div>

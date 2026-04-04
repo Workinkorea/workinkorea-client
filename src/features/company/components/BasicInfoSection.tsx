@@ -1,7 +1,6 @@
 import { Building, Users, Calendar, FileText } from 'lucide-react';
 import { CompanyProfileRequest } from '@/shared/types/api';
-import { COUNTRIES_FULL } from '@/shared/constants/countries';
-import { POSITIONS_L3 } from '@/shared/constants/positions';
+import { Input } from '@/shared/ui/Input';
 
 interface BasicInfoSectionProps {
   formData: CompanyProfileRequest;
@@ -22,40 +21,41 @@ export const BasicInfoSection = ({
 }: BasicInfoSectionProps) => {
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+      <h2 className="text-title-4 font-semibold text-label-900 mb-4 flex items-center gap-2">
         <Building size={20} />
         기본 정보
       </h2>
       <div className="space-y-4">
         {/* 업종 */}
         <div>
-          <label htmlFor="industry_type" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
-            업종 <span className="text-red-500 text-lg ml-1">*</span>
+          <label htmlFor="industry_type" className="text-caption-1 font-semibold text-label-700 mb-2 flex items-center">
+            업종 <span className="text-status-error text-title-5 ml-1">*</span>
           </label>
-          <input
+          <Input
             type="text"
             id="industry_type"
             name="industry_type"
             value={formData.industry_type}
             onChange={onChange}
             onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.industry_type ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.industry_type && touchedFields.industry_type && formData.industry_type ? 'border-emerald-500' : ''}`}
             placeholder="예: IT/소프트웨어, 제조, 유통 등"
+            error={!!errors.industry_type}
+            success={!errors.industry_type && touchedFields.industry_type && !!formData.industry_type}
           />
           {errors.industry_type && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.industry_type}</p>
+            <p className="mt-1 text-caption-3 text-status-error">{errors.industry_type}</p>
           )}
           {!errors.industry_type && touchedFields.industry_type && formData.industry_type && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
+            <p className="mt-1 text-caption-3 text-status-correct flex items-center gap-1">
+              <span className="text-status-correct">✓</span> 입력 완료
             </p>
           )}
         </div>
 
         {/* 기업 형태 */}
         <div>
-          <label htmlFor="company_type" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
-            기업 형태 <span className="text-red-500 text-lg ml-1">*</span>
+          <label htmlFor="company_type" className="text-caption-1 font-semibold text-label-700 mb-2 flex items-center">
+            기업 형태 <span className="text-status-error text-title-5 ml-1">*</span>
           </label>
           <select
             id="company_type"
@@ -63,80 +63,20 @@ export const BasicInfoSection = ({
             value={formData.company_type}
             onChange={onChange}
             onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.company_type ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer ${!errors.company_type && touchedFields.company_type && formData.company_type ? 'border-emerald-500' : ''}`}
+            className={`w-full px-3.5 py-2.5 border ${errors.company_type ? 'border-red-500' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-[3px] focus:ring-blue-100 transition-colors cursor-pointer ${!errors.company_type && touchedFields.company_type && formData.company_type ? 'border-emerald-500' : ''}`}
           >
             <option value="">선택하세요</option>
             <option value="주식회사">주식회사</option>
             <option value="유한회사">유한회사</option>
             <option value="개인사업자">개인사업자</option>
-            <option value="외국계기업">외국계기업</option>
+            <option value="외국계기업">외국계 기업</option>
           </select>
           {errors.company_type && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.company_type}</p>
+            <p className="mt-1 text-caption-3 text-status-error">{errors.company_type}</p>
           )}
           {!errors.company_type && touchedFields.company_type && formData.company_type && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-        </div>
-
-        {/* 국가 */}
-        <div>
-          <label htmlFor="country_id" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
-            국가 <span className="text-red-500 text-lg ml-1">*</span>
-          </label>
-          <select
-            id="country_id"
-            name="country_id"
-            value={formData.country_id || ''}
-            onChange={onChange}
-            onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.country_id ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer ${!errors.country_id && touchedFields.country_id && formData.country_id > 0 ? 'border-emerald-500' : ''}`}
-          >
-            <option value="">선택하세요</option>
-            {COUNTRIES_FULL.map((country) => (
-              <option key={country.id} value={country.id}>
-                {country.name}
-              </option>
-            ))}
-          </select>
-          {errors.country_id && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.country_id}</p>
-          )}
-          {!errors.country_id && touchedFields.country_id && formData.country_id > 0 && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-        </div>
-
-        {/* 직무 */}
-        <div>
-          <label htmlFor="position_id" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
-            직무 <span className="text-red-500 text-lg ml-1">*</span>
-          </label>
-          <select
-            id="position_id"
-            name="position_id"
-            value={formData.position_id || ''}
-            onChange={onChange}
-            onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.position_id ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer ${!errors.position_id && touchedFields.position_id && formData.position_id > 0 ? 'border-emerald-500' : ''}`}
-          >
-            <option value="">선택하세요</option>
-            {POSITIONS_L3.map((position) => (
-              <option key={position.id} value={position.id}>
-                {position.name}
-              </option>
-            ))}
-          </select>
-          {errors.position_id && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.position_id}</p>
-          )}
-          {!errors.position_id && touchedFields.position_id && formData.position_id > 0 && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
+            <p className="mt-1 text-caption-3 text-status-correct flex items-center gap-1">
+              <span className="text-status-correct">✓</span> 입력 완료
             </p>
           )}
         </div>
@@ -144,9 +84,9 @@ export const BasicInfoSection = ({
         {/* 직원 수 & 설립일 */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="employee_count" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+            <label htmlFor="employee_count" className="text-caption-1 font-semibold text-label-700 mb-2 flex items-center gap-2">
               <Users size={16} />
-              직원 수 <span className="text-red-500 text-lg ml-1">*</span>
+              직원 수 <span className="text-status-error text-title-5 ml-1">*</span>
             </label>
             <select
               id="employee_count"
@@ -154,7 +94,7 @@ export const BasicInfoSection = ({
               value={formData.employee_count || ''}
               onChange={onChange}
               onBlur={onBlur}
-              className={`w-full px-4 py-2 border ${errors.employee_count ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer ${!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 ? 'border-emerald-500' : ''}`}
+              className={`w-full px-3.5 py-2.5 border ${errors.employee_count ? 'border-red-500' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-[3px] focus:ring-blue-100 transition-colors cursor-pointer ${!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 ? 'border-emerald-500' : ''}`}
             >
               <option value="">선택하세요</option>
               <option value="10">1-10명</option>
@@ -165,21 +105,21 @@ export const BasicInfoSection = ({
               <option value="1000">500명 이상</option>
             </select>
             {errors.employee_count && (
-              <p className="mt-1 text-[11px] text-red-500">{errors.employee_count}</p>
+              <p className="mt-1 text-caption-3 text-status-error">{errors.employee_count}</p>
             )}
             {!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 && (
-              <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-                <span className="text-emerald-500">✓</span> 입력 완료
+              <p className="mt-1 text-caption-3 text-status-correct flex items-center gap-1">
+                <span className="text-status-correct">✓</span> 입력 완료
               </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="establishment_date" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+            <label htmlFor="establishment_date" className="text-caption-1 font-semibold text-label-700 mb-2 flex items-center gap-2">
               <Calendar size={16} />
-              설립일 <span className="text-red-500 text-lg ml-1">*</span>
+              설립일 <span className="text-status-error text-title-5 ml-1">*</span>
             </label>
-            <input
+            <Input
               type="date"
               id="establishment_date"
               name="establishment_date"
@@ -187,14 +127,15 @@ export const BasicInfoSection = ({
               onChange={onChange}
               onBlur={onBlur}
               max={today}
-              className={`w-full px-4 py-2 border ${errors.establishment_date ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date ? 'border-emerald-500' : ''}`}
+              error={!!errors.establishment_date}
+              success={!errors.establishment_date && touchedFields.establishment_date && !!formData.establishment_date}
             />
             {errors.establishment_date && (
-              <p className="mt-1 text-[11px] text-red-500">{errors.establishment_date}</p>
+              <p className="mt-1 text-caption-3 text-status-error">{errors.establishment_date}</p>
             )}
             {!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date && (
-              <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-                <span className="text-emerald-500">✓</span> 입력 완료
+              <p className="mt-1 text-caption-3 text-status-correct flex items-center gap-1">
+                <span className="text-status-correct">✓</span> 입력 완료
               </p>
             )}
           </div>
@@ -202,26 +143,26 @@ export const BasicInfoSection = ({
 
         {/* 보험 */}
         <div>
-          <label htmlFor="insurance" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+          <label htmlFor="insurance" className="text-caption-1 font-semibold text-label-700 mb-2 flex items-center gap-2">
             <FileText size={16} />
-            보험 <span className="text-[11px] px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
+            보험 <span className="text-caption-3 px-2 py-0.5 bg-label-100 text-label-600 rounded ml-2">선택</span>
           </label>
-          <input
+          <Input
             type="text"
             id="insurance"
             name="insurance"
             value={formData.insurance}
             onChange={onChange}
-            className={`w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${formData.insurance ? 'border-emerald-500' : ''}`}
             placeholder="예: 4대보험 완비, 산재보험 등"
+            success={!!formData.insurance}
           />
           {formData.insurance && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
+            <p className="mt-1 text-caption-3 text-status-correct flex items-center gap-1">
+              <span className="text-status-correct">✓</span> 입력 완료
             </p>
           )}
           {!formData.insurance && (
-            <p className="mt-1 text-[11px] text-slate-500">제공하는 보험 정보를 입력해주세요.</p>
+            <p className="mt-1 text-caption-3 text-label-500">제공하는 보험 정보를 입력해주세요.</p>
           )}
         </div>
       </div>

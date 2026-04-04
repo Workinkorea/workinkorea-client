@@ -1,6 +1,10 @@
-import { Building2, Users, Calendar, FileText, Hash, User, Phone, MapPin, Globe } from 'lucide-react';
+'use client';
+
+import { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 import { CompanyProfileRequest } from '@/shared/types/api';
-import { getPhonePlaceholder } from '@/shared/lib/utils/phoneUtils';
+import { Input } from '@/shared/ui/Input';
+import { cn } from '@/shared/lib/utils/utils';
 
 interface CompanyInfoSectionProps {
   formData: CompanyProfileRequest;
@@ -11,6 +15,68 @@ interface CompanyInfoSectionProps {
   today: string;
 }
 
+// 폼 행 레이아웃 헬퍼
+const FieldRow = ({
+  label,
+  required,
+  optional,
+  optionalLabel = 'Optional',
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  optional?: boolean;
+  optionalLabel?: string;
+  children: ReactNode;
+}) => (
+  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-line-200 last:border-0 items-start">
+    <span className="text-caption-1 font-semibold text-label-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
+      {label}
+      {required && <span className="text-status-error">*</span>}
+      {optional && (
+        <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-label-100 text-label-500 rounded">
+          {optionalLabel}
+        </span>
+      )}
+    </span>
+    <div>{children}</div>
+  </div>
+);
+
+// 공통 select 스타일
+const selectCls = (error: boolean, touched: boolean, hasValue: boolean) =>
+  cn(
+    'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800 bg-white transition-colors appearance-none cursor-pointer',
+    'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+    error ? 'border-red-500 focus:ring-red-100' : 'border-line-400',
+    !error && touched && hasValue && 'border-emerald-500',
+  );
+
+// 에러 / 성공 힌트 메시지
+const FieldHint = ({
+  error,
+  touched,
+  hasValue,
+  hint,
+  inputComplete,
+}: {
+  error?: string;
+  touched?: boolean;
+  hasValue?: boolean;
+  hint?: string;
+  inputComplete: string;
+}) => {
+  if (error) return <p className="mt-1.5 text-caption-3 text-status-error">{error}</p>;
+  if (touched && hasValue)
+    return (
+      <p className="mt-1.5 text-caption-3 text-status-correct flex items-center gap-1">
+        <span>✓</span> {inputComplete}
+      </p>
+    );
+  if (hint) return <p className="mt-1.5 text-caption-3 text-label-400">{hint}</p>;
+  return null;
+};
+
 export const CompanyInfoSection = ({
   formData,
   errors,
@@ -19,157 +85,91 @@ export const CompanyInfoSection = ({
   onBlur,
   today,
 }: CompanyInfoSectionProps) => {
+  const t = useTranslations('company.profile.edit');
+
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-        <Building2 size={20} className="text-blue-500" />
-        담당 기업 정보
-      </h2>
-      <p className="text-sm text-slate-500 mb-6">
-        기업의 기본 정보를 입력해주세요
-      </p>
+    <div>
+      {/* 업종 */}
+      <FieldRow label={t('fields.industryType')} required>
+        <Input
+          id="industry_type"
+          name="industry_type"
+          value={formData.industry_type}
+          onChange={onChange}
+          onBlur={onBlur}
+          placeholder={t('fields.industryTypePlaceholder')}
+          error={!!errors.industry_type}
+          success={!errors.industry_type && touchedFields.industry_type && !!formData.industry_type}
+        />
+        <FieldHint
+          error={errors.industry_type}
+          touched={touchedFields.industry_type}
+          hasValue={!!formData.industry_type}
+          inputComplete={t('inputComplete')}
+        />
+      </FieldRow>
 
-      <div className="space-y-4">
-        {/* 사업자등록번호 */}
-        <div>
-          <label htmlFor="company_number" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-            <Hash size={16} />
-            사업자등록번호 <span className="text-[11px] px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
-          </label>
-          <input
-            type="text"
-            id="company_number"
-            name="company_number"
-            value={formData.company_number || ''}
-            onChange={onChange}
-            onBlur={onBlur}
-            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-            placeholder="000-00-00000"
-            maxLength={12}
-          />
-          {formData.company_number && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
+      {/* 기업 형태 */}
+      <FieldRow label={t('fields.companyType')} required>
+        <select
+          id="company_type"
+          name="company_type"
+          value={formData.company_type}
+          onChange={onChange}
+          onBlur={onBlur}
+          className={selectCls(
+            !!errors.company_type,
+            touchedFields.company_type,
+            !!formData.company_type,
           )}
-        </div>
+        >
+          <option value="">{t('selectPlaceholder')}</option>
+          <option value="주식회사">{t('fields.companyTypes.corporation')}</option>
+          <option value="유한회사">{t('fields.companyTypes.limited')}</option>
+          <option value="개인사업자">{t('fields.companyTypes.individual')}</option>
+          <option value="외국계기업">{t('fields.companyTypes.foreign')}</option>
+        </select>
+        <FieldHint
+          error={errors.company_type}
+          touched={touchedFields.company_type}
+          hasValue={!!formData.company_type}
+          inputComplete={t('inputComplete')}
+        />
+      </FieldRow>
 
-        {/* 대표자명 */}
-        <div>
-          <label htmlFor="representative_name" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-            <User size={16} />
-            대표자명 <span className="text-[11px] px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
-          </label>
-          <input
-            type="text"
-            id="representative_name"
-            name="representative_name"
-            value={formData.representative_name || ''}
-            onChange={onChange}
-            onBlur={onBlur}
-            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-            placeholder="홍길동"
-          />
-          {formData.representative_name && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-        </div>
-
-        {/* 업종 */}
-        <div>
-          <label htmlFor="industry_type" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
-            업종 <span className="text-red-500 text-lg ml-1">*</span>
-          </label>
-          <input
-            type="text"
-            id="industry_type"
-            name="industry_type"
-            value={formData.industry_type}
-            onChange={onChange}
-            onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.industry_type ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.industry_type && touchedFields.industry_type && formData.industry_type ? 'border-emerald-500' : ''}`}
-            placeholder="예: IT/소프트웨어, 제조, 유통 등"
-          />
-          {errors.industry_type && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.industry_type}</p>
-          )}
-          {!errors.industry_type && touchedFields.industry_type && formData.industry_type && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-        </div>
-
-        {/* 기업 형태 */}
-        <div>
-          <label htmlFor="company_type" className="text-sm font-medium text-slate-700 mb-2 flex items-center">
-            기업 형태 <span className="text-red-500 text-lg ml-1">*</span>
-          </label>
-          <select
-            id="company_type"
-            name="company_type"
-            value={formData.company_type}
-            onChange={onChange}
-            onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.company_type ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer ${!errors.company_type && touchedFields.company_type && formData.company_type ? 'border-emerald-500' : ''}`}
-          >
-            <option value="">선택하세요</option>
-            <option value="주식회사">주식회사</option>
-            <option value="유한회사">유한회사</option>
-            <option value="개인사업자">개인사업자</option>
-            <option value="외국계기업">외국계기업</option>
-          </select>
-          {errors.company_type && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.company_type}</p>
-          )}
-          {!errors.company_type && touchedFields.company_type && formData.company_type && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-        </div>
-
-        {/* 직원 수 & 설립일 */}
-        <div className="grid grid-cols-2 gap-4">
+      {/* 직원 수 & 설립일 */}
+      <FieldRow label={t('fields.employeeAndDate')} required>
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="employee_count" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-              <Users size={16} />
-              직원 수 <span className="text-red-500 text-lg ml-1">*</span>
-            </label>
             <select
               id="employee_count"
               name="employee_count"
               value={formData.employee_count || ''}
               onChange={onChange}
               onBlur={onBlur}
-              className={`w-full px-4 py-2 border ${errors.employee_count ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer ${!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 ? 'border-emerald-500' : ''}`}
+              className={selectCls(
+                !!errors.employee_count,
+                touchedFields.employee_count,
+                formData.employee_count > 0,
+              )}
             >
-              <option value="">선택하세요</option>
-              <option value="10">1-10명</option>
-              <option value="50">11-50명</option>
-              <option value="100">51-100명</option>
-              <option value="200">101-200명</option>
-              <option value="500">201-500명</option>
-              <option value="1000">500명 이상</option>
+              <option value="">{t('fields.employeeCounts.select')}</option>
+              <option value="10">{t('fields.employeeCounts.under10')}</option>
+              <option value="50">{t('fields.employeeCounts.under50')}</option>
+              <option value="100">{t('fields.employeeCounts.under100')}</option>
+              <option value="200">{t('fields.employeeCounts.under200')}</option>
+              <option value="500">{t('fields.employeeCounts.under500')}</option>
+              <option value="1000">{t('fields.employeeCounts.over500')}</option>
             </select>
-            {errors.employee_count && (
-              <p className="mt-1 text-[11px] text-red-500">{errors.employee_count}</p>
-            )}
-            {!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 && (
-              <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-                <span className="text-emerald-500">✓</span> 입력 완료
-              </p>
-            )}
+            <FieldHint
+              error={errors.employee_count}
+              touched={touchedFields.employee_count}
+              hasValue={formData.employee_count > 0}
+              inputComplete={t('inputComplete')}
+            />
           </div>
-
           <div>
-            <label htmlFor="establishment_date" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-              <Calendar size={16} />
-              설립일 <span className="text-red-500 text-lg ml-1">*</span>
-            </label>
-            <input
+            <Input
               type="date"
               id="establishment_date"
               name="establishment_date"
@@ -177,133 +177,79 @@ export const CompanyInfoSection = ({
               onChange={onChange}
               onBlur={onBlur}
               max={today}
-              className={`w-full px-4 py-2 border ${errors.establishment_date ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date ? 'border-emerald-500' : ''}`}
+              error={!!errors.establishment_date}
+              success={
+                !errors.establishment_date &&
+                touchedFields.establishment_date &&
+                !!formData.establishment_date
+              }
             />
-            {errors.establishment_date && (
-              <p className="mt-1 text-[11px] text-red-500">{errors.establishment_date}</p>
-            )}
-            {!errors.establishment_date && touchedFields.establishment_date && formData.establishment_date && (
-              <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-                <span className="text-emerald-500">✓</span> 입력 완료
-              </p>
-            )}
+            <FieldHint
+              error={errors.establishment_date}
+              touched={touchedFields.establishment_date}
+              hasValue={!!formData.establishment_date}
+              inputComplete={t('inputComplete')}
+            />
           </div>
         </div>
+      </FieldRow>
 
-        {/* 보험 */}
-        <div>
-          <label htmlFor="insurance" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-            <FileText size={16} />
-            보험 <span className="text-[11px] px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
-          </label>
-          <input
-            type="text"
-            id="insurance"
-            name="insurance"
-            value={formData.insurance}
-            onChange={onChange}
-            className={`w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${formData.insurance ? 'border-emerald-500' : ''}`}
-            placeholder="예: 4대보험 완비, 산재보험 등"
-          />
-          {formData.insurance && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-          {!formData.insurance && (
-            <p className="mt-1 text-[11px] text-slate-500">제공하는 보험 정보를 입력해주세요.</p>
-          )}
-        </div>
+      {/* 보험 */}
+      <FieldRow label={t('fields.insurance')} optional optionalLabel={t('optionalLabel')}>
+        <Input
+          id="insurance"
+          name="insurance"
+          value={formData.insurance}
+          onChange={onChange}
+          placeholder={t('fields.insurancePlaceholder')}
+          success={!!formData.insurance}
+        />
+        {!formData.insurance && (
+          <p className="mt-1.5 text-caption-3 text-label-400">{t('fields.insuranceHint')}</p>
+        )}
+      </FieldRow>
 
-        {/* 일반전화 (회사 대표번호) */}
-        <div>
-          <label htmlFor="company_phone" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-            <Phone size={16} />
-            일반전화 (회사 대표번호) <span className="text-red-500 text-lg ml-1">*</span>
-          </label>
-          <input
-            type="text"
-            id="company_phone"
-            name="company_phone"
-            value={formData.company_phone || ''}
-            onChange={onChange}
-            onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.company_phone ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.company_phone && touchedFields.company_phone && formData.company_phone ? 'border-emerald-500' : ''}`}
-            placeholder="02-1234-5678 (지역번호 포함)"
-          />
-          {errors.company_phone && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.company_phone}</p>
-          )}
-          {!errors.company_phone && touchedFields.company_phone && formData.company_phone && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-          {!touchedFields.company_phone && (
-            <p className="mt-1 text-[11px] text-slate-500">
-              일반전화: 지역번호(예: 02, 031, 051) 포함
-            </p>
-          )}
-        </div>
+      {/* 주소 */}
+      <FieldRow label={t('fields.address')} required>
+        <Input
+          id="address"
+          name="address"
+          value={formData.address}
+          onChange={onChange}
+          onBlur={onBlur}
+          placeholder={t('fields.addressPlaceholder')}
+          error={!!errors.address}
+          success={!errors.address && touchedFields.address && !!formData.address}
+        />
+        <FieldHint
+          error={errors.address}
+          touched={touchedFields.address}
+          hasValue={!!formData.address}
+          hint={t('fields.addressHint')}
+          inputComplete={t('inputComplete')}
+        />
+      </FieldRow>
 
-        {/* 주소 */}
-        <div>
-          <label htmlFor="address" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-            <MapPin size={16} />
-            주소 <span className="text-red-500 text-lg ml-1">*</span>
-          </label>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            value={formData.address}
-            onChange={onChange}
-            onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.address ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.address && touchedFields.address && formData.address ? 'border-emerald-500' : ''}`}
-            placeholder="서울특별시 강남구 테헤란로 427"
-          />
-          {errors.address && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.address}</p>
-          )}
-          {!errors.address && touchedFields.address && formData.address && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-          {!touchedFields.address && (
-            <p className="mt-1 text-[11px] text-slate-500">회사의 주소를 입력해주세요.</p>
-          )}
-        </div>
-
-        {/* 웹사이트 */}
-        <div>
-          <label htmlFor="website_url" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-            <Globe size={16} />
-            웹사이트 <span className="text-[11px] px-2 py-0.5 bg-slate-200 text-slate-600 rounded ml-2">선택</span>
-          </label>
-          <input
-            type="url"
-            id="website_url"
-            name="website_url"
-            value={formData.website_url}
-            onChange={onChange}
-            onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.website_url ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.website_url && formData.website_url ? 'border-emerald-500' : ''}`}
-            placeholder="https://example.com"
-          />
-          {errors.website_url && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.website_url}</p>
-          )}
-          {!errors.website_url && formData.website_url && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-          {!formData.website_url && (
-            <p className="mt-1 text-[11px] text-slate-500">회사 홈페이지 주소를 입력해주세요. (http:// 또는 https:// 포함)</p>
-          )}
-        </div>
-      </div>
+      {/* 웹사이트 */}
+      <FieldRow label={t('fields.website')} optional optionalLabel={t('optionalLabel')}>
+        <Input
+          type="url"
+          id="website_url"
+          name="website_url"
+          value={formData.website_url}
+          onChange={onChange}
+          onBlur={onBlur}
+          placeholder={t('fields.websitePlaceholder')}
+          error={!!errors.website_url}
+          success={!errors.website_url && !!formData.website_url}
+        />
+        <FieldHint
+          error={errors.website_url}
+          hasValue={!!formData.website_url}
+          hint={t('fields.websiteHint')}
+          inputComplete={t('inputComplete')}
+        />
+      </FieldRow>
     </div>
   );
 };

@@ -6,8 +6,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Edit3 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import Layout from '@/shared/components/layout/Layout';
-import { Header } from '@/shared/components/layout/Header';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/shared/ui/Skeleton';
@@ -29,6 +29,7 @@ import { profileApi } from '../api/profileApi';
 import { resumeApi } from '@/features/resume/api/resumeApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ResumeListItem } from '@/shared/types/api';
+import { FetchError } from '@/shared/api/fetchClient';
 
 // Mock data for dashboard, skill management, and career management
 const mockMyProfile: UserProfile = {
@@ -90,8 +91,9 @@ const mockMySkillStats = {
 };
 
 function MyProfileClient() {
+  const t = useTranslations('user.profile');
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience' | 'resume'>('overview');
-  const { isAuthenticated, isLoading: authLoading, userType, logout } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -193,10 +195,6 @@ function MyProfileClient() {
     }
   }, [isAuthenticated, authLoading, router]);
 
-  const handleLogout = async () => {
-    await logout();
-  };
-
   const handleEditClick = () => {
     // 편집 페이지로 이동
     router.push('/user/profile/edit');
@@ -225,19 +223,13 @@ function MyProfileClient() {
   if (authLoading || isLoading) {
     return (
       <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-        <div className="min-h-screen bg-slate-50 py-8">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-label-100 py-8">
+          <div className="page-container">
             <div className="animate-pulse space-y-6">
-              <div className="bg-white rounded-lg h-64"></div>
+              <div className="bg-label-100 rounded-xl h-64"></div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg h-96"></div>
-                <div className="bg-white rounded-lg h-96"></div>
+                <div className="bg-label-100 rounded-xl h-96"></div>
+                <div className="bg-label-100 rounded-xl h-96"></div>
               </div>
             </div>
           </div>
@@ -246,23 +238,49 @@ function MyProfileClient() {
     );
   }
 
-  if (error || !profile) {
+  if (error) {
+    // 프로필 미생성 상태 → 프로필 작성 페이지로 리다이렉트
+    if (error instanceof FetchError && error.status === 404) {
+      router.replace('/user/resume/create');
+      return null;
+    }
+
     return (
       <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-        <div className="min-h-screen bg-slate-50 py-8 flex items-center justify-center">
+        <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-[24px] font-semibold text-slate-700 mb-2">
-              프로필을 불러올 수 없습니다
+            <h2 className="text-title-3 font-semibold text-label-700 mb-2">
+              {t('errorTitle')}
             </h2>
-            <p className="text-sm text-slate-500">
-              잠시 후 다시 시도해주세요.
+            <p className="text-body-3 text-label-500">
+              {t('errorSubtitle')}
             </p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-label-100 py-16 flex items-center justify-center px-4">
+          <div className="text-center max-w-md mx-auto">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary-100 flex items-center justify-center">
+              <Edit3 className="w-8 h-8 text-primary-600" />
+            </div>
+            <h2 className="text-title-4 font-bold text-label-900 mb-2">
+              {t('errorTitle')}
+            </h2>
+            <p className="text-caption-1 text-label-500 mb-6">
+              {t('errorSubtitle')}
+            </p>
+            <button
+              onClick={() => router.push('/user/resume/create')}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white text-caption-1 font-semibold rounded-lg hover:bg-primary-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+            >
+              {t('createResume')}
+            </button>
           </div>
         </div>
       </Layout>
@@ -273,14 +291,8 @@ function MyProfileClient() {
 
   return (
     <Layout>
-      <Header
-        type={userType === 'company' ? 'business' : 'homepage'}
-        isAuthenticated={isAuthenticated}
-        isLoading={authLoading}
-        onLogout={handleLogout}
-      />
-      <div className="min-h-screen bg-slate-50 py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="min-h-screen bg-white py-8">
+        <div className="page-container space-y-6">
           {/* 페이지 헤더 */}
           <motion.div 
             className="flex items-center justify-between"
@@ -289,23 +301,23 @@ function MyProfileClient() {
             transition={{ duration: 0.5 }}
           >
             <div>
-              <h1 className="text-[28px] font-bold text-slate-900">내 프로필</h1>
-              <p className="text-sm text-slate-500 mt-1">
-                프로필을 관리하고 스킬 분석을 확인하세요
+              <h1 className="text-title-2 font-bold text-label-900">{t('title')}</h1>
+              <p className="text-body-3 text-label-500 mt-1">
+                {t('subtitle')}
               </p>
             </div>
             
             {/* <div className="flex items-center gap-2">
               <button
                 onClick={handleShare}
-                className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-label-100 transition-colors"
               >
                 <Share2 size={16} />
                 공유
               </button>
               <button
                 onClick={() => setActiveTab('settings')}
-                className="flex items-center gap-2 px-4 py-2 bg-label-700 text-white rounded-lg text-sm font-medium hover:bg-label-800 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-label-700 text-white rounded-lg text-body-3 font-medium hover:bg-label-800 transition-colors"
               >
                 <Settings size={16} />
                 이력서
@@ -329,18 +341,18 @@ function MyProfileClient() {
           >
             <div className="flex gap-2">
               {[
-                { key: 'overview', label: '대시보드' },
-                { key: 'resume', label: '이력서' },
-                { key: 'skills', label: '스킬 관리' },
-                { key: 'experience', label: '경력 관리' }
+                { key: 'overview', label: t('tabs.overview') },
+                { key: 'resume', label: t('tabs.resume') },
+                { key: 'skills', label: t('tabs.skills') },
+                { key: 'experience', label: t('tabs.experience') }
               ].map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                  className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${
                     activeTab === tab.key
-                      ? 'bg-blue-500 text-white shadow-sm'
-                      : 'text-slate-700 hover:bg-slate-100'
+                      ? 'bg-primary-500 text-white shadow-sm'
+                      : 'text-label-700 hover:bg-label-100'
                   }`}
                 >
                   {tab.label}
@@ -362,12 +374,12 @@ function MyProfileClient() {
                     transition={{ duration: 0.5, delay: 0.4 }}
                   >
                     <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-[17px] font-semibold text-slate-900">
-                        종합 역량 분석
+                      <h3 className="text-title-5 font-semibold text-label-900">
+                        {t('overview.radarTitle')}
                       </h3>
                       <button
                         onClick={handleEditClick}
-                        className="text-blue-500 hover:text-blue-600 transition-colors cursor-pointer"
+                        className="text-primary-500 hover:text-primary-600 transition-colors cursor-pointer"
                       >
                         <Edit3 size={16} />
                       </button>
@@ -386,28 +398,28 @@ function MyProfileClient() {
             {activeTab === 'skills' && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-[17px] font-semibold text-slate-900">
-                    스킬 관리
+                  <h3 className="text-title-5 font-semibold text-label-900">
+                    {t('skillsSection.title')}
                   </h3>
-                  <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors cursor-pointer">
-                    스킬 추가
+                  <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer">
+                    {t('skillsSection.addButton')}
                   </button>
                 </div>
 
                 {profile.skills.length > 0 ? (
                   <SkillBarChart
                     skills={profile.skills}
-                    title="내 스킬 분석"
+                    title={t('skillsSection.chartTitle')}
                     maxItems={15}
                     showCategory={true}
                   />
                 ) : (
                   <div className="bg-white rounded-lg p-12 shadow-sm text-center">
-                    <p className="text-sm text-slate-600 mb-1">
-                      보유하신 스킬을 추가해보세요
+                    <p className="text-body-3 text-label-600 mb-1">
+                      {t('skillsSection.empty')}
                     </p>
-                    <p className="text-[11px] text-slate-500">
-                      스킬을 등록하면 기업에게 더 잘 어필할 수 있어요
+                    <p className="text-caption-3 text-label-500">
+                      {t('skillsSection.emptyHint')}
                     </p>
                   </div>
                 )}
@@ -422,15 +434,15 @@ function MyProfileClient() {
                 transition={{ duration: 0.5 }}
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="text-[17px] font-semibold text-slate-900">
-                    경력 및 교육 관리
+                  <h3 className="text-title-5 font-semibold text-label-900">
+                    {t('experienceSection.title')}
                   </h3>
                   <div className="flex gap-2">
-                    <button className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
-                      교육 추가
+                    <button className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-label-100 transition-colors cursor-pointer">
+                      {t('experienceSection.addEducation')}
                     </button>
-                    <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors cursor-pointer">
-                      경력 추가
+                    <button className="px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer">
+                      {t('experienceSection.addExperience')}
                     </button>
                   </div>
                 </div>
@@ -438,26 +450,26 @@ function MyProfileClient() {
                 <div className="bg-white rounded-lg p-6 shadow-sm">
                   {/* 교육 이력 */}
                   <div className="space-y-4 mb-8">
-                    <h4 className="text-[15px] font-semibold text-slate-700">교육 이력</h4>
+                    <h4 className="text-body-2 font-semibold text-label-700">{t('experienceSection.educationTitle')}</h4>
                     {profile.education.length > 0 ? (
                       profile.education.map((edu) => (
-                        <div key={edu.id} className="flex items-start justify-between border-l-4 border-blue-200 pl-4 py-2">
+                        <div key={edu.id} className="flex items-start justify-between border-l-4 border-primary-200 pl-4 py-2">
                           <div>
-                            <h5 className="text-sm font-semibold text-slate-900">{edu.institution}</h5>
-                            <p className="text-sm text-slate-600">{edu.degree} - {edu.field}</p>
-                            <p className="text-[11px] text-slate-500">
-                              {edu.startDate} ~ {edu.endDate || '현재'}
+                            <h5 className="text-body-3 font-semibold text-label-900">{edu.institution}</h5>
+                            <p className="text-body-3 text-label-600">{edu.degree} - {edu.field}</p>
+                            <p className="text-caption-3 text-label-500">
+                              {edu.startDate} ~ {edu.endDate || t('experienceSection.present')}
                             </p>
                           </div>
-                          <button className="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+                          <button className="text-label-400 hover:text-label-600 transition-colors cursor-pointer">
                             <Edit3 size={16} />
                           </button>
                         </div>
                       ))
                     ) : (
                       <div className="text-center py-8">
-                        <p className="text-sm text-slate-500">
-                          교육 이력을 추가해보세요
+                        <p className="text-body-3 text-label-500">
+                          {t('experienceSection.educationEmpty')}
                         </p>
                       </div>
                     )}
@@ -466,10 +478,10 @@ function MyProfileClient() {
                   {/* 자격증 */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-[15px] font-semibold text-slate-700">자격증</h4>
+                      <h4 className="text-body-2 font-semibold text-label-700">{t('experienceSection.certTitle')}</h4>
                       {profile.certifications.length > 0 && (
-                        <button className="text-blue-500 hover:text-blue-600 text-[11px] font-medium transition-colors cursor-pointer">
-                          관리
+                        <button className="text-primary-500 hover:text-primary-600 text-caption-3 font-medium transition-colors cursor-pointer">
+                          {t('experienceSection.certManage')}
                         </button>
                       )}
                     </div>
@@ -478,7 +490,7 @@ function MyProfileClient() {
                         {profile.certifications.map((cert, index) => (
                           <span
                             key={index}
-                            className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[11px] border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors"
+                            className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-caption-3 border border-primary-200 cursor-pointer hover:bg-primary-100 transition-colors"
                           >
                             {cert}
                           </span>
@@ -486,8 +498,8 @@ function MyProfileClient() {
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <p className="text-sm text-slate-500">
-                          자격증을 추가해보세요
+                        <p className="text-body-3 text-label-500">
+                          {t('experienceSection.certEmpty')}
                         </p>
                       </div>
                     )}
@@ -515,7 +527,7 @@ function MyProfileClient() {
                         const response = await resumeApi.uploadResumeFile(file);
                         // 쿼리 무효화하여 목록 갱신
                         queryClient.invalidateQueries({ queryKey: ['resumes'] });
-                        toast.success(`이력서 파일이 업로드되었습니다. (ID: ${response.resume_id})`);
+                        toast.success(t('resumeSection.uploadSuccess', { id: response.resume_id }));
                       } catch (err) {
                         throw err; // ResumeSection에서 에러 처리
                       }
@@ -524,7 +536,7 @@ function MyProfileClient() {
                       const resume = (resumesData || []).find(r => r.id === resumeId);
                       const resumeTitle = resume?.title || '이력서';
 
-                      if (!window.confirm(`"${resumeTitle}" 이력서를 삭제하시겠습니까?`)) {
+                      if (!window.confirm(t('resumeSection.deleteConfirm', { title: resumeTitle }))) {
                         return;
                       }
 
@@ -532,9 +544,9 @@ function MyProfileClient() {
                         await resumeApi.deleteResume(Number(resumeId));
                         // 쿼리 무효화하여 목록 갱신
                         queryClient.invalidateQueries({ queryKey: ['resumes'] });
-                        toast.success('이력서가 삭제되었습니다.');
+                        toast.success(t('resumeSection.deleteSuccess'));
                       } catch (err) {
-                        toast.error('이력서 삭제에 실패했습니다.');
+                        toast.error(t('resumeSection.deleteError'));
                       }
                     }}
                     onTogglePublic={() => {

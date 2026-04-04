@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, Home, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/utils/utils';
 
 interface NavItem {
@@ -18,50 +19,6 @@ interface MobileNavProps {
   onLogout?: () => void;
 }
 
-const HOMEPAGE_QUICK = [
-  { label: '채용공고', emoji: '💼', href: '/jobs' },
-  { label: '이력서', emoji: '📄', href: '/user/resume/create' },
-  { label: '자가진단', emoji: '🎯', href: '/diagnosis' },
-];
-
-const BUSINESS_QUICK = [
-  { label: '공고 등록', emoji: '✍️', href: '/company/posts/create' },
-  { label: '후보자 관리', emoji: '👥', href: '/company/jobs' },
-  { label: '기업 프로필', emoji: '🏢', href: '/company/profile/edit' },
-];
-
-const HOMEPAGE_SECTIONS = [
-  {
-    title: '채용공고',
-    items: [
-      { icon: '📍', label: '지역별 공고', href: '/jobs' },
-      { icon: '💼', label: '직무별 공고', href: '/jobs' },
-      { icon: '🌏', label: '외국인 채용', href: '/jobs' },
-      { icon: '⭐', label: '추천 공고', href: '/jobs' },
-    ],
-  },
-  {
-    title: 'MY',
-    items: [
-      { icon: '👤', label: '내 프로필', href: '/user/profile' },
-      { icon: '📋', label: '이력서 관리', href: '/user/resume/create' },
-      { icon: '🔍', label: '자가진단', href: '/diagnosis' },
-    ],
-  },
-];
-
-const BUSINESS_SECTIONS = [
-  {
-    title: '채용 관리',
-    items: [
-      { icon: '✍️', label: '인재채용', href: '/company/posts/create' },
-      { icon: '📋', label: '채용공고 관리', href: '/company/jobs' },
-      { icon: '👥', label: '후보자 관리', href: '/company/jobs' },
-      { icon: '🏢', label: '기업 프로필', href: '/company/profile/edit' },
-    ],
-  },
-];
-
 const panelContentVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.06, delayChildren: 0.15 } },
@@ -74,6 +31,51 @@ const panelItemVariants = {
 
 export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const t = useTranslations('common.nav');
+
+  const HOMEPAGE_QUICK = [
+    { label: t('jobs'), emoji: '💼', href: '/jobs' },
+    { label: t('resume'), emoji: '📄', href: '/user/resume/create' },
+    { label: t('diagnosis'), emoji: '🎯', href: '/diagnosis' },
+  ];
+
+  const BUSINESS_QUICK = [
+    { label: t('postJobMenu'), emoji: '✍️', href: '/company/posts/create' },
+    { label: t('candidateManage'), emoji: '👥', href: '/company/jobs' },
+    { label: t('companyProfileMenu'), emoji: '🏢', href: '/company/profile/edit' },
+  ];
+
+  const HOMEPAGE_SECTIONS = [
+    {
+      title: t('jobs'),
+      items: [
+        { icon: '📍', label: t('jobsByRegion'), href: '/jobs' },
+        { icon: '💼', label: t('jobsByPosition'), href: '/jobs' },
+        { icon: '🌏', label: t('foreignerJobs'), href: '/jobs' },
+        { icon: '⭐', label: t('recommendedJobs'), href: '/jobs' },
+      ],
+    },
+    {
+      title: t('my'),
+      items: [
+        { icon: '👤', label: t('myProfile'), href: '/user/profile' },
+        { icon: '📋', label: t('resumeManage'), href: '/user/resume/create' },
+        { icon: '🔍', label: t('diagnosis'), href: '/diagnosis' },
+      ],
+    },
+  ];
+
+  const BUSINESS_SECTIONS = [
+    {
+      title: t('recruitManage'),
+      items: [
+        { icon: '✍️', label: t('postJobMenu'), href: '/company/posts/create' },
+        { icon: '📋', label: t('manageJobsMenu'), href: '/company/jobs' },
+        { icon: '👥', label: t('candidateManage'), href: '/company/jobs' },
+        { icon: '🏢', label: t('companyProfileMenu'), href: '/company/profile/edit' },
+      ],
+    },
+  ];
 
   const quickLinks = type === 'business' ? BUSINESS_QUICK : HOMEPAGE_QUICK;
   const sections = type === 'business' ? BUSINESS_SECTIONS : HOMEPAGE_SECTIONS;
@@ -99,8 +101,8 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
       {/* 햄버거 버튼 */}
       <button
         onClick={() => setIsOpen(true)}
-        className="p-2 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none cursor-pointer"
-        aria-label="메뉴 열기"
+        className="p-2 rounded-lg text-label-500 hover:text-primary-600 hover:bg-label-50 transition-colors focus:outline-none cursor-pointer"
+        aria-label={t('jobs')}
       >
         <Menu size={22} />
       </button>
@@ -127,26 +129,23 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.28, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="fixed top-0 right-0 w-full h-full bg-white z-[110] flex flex-col"
+              className="fixed top-0 right-0 w-full sm:max-w-sm h-full bg-white z-[110] flex flex-col shadow-xl"
               role="dialog"
               aria-modal="true"
-              aria-label="네비게이션 메뉴"
             >
 
               {/* 패널 헤더 */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 flex-shrink-0">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-line-100 flex-shrink-0">
                 <Link
                   href="/"
                   onClick={close}
-                  className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-slate-50 transition-colors cursor-pointer"
-                  aria-label="홈으로"
+                  className="p-1.5 rounded-lg text-label-500 hover:text-primary-600 hover:bg-label-50 transition-colors cursor-pointer"
                 >
                   <Home size={20} />
                 </Link>
                 <button
                   onClick={close}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors focus:outline-none cursor-pointer"
-                  aria-label="메뉴 닫기"
+                  className="p-1.5 rounded-lg text-label-400 hover:text-label-700 hover:bg-label-50 transition-colors focus:outline-none cursor-pointer"
                 >
                   <X size={22} />
                 </button>
@@ -162,16 +161,16 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
 
                 {/* 자주 찾는 메뉴 */}
                 <motion.div className="px-5 pt-6 pb-5" variants={panelItemVariants}>
-                  <p className="text-[13px] font-bold text-slate-900 mb-3">
-                    자주 찾는 메뉴예요
+                  <p className="text-caption-1 font-bold text-label-900 mb-3">
+                    {t('quickLinksTitle')}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {quickLinks.map(link => (
                       <Link
-                        key={link.label}
+                        key={link.href + link.label}
                         href={link.href}
                         onClick={close}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-full text-[13px] font-medium text-slate-700 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-label-50 border border-line-200 rounded-full text-caption-1 font-medium text-label-700 hover:border-primary-300 hover:bg-primary-50 hover:text-primary-600 transition-colors"
                       >
                         <span>{link.emoji}</span>
                         {link.label}
@@ -180,26 +179,26 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                   </div>
                 </motion.div>
 
-                <motion.div className="h-px bg-slate-100 mx-5" variants={panelItemVariants} />
+                <motion.div className="h-px bg-line-100 mx-5" variants={panelItemVariants} />
 
                 {/* 섹션별 2열 메뉴 */}
                 {sections.map((section, si) => (
                   <motion.div key={section.title} variants={panelItemVariants}>
-                    {si > 0 && <div className="h-px bg-slate-100 mx-5" />}
+                    {si > 0 && <div className="h-px bg-line-100 mx-5" />}
                     <div className="px-5 pt-5 pb-3">
-                      <p className="text-[13px] font-bold text-slate-900 mb-3">
+                      <p className="text-caption-1 font-bold text-label-900 mb-3">
                         {section.title}
                       </p>
                       <div className="grid grid-cols-2 gap-1">
                         {section.items.map(item => (
                           <Link
-                            key={item.label}
+                            key={item.href + item.label}
                             href={item.href}
                             onClick={close}
-                            className="flex items-center gap-2.5 px-3 py-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                            className="flex items-center gap-2.5 px-3 py-3 rounded-lg hover:bg-label-50 transition-colors group"
                           >
-                            <span className="text-[18px] leading-none">{item.icon}</span>
-                            <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600 transition-colors">
+                            <span className="text-title-5 leading-none">{item.icon}</span>
+                            <span className="text-caption-1 font-medium text-label-700 group-hover:text-primary-600 transition-colors">
                               {item.label}
                             </span>
                           </Link>
@@ -209,7 +208,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                   </motion.div>
                 ))}
 
-                <motion.div className="h-px bg-slate-100 mx-5" variants={panelItemVariants} />
+                <motion.div className="h-px bg-line-100 mx-5" variants={panelItemVariants} />
 
                 {/* 인증 링크 */}
                 <motion.div className="px-5 py-3" variants={panelItemVariants}>
@@ -218,17 +217,17 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                       <Link
                         href={type === 'homepage' ? '/user/profile' : '/company'}
                         onClick={close}
-                        className="flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group"
+                        className="flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-label-50 transition-colors group"
                       >
-                        <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600">MY홈</span>
-                        <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400" />
+                        <span className="text-caption-1 font-medium text-label-700 group-hover:text-primary-600">{t('myHome')}</span>
+                        <ChevronRight size={15} className="text-label-300 group-hover:text-primary-400" />
                       </Link>
                       <button
                         onClick={() => { onLogout?.(); close(); }}
-                        className="w-full flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group text-left"
+                        className="w-full flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-label-50 transition-colors group text-left cursor-pointer"
                       >
-                        <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600">로그아웃</span>
-                        <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400" />
+                        <span className="text-caption-1 font-medium text-label-700 group-hover:text-primary-600">{t('logout')}</span>
+                        <ChevronRight size={15} className="text-label-300 group-hover:text-primary-400" />
                       </button>
                     </>
                   ) : (
@@ -236,18 +235,18 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                       <Link
                         href="/login-select"
                         onClick={close}
-                        className="flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group"
+                        className="flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-label-50 transition-colors group"
                       >
-                        <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600">로그인</span>
-                        <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400" />
+                        <span className="text-caption-1 font-medium text-label-700 group-hover:text-primary-600">{t('login')}</span>
+                        <ChevronRight size={15} className="text-label-300 group-hover:text-primary-400" />
                       </Link>
                       <Link
                         href="/signup-select"
                         onClick={close}
-                        className="flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group"
+                        className="flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-label-50 transition-colors group"
                       >
-                        <span className="text-[13px] font-medium text-slate-700 group-hover:text-blue-600">회원가입</span>
-                        <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400" />
+                        <span className="text-caption-1 font-medium text-label-700 group-hover:text-primary-600">{t('signup')}</span>
+                        <ChevronRight size={15} className="text-label-300 group-hover:text-primary-400" />
                       </Link>
                     </>
                   )}
@@ -256,8 +255,8 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
               </motion.div>
 
               {/* 하단 브랜드 */}
-              <div className="px-5 py-4 border-t border-slate-100 flex-shrink-0">
-                <span className="text-[11px] font-semibold text-slate-300 tracking-wide uppercase">
+              <div className="px-5 py-4 border-t border-line-100 flex-shrink-0">
+                <span className="text-caption-3 font-semibold text-label-300 tracking-wide uppercase">
                   WorkInKorea
                 </span>
               </div>

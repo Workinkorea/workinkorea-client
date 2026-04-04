@@ -3,9 +3,12 @@ import type {
   AdminUser,
   AdminCompany,
   AdminPost,
+  AdminEvent,
   UpdateAdminUserRequest,
   UpdateAdminCompanyRequest,
   UpdateAdminPostRequest,
+  CreateAdminEventRequest,
+  UpdateAdminEventRequest,
 } from '@/shared/types/api';
 
 export const adminApi = {
@@ -123,5 +126,53 @@ export const adminApi = {
    */
   async deletePost(postId: number): Promise<string> {
     return fetchClient.delete<string>(`/api/admin/posts/${postId}`);
+  },
+
+  // Event management
+  /**
+   * 이벤트 목록을 조회합니다. (관리자 전용)
+   * @param skip - 건너뛸 레코드 수
+   * @param limit - 조회할 최대 레코드 수
+   * @returns 이벤트 목록
+   */
+  async getEvents(skip: number = 0, limit: number = 10): Promise<AdminEvent[]> {
+    return fetchClient.get<AdminEvent[]>(`/api/admin/events/?skip=${skip}&limit=${limit}`);
+  },
+
+  /**
+   * 특정 이벤트의 상세 정보를 조회합니다. (관리자 전용)
+   * @param eventId - 조회할 이벤트 ID
+   * @returns 이벤트 상세 정보
+   */
+  async getEventById(eventId: number): Promise<AdminEvent> {
+    return fetchClient.get<AdminEvent>(`/api/admin/events/${eventId}`);
+  },
+
+  /**
+   * 이벤트를 생성합니다. (관리자 전용)
+   * @param data - 생성할 이벤트 정보
+   * @returns 생성된 이벤트 정보
+   */
+  async createEvent(data: CreateAdminEventRequest): Promise<AdminEvent> {
+    return fetchClient.post<AdminEvent>('/api/admin/events/', data);
+  },
+
+  /**
+   * 이벤트 정보를 업데이트합니다. (관리자 전용)
+   * @param eventId - 업데이트할 이벤트 ID
+   * @param data - 업데이트할 이벤트 정보
+   * @returns 업데이트된 이벤트 정보
+   */
+  async updateEvent(eventId: number, data: UpdateAdminEventRequest): Promise<AdminEvent> {
+    return fetchClient.put<AdminEvent>(`/api/admin/events/${eventId}`, data);
+  },
+
+  /**
+   * 이벤트를 삭제합니다. (관리자 전용)
+   * @param eventId - 삭제할 이벤트 ID
+   * @returns 성공 메시지
+   */
+  async deleteEvent(eventId: number): Promise<string> {
+    return fetchClient.delete<string>(`/api/admin/events/${eventId}`);
   },
 };

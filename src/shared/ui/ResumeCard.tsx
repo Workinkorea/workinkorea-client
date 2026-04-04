@@ -34,13 +34,13 @@ export function ResumeCard({
   const getStatusColor = (status: Resume['status']) => {
     switch (status) {
       case 'draft':
-        return 'bg-amber-50 text-amber-700 border-amber-200';
+        return 'bg-status-caution-bg text-status-caution border-status-caution-bg';
       case 'completed':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        return 'bg-status-correct-bg text-status-correct border-status-correct-bg';
       case 'published':
         return 'bg-blue-50 text-blue-700 border-blue-200';
       default:
-        return 'bg-slate-50 text-slate-700 border-slate-200';
+        return 'bg-label-50 text-label-700 border-line-400';
     }
   };
 
@@ -67,7 +67,7 @@ export function ResumeCard({
 
   return (
     <motion.div
-      className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-md hover:border-blue-200 transition-all duration-200 group"
+      className="bg-white border border-line-400 rounded-xl p-6 hover:shadow-md hover:border-primary-200 transition-all duration-200 group"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -77,22 +77,22 @@ export function ResumeCard({
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-[15px] font-semibold text-slate-900 truncate">
+            <h3 className="text-body-2 font-semibold text-label-900 truncate">
               {resume.title}
             </h3>
-            <div className={cn(`px-2 py-1 rounded-full text-[11px] font-medium border`, getStatusColor(resume.status))}>
+            <div className={cn(`px-2 py-0.5 rounded-md text-caption-3 font-medium border`, getStatusColor(resume.status))}>
               {getStatusText(resume.status)}
             </div>
           </div>
 
           {resume.description && (
-            <p className="text-sm text-slate-600 line-clamp-2 mb-2">
+            <p className="text-body-3 text-label-600 line-clamp-2 mb-2">
               {resume.description}
             </p>
           )}
 
           {/* 메타 정보 */}
-          <div className="flex items-center gap-4 text-[11px] text-slate-500">
+          <div className="flex items-center gap-4 text-caption-3 text-label-500">
             <div className="flex items-center gap-1">
               <Calendar size={12} />
               <span>수정: {formatDate(resume.updatedAt)}</span>
@@ -112,8 +112,8 @@ export function ResumeCard({
           className={cn(
             'p-2 rounded-lg transition-colors cursor-pointer',
             resume.isPublic
-              ? 'text-blue-600 hover:bg-blue-50'
-              : 'text-slate-400 hover:bg-slate-100'
+              ? 'text-primary-600 hover:bg-primary-50'
+              : 'text-label-400 hover:bg-label-100'
           )}
           title={resume.isPublic ? '공개' : '비공개'}
         >
@@ -123,35 +123,35 @@ export function ResumeCard({
 
       {/* 통계 정보 */}
       {statistics && (
-        <div className="grid grid-cols-3 gap-4 py-3 mb-4 border-t border-slate-100">
+        <div className="grid grid-cols-3 gap-4 py-3 mb-4 border-t border-line-200">
           <div className="text-center">
-            <div className="text-sm font-semibold text-slate-900">
+            <div className="text-caption-1 font-semibold text-label-900">
               {statistics.totalViews.toLocaleString()}
             </div>
-            <div className="text-[11px] text-slate-500">지원 건수</div>
+            <div className="text-caption-3 text-label-500">지원 건수</div>
           </div>
           <div className="text-center">
-            <div className="text-sm font-semibold text-slate-900">
+            <div className="text-caption-1 font-semibold text-label-900">
               {statistics.downloadCount.toLocaleString()}
             </div>
-            <div className="text-[11px] text-slate-500">열람 횟수</div>
+            <div className="text-caption-3 text-label-500">열람 횟수</div>
           </div>
         </div>
       )}
 
       {/* 액션 버튼 */}
-      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+      <div className="flex items-center justify-between pt-4 border-t border-line-200">
         <div className="flex items-center gap-2">
           <button
             onClick={onView}
-            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-3 py-1.5 text-caption-2 font-medium text-primary-600 hover:bg-primary-50 rounded-lg transition-colors cursor-pointer"
           >
             <Eye size={14} />
             미리보기
           </button>
 
           {statistics && (
-            <button className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer">
+            <button className="flex items-center gap-2 px-3 py-1.5 text-caption-2 font-medium text-label-600 hover:bg-label-100 rounded-lg transition-colors cursor-pointer">
               <Download size={14} />
               다운로드
             </button>
@@ -161,14 +161,14 @@ export function ResumeCard({
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={onEdit}
-            className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 text-label-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors cursor-pointer"
             title="편집"
           >
             <Edit3 size={14} />
           </button>
           <button
             onClick={onDelete}
-            className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 text-label-500 hover:text-status-error hover:bg-status-error-bg rounded-lg transition-colors cursor-pointer"
             title="삭제"
           >
             <Trash2 size={14} />

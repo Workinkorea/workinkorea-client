@@ -1,57 +1,30 @@
-export interface EmailVerificationRequest {
-  email: string;
+// ============================================================
+// API Types — 실제 FastAPI 서버 Pydantic 모델 기반 (자동 생성)
+// 서버 코드: /Users/apple/Documents/GitHub/workinkorea-server-dev
+// ============================================================
+
+// ─────────────────────────────────────────
+// 공통
+// ─────────────────────────────────────────
+
+export interface ApiErrorResponse {
+  error: string;
 }
 
-export interface EmailVerificationResponse {
-  success: boolean;
-  message: string;
-}
+// ─────────────────────────────────────────
+// Auth
+// ─────────────────────────────────────────
 
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  success: boolean;
-  token?: string;
-  token_type?: 'access' | 'access_company' | 'admin_access';
-  user?: {
-    id: string;
-    email: string;
-  };
-}
-
-export interface LogoutResponse {
-  success: boolean;
-  message: string;
-}
-
-export interface RefreshTokenResponse {
-  success: boolean;
-  accessToken: string;
-  token_type?: 'access' | 'access_company' | 'admin_access';
-}
-
-export interface UserInfo {
-  id: string;
-  email: string;
-  name?: string;
-  profileImage?: string;
-}
-
-export interface GetUserInfoResponse {
-  success: boolean;
-  user: UserInfo;
-}
-
+/** POST /api/auth/signup */
 export interface SignupRequest {
   email: string;
   name: string;
+  /** ISO date string "YYYY-MM-DD" */
   birth_date: string;
   country_code: string;
 }
 
+/** POST /api/auth/company/signup */
 export interface CompanySignupRequest {
   company_number: string;
   company_name: string;
@@ -59,14 +32,18 @@ export interface CompanySignupRequest {
   password: string;
   name: string;
   phone: string;
-  phone_type: 'MOBILE' | 'LANDLINE';  // 전화번호 타입 (휴대전화/일반전화)
 }
 
 export interface CompanySignupResponse {
-  success: boolean;
-  message?: string;
+  url: string;
 }
 
+/**
+ * POST /api/auth/company/login
+ * 서버는 OAuth2PasswordRequestForm을 사용하므로
+ * Content-Type: application/x-www-form-urlencoded 필요
+ * username 필드가 email 역할을 함
+ */
 export interface CompanyLoginRequest {
   username: string;
   password: string;
@@ -74,27 +51,66 @@ export interface CompanyLoginRequest {
 
 export interface CompanyLoginResponse {
   url: string;
-  access_token?: string;
-  token_type?: 'access' | 'access_company' | 'admin_access';
+}
+
+/** DELETE /api/auth/logout */
+export interface LogoutResponse {
+  message: string;
+}
+
+/** POST /api/auth/refresh */
+export interface RefreshTokenResponse {
+  success: boolean;
+  user_type: 'user' | 'company' | 'admin';
+}
+
+/** POST /api/auth/email/certify */
+export interface EmailCertifyRequest {
+  email: string;
+}
+
+export interface EmailCertifyResponse {
+  message: string;
+}
+
+/** POST /api/auth/email/certify/verify */
+export interface EmailCertifyVerifyRequest {
+  email: string;
+  code: string;
+}
+
+export interface EmailCertifyVerifyResponse {
+  message: string;
+}
+
+// ─────────────────────────────────────────
+// Profile — GET/PATCH /api/me
+// ─────────────────────────────────────────
+
+export interface LanguageSkill {
+  language_type?: string;
+  level?: string;
 }
 
 export interface ProfileResponse {
-  user_id: number;
-  profile_image_url: string;
-  location: string;
-  introduction: string;
-  address: string;
-  position_id: number;
-  career: string;
-  job_status: string;
-  portfolio_url: string;
-  language_skills: LanguageSkill[];
+  profile_image_url?: string | null;
+  location?: string | null;
+  introduction?: string | null;
+  address?: string | null;
+  position_id?: number | null;
+  career?: string | null;
+  job_status?: string | null;
+  portfolio_url?: string | null;
+  language_skills?: LanguageSkill[] | null;
+  /** ISO date string "YYYY-MM-DD" */
   birth_date: string;
   name: string;
   country_id: number;
+  /** ISO datetime string */
   created_at: string;
 }
 
+/** PATCH /api/me — 미포함 필드는 기존 값 유지 */
 export interface ProfileUpdateRequest {
   profile_image_url?: string;
   location?: string;
@@ -109,21 +125,29 @@ export interface ProfileUpdateRequest {
   country_id?: number;
 }
 
+// ─────────────────────────────────────────
+// Contact — GET/PATCH /api/contact
+// ─────────────────────────────────────────
+
 export interface ContactResponse {
   user_id: number;
-  phone_number: string;
-  github_url: string;
-  linkedin_url: string;
-  website_url: string;
+  phone_number?: string | null;
+  github_url?: string | null;
+  linkedin_url?: string | null;
+  website_url?: string | null;
 }
 
+/** PATCH /api/contact */
 export interface ContactUpdateRequest {
-  user_id?: number;
   phone_number?: string;
   github_url?: string;
   linkedin_url?: string;
   website_url?: string;
 }
+
+// ─────────────────────────────────────────
+// Account Config — GET/PATCH /api/account-config
+// ─────────────────────────────────────────
 
 export interface AccountConfigResponse {
   user_id: number;
@@ -131,142 +155,48 @@ export interface AccountConfigResponse {
   email_notice: boolean;
 }
 
+/** PATCH /api/account-config */
 export interface AccountConfigUpdateRequest {
-  user_id?: number;
   sns_message_notice?: boolean;
   email_notice?: boolean;
 }
+
+// ─────────────────────────────────────────
+// Company Profile — GET/POST/PUT /api/company-profile
+// ─────────────────────────────────────────
 
 export interface CompanyProfileResponse {
   company_id: number;
   industry_type: string;
   employee_count: number;
+  /** ISO date string "YYYY-MM-DD" */
   establishment_date: string;
   company_type: string;
   insurance: string;
-  company_phone: string;  // 기업 일반전화 (회사 대표번호)
-  phone_number: string;  // 담당자 휴대전화
-  phone_type?: 'MOBILE' | 'LANDLINE';  // 전화번호 타입 (휴대전화/일반전화)
+  phone_number: string;
   address: string;
   website_url: string;
   email: string;
-  country_id: number;
-  position_id: number;
-  company_number?: string;  // 사업자등록번호 (선택)
-  representative_name?: string;  // 대표자명 (선택)
 }
 
+/** POST/PUT /api/company-profile */
 export interface CompanyProfileRequest {
   industry_type: string;
   employee_count: number;
+  /** ISO date string "YYYY-MM-DD" */
   establishment_date: string;
   company_type: string;
   insurance: string;
-  company_phone: string;  // 기업 일반전화 (회사 대표번호)
-  phone_number: string;  // 담당자 휴대전화
-  phone_type: 'MOBILE' | 'LANDLINE';  // 전화번호 타입 (휴대전화/일반전화)
+  phone_number: string;
   address: string;
   website_url: string;
   email: string;
-  country_id: number;
-  position_id: number;
-  company_number?: string;  // 사업자등록번호 (선택)
-  representative_name?: string;  // 대표자명 (선택)
 }
 
-export interface ApiErrorResponse {
-  error: string;
-}
+// ─────────────────────────────────────────
+// Company Posts — /api/posts/company
+// ─────────────────────────────────────────
 
-// Resume API types
-export interface ResumeDetail {
-  id: number;
-  user_id: number;
-  title: string;
-  profile_url: string;
-  language_skills: LanguageSkill[];
-  schools: School[];
-  career_history: CareerHistory[];
-  introduction: Introduction[];
-  licenses: License[];
-}
-
-export interface ResumeListItem {
-  id: number;
-  title: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface ResumeListResponse {
-  resume_list: ResumeListItem[];
-}
-
-export interface LanguageSkill {
-  language_type?: string;
-  level?: string;
-}
-
-export interface School {
-  school_name: string;
-  major_name: string;
-  start_date: string;
-  end_date?: string;
-  is_graduated: boolean;
-}
-
-export interface CareerHistory {
-  company_name: string;
-  start_date: string;
-  end_date?: string;
-  is_working: boolean;
-  department: string;
-  position_title: string;
-  main_role: string;
-}
-
-export interface Introduction {
-  title: string;
-  content: string;
-}
-
-export interface License {
-  license_name: string;
-  license_agency: string;
-  license_date: string;
-}
-
-export interface CreateResumeRequest {
-  title: string;
-  profile_url?: string;
-  language_skills?: LanguageSkill[];
-  schools?: School[];
-  career_history?: CareerHistory[];
-  introduction?: Introduction[];
-  licenses?: License[];
-}
-
-export interface UpdateResumeRequest {
-  title?: string;
-  profile_url?: string;
-  language_skills?: LanguageSkill[];
-  schools?: School[];
-  career_history?: CareerHistory[];
-  introduction?: Introduction[];
-  licenses?: License[];
-}
-
-export interface UploadResumeFileResponse {
-  resume_id: number;
-  file_url: string;
-  message: string;
-}
-
-export interface UploadResumeImageResponse {
-  file_name: string;
-}
-
-// Company Post API types
 export interface CompanyPost {
   id: number;
   company_id: number;
@@ -280,21 +210,34 @@ export interface CompanyPost {
   work_location: string;
   working_hours: number;
   salary: number;
+  /** ISO datetime string */
   start_date: string;
+  /** ISO datetime string */
   end_date: string;
 }
 
-export interface CompanyPostsResponse {
+/**
+ * GET /api/posts/company/list 응답
+ * skip, limit 쿼리 파라미터 지원
+ */
+export interface CompanyPostListResponse {
   company_posts: CompanyPost[];
-  total: number;
-  skip?: number; // API에서 사용
-  page?: number; // 클라이언트에서 사용
-  limit: number;
-  count?: number; // API에서 사용 (현재 페이지의 아이템 수)
-  total_pages?: number; // 클라이언트에서 사용
+  pagination: {
+    skip: number;
+    limit: number;
+    count: number;
+  };
 }
 
-export interface CreateCompanyPostRequest {
+/**
+ * GET /api/posts/company 응답 (회사 인증 필요)
+ */
+export interface MyCompanyPostsResponse {
+  company_posts: CompanyPost[];
+}
+
+/** POST/PUT /api/posts/company — 모든 필드 필수 */
+export interface CompanyPostRequest {
   title: string;
   content: string;
   work_experience: string;
@@ -305,125 +248,165 @@ export interface CreateCompanyPostRequest {
   work_location: string;
   working_hours: number;
   salary: number;
+  /** ISO datetime string */
   start_date: string;
+  /** ISO datetime string */
   end_date: string;
 }
 
-export interface CreateCompanyPostResponse {
+// ─────────────────────────────────────────
+// Resume — /api/posts/resume
+// ─────────────────────────────────────────
+
+export interface ResumeListItem {
   id: number;
-  company_id: number;
   title: string;
-  content: string;
-  work_experience: string;
-  position_id: number;
-  education: string;
-  language: string;
-  employment_type: string;
-  work_location: string;
-  working_hours: number;
-  salary: number;
-  start_date: string;
-  end_date: string;
+  /** ISO datetime string */
+  created_at: string;
+  /** ISO datetime string */
+  updated_at: string;
 }
 
-export interface CompanyPostDetailResponse {
-  id: number;
-  company_id: number;
+export interface School {
+  school_name: string;
+  major_name: string;
+  /** ISO datetime string */
+  start_date: string;
+  /** ISO datetime string */
+  end_date?: string | null;
+  is_graduated: boolean;
+}
+
+export interface CareerHistory {
+  company_name: string;
+  /** ISO datetime string */
+  start_date: string;
+  /** ISO datetime string */
+  end_date?: string | null;
+  is_working: boolean;
+  department?: string | null;
+  position_title?: string | null;
+  main_role?: string | null;
+}
+
+export interface Introduction {
   title: string;
-  content: string;
-  work_experience: string;
-  position_id: number;
-  education: string;
-  language: string;
-  employment_type: string;
-  work_location: string;
-  working_hours: number;
-  salary: number;
-  start_date: string;
-  end_date: string;
+  content?: string | null;
 }
 
-export interface UpdateCompanyPostRequest {
-  title?: string;
-  content?: string;
-  work_experience?: string;
-  position_id?: number;
-  education?: string;
-  language?: string;
-  employment_type?: string;
-  work_location?: string;
-  working_hours?: number;
-  salary?: number;
-  start_date?: string;
-  end_date?: string;
+export interface License {
+  license_name?: string | null;
+  license_agency?: string | null;
+  /** ISO datetime string */
+  license_date?: string | null;
 }
 
-export interface UpdateCompanyPostResponse {
-  id: number;
-  company_id: number;
-  title: string;
-  content: string;
-  work_experience: string;
-  position_id: number;
-  education: string;
-  language: string;
-  employment_type: string;
-  work_location: string;
-  working_hours: number;
-  salary: number;
-  start_date: string;
-  end_date: string;
-}
-
-export interface DeleteCompanyPostResponse {
-  message: string;
-}
-
-// Job Application API types
-export interface ApplyToJobRequest {
-  company_post_id: number;
-  resume_id?: number;
-  cover_letter?: string;
-}
-
-export interface ApplyToJobResponse {
+export interface ResumeDetail {
   id: number;
   user_id: number;
-  company_post_id: number;
-  resume_id?: number;
-  cover_letter?: string;
-  status: string;
-  applied_at: string;
+  title: string;
+  profile_url?: string | null;
+  language_skills?: LanguageSkill[] | null;
+  schools?: School[] | null;
+  career_history?: CareerHistory[] | null;
+  introduction?: Introduction[] | null;
+  licenses?: License[] | null;
 }
 
-// User Image Upload API types
-export interface UploadUserImageRequest {
-  file_name: string;
+/** GET /api/posts/resume/list/me */
+export interface ResumeListResponse {
+  resume_list: ResumeListItem[];
 }
 
-export interface PresignedPostResponse {
-  url: string;
-  fields: Record<string, string>;
-  object_name: string;
-  expires: string;
+/** GET /api/posts/resume/{id} */
+export interface ResumeDetailResponse {
+  resume: ResumeDetail;
 }
 
-export interface UploadUserImageResponse {
-  success: boolean;
-  message?: string;
-  image_url?: string;
+/** POST/PUT /api/posts/resume */
+export interface ResumeRequest {
+  title: string;
+  profile_url?: string;
+  language_skills?: LanguageSkill[];
+  schools?: School[];
+  career_history?: CareerHistory[];
+  introduction?: Introduction[];
+  licenses?: License[];
 }
 
-// Admin API types
+/** POST/PUT /api/posts/resume 응답 */
+export interface ResumeUpsertResponse {
+  resume_id: number;
+}
+
+// ─────────────────────────────────────────
+// Diagnosis — /api/diagnosis
+// ─────────────────────────────────────────
+
+/** POST /api/diagnosis/answer */
+export interface DiagnosisAnswerRequest {
+  total_score: number;
+  q1_answer?: string;
+  q2_answer?: string;
+  q3_answer?: string;
+  q4_answer?: string;
+  q5_answer?: string;
+  q6_answer?: string;
+  q7_answer?: string;
+  q8_answer?: string;
+  q9_answer?: string;
+  q10_answer?: string;
+  q11_answer?: string;
+  q12_answer?: string;
+  q13_answer?: string;
+  q14_answer?: string;
+  q15_answer?: string;
+}
+
+/** GET /api/diagnosis/answer/{id} */
+export interface DiagnosisAnswerResponse {
+  id: number;
+  total_score: number;
+  q1_answer?: string;
+  q2_answer?: string;
+  q3_answer?: string;
+  q4_answer?: string;
+  q5_answer?: string;
+  q6_answer?: string;
+  q7_answer?: string;
+  q8_answer?: string;
+  q9_answer?: string;
+  q10_answer?: string;
+  q11_answer?: string;
+  q12_answer?: string;
+  q13_answer?: string;
+  q14_answer?: string;
+  q15_answer?: string;
+}
+
+// ─────────────────────────────────────────
+// Admin — /api/admin (Admin 토큰 필요)
+// ─────────────────────────────────────────
+
 export interface AdminUser {
   id: number;
   email: string;
   passport_certi: boolean;
 }
 
+/** PUT /api/admin/users/{id} */
+export interface UpdateAdminUserRequest {
+  passport_certi?: boolean;
+}
+
 export interface AdminCompany {
   id: number;
   company_number: string;
+  company_name: string;
+}
+
+/** PUT /api/admin/companies/{id} */
+export interface UpdateAdminCompanyRequest {
   company_name: string;
 }
 
@@ -440,74 +423,167 @@ export interface AdminPost {
   work_location: string;
   working_hours: number;
   salary: number;
+  /** ISO datetime string */
+  start_date: string;
+  /** ISO datetime string */
+  end_date: string;
+}
+
+/** PUT /api/admin/posts/{id} — 모든 필드 필수 */
+export interface UpdateAdminPostRequest {
+  title: string;
+  content: string;
+  work_experience: string;
+  position_id: number;
+  education: string;
+  language: string;
+  employment_type: string;
+  work_location: string;
+  working_hours: number;
+  salary: number;
   start_date: string;
   end_date: string;
 }
 
-export interface UpdateAdminUserRequest {
-  passport_certi: boolean;
+/** POST /api/admin/notices/ */
+export interface AdminNoticeCreateRequest {
+  title: string;
+  content: string;
+  is_active?: boolean;
 }
 
-export interface UpdateAdminCompanyRequest {
-  company_name: string;
-}
-
-export interface UpdateAdminPostRequest {
+/** PATCH /api/admin/notices/{id} */
+export interface AdminNoticeUpdateRequest {
   title?: string;
   content?: string;
-  work_experience?: string;
-  position_id?: number;
-  education?: string;
-  language?: string;
-  employment_type?: string;
-  work_location?: string;
-  working_hours?: number;
-  salary?: number;
+  is_active?: boolean;
+}
+
+export interface AdminNotice {
+  id: number;
+  title: string;
+  content: string;
+  is_active: boolean;
+  /** ISO datetime string */
+  created_at: string;
+  /** ISO datetime string */
+  updated_at: string;
+  author_id?: number | null;
+}
+
+// ─────────────────────────────────────────
+// MinIO 파일 업로드 — /api/minio
+// ─────────────────────────────────────────
+
+/**
+ * POST /api/minio/company/file
+ * POST /api/minio/user/file
+ */
+export interface MinioFileRequest {
+  file_type: string;
+  file_name: string;
+  content_type: string;
+  /** 최대 파일 크기 (MB) */
+  max_size: number;
+}
+
+export interface MinioFileResponse {
+  url: string;
+  key: string;
+  content_type: string;
+  form_data: Record<string, string>;
+  expires: string;
+}
+
+// ─────────────────────────────────────────
+// Position (공통 참조용)
+// ─────────────────────────────────────────
+
+export interface Position {
+  id: number;
+  name: string;
+  level: number;
+  parent_id?: number | null;
+  code?: string | null;
+}
+
+// ─────────────────────────────────────────
+// 레거시 / 하위 호환 타입 (점진적 제거 예정)
+// ─────────────────────────────────────────
+
+/** @deprecated CompanyPostRequest 로 대체 */
+export type CreateCompanyPostRequest = CompanyPostRequest;
+
+/** @deprecated CompanyPost 로 대체 */
+export type CreateCompanyPostResponse = CompanyPost;
+
+/** @deprecated CompanyPost 로 대체 */
+export type CompanyPostDetailResponse = CompanyPost;
+
+/** @deprecated CompanyPostRequest 로 대체 */
+export type UpdateCompanyPostRequest = CompanyPostRequest;
+
+/** @deprecated CompanyPost 로 대체 */
+export type UpdateCompanyPostResponse = CompanyPost;
+
+export interface DeleteCompanyPostResponse {
+  message: string;
+}
+
+/** @deprecated ResumeRequest 로 대체 */
+export type CreateResumeRequest = ResumeRequest;
+
+/** @deprecated ResumeRequest 로 대체 */
+export type UpdateResumeRequest = Partial<ResumeRequest>;
+
+// ─────────────────────────────────────────
+// Admin Events (서버 미구현 — 클라이언트 UI 전용)
+// ─────────────────────────────────────────
+
+export type EventType = 'notice' | 'event' | 'promotion';
+export type EventTarget = 'all' | 'user' | 'company';
+export type EventStatus = 'active' | 'inactive';
+
+export interface AdminEvent {
+  id: number;
+  title: string;
+  type: EventType;
+  target: EventTarget;
+  status: EventStatus;
+  start_date: string;
+  end_date: string;
+  content: string;
+  banner_url?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateAdminEventRequest {
+  title: string;
+  type: EventType;
+  target: EventTarget;
+  status: EventStatus;
+  start_date: string;
+  end_date: string;
+  content: string;
+  banner_url?: string;
+}
+
+export interface UpdateAdminEventRequest {
+  title?: string;
+  type?: EventType;
+  target?: EventTarget;
+  status?: EventStatus;
   start_date?: string;
   end_date?: string;
+  content?: string;
+  banner_url?: string;
 }
 
-// Diagnosis API types
-export interface DiagnosisAnswerRequest {
-  total_score: number;
-  q1_answer: string;
-  q2_answer: string;
-  q3_answer: string;
-  q4_answer: string;
-  q5_answer: string;
-  q6_answer: string;
-  q7_answer: string;
-  q8_answer: string;
-  q9_answer: string;
-  q10_answer: string;
-  q11_answer: string;
-  q12_answer: string;
-  q13_answer: string;
-  q14_answer: string;
-  q15_answer: string;
-}
+// ─────────────────────────────────────────
+// Business Verification (국세청 API 연동용)
+// ─────────────────────────────────────────
 
-export interface DiagnosisAnswerResponse {
-  id: number;
-  total_score: number;
-  q1_answer: string;
-  q2_answer: string;
-  q3_answer: string;
-  q4_answer: string;
-  q5_answer: string;
-  q6_answer: string;
-  q7_answer: string;
-  q8_answer: string;
-  q9_answer: string;
-  q10_answer: string;
-  q11_answer: string;
-  q12_answer: string;
-  q13_answer: string;
-  q14_answer: string;
-  q15_answer: string;
-}
-
-// Business Verification API types (National Tax Service)
 export interface BusinessVerificationRequest {
   b_no: string[];
 }

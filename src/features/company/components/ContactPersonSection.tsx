@@ -1,7 +1,9 @@
-import { UserCircle, Mail, Globe, Briefcase, Phone } from 'lucide-react';
+'use client';
+
+import { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 import { CompanyProfileRequest } from '@/shared/types/api';
-import { COUNTRIES_FULL } from '@/shared/constants/countries';
-import { POSITIONS_L3 } from '@/shared/constants/positions';
+import { Input } from '@/shared/ui/Input';
 
 interface ContactPersonSectionProps {
   formData: CompanyProfileRequest;
@@ -11,6 +13,48 @@ interface ContactPersonSectionProps {
   onBlur: (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
+const FieldRow = ({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: ReactNode;
+}) => (
+  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-line-200 last:border-0 items-start">
+    <span className="text-caption-1 font-semibold text-label-700 sm:pt-2.5 flex items-center gap-1">
+      {label}
+      {required && <span className="text-status-error">*</span>}
+    </span>
+    <div>{children}</div>
+  </div>
+);
+
+const FieldHint = ({
+  error,
+  touched,
+  hasValue,
+  hint,
+  inputComplete,
+}: {
+  error?: string;
+  touched?: boolean;
+  hasValue?: boolean;
+  hint?: string;
+  inputComplete: string;
+}) => {
+  if (error) return <p className="mt-1.5 text-caption-3 text-status-error">{error}</p>;
+  if (touched && hasValue)
+    return (
+      <p className="mt-1.5 text-caption-3 text-status-correct flex items-center gap-1">
+        <span>✓</span> {inputComplete}
+      </p>
+    );
+  if (hint) return <p className="mt-1.5 text-caption-3 text-label-400">{hint}</p>;
+  return null;
+};
+
 export const ContactPersonSection = ({
   formData,
   errors,
@@ -18,145 +62,55 @@ export const ContactPersonSection = ({
   onChange,
   onBlur,
 }: ContactPersonSectionProps) => {
+  const t = useTranslations('company.profile.edit');
+
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-        <UserCircle size={20} className="text-blue-500" />
-        담당자 정보
-      </h2>
-      <p className="text-sm text-slate-500 mb-6">
-        채용 담당자의 연락처 및 기본 정보를 입력해주세요
-      </p>
+    <div>
+      {/* 이메일 */}
+      <FieldRow label={t('fields.email')} required>
+        <Input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={onChange}
+          onBlur={onBlur}
+          placeholder={t('fields.emailPlaceholder')}
+          error={!!errors.email}
+          success={!errors.email && touchedFields.email && !!formData.email}
+        />
+        <FieldHint
+          error={errors.email}
+          touched={touchedFields.email}
+          hasValue={!!formData.email}
+          hint={t('fields.emailHint')}
+          inputComplete={t('inputComplete')}
+        />
+      </FieldRow>
 
-      <div className="space-y-4">
-        {/* 이메일 */}
-        <div>
-          <label htmlFor="email" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-            <Mail size={16} />
-            이메일 <span className="text-red-500 text-lg ml-1">*</span>
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={onChange}
-            onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.email ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.email && touchedFields.email && formData.email ? 'border-emerald-500' : ''}`}
-            placeholder="hr@example.com"
-          />
-          {errors.email && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.email}</p>
-          )}
-          {!errors.email && touchedFields.email && formData.email && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-          {!touchedFields.email && (
-            <p className="mt-1 text-[11px] text-slate-500">채용 담당자 이메일을 입력해주세요.</p>
-          )}
-        </div>
+      {/* 휴대전화 */}
+      <FieldRow label={t('fields.phone')} required>
+        <Input
+          id="phone_number"
+          name="phone_number"
+          value={formData.phone_number || ''}
+          onChange={onChange}
+          onBlur={onBlur}
+          placeholder={t('fields.phonePlaceholder')}
+          error={!!errors.phone_number}
+          success={
+            !errors.phone_number && touchedFields.phone_number && !!formData.phone_number
+          }
+        />
+        <FieldHint
+          error={errors.phone_number}
+          touched={touchedFields.phone_number}
+          hasValue={!!formData.phone_number}
+          hint={t('fields.phoneHint')}
+          inputComplete={t('inputComplete')}
+        />
+      </FieldRow>
 
-        {/* 휴대전화 (담당자 연락처) */}
-        <div>
-          <label htmlFor="phone_number" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-            <Phone size={16} />
-            휴대전화 <span className="text-red-500 text-lg ml-1">*</span>
-          </label>
-          <input
-            type="text"
-            id="phone_number"
-            name="phone_number"
-            value={formData.phone_number || ''}
-            onChange={onChange}
-            onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.phone_number ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${!errors.phone_number && touchedFields.phone_number && formData.phone_number ? 'border-emerald-500' : ''}`}
-            placeholder="010-1234-5678"
-          />
-          {errors.phone_number && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.phone_number}</p>
-          )}
-          {!errors.phone_number && touchedFields.phone_number && formData.phone_number && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-          {!touchedFields.phone_number && (
-            <p className="mt-1 text-[11px] text-slate-500">
-              담당자 휴대전화: 010, 011, 016-019로 시작하는 번호
-            </p>
-          )}
-        </div>
-
-        {/* 국가 */}
-        <div>
-          <label htmlFor="country_id" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-            <Globe size={16} />
-            국가 <span className="text-red-500 text-lg ml-1">*</span>
-          </label>
-          <select
-            id="country_id"
-            name="country_id"
-            value={formData.country_id || ''}
-            onChange={onChange}
-            onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.country_id ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer ${!errors.country_id && touchedFields.country_id && formData.country_id > 0 ? 'border-emerald-500' : ''}`}
-          >
-            <option value="">선택하세요</option>
-            {COUNTRIES_FULL.map((country) => (
-              <option key={country.id} value={country.id}>
-                {country.name}
-              </option>
-            ))}
-          </select>
-          {errors.country_id && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.country_id}</p>
-          )}
-          {!errors.country_id && touchedFields.country_id && formData.country_id > 0 && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-          {!touchedFields.country_id && (
-            <p className="mt-1 text-[11px] text-slate-500">담당자의 국가를 선택해주세요.</p>
-          )}
-        </div>
-
-        {/* 직무 */}
-        <div>
-          <label htmlFor="position_id" className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-            <Briefcase size={16} />
-            직무 <span className="text-red-500 text-lg ml-1">*</span>
-          </label>
-          <select
-            id="position_id"
-            name="position_id"
-            value={formData.position_id || ''}
-            onChange={onChange}
-            onBlur={onBlur}
-            className={`w-full px-4 py-2 border ${errors.position_id ? 'border-red-500' : 'border-slate-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer ${!errors.position_id && touchedFields.position_id && formData.position_id > 0 ? 'border-emerald-500' : ''}`}
-          >
-            <option value="">선택하세요</option>
-            {POSITIONS_L3.map((position) => (
-              <option key={position.id} value={position.id}>
-                {position.name}
-              </option>
-            ))}
-          </select>
-          {errors.position_id && (
-            <p className="mt-1 text-[11px] text-red-500">{errors.position_id}</p>
-          )}
-          {!errors.position_id && touchedFields.position_id && formData.position_id > 0 && (
-            <p className="mt-1 text-[11px] text-emerald-500 flex items-center gap-1">
-              <span className="text-emerald-500">✓</span> 입력 완료
-            </p>
-          )}
-          {!touchedFields.position_id && (
-            <p className="mt-1 text-[11px] text-slate-500">담당자의 직무를 선택해주세요.</p>
-          )}
-        </div>
-      </div>
     </div>
   );
 };

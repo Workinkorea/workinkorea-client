@@ -1,282 +1,808 @@
-# Work in Korea - 프로젝트 가이드
+# Work in Korea — Designer 가이드
 
-## 🤖 Claude AI 작업 지침 및 참조 파일 (필독)
+## Blue Design System
 
-이 프로젝트에서 코드를 작성하거나 수정할 때는, 아래 명시된 에이전트 역할과 스킬 패턴 파일들을 반드시 먼저 읽고 본 가이드의 규칙을 엄격히 준수하세요.
+### 컬러 토큰
 
-### Agents
+```css
+/* Primary */
+blue-600   #2563EB   /* 주요 액션, 버튼, 링크 */
+blue-500   #3B82F6   /* hover 상태 */
+blue-50    #EFF6FF   /* 배경 강조 영역 */
+blue-100   #DBEAFE   /* 연한 배경 */
 
-- @agents/auth-specialist.md
-- @agents/code-reviewer.md
-- @agents/debugger.md
-- @agents/feature-architect.md
-- @agents/nextjs-specialist.md
-- @agents/planner.md
-- @agents/testing-specialist.md
-- @agents/ui-specialist.md
+/* Text */
+slate-900  #0F172A   /* 헤딩 */
+slate-800  #1E293B   /* 본문 */
+slate-700  #334155   /* 서브텍스트 */
+slate-500  #64748B   /* placeholder, 비활성 */
+slate-400  #94A3B8   /* 비활성 아이콘 */
 
-### Skills (Patterns)
+/* Border */
+slate-200  #E2E8F0   /* 기본 구분선 */
+slate-100  #F1F5F9   /* 연한 구분선 */
 
-- @skills/api-patterns/SKILL.md
-- @skills/auth-patterns/SKILL.md
-- @skills/design-patterns/SKILL.md
-- @skills/form-patterns/SKILL.md
-- @skills/fsd-patterns/SKILL.md
-- @skills/testing-patterns/SKILL.md
+/* Background */
+white      #FFFFFF   /* 카드, 모달 배경 */
+slate-50   #F8FAFC   /* 페이지 배경 */
+slate-100  #F1F5F9   /* 대체 배경 (구 bg-component-alternative) */
 
-## 프로젝트 컨텍스트
-
-이 프로젝트는 외국인 근로자를 위한 한국 취업 지원 플랫폼입니다. Next.js 16 App Router, React 19, TypeScript를 기반으로 하며, 일반 회원(외국인 구직자)과 기업 회원을 위한 채용 공고, 이력서 관리, 자가 진단 시스템을 제공합니다. HttpOnly Cookie 기반 인증을 사용하고, Feature-Sliced Design 아키텍처를 따릅니다.
-
-## 디자인 시스템 (Blue Design System)
-
-모든 UI 컴포넌트는 아래 Blue Design System 토큰을 기반으로 구현합니다. 디자인 일관성이 최우선입니다.
-
-### Color Tokens
-
-- **Primary**: blue-50(#EFF6FF) ~ blue-950(#172554), 메인 액션 색상은 **blue-600(#2563EB)**
-- **Neutral**: slate-50(#F8FAFC) ~ slate-900(#0F172A), 본문 기본 색상은 **slate-800(#1E293B)**
-- **Semantic**: success(#10B981), warning(#F59E0B), error(#EF4444), info(#3B82F6)
-
-### Typography
-
-- **기본 폰트**: `Pretendard`, -apple-system, BlinkMacSystemFont, sans-serif
-- **로고/브랜드**: `Plus Jakarta Sans` (font-weight: 800, letter-spacing: -0.5px)
-- **제목 계층**: 44px(hero/900) → 28px(section/800) → 24px(page/800) → 17px(card/700) → 14-16px(body)
-- **캡션**: 11-13px, color slate-400~500
-
-### Spacing & Radius
-
-- **Spacing**: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64 px
-- **Radius**: sm(6), md(8), lg(12), xl(16), 2xl(20), full(9999) px
-- **Shadow**: sm, md, lg, xl, blue(0 4px 14px rgba(37,99,235,0.25))
-
-### 컴포넌트 규칙
-
-- **Button**: primary(blue-600), secondary(blue-50+border), outline(white+border), ghost(transparent) / 크기: sm, md, lg
-- **Input**: border slate-200, focus시 border-blue-500 + ring blue-100 / label 13px 600 slate-700
-- **Card**: white bg, border slate-200, radius-lg / hover시 shadow-lg + border blue-200
-- **Badge**: radius-full, 11px 600 / blue, green, orange, red 변형
-- **Tab**: border-bottom 2px / active: blue-600 indicator
-- **아이콘 버튼 (Header 등)**: `focus:outline-none`만 사용, `focus:ring-*` 미적용
-
-## 코드 스타일
-
-### 기본 규칙
-
-- **모듈 시스템**: ES 모듈 사용 (import/export)
-- **TypeScript**: strict mode 활성화, 타입 안정성 최우선
-- **내보내기**: Named export 선호 (default export는 Next.js 페이지/라우트만 사용)
-- **컴포넌트**: 함수형 컴포넌트만 사용 (React 19 + React Compiler 활성화)
-
-### Path Alias
-
-```typescript
-@/*           -> ./src/*
-@/shared/*    -> ./src/shared/*
-@/features/*  -> ./src/features/*
-@/app/*       -> ./src/app/*
+/* Status */
+green-600  /* success */
+red-500    /* error/danger */
+yellow-500 /* warning */
 ```
 
-### 스타일링
+### 타이포그래피 (Canonical 클래스 — 반드시 이것만 사용)
 
-- **TailwindCSS 4** 사용 (`tailwind.config.ts`, `@tailwindcss/postcss`)
-- 인라인 Tailwind 클래스 사용, `clsx`와 `tailwind-merge`로 조건부 스타일 적용
-- CSS 모듈이나 Styled Components 사용 금지
-- **cn() 유틸** 필수 사용: `cn(...inputs)` = `twMerge(clsx(inputs))`
+> ⚠️ `text-sm`, `text-lg` 등 Tailwind 기본 크기, `text-[13px]` 등 임의 픽셀 **절대 금지**
 
-### 폴더 구조 (Feature-Sliced Design)
+| Canonical 클래스 | 용도 |
+|----------------|------|
+| `text-display-1` | 히어로 섹션 최대 제목 |
+| `text-display-2` | 주요 섹션 제목 |
+| `text-title-1` | 페이지 타이틀 |
+| `text-title-2` | 카드/섹션 제목 |
+| `text-title-3` | 서브 제목 |
+| `text-body-1` | 본문 (기본) |
+| `text-body-2` | 본문 (보조) |
+| `text-label-1` | 버튼, 레이블 |
+| `text-label-2` | 작은 레이블 |
+| `text-caption-1` | 캡션, 메타 정보 |
+| `text-caption-2` | 최소 캡션 |
 
-```
-src/
-  app/             # Next.js App Router (페이지 라우팅)
-    icon.svg       # favicon (Blue Design System blue-600 기반)
-    layout.tsx     # Root Layout
-    template.tsx   # 페이지 전환 애니메이션 (Framer Motion, 매 라우트마다 재마운트)
-  features/        # 도메인별 기능 (auth, jobs, profile, resume, etc.)
-    {feature}/
-      components/  # 해당 기능 전용 컴포넌트
-      pages/       # Client Component 페이지
-      hooks/       # 커스텀 훅
-      types/       # 타입 정의
-      validations/ # Zod 스키마
-  shared/          # 공유 리소스
-    components/    # 공통 컴포넌트 (Header, Footer, Layout)
-    ui/            # 재사용 가능한 UI 컴포넌트 (Button, Input, Card, Badge, Modal 등)
-    hooks/         # 공통 훅
-    lib/           # 유틸리티 함수
-    api/           # API 클라이언트 (fetchClient)
-    types/         # 공통 타입
-    constants/     # 상수 정의
+### 폰트
+
+```css
+font-pretendard              /* 본문 전용 (--font-pretendard) */
+font-['Plus_Jakarta_Sans']   /* 로고/브랜드 전용 */
 ```
 
-### API 호출
+### 스페이싱 (4배수 기준)
 
-- **fetchClient 사용 필수** (`src/shared/api/fetchClient.ts`)
-- 절대 `fetch` 직접 사용 금지 (자동 토큰 갱신, 에러 핸들링 포함)
-
-```typescript
-import { fetchClient } from "@/shared/api/fetchClient";
-
-// GET 요청
-const data = await fetchClient.get<User>("/api/users/me");
-
-// POST 요청
-const result = await fetchClient.post("/api/posts/company", formData);
+```
+gap-1(4px), gap-2(8px), gap-3(12px), gap-4(16px),
+gap-6(24px), gap-8(32px), gap-12(48px), gap-16(64px)
 ```
 
-### 컴포넌트 작성 규칙
+### 라디우스
 
-- Server Component 기본, 상호작용 필요 시만 `'use client'` 추가
-- 클라이언트 전용 로직(useState, useEffect 등)이 있으면 파일명에 `Client` 접미사 추가
-  - 예: `DiagnosisClient.tsx`, `CompanyPostCreateClient.tsx`
-- Props 타입은 인터페이스로 정의 (`interface ComponentNameProps`)
+```
+rounded-sm   /* 인풋, 작은 요소 */
+rounded-md   /* 카드, 버튼 */
+rounded-lg   /* 모달, 큰 카드 */
+rounded-xl   /* 히어로 카드 */
+rounded-2xl  /* 특별 강조 영역 */
+rounded-full /* 아바타, 배지 */
+```
 
-### Header 구조
+### 그림자 (토큰 매핑)
 
-- 모바일·데스크탑 동일 레이아웃: **로고 + [검색 아이콘] [User 아이콘] [햄버거 메뉴]**
-- 반응형 분기 없음 (`hidden sm:flex` 데스크탑 전용 nav 없음)
-- **User 아이콘**: 비인증 → `/login-select`, 인증 → `/user/profile`(개인) 또는 `/company`(기업)
-- 로그인/회원가입 텍스트 링크 없음, User 아이콘으로 단일화
-- `src/shared/components/layout/Header.tsx` (Server Component)
-- `src/shared/components/layout/MobileNav.tsx` (Client Component, 슬라이드 패널)
+```
+shadow-sm   /* 구 shadow-normal: 카드 기본 */
+shadow-md   /* 구 shadow-strong: 드롭다운, 호버 */
+shadow-xl   /* 구 shadow-heavy: 모달, 팝업 */
+```
 
-### UI 컴포넌트 작성 규칙 (디자인 시스템 준수)
+---
 
-- **cn() 유틸 필수**: 모든 조건부 스타일링에 `cn()` 사용
-- **디자인 토큰 사용**: 하드코딩된 색상/spacing 금지, Tailwind 클래스로 토큰 참조
-- **variant/size 패턴**: 컴포넌트는 variant, size props로 시각적 변형 제공
-- **접근성 필수**: 시맨틱 HTML, aria-\* 속성 / 일반 버튼은 focus:ring 사용, 아이콘 버튼은 focus:outline-none만
-- **반응형 필수**: 모바일 우선 (기본 → sm → md → lg → xl)
-- **cursor-pointer 필수**: 클릭 가능한 모든 `<button>`, `<Link>`, 이벤트 요소에 반드시 추가
+## 컴포넌트 카탈로그 (shared/ui)
 
+| 컴포넌트 | 파일 | 주요 Props |
+|---------|------|-----------|
+| `Button` | Button.tsx | variant, size, loading, disabled |
+| `Input` | Input.tsx | error shake 애니메이션 포함 |
+| `FormField` | FormField.tsx | label + Input + error 메시지 래퍼 |
+| `Modal` | Modal.tsx | isOpen, onClose, X 90° 회전 애니메이션 |
+| `StatCard` | StatCard.tsx | 통계 수치 표시 카드 |
+| `Badge` | Badge.tsx | variant (default/success/warning/error/info) |
+| `Skeleton` | Skeleton.tsx | variant (rect/circle/text), shimmer 애니메이션 |
+| `SkeletonCards` | SkeletonCards.tsx | 도메인별 스켈레톤 (JobCard, UserProfile 등) |
+| `EmptyState` | EmptyState.tsx | icon, title, description, action |
+| `LoadingSpinner` | LoadingSpinner.tsx | size (sm/md/lg), color (blue/white/slate) |
+| `Card` | Card.tsx | 기본 카드 래퍼 |
+| `Callout` | Callout.tsx | 알림/강조 박스 |
+| `BackToTop` | BackToTop.tsx | 스크롤 상단 이동 버튼 |
+| `ResumeCard` | ResumeCard.tsx | 이력서 목록 카드 |
+| `Divider` | Divider.tsx | 구분선 |
+| `Portal` | Portal.tsx | DOM 포털 (모달용) |
+
+---
+
+## 페이지 레이아웃 패턴
+
+### 1. Split Layout (로그인/회원가입)
+```
+┌──────────────────┬──────────────────┐
+│  Gradient Left   │   Form Right     │
+│  (brand / hero)  │  (auth content)  │
+└──────────────────┴──────────────────┘
+```
+- 모바일: 단일 컬럼 (왼쪽 패널 숨김)
+- 태블릿+: 50/50 split
+- 사용: `LoginContent`, `BusinessLoginForm`
+
+### 2. Dashboard Layout (기업/관리자)
+```
+┌──────────────────────────────────────┐
+│              Header                  │
+├──────────────┬───────────────────────┤
+│   Sidebar    │   Main Content        │
+│   (lg+만)    │                       │
+└──────────────┴───────────────────────┘
+```
+- 모바일: sidebar를 드로어로 전환
+- 사용: `CompanyJobsClient`, 관리자 페이지
+
+### 3. Content + Sticky Sidebar (공고 상세)
+```
+┌──────────────────────────────────────┐
+│              Header                  │
+├────────────────────────┬─────────────┤
+│   Main Content (2/3)   │ Sticky      │
+│   (공고 내용)           │ Apply Panel │
+└────────────────────────┴─────────────┘
+```
+- 모바일: 단일 컬럼, Apply Panel은 하단 고정
+- 사용: `JobDetailView`
+
+### 4. Single Column Centered (폼 페이지)
+```
+max-w-xl mx-auto (layout.tsx에서 주입)
+```
+- 사용: 회원가입, 이력서 작성
+
+### 5. Wide Grid (목록/랜딩)
+```
+max-w-7xl mx-auto px-4 sm:px-6 lg:px-8
+grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
+```
+- 사용: 채용공고 목록, 랜딩 섹션
+
+---
+
+## 반응형 브레이크포인트
+
+| 브레이크포인트 | 픽셀 | 주요 변경점 |
+|-------------|------|-----------|
+| `sm` | 640px | 2컬럼 그리드, 사이드바 표시 시작 |
+| `md` | 768px | 3컬럼 그리드, 일부 레이아웃 전환 |
+| `lg` | 1024px | Sidebar 고정 표시, 풀 데스크톱 레이아웃 |
+| `xl` | 1280px | 4컬럼 그리드, max-w-7xl 여백 확보 |
+
+---
+
+## Framer Motion 패턴
+
+### Stagger (목록 카드)
 ```tsx
-// ✅ Good: 디자인 시스템 준수
-<button className={cn(
-  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors cursor-pointer",
-  "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
-  variant === "primary" && "bg-blue-600 text-white hover:bg-blue-700",
-  variant === "outline" && "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
-  size === "sm" && "px-3.5 py-1.5 text-[13px]",
-  size === "lg" && "px-7 py-3.5 text-[15px] rounded-xl",
-)}>
-
-// ✅ Good: 아이콘 버튼 (focus:ring 미사용)
-<button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none rounded-lg cursor-pointer">
-  <SearchIcon />
-</button>
-
-// ❌ Bad: 하드코딩, 토큰 미준수, cursor-pointer 누락
-<button className="bg-[#2563EB] text-white p-2">
+const container = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } }
+const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }
 ```
 
-## 명령어
+### Spring Hover (카드)
+```tsx
+whileHover={{ y: -6 }}
+transition={{ type: "spring", stiffness: 400, damping: 25 }}
+```
 
-### 개발
+### Tab Indicator (슬라이딩 탭)
+```tsx
+// layoutId="tab-bg"로 탭 간 이동 애니메이션
+<motion.div layoutId="tab-bg" className="absolute inset-0 bg-blue-600 rounded-md" />
+```
+
+### Page Transition
+```tsx
+initial={{ opacity: 0, y: 8 }}
+animate={{ opacity: 1, y: 0 }}
+transition={{ duration: 0.3 }}
+```
+
+### Framer Motion 타입 주의
+```tsx
+// ease 배열은 반드시 캐스팅
+ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number]
+```
+
+---
+
+## Claude AI 작업 지침 (Designer용)
+
+AI에게 UI 작업을 요청할 때:
+
+```
+# 좋은 요청 예시
+"JobCard에 D-N 배지(마감 임박)를 추가해줘.
+ bg-red-500, text-caption-1, rounded-full 사용.
+ pulse 애니메이션 포함."
+
+"모바일에서 필터 패널을 하단 드로어로 만들어줘.
+ Framer Motion AnimatePresence + y:300→0 슬라이드업 사용."
+```
+
+- Canonical 클래스 명시 (text-body-1 등)
+- 반응형 동작 설명 포함
+- 기존 컴포넌트 재사용 우선
+
+---
+
+## 관련 Skills & Agents
+
+- **디자인 패턴**: `.claude/skills/design-patterns/SKILL.md`
+- **UI 패턴**: `.claude/skills/ui-patterns.md`
+- **UI Specialist**: `@.claude/agents/ui-specialist.md`
+# WorkinKorea — Backend / API Engineer 가이드
+
+> 이 CLAUDE.md는 `feature/backend` 워트리 전용입니다.
+> Next.js 16 App Router의 **API 레이어, Route Handler, 서버 컴포넌트 데이터 페칭**에 집중합니다.
+
+---
+
+## 1. API 아키텍처
+
+### 레이어 구조
+
+```
+FastAPI 서버 (별도 레포, :8000)
+    ↑ HTTP
+Next.js Route Handlers  ← src/app/api/**
+    ↑ fetchClient
+Server Components / Client Components
+```
+
+### fetchClient 구조
+
+위치: `src/shared/api/fetchClient.ts` — **직접 수정 금지**
+
+| 심볼 | 역할 |
+|------|------|
+| `fetchAPI<T>(endpoint, options?)` | 핵심 fetch 래퍼, 토큰 리프레시 포함 |
+| `fetchClient.get / post / put / patch / delete` | 편의 메서드 |
+| `FetchError` | 커스텀 에러 클래스 (status, data 포함) |
+| `API_BASE_URL` | `""` (클라이언트 — 상대경로) |
+| `SERVER_API_URL` | `process.env.API_URL \|\| "http://workinkorea-server:8000"` |
+
+### 환경 자동 감지
+
+```typescript
+const isServer = typeof window === 'undefined';
+const baseURL = isServer ? SERVER_API_URL : API_BASE_URL;
+```
+
+- **서버(SSR/RSC)**: `SERVER_API_URL` → Docker 내부 네트워크 직접 통신
+- **클라이언트(브라우저)**: `API_BASE_URL = ""` → Next.js가 `/api/*` 프록시
+
+---
+
+## 2. 서버 컴포넌트 데이터 페칭
+
+### ISR (Incremental Static Regeneration)
+
+```typescript
+import { fetchClient } from '@/shared/api/fetchClient';
+import type { CompanyPostsResponse } from '@/shared/types/api';
+
+export default async function JobsPage() {
+  const posts = await fetchClient.get<CompanyPostsResponse>(
+    '/api/posts/company/list',
+    { next: { revalidate: 3600, tags: ['jobs'] } }
+  );
+  return <JobsListView initialPosts={posts} />;
+}
+```
+
+### SSR (동적 데이터, 캐싱 없음)
+
+```typescript
+const data = await fetchClient.get<ProfileResponse>(
+  '/api/me',
+  { cache: 'no-store' }
+);
+```
+
+### 캐싱 전략 선택 기준
+
+| 데이터 특성 | 전략 | 옵션 |
+|------------|------|------|
+| 공개 공고 목록 | ISR | `revalidate: 3600, tags: ['jobs']` |
+| 공고 상세 | ISR | `revalidate: 1800, tags: ['job-{id}']` |
+| 사용자 프로필 | SSR | `cache: 'no-store'` |
+| 기업 프로필 | ISR | `revalidate: 7200, tags: ['company']` |
+| 이력서 목록 | SSR | `cache: 'no-store'` |
+| 진단 결과 | SSR | `cache: 'no-store'` |
+
+### ISR 캐시 무효화
 
 ```bash
-npm run dev          # 개발 서버 시작 (localhost:3000)
+POST /api/revalidate
+Content-Type: application/json
+{ "tag": "jobs", "secret": "<REVALIDATE_SECRET>" }
 ```
 
-### 빌드 및 배포
+---
 
-```bash
-npm run build        # 프로덕션 빌드
-npm run start        # 프로덕션 서버 시작
+## 3. 인증 흐름
+
+### 토큰 구조
+
+- **refreshToken**: HttpOnly Cookie (브라우저 자동 전송, JS 접근 불가)
+- **accessToken**: 응답 body로 반환 → `tokenStore`에 in-memory 저장 (XSS 방어)
+- **userType**: Public Cookie (`document.cookie`) — 클라이언트 라우팅 판단용
+
+### 자동 토큰 갱신 흐름
+
+```
+fetchAPI() → 401 응답
+    → POST /api/auth/refresh (refreshToken 쿠키 자동 전송)
+    → 성공: 새 accessToken → tokenStore.set(), 원 요청 재시도
+    → 실패: handleAuthFailure() → userType 기반 로그인 페이지로 리다이렉트
 ```
 
-### 코드 품질 검사
+### 미들웨어 인증 검사
 
-```bash
-npm run lint         # ESLint 실행
-npm run lint:fix     # ESLint 자동 수정
-npm run typecheck    # TypeScript 타입 체크
-npm run check        # lint + typecheck 병렬 실행
-npm run check-all    # check + build 순차 실행
+위치: `middleware.ts` (루트)
+
+보호 경로: `/company/*`, `/user/*`, `/admin/*`
+공개 경로: `/`, `/jobs`, `/jobs/*`, `/login`, `/company-login`, `/signup/*`
+
+### 토큰 타입 → 사용자 타입 매핑
+
+| JWT `type` 클레임 | 사용자 타입 | 로그인 경로 |
+|------------------|------------|------------|
+| `access` | 일반 사용자 | `/login` (Google OAuth) |
+| `access_company` | 기업 | `/company-login` |
+| `admin_access` | 관리자 | `/admin/login` |
+
+---
+
+## 4. API 도메인별 엔드포인트 목록
+
+### Auth (`/api/auth/*`)
+
+| 메서드 | 경로 | 인증 | 상태 |
+|--------|------|------|------|
+| GET | `/api/auth/login/google` | 없음 | 구현됨 |
+| GET | `/api/auth/login/google/callback` | 없음 | 구현됨 |
+| POST | `/api/auth/signup` | 없음 | 구현됨 |
+| DELETE | `/api/auth/logout` | Cookie | 구현됨 |
+| POST | `/api/auth/refresh` | RefreshCookie | 구현됨 |
+| POST | `/api/auth/email/certify` | 없음 | 구현됨 |
+| POST | `/api/auth/email/certify/verify` | 없음 | 구현됨 |
+| POST | `/api/auth/company/signup` | 없음 | 구현됨 |
+| POST | `/api/auth/company/login` | 없음 (form) | 구현됨 |
+
+### Profile (`/api/me`, `/api/contact`, `/api/account-config`)
+
+| 메서드 | 경로 | 인증 | 상태 |
+|--------|------|------|------|
+| GET | `/api/me` | User | 구현됨 |
+| PUT | `/api/me` | User | 구현됨 |
+| GET | `/api/contact` | User | 구현됨 |
+| PUT | `/api/contact` | User | 구현됨 |
+| GET | `/api/account-config` | User | 구현됨 |
+| PUT | `/api/account-config` | User | 구현됨 |
+
+### Company Profile (`/api/company-profile`)
+
+| 메서드 | 경로 | 인증 | 상태 |
+|--------|------|------|------|
+| GET | `/api/company-profile` | Company | 구현됨 |
+| POST | `/api/company-profile` | Company | 구현됨 |
+| PUT | `/api/company-profile` | Company | 구현됨 |
+
+### Posts / Company (`/api/posts/company/*`)
+
+| 메서드 | 경로 | 인증 | 상태 |
+|--------|------|------|------|
+| GET | `/api/posts/company/` | Company | 구현됨 (내 회사 공고) |
+| GET | `/api/posts/company/{id}` | 없음 | 구현됨 (공개 상세) |
+| POST | `/api/posts/company` | Company | 구현됨 |
+| PUT | `/api/posts/company/{id}` | Company | 구현됨 |
+| DELETE | `/api/posts/company/{id}` | Company | 구현됨 |
+| GET | `/api/posts/company/list` | 없음 | **미구현** — 서버에 없음 |
+
+### Posts / Resume (`/api/posts/resume/*`)
+
+| 메서드 | 경로 | 인증 | 상태 |
+|--------|------|------|------|
+| GET | `/api/posts/resume/list/me` | User | 구현됨 |
+| GET | `/api/posts/resume/{id}` | User | 구현됨 |
+| POST | `/api/posts/resume` | User | 구현됨 |
+| PUT | `/api/posts/resume/{id}` | User | 구현됨 |
+| DELETE | `/api/posts/resume/{id}` | User | 구현됨 |
+
+### Diagnosis (`/api/diagnosis/*`)
+
+| 메서드 | 경로 | 인증 | 상태 |
+|--------|------|------|------|
+| POST | `/api/diagnosis/answer` | User | 구현됨 |
+| GET | `/api/diagnosis/answer/{id}` | User | 구현됨 |
+
+### Applications (`/api/applications`) — 미구현
+
+| 메서드 | 경로 | 인증 | 상태 |
+|--------|------|------|------|
+| POST | `/api/applications` | User | **미구현** — 서버에 없음 |
+
+### Next.js Route Handlers (이 레포)
+
+| 메서드 | 경로 | 설명 |
+|--------|------|------|
+| GET | `/api/health` | 서버 상태 체크 |
+| POST | `/api/revalidate` | ISR 캐시 재검증 |
+| POST | `/api/verify-business` | 국세청 사업자등록번호 검증 프록시 |
+
+---
+
+## 5. 에러 처리 패턴
+
+### FetchError 처리 (Client Component)
+
+```typescript
+import { FetchError } from '@/shared/api/fetchClient';
+import { normalizeError } from '@/shared/api/types';
+
+try {
+  const data = await fetchClient.post('/api/auth/company/login', payload);
+} catch (error) {
+  if (error instanceof FetchError) {
+    const { isAuth, isServer, message } = normalizeError(error);
+    if (isAuth) router.push('/login');
+    else if (isServer) toast.error('서버 오류. 잠시 후 다시 시도해주세요.');
+    else toast.error(message);
+  }
+}
 ```
 
-### Git 워크플로우
+### Server Component 에러 처리
 
-- **메인 브랜치**: `main` (프로덕션)
-- **개발 브랜치**: `dev` (현재 작업 브랜치)
-- PR 생성 시 `dev` 브랜치를 베이스로 사용
+```typescript
+import { notFound } from 'next/navigation';
+import { FetchError } from '@/shared/api/fetchClient';
 
-## 주의 사항
+export default async function JobDetailPage({ params }: { params: { id: string } }) {
+  try {
+    const post = await fetchClient.get<CompanyPostDetailResponse>(
+      `/api/posts/company/${params.id}`,
+      { next: { revalidate: 1800, tags: [`job-${params.id}`] } }
+    );
+    return <JobDetailView post={post} />;
+  } catch (error) {
+    if (error instanceof FetchError && error.status === 404) notFound();
+    throw error;
+  }
+}
+```
 
-### 1. 인증 시스템 (중요!)
+### Route Handler 에러 패턴
 
-- **HttpOnly Cookie 기반 인증 사용**
-- `localStorage`, `sessionStorage`에 절대 토큰 저장 금지 (보안 취약점)
-- `fetchClient`가 자동으로 쿠키 전송 및 토큰 갱신 처리 (`credentials: 'include'`)
-- 401 에러 시 자동 `/api/auth/refresh` 호출 후 재시도
-- 쿠키 도메인 설정 주의: 클라이언트-서버 도메인 불일치 시 인증 실패 가능
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
 
-### 2. API 통신
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('[route-name] 오류:', error);
+    return NextResponse.json(
+      { error: '처리 중 오류가 발생했습니다.' },
+      { status: 500 }
+    );
+  }
+}
+```
 
-- **절대 경로 사용**: `/api/posts/company` (상대 경로 금지)
-- **Server Component에서 API 호출 시**:
-  - Next.js 캐싱 옵션 활용 (`next: { revalidate: 3600, tags: ['posts'] }`)
-  - 서버 환경에서는 `API_URL` 환경변수 사용 (`workinkorea-server:8000`)
-- **Client Component에서 API 호출 시**:
-  - 브라우저에서는 Next.js rewrites로 `/api/*` → 백엔드 프록시
-  - React Query(`@tanstack/react-query`) 사용 권장
+### FastAPI 에러 메시지 추출
 
-### 3. 환경변수
+```typescript
+import { extractErrorMessage } from '@/shared/api/types';
+const message = extractErrorMessage(error.data);
+```
 
-- **공개 변수**: `NEXT_PUBLIC_API_URL` (클라이언트에서 접근 가능)
-- **비공개 변수**: `GOOGLE_CLIENT_ID`, `NTS_API_KEY` (서버 전용)
-- `.env` 파일은 절대 커밋 금지 (`.gitignore`에 포함됨)
+---
 
-### 4. 보안 (CSP)
+## 6. Next.js Route Handlers
 
-- `next.config.ts`에 엄격한 Content Security Policy 설정됨
-- 외부 스크립트/이미지 추가 시 CSP 헤더 수정 필요
-- `'unsafe-eval'`, `'unsafe-inline'`은 개발 모드 전용 (프로덕션에서 제거)
-- **외부 스크립트 URL은 반드시 `https://` 명시** — 프로토콜 상대 URL(`//`) 사용 금지 (CSP 위반 원인)
-  - ✅ `<Script src="https://t1.daumcdn.net/...">`
-  - ❌ `<Script src="//t1.daumcdn.net/...">`
+### 사용 시점
 
-### 5. 수정 금지 파일
+Route Handler는 다음 경우에만 작성합니다:
 
-- `src/shared/api/fetchClient.ts` - 인증 로직 변경 금지 (토큰 갱신, 에러 핸들링)
-- `next.config.ts` - 보안 헤더 및 rewrites 설정 함부로 수정 금지
-- `.eslintrc.json`, `tsconfig.json` - 팀 전체 규칙이므로 협의 후 수정
+1. **외부 API 시크릿 보호**: 브라우저에 노출되면 안 되는 API 키 사용 (예: 국세청 API)
+2. **ISR 재검증 트리거**: FastAPI 서버가 Next.js 캐시를 무효화할 때
+3. **파일 업로드 프록시**: 대용량 파일을 서버에서 처리해야 할 때
+4. **웹훅 수신**: 외부 서비스 콜백 처리
 
-### 6. React 19 특성
+**일반 CRUD는 Route Handler를 거치지 말고 fetchClient로 FastAPI에 직접 요청하세요.**
 
-- `React.FC` 타입 사용 금지 (React 19에서 Deprecated)
-- `children` prop 명시적으로 타입 정의 필요
-- Server Component가 기본값 (클라이언트 로직 필요 시 명시적으로 `'use client'` 추가)
+### 작성 패턴
 
-### 7. 성능 최적화
+```typescript
+// src/app/api/[resource]/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 
-- **React Compiler 활성화**: 자동 메모이제이션 (수동 `useMemo`, `useCallback` 최소화)
-- **이미지 최적화**: `next/image` 사용 필수 (AVIF/WebP 자동 변환)
-- **Lazy Loading**: 대용량 컴포넌트는 `React.lazy()` 또는 `next/dynamic` 사용
+// Named export 필수 (default export 금지)
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const page = searchParams.get('page') ?? '1';
+  return NextResponse.json({ page });
+}
 
-### 8. 특수 API 엔드포인트
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  return NextResponse.json({ received: body }, { status: 201 });
+}
+```
 
-- **Daum Postcode API**: `https://t1.daumcdn.net` (주소 검색, CSP에 등록됨)
-  - `src/app/layout.tsx`에서 `next/script`로 로드, URL은 반드시 `https://` 명시
-  - 컴포넌트: `src/shared/ui/DaumPostcodeSearch.tsx`
-- **MinIO 파일 업로드**: `src/shared/api/minio.ts` 사용
+### 동적 경로 Route Handler
 
-### 9. 디버깅
+```typescript
+// src/app/api/[resource]/[id]/route.ts
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params; // Next.js 16: params는 Promise
+  return NextResponse.json({ id });
+}
+```
 
-- `console.log` 사용 시 개발 완료 후 반드시 삭제 (최근 커밋에서도 삭제 이력 확인)
-- React Query Devtools 활성화됨 (`@tanstack/react-query-devtools`)
+---
 
-### 10. 배포
+## 7. 타입 시스템
 
-- **출력 모드**: `standalone` (Docker 컨테이너 최적화)
-- **빌드 전 체크**: `npm run check-all` 실행 필수
-- **환경변수 확인**: 프로덕션 환경에서 `NEXT_PUBLIC_API_URL` 올바른지 검증
+### 타입 파일 위치
 
-## 추가 참고 자료
+| 파일 | 용도 |
+|------|------|
+| `src/shared/types/api.ts` | FastAPI 요청/응답 도메인 타입 전체 |
+| `src/shared/types/common.types.ts` | UserInfo 등 전역 공통 타입 |
+| `src/shared/types/enums.ts` | 열거형 상수 |
+| `src/shared/api/types.ts` | API 래퍼 타입, 에러 타입, 유틸 함수 |
+| `src/features/*/types/*.ts` | 도메인 내부 타입 (feature 외부 사용 금지) |
 
-- [Next.js 16 문서](https://nextjs.org/docs)
-- [React 19 릴리즈 노트](https://react.dev/blog/2024/12/05/react-19)
-- [TailwindCSS 4 문서](https://tailwindcss.com/docs)
-- [Feature-Sliced Design](https://feature-sliced.design/)
+### API 응답 타입 정의 패턴
 
-- 디자인 레퍼런스: `file:///Users/apple/Downloads/workinkorea-redesign.html`
+```typescript
+// FastAPI가 직접 객체를 반환하는 경우 (대부분)
+export interface CompanyPostDetailResponse {
+  id: number;
+  company_id: number;
+  title: string;
+}
+
+// FastAPI가 리스트를 반환하는 경우
+export interface CompanyPostsListResponse {
+  company_posts: CompanyPost[];
+  count: number;
+  skip: number;
+  limit: number;
+}
+
+// 제네릭 래퍼 사용
+import type { PaginatedResponse } from '@/shared/api/types';
+type JobsPage = PaginatedResponse<CompanyPost>;
+```
+
+### 새 API 타입 추가 규칙
+
+1. FastAPI Pydantic 모델과 필드명 동일 유지 (`snake_case`)
+2. `Optional` 필드는 TypeScript `?:` 사용
+3. `datetime` 필드는 `string` (ISO 8601)
+4. `Enum` 필드는 TypeScript `union type` 또는 `enums.ts` 사용
+
+---
+
+## 8. Claude AI 작업 지침 (BE Engineer용)
+
+### 작업 전 필독
+
+1. **API 타입 확인**: `src/shared/types/api.ts` — 이미 정의된 타입 재사용
+2. **fetchClient 패턴**: `src/shared/api/fetchClient.ts` — 수정 금지, 사용법만 숙지
+3. **기존 Route Handler 참고**: `src/app/api/verify-business/route.ts`
+
+### AI에게 API 작업 요청 시 포함할 정보
+
+```
+- 대상 엔드포인트: GET /api/posts/company/{id}
+- 인증 필요 여부: 없음 (공개)
+- 캐싱 전략: ISR revalidate 1800, tags: ['job-{id}']
+- 요청 타입: 없음
+- 응답 타입: CompanyPostDetailResponse (api.ts 참조)
+- 에러 처리: 404 → notFound(), 기타 → throw
+```
+
+### 금지 사항
+
+- `fetchClient.ts` 직접 수정
+- `fetch()` 직접 호출 (fetchClient 대신)
+- `import React from 'react'` (React 19, 불필요)
+- `export default` 사용 (Named export 사용)
+- 하드코딩 API URL (환경변수 사용)
+
+### 빠른 참조
+
+```typescript
+// Server Component ISR
+const data = await fetchClient.get<T>('/api/endpoint', {
+  next: { revalidate: 3600, tags: ['tag'] }
+});
+
+// Client Component (React Query)
+const { data } = useQuery({
+  queryKey: ['endpoint', id],
+  queryFn: () => fetchClient.get<T>(`/api/endpoint/${id}`),
+});
+
+// 에러 분류
+import { normalizeError } from '@/shared/api/types';
+const { isAuth, isNotFound, isServer } = normalizeError(error);
+```
+
+---
+
+## 참조 파일
+
+- **API 패턴 스킬**: `.claude/skills/api-patterns/SKILL.md`
+- **인증 패턴 스킬**: `.claude/skills/auth-patterns/SKILL.md`
+- **훅 패턴**: `.claude/skills/hooks-patterns.md`
+- **FSD 패턴**: `.claude/skills/fsd-patterns/SKILL.md`
+# Work in Korea — PM 가이드
+
+## 프로젝트 개요
+
+**Work in Korea**는 외국인 구직자와 한국 기업을 연결하는 채용 플랫폼이다.
+
+| 구분 | 내용 |
+|------|------|
+| 핵심 사용자 | 구직자(외국인), 기업 담당자, 관리자 |
+| 핵심 가치 | 언어 장벽 없는 취업 매칭 |
+| 기술 스택 | Next.js 16 + FastAPI + PostgreSQL |
+| 아키텍처 | FSD (Feature-Sliced Design), 11개 도메인 슬라이스 |
+
+---
+
+## 기능 도메인 맵
+
+| 도메인 슬라이스 | 비즈니스 목적 | 주요 사용자 |
+|---------------|------------|-----------|
+| `auth` | 회원가입/로그인 (Google OAuth + 이메일) | 구직자, 기업 |
+| `jobs` | 채용공고 탐색·필터·상세 조회 | 구직자 |
+| `company` | 기업 대시보드, 공고 관리 | 기업 담당자 |
+| `profile` | 구직자 프로필 관리 | 구직자 |
+| `resume` | 이력서 작성·편집 | 구직자 |
+| `diagnosis` | 직무 적합도 자가진단 | 구직자 |
+| `landing` | 랜딩/홈 페이지 | 미인증 방문자 |
+| `admin` | 사용자·기업·공고 관리 | 관리자 |
+| `events` | 채용 이벤트/공지 | 전체 |
+| `user` | 마이페이지 (지원 내역 등) | 구직자 |
+| `shared` | 공통 컴포넌트, API 유틸 | — |
+
+---
+
+## API 현황 (실제 서버 기반)
+
+### 구현 완료된 엔드포인트
+
+```
+# Auth
+GET  /api/auth/login/google
+GET  /api/auth/login/google/callback
+POST /api/auth/signup
+DELETE /api/auth/logout
+POST /api/auth/refresh
+POST /api/auth/email/certify
+POST /api/auth/email/certify/verify
+POST /api/auth/company/signup
+POST /api/auth/company/login
+
+# Profile (구직자, 인증 필요)
+GET  /api/me           → 프로필 조회
+PATCH /api/me          → 프로필 수정 (일부 필드만 가능)
+GET  /api/contact      → 연락처 조회
+PATCH /api/contact     → 연락처 수정
+GET  /api/account-config
+PATCH /api/account-config
+
+# Company Profile
+GET  /api/company-profile
+POST /api/company-profile
+PATCH /api/company-profile
+
+# Posts - Company (채용공고)
+GET  /api/posts/company/list     → 공개 채용공고 목록 (skip/limit)
+GET  /api/posts/company          → 내 회사 공고 목록 (기업 인증)
+GET  /api/posts/company/{id}     → 공고 상세 (공개)
+POST /api/posts/company          → 공고 생성 (기업 인증)
+PUT  /api/posts/company/{id}     → 공고 수정 (기업 인증)
+DELETE /api/posts/company/{id}   → 공고 삭제 (기업 인증)
+
+# Posts - Resume (이력서)
+GET  /api/posts/resume/list/me   → 내 이력서 목록 (인증)
+GET  /api/posts/resume/{id}      → 이력서 상세 (인증)
+POST /api/posts/resume           → 이력서 생성 (인증)
+PUT  /api/posts/resume/{id}      → 이력서 수정 (인증)
+DELETE /api/posts/resume/{id}    → 이력서 삭제 (인증)
+
+# Diagnosis
+POST /api/diagnosis/answer       → 진단 답변 저장
+GET  /api/diagnosis/answer/{id}  → 진단 결과 조회
+```
+
+### 미구현 (서버 구현 필요)
+
+| 기능 | 예상 엔드포인트 | 우선순위 |
+|------|--------------|--------|
+| 채용공고 지원 | `POST /api/applications` | P0 |
+| 지원 내역 조회 | `GET /api/applications/me` | P0 |
+| 지원 취소 | `DELETE /api/applications/{id}` | P1 |
+| 공고에 달린 지원자 목록 | `GET /api/posts/company/{id}/applicants` | P1 |
+| 북마크 저장/삭제 | `POST/DELETE /api/bookmarks` | P2 |
+| 공개 기업 정보 조회 | `GET /api/company/{id}` | P1 |
+
+---
+
+## PM 작업 가이드
+
+### Acceptance Criteria 작성 원칙
+
+- **Given/When/Then** 형식 사용
+- 각 AC는 하나의 행동만 검증
+- Happy path + Edge case 모두 포함
+- API 응답 코드까지 명시 (200/201/400/401/404)
+
+### AC 템플릿
+
+```markdown
+## Feature: [기능명]
+
+### Scenario: [시나리오명]
+**Given** [사전 조건]
+**When** [사용자 액션]
+**Then** [기대 결과]
+
+### Edge Cases
+- [ ] 빈 입력값 처리
+- [ ] 인증 만료 처리
+- [ ] 네트워크 에러 처리
+```
+
+### 우선순위 기준 (MoSCoW)
+
+| 레벨 | 기준 |
+|------|------|
+| P0 Must | 핵심 플로우 없이 제품 동작 불가 |
+| P1 Should | 사용자 경험에 직접 영향 |
+| P2 Could | 있으면 좋지만 없어도 동작 |
+| P3 Won't | 이번 릴리즈 제외 |
+
+---
+
+## Claude AI 작업 지침 (PM용)
+
+AI에게 요구사항 관련 작업을 요청할 때:
+
+```
+# 좋은 요청 예시
+"GET /api/posts/company/list 응답에서 company_name이 없는데,
+ JobCard에 회사명을 표시해야 해. 서버 수정 없이 클라이언트에서
+ 어떻게 처리할 수 있을지 방안 2가지 제시해줘"
+
+"이력서 지원 플로우 acceptance criteria 작성해줘.
+ POST /api/applications 미구현 상태 고려해서 작성해."
+```
+
+- 항상 **실제 API 엔드포인트** 기반으로 요청
+- 미구현 기능은 반드시 명시
+- 클라이언트/서버 구분 명확히
+
+---
+
+## 관련 Skills & Agents
+
+- **FSD 구조**: `.claude/skills/fsd-patterns/SKILL.md`
+- **API 패턴**: `.claude/skills/api-patterns/SKILL.md`
+- **인증 흐름**: `.claude/skills/auth-patterns/SKILL.md`
+- **Planner Agent**: `@.claude/agents/planner.md`
+- **Feature Architect**: `@.claude/agents/feature-architect.md`

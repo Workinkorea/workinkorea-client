@@ -48,11 +48,11 @@ function SkillProgressBar({
 
   // 색상 클래스
   const colorClasses = {
-    primary: 'bg-blue-500',
-    secondary: 'bg-slate-500',
-    success: 'bg-emerald-500',
-    warning: 'bg-amber-500',
-    danger: 'bg-red-500'
+    primary: 'bg-primary-500',
+    secondary: 'bg-label-500',
+    success: 'bg-status-correct',
+    warning: 'bg-status-caution',
+    danger: 'bg-status-error'
   };
 
   // 평균보다 높으면 성공 색상, 낮으면 경고 색상
@@ -64,22 +64,22 @@ function SkillProgressBar({
       {(label || showValues) && (
         <div className="flex justify-between items-center mb-2">
           {label && (
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-caption-1 font-medium text-label-700">
               {label}
             </span>
           )}
           {showValues && (
-            <div className="flex items-center gap-2 text-[11px]">
+            <div className="flex items-center gap-2 text-caption-3">
               <span className={cn(
                 'font-semibold',
-                isAboveAverage ? 'text-emerald-500' : 'text-amber-500'
+                isAboveAverage ? 'text-status-correct' : 'text-status-caution'
               )}>
                 {value}점
               </span>
               {average && (
                 <>
-                  <span className="text-slate-500">/</span>
-                  <span className="text-slate-500">평균 {average}점</span>
+                  <span className="text-label-500">/</span>
+                  <span className="text-label-500">평균 {average}점</span>
                 </>
               )}
             </div>
@@ -91,7 +91,7 @@ function SkillProgressBar({
       <div className="relative">
         {/* 배경 바 */}
         <div className={cn(
-          'w-full bg-slate-100 rounded-full overflow-hidden',
+          'w-full bg-label-100 rounded-full overflow-hidden',
           heightClasses[barHeight]
         )}>
           {/* 사용자 점수 바 */}
@@ -113,7 +113,7 @@ function SkillProgressBar({
         {/* 평균 마커 */}
         {average && (
           <motion.div
-            className="absolute top-0 w-0.5 h-full bg-slate-700 rounded"
+            className="absolute top-0 w-0.5 h-full bg-label-700 rounded"
             style={{ left: `${Math.min(average, 100)}%` }}
             initial={{ opacity: 0, scaleY: 0 }}
             animate={{ opacity: 1, scaleY: 1 }}
@@ -124,7 +124,7 @@ function SkillProgressBar({
           >
             {/* 평균 라벨 */}
             <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
-              <div className="bg-slate-700 text-white text-[11px] px-1 py-0.5 rounded text-center whitespace-nowrap">
+              <div className="bg-label-700 text-white text-caption-3 px-1 py-0.5 rounded text-center whitespace-nowrap">
                 평균
               </div>
             </div>
@@ -142,9 +142,9 @@ function SkillProgressBar({
         >
           <div className={cn(
             'w-2 h-2 rounded-full',
-            isAboveAverage ? 'bg-emerald-500' : 'bg-amber-500'
+            isAboveAverage ? 'bg-status-correct' : 'bg-status-caution'
           )} />
-          <span className="text-[11px] text-slate-500">
+          <span className="text-caption-3 text-label-500">
             평균보다 {isAboveAverage ? '+' : ''}{value - average}점
           </span>
         </motion.div>
