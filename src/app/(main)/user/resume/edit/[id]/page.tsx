@@ -69,7 +69,7 @@ function EditResumePage() {
           workExperience: response.career_history.map(career => ({
             id: `${career.company_name}-${career.start_date}`,
             company: career.company_name,
-            position: career.position_title,
+            position: career.position_title || '',
             department: career.department,
             achievements: [], // fix: add empty achievements array to satisfy WorkExperience type
             startDate: formatDateForInput(career.start_date),
