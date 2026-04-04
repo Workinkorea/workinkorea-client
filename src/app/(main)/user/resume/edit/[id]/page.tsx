@@ -70,12 +70,11 @@ function EditResumePage() {
             id: `${career.company_name}-${career.start_date}`,
             company: career.company_name,
             position: career.position_title || '',
-            department: career.department,
-            achievements: [], // fix: add empty achievements array to satisfy WorkExperience type
+            achievements: [],
             startDate: formatDateForInput(career.start_date),
             endDate: formatDateForInput(career.end_date),
             current: career.is_working,
-            description: career.main_role
+            description: career.main_role || ''
           })),
           education: response.schools.map(school => ({
             id: `${school.school_name}-${school.start_date}`,
