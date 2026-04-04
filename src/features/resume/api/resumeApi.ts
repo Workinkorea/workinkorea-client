@@ -91,7 +91,7 @@ export const resumeApi = {
 
     // presigned POST의 fields를 먼저 추가
     Object.entries(presignedData.fields).forEach(([key, value]) => {
-      formData.append(key, value);
+      formData.append(key, value as string);
     });
 
     // 파일을 마지막에 추가
@@ -143,7 +143,7 @@ export const resumeApi = {
 
     // presigned POST의 fields를 먼저 추가
     Object.entries(presignedData.fields).forEach(([key, value]) => {
-      formData.append(key, value);
+      formData.append(key, value as string);
     });
 
     // 파일을 마지막에 추가
@@ -193,7 +193,7 @@ export const resumeApi = {
 
     // presigned POST의 fields를 먼저 추가
     Object.entries(presignedData.fields).forEach(([key, value]) => {
-      formData.append(key, value);
+      formData.append(key, value as string);
     });
 
     // 파일을 마지막에 추가

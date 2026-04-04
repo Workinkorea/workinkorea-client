@@ -66,7 +66,7 @@ function EditResumePage() {
             profileImage: response.profile_url || profileData?.profile_image_url
           },
           objective: objective ?? undefined,
-          workExperience: response.career_history.map(career => ({
+          workExperience: (response.career_history ?? []).map(career => ({
             id: `${career.company_name}-${career.start_date}`,
             company: career.company_name,
             position: career.position_title || '',
@@ -76,7 +76,7 @@ function EditResumePage() {
             current: career.is_working,
             description: career.main_role || ''
           })),
-          education: response.schools.map(school => ({
+          education: (response.schools ?? []).map(school => ({
             id: `${school.school_name}-${school.start_date}`,
             institution: school.school_name,
             degree: school.is_graduated ? '졸업' : '재학',
@@ -86,8 +86,8 @@ function EditResumePage() {
           })),
           skills: [],
           projects: [],
-          certifications: response.licenses.map(license => license.license_name),
-          languages: response.language_skills
+          certifications: (response.licenses ?? []).map(license => license.license_name).filter((name): name is string => !!name),
+          languages: (response.language_skills ?? [])
             .filter(lang => lang.language_type && lang.level)
             .map(lang => ({
               name: lang.language_type || '',
@@ -95,9 +95,9 @@ function EditResumePage() {
             }))
         },
         // 자격증 상세 정보 저장 (ResumeEditor에서 사용)
-        licenses: response.licenses.map(license => ({
-          license_name: license.license_name,
-          license_agency: license.license_agency,
+        licenses: (response.licenses ?? []).map(license => ({
+          license_name: license.license_name ?? '',
+          license_agency: license.license_agency ?? '',
           license_date: formatDateForInput(license.license_date)
         })),
         createdAt: new Date().toISOString(),
