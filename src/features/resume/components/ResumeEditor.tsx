@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -78,6 +79,7 @@ function ResumeEditor({
   isEditMode = false,
   resumeId
 }: ResumeEditorProps) {
+  const t = useTranslations('resume.editor');
   const router = useRouter();
   const queryClient = useQueryClient();
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -124,9 +126,9 @@ function ResumeEditor({
         main_role: ''
       }],
       introduction: initialData?.content?.objective ? [{
-        title: '자기소개',
+        title: t('introTitle'),
         content: initialData.content.objective
-      }] : [{ title: '자기소개', content: '' }],
+      }] : [{ title: t('introTitle'), content: '' }],
       licenses: initialData?.licenses && initialData.licenses.length > 0
         ? initialData.licenses.map(license => ({
             license_name: license.license_name,
@@ -173,11 +175,11 @@ function ResumeEditor({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['resumes'] });
-      toast.success('이력서가 생성되었습니다.');
+      toast.success(t('createSuccess'));
       router.push('/user');
     },
     onError: () => {
-      toast.error('이력서 생성에 실패했습니다.');
+      toast.error(t('createError'));
     }
   });
 
@@ -190,11 +192,11 @@ function ResumeEditor({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['resume', resumeId] });
       queryClient.invalidateQueries({ queryKey: ['resumes'] });
-      toast.success('이력서가 수정되었습니다.');
+      toast.success(t('updateSuccess'));
       router.push('/user');
     },
     onError: () => {
-      toast.error('이력서 수정에 실패했습니다.');
+      toast.error(t('updateError'));
     }
   });
 
@@ -250,13 +252,13 @@ function ResumeEditor({
 
     // 이미지 파일인지 확인
     if (!file.type.startsWith('image/')) {
-      toast.error('이미지 파일만 업로드할 수 있습니다.');
+      toast.error(t('imageTypeError'));
       return;
     }
 
     // 파일 크기 체크 (5MB 제한)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('이미지 크기는 5MB 이하여야 합니다.');
+      toast.error(t('imageSizeError'));
       return;
     }
 
@@ -273,9 +275,9 @@ function ResumeEditor({
       // API 업로드
       const response = await resumeApi.uploadResumeImage(file);
       setValue('profile_url', response.file_name);
-      toast.success('이미지가 업로드되었습니다.');
+      toast.success(t('imageSuccess'));
     } catch (error) {
-      toast.error('이미지 업로드에 실패했습니다.');
+      toast.error(t('imageError'));
       setPreviewImage(null);
     } finally {
       setUploadingImage(false);
@@ -297,10 +299,10 @@ function ResumeEditor({
           </div>
           <div>
             <h1 className="text-title-3 font-extrabold text-label-900">
-              {isEditMode ? '이력서 편집' : '새 이력서 작성'}
+              {isEditMode ? t('titleEdit') : t('titleCreate')}
             </h1>
             <p className="text-caption-1 text-label-500 mt-0.5">
-              {templateType} 템플릿으로 이력서를 작성하고 있습니다
+              {t('templateHint', { template: templateType })}
             </p>
           </div>
         </div>

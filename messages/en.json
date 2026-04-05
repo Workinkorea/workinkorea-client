@@ -1300,6 +1300,20 @@
     }
   },
   "resume": {
+    "editor": {
+      "titleCreate": "Create New Resume",
+      "titleEdit": "Edit Resume",
+      "templateHint": "Writing resume with {template} template",
+      "createSuccess": "Resume created successfully.",
+      "createError": "Failed to create resume.",
+      "updateSuccess": "Resume updated successfully.",
+      "updateError": "Failed to update resume.",
+      "imageTypeError": "Only image files can be uploaded.",
+      "imageSizeError": "Image size must be 5MB or less.",
+      "imageSuccess": "Image uploaded successfully.",
+      "imageError": "Failed to upload image.",
+      "introTitle": "Introduction"
+    },
     "template": {
       "title": "Choose Resume Template",
       "subtitle": "Select a template that fits you and start writing your resume",

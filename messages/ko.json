@@ -1300,6 +1300,20 @@
     }
   },
   "resume": {
+    "editor": {
+      "titleCreate": "새 이력서 작성",
+      "titleEdit": "이력서 편집",
+      "templateHint": "{template} 템플릿으로 이력서를 작성하고 있습니다",
+      "createSuccess": "이력서가 생성되었습니다.",
+      "createError": "이력서 생성에 실패했습니다.",
+      "updateSuccess": "이력서가 수정되었습니다.",
+      "updateError": "이력서 수정에 실패했습니다.",
+      "imageTypeError": "이미지 파일만 업로드할 수 있습니다.",
+      "imageSizeError": "이미지 크기는 5MB 이하여야 합니다.",
+      "imageSuccess": "이미지가 업로드되었습니다.",
+      "imageError": "이미지 업로드에 실패했습니다.",
+      "introTitle": "자기소개"
+    },
     "template": {
       "title": "이력서 템플릿 선택",
       "subtitle": "나에게 맞는 템플릿을 선택해서 이력서를 작성해보세요",
