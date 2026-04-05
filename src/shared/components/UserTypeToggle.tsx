@@ -21,7 +21,7 @@ export function UserTypeToggle({ value, onChange, className }: UserTypeTogglePro
   return (
     <div
       className={cn(
-        'relative flex items-center bg-slate-100 rounded-xl p-1 gap-0.5',
+        'relative flex items-center border border-slate-200 rounded-full bg-white p-0.5 gap-0.5',
         className
       )}
     >
@@ -32,15 +32,15 @@ export function UserTypeToggle({ value, onChange, className }: UserTypeTogglePro
             key={optValue}
             onClick={() => onChange(optValue)}
             className={cn(
-              'relative flex items-center gap-1 px-2.5 py-1 rounded-lg text-caption-2 font-semibold transition-colors duration-200 cursor-pointer select-none z-10',
-              isActive ? 'text-blue-600' : 'text-slate-500 hover:text-slate-700'
+              'relative flex items-center gap-1 px-2.5 py-1 rounded-full text-caption-2 font-semibold transition-colors duration-200 cursor-pointer select-none z-10',
+              isActive ? 'text-white' : 'text-slate-500 hover:text-slate-700'
             )}
             aria-label={`${label} 모드로 전환`}
           >
             {isActive && (
               <motion.span
                 layoutId="user-type-bg"
-                className="absolute inset-0 bg-white rounded-lg shadow-sm"
+                className="absolute inset-0 bg-blue-600 rounded-full"
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               />
             )}
