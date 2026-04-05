@@ -1298,5 +1298,39 @@
       "backToList": "채용 공고 목록으로",
       "goHome": "홈으로 돌아가기"
     }
+  },
+  "resume": {
+    "template": {
+      "title": "이력서 템플릿 선택",
+      "subtitle": "나에게 맞는 템플릿을 선택해서 이력서를 작성해보세요",
+      "featuresLabel": "주요 특징",
+      "nextBtn": "다음 단계로",
+      "changeHint": "템플릿은 나중에 변경할 수 있습니다",
+      "modernName": "모던",
+      "modernDesc": "깔끔하고 현대적인 디자인으로 IT 업계에 적합",
+      "modernF1": "심플한 레이아웃",
+      "modernF2": "아이콘 활용",
+      "modernF3": "컬러 포인트",
+      "classicName": "클래식",
+      "classicDesc": "전통적이고 신뢰감 있는 스타일로 모든 업계에 적합",
+      "classicF1": "정형화된 구조",
+      "classicF2": "읽기 쉬운 폰트",
+      "classicF3": "안정적인 인상",
+      "creativeName": "크리에이티브",
+      "creativeDesc": "창의적이고 독특한 레이아웃으로 디자인 분야에 적합",
+      "creativeF1": "독창적인 디자인",
+      "creativeF2": "시각적 효과",
+      "creativeF3": "개성 표현",
+      "minimalName": "미니멀",
+      "minimalDesc": "간단하고 깔끔한 구성으로 핵심 정보에 집중",
+      "minimalF1": "여백 활용",
+      "minimalF2": "핵심 정보 강조",
+      "minimalF3": "깔끔한 인상",
+      "professionalName": "프로페셔널",
+      "professionalDesc": "비즈니스 환경에 최적화된 공식적인 스타일",
+      "professionalF1": "공식적인 형식",
+      "professionalF2": "비즈니스 적합",
+      "professionalF3": "전문성 강조"
+    }
   }
 }

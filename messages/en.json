@@ -1298,5 +1298,39 @@
       "backToList": "Back to Job Listings",
       "goHome": "Go to Home"
     }
+  },
+  "resume": {
+    "template": {
+      "title": "Choose Resume Template",
+      "subtitle": "Select a template that fits you and start writing your resume",
+      "featuresLabel": "Key Features",
+      "nextBtn": "Next Step",
+      "changeHint": "You can change the template later",
+      "modernName": "Modern",
+      "modernDesc": "Clean and contemporary design, ideal for IT industry",
+      "modernF1": "Simple layout",
+      "modernF2": "Icon usage",
+      "modernF3": "Color accents",
+      "classicName": "Classic",
+      "classicDesc": "Traditional and trustworthy style, suitable for all industries",
+      "classicF1": "Structured format",
+      "classicF2": "Easy-to-read font",
+      "classicF3": "Stable impression",
+      "creativeName": "Creative",
+      "creativeDesc": "Creative and unique layout, ideal for design fields",
+      "creativeF1": "Unique design",
+      "creativeF2": "Visual effects",
+      "creativeF3": "Personal expression",
+      "minimalName": "Minimal",
+      "minimalDesc": "Simple and clean layout focused on key information",
+      "minimalF1": "Use of white space",
+      "minimalF2": "Key info highlighted",
+      "minimalF3": "Clean impression",
+      "professionalName": "Professional",
+      "professionalDesc": "Formal style optimized for business environments",
+      "professionalF1": "Formal format",
+      "professionalF2": "Business-appropriate",
+      "professionalF3": "Professional emphasis"
+    }
   }
 }
