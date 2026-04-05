@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { User, Building2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/utils/utils';
 
 export type ViewType = 'personal' | 'company';
@@ -12,12 +13,14 @@ interface UserTypeToggleProps {
   className?: string;
 }
 
-const OPTIONS = [
-  { value: 'personal' as ViewType, label: '개인', Icon: User },
-  { value: 'company' as ViewType, label: '기업', Icon: Building2 },
-];
-
 export function UserTypeToggle({ value, onChange, className }: UserTypeToggleProps) {
+  const t = useTranslations('common.nav');
+
+  const options = [
+    { value: 'personal' as ViewType, Icon: User, label: t('personal') },
+    { value: 'company' as ViewType, Icon: Building2, label: t('company') },
+  ];
+
   return (
     <div
       className={cn(
@@ -25,7 +28,7 @@ export function UserTypeToggle({ value, onChange, className }: UserTypeTogglePro
         className
       )}
     >
-      {OPTIONS.map(({ value: optValue, label, Icon }) => {
+      {options.map(({ value: optValue, label, Icon }) => {
         const isActive = value === optValue;
         return (
           <button
