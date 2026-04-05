@@ -99,7 +99,16 @@
       "searchButton": "Search",
       "searchAriaLabel": "Search jobs, keywords and companies",
       "searchLocation": "South Korea",
-      "searchPhrases": ["Developer", "Marketer", "Visa sponsorship", "Designer", "Seoul full-time", "Korean preferred", "IT startup", "English speaking"],
+      "searchPhrases": [
+        "Developer",
+        "Marketer",
+        "Visa sponsorship",
+        "Designer",
+        "Seoul full-time",
+        "Korean preferred",
+        "IT startup",
+        "English speaking"
+      ],
       "stat1Value": "500+",
       "stat1Label": "Companies",
       "stat2Value": "1,200+",
@@ -489,7 +498,20 @@
         "f2": "Professional Resume Guide",
         "f3": "Interview Consulting",
         "f4": "Real-time Job Alerts"
-      }
+      },
+      "leftBadge": "Personal Job Partner",
+      "leftTitle": "Start Your Korea\nJob Journey Now",
+      "leftFeature1": "Personalized job recommendations",
+      "leftFeature2": "Resume management & auto-save",
+      "leftFeature3": "Self-assessment & career counseling",
+      "oauthFailed": "Google sign-in failed. Please try again.",
+      "oauthUnknown": "An error occurred during authentication. Please try again.",
+      "googleStart": "Continue with Google",
+      "loggingInGoogle": "Signing in...",
+      "companyLoginBtn": "Company Login",
+      "divider": "or",
+      "noAccountYet": "Don't have an account yet?",
+      "termsAgreement": "By logging in, you agree to our Terms of Service and Privacy Policy."
     },
     "loginSelect": {
       "title": "Select Login Type",
@@ -1019,7 +1041,28 @@
         "permanent": "No visa worries (Permanent residency, F-visa, etc.)",
         "unknown": "I'm not sure"
       },
-      "countries": ["USA", "China", "Japan", "Vietnam", "Philippines", "Thailand", "Indonesia", "Mongolia", "Uzbekistan", "Nepal", "Cambodia", "Myanmar", "Bangladesh", "UK", "France", "Germany", "Russia", "Australia", "Canada", "Other"]
+      "countries": [
+        "USA",
+        "China",
+        "Japan",
+        "Vietnam",
+        "Philippines",
+        "Thailand",
+        "Indonesia",
+        "Mongolia",
+        "Uzbekistan",
+        "Nepal",
+        "Cambodia",
+        "Myanmar",
+        "Bangladesh",
+        "UK",
+        "France",
+        "Germany",
+        "Russia",
+        "Australia",
+        "Canada",
+        "Other"
+      ]
     },
     "session2": {
       "title": "Career & Skills 💼",
@@ -1064,7 +1107,18 @@
         "highschool": "High school graduate",
         "other": "Other"
       },
-      "languages": ["English", "Chinese", "Japanese", "Spanish", "French", "Vietnamese", "Thai", "German", "Russian", "Arabic"],
+      "languages": [
+        "English",
+        "Chinese",
+        "Japanese",
+        "Spanish",
+        "French",
+        "Vietnamese",
+        "Thai",
+        "German",
+        "Russian",
+        "Arabic"
+      ],
       "languageLevels": {
         "native": "Native level",
         "business": "Business level (Fluent)",
@@ -1107,13 +1161,48 @@
         "keepGoing": "Keep your current progress and prepare consistently"
       },
       "recommendedJobsByField": {
-        "it": ["Web Developer", "Software Engineer", "DevOps", "Data Analyst"],
-        "marketing": ["Marketing Manager", "Digital Marketer", "Sales Representative", "SNS Marketer"],
-        "design": ["UI/UX Designer", "Graphic Designer", "Brand Designer", "Illustrator"],
-        "education": ["Korean Language Instructor", "Educational Content Developer", "Academy Teacher", "Corporate Trainer"],
-        "manufacturing": ["Production Manager", "Quality Control", "Mechanical Engineer", "Process Engineer"],
-        "service": ["Hotel Manager", "Restaurant Manager", "Customer Service", "Tour Guide"],
-        "default": ["General Office Worker", "Sales", "Service Industry", "Technical Worker"]
+        "it": [
+          "Web Developer",
+          "Software Engineer",
+          "DevOps",
+          "Data Analyst"
+        ],
+        "marketing": [
+          "Marketing Manager",
+          "Digital Marketer",
+          "Sales Representative",
+          "SNS Marketer"
+        ],
+        "design": [
+          "UI/UX Designer",
+          "Graphic Designer",
+          "Brand Designer",
+          "Illustrator"
+        ],
+        "education": [
+          "Korean Language Instructor",
+          "Educational Content Developer",
+          "Academy Teacher",
+          "Corporate Trainer"
+        ],
+        "manufacturing": [
+          "Production Manager",
+          "Quality Control",
+          "Mechanical Engineer",
+          "Process Engineer"
+        ],
+        "service": [
+          "Hotel Manager",
+          "Restaurant Manager",
+          "Customer Service",
+          "Tour Guide"
+        ],
+        "default": [
+          "General Office Worker",
+          "Sales",
+          "Service Industry",
+          "Technical Worker"
+        ]
       }
     },
     "selfDiagnosis": {
