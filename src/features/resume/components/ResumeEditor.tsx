@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -78,6 +79,7 @@ function ResumeEditor({
   isEditMode = false,
   resumeId
 }: ResumeEditorProps) {
+  const t = useTranslations('resume.editor');
   const router = useRouter();
   const queryClient = useQueryClient();
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -124,9 +126,9 @@ function ResumeEditor({
         main_role: ''
       }],
       introduction: initialData?.content?.objective ? [{
-        title: '자기소개',
+        title: t('introTitle'),
         content: initialData.content.objective
-      }] : [{ title: '자기소개', content: '' }],
+      }] : [{ title: t('introTitle'), content: '' }],
       licenses: initialData?.licenses && initialData.licenses.length > 0
         ? initialData.licenses.map(license => ({
             license_name: license.license_name,
@@ -173,11 +175,11 @@ function ResumeEditor({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['resumes'] });
-      toast.success('이력서가 생성되었습니다.');
+      toast.success(t('createSuccess'));
       router.push('/user');
     },
     onError: () => {
-      toast.error('이력서 생성에 실패했습니다.');
+      toast.error(t('createError'));
     }
   });
 
@@ -190,11 +192,11 @@ function ResumeEditor({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['resume', resumeId] });
       queryClient.invalidateQueries({ queryKey: ['resumes'] });
-      toast.success('이력서가 수정되었습니다.');
+      toast.success(t('updateSuccess'));
       router.push('/user');
     },
     onError: () => {
-      toast.error('이력서 수정에 실패했습니다.');
+      toast.error(t('updateError'));
     }
   });
 
@@ -250,13 +252,13 @@ function ResumeEditor({
 
     // 이미지 파일인지 확인
     if (!file.type.startsWith('image/')) {
-      toast.error('이미지 파일만 업로드할 수 있습니다.');
+      toast.error(t('imageTypeError'));
       return;
     }
 
     // 파일 크기 체크 (5MB 제한)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('이미지 크기는 5MB 이하여야 합니다.');
+      toast.error(t('imageSizeError'));
       return;
     }
 
@@ -273,9 +275,9 @@ function ResumeEditor({
       // API 업로드
       const response = await resumeApi.uploadResumeImage(file);
       setValue('profile_url', response.file_name);
-      toast.success('이미지가 업로드되었습니다.');
+      toast.success(t('imageSuccess'));
     } catch (error) {
-      toast.error('이미지 업로드에 실패했습니다.');
+      toast.error(t('imageError'));
       setPreviewImage(null);
     } finally {
       setUploadingImage(false);
@@ -297,10 +299,10 @@ function ResumeEditor({
           </div>
           <div>
             <h1 className="text-title-3 font-extrabold text-label-900">
-              {isEditMode ? '이력서 편집' : '새 이력서 작성'}
+              {isEditMode ? t('titleEdit') : t('titleCreate')}
             </h1>
             <p className="text-caption-1 text-label-500 mt-0.5">
-              {templateType} 템플릿으로 이력서를 작성하고 있습니다
+              {t('templateHint', { template: templateType })}
             </p>
           </div>
         </div>
@@ -322,10 +324,10 @@ function ResumeEditor({
               </div>
               <div>
                 <h3 className="text-body-2 font-bold text-label-900">
-                  기본 정보
+                  {t('basicInfoTitle')}
                 </h3>
                 <p className="text-caption-2 text-label-500 mt-0.5">
-                  이력서 제목과 프로필 사진을 설정하세요
+                  {t('basicInfoSubtitle')}
                 </p>
               </div>
             </div>
@@ -335,14 +337,14 @@ function ResumeEditor({
             <FormField
               name="title"
               control={control}
-              label="이력서 제목"
-              rules={{ required: '이력서 제목을 입력해주세요' }}
+              label={t('resumeTitleLabel')}
+              rules={{ required: t('resumeTitleRequired') }}
               render={(field, fieldId) => (
                 <input
                   {...field}
                   id={fieldId}
                   type="text"
-                  placeholder="예: 프론트엔드 개발자 이력서"
+                  placeholder={t('resumeTitlePlaceholder')}
                   className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               )}
@@ -350,7 +352,7 @@ function ResumeEditor({
 
             <div>
               <label className="block text-caption-2 font-medium text-label-700 mb-2">
-                프로필 이미지
+                {t('profileImageLabel')}
               </label>
               <div className="flex items-start gap-4">
                 {/* 이미지 미리보기 */}
@@ -358,7 +360,7 @@ function ResumeEditor({
                   <div className="relative">
                     <Image
                       src={previewImage}
-                      alt="프로필 미리보기"
+                      alt={t('profilePreviewAlt')}
                       width={96}
                       height={96}
                       className="w-24 h-24 rounded-lg object-cover border border-line-400"
@@ -382,7 +384,7 @@ function ResumeEditor({
                     }`}
                   >
                     <Upload size={16} />
-                    {uploadingImage ? '업로드 중...' : '이미지 업로드'}
+                    {uploadingImage ? t('uploadingText') : t('uploadText')}
                   </label>
                   <input
                     id="profile-image-upload"
@@ -393,7 +395,7 @@ function ResumeEditor({
                     className="hidden"
                   />
                   <p className="text-caption-3 text-label-500 mt-2">
-                    JPG, PNG, GIF 파일 (최대 5MB)
+                    {t('imageHint')}
                   </p>
                 </div>
               </div>
@@ -415,20 +417,20 @@ function ResumeEditor({
                 </div>
                 <div>
                   <h3 className="text-body-2 font-bold text-label-900">
-                    자기소개
+                    {t('introTitle')}
                   </h3>
                   <p className="text-caption-2 text-label-500 mt-0.5">
-                    자신을 소개하는 글을 작성하세요
+                    {t('introSectionSubtitle')}
                   </p>
                 </div>
               </div>
               <button
                 type="button"
-                onClick={() => appendIntro({ title: '자기소개', content: '' })}
+                onClick={() => appendIntro({ title: t('introTitle'), content: '' })}
                 className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
               >
                 <Plus size={14} />
-                추가
+                {t('addBtn')}
               </button>
             </div>
 
@@ -445,7 +447,7 @@ function ResumeEditor({
                 style={{ overflow: 'hidden' }}
               >
                 <div className="flex justify-between items-start mb-3">
-                  <h4 className="text-body-3 font-semibold">자기소개 {index + 1}</h4>
+                  <h4 className="text-body-3 font-semibold">{t('introItem', { n: index + 1 })}</h4>
                   <button
                     type="button"
                     onClick={() => removeIntro(index)}
@@ -458,7 +460,7 @@ function ResumeEditor({
                 <FormField
                   name={`introduction.${index}.title`}
                   control={control}
-                  label="제목"
+                  label={t('introFieldTitle')}
                   render={(field, fieldId) => (
                     <input
                       {...field}
@@ -471,7 +473,7 @@ function ResumeEditor({
                 <FormField
                   name={`introduction.${index}.content`}
                   control={control}
-                  label="내용"
+                  label={t('introFieldContent')}
                   render={(field, fieldId) => (
                     <textarea
                       {...field}
@@ -501,10 +503,10 @@ function ResumeEditor({
                 </div>
                 <div>
                   <h3 className="text-body-2 font-bold text-label-900">
-                    경력사항
+                    {t('careerTitle')}
                   </h3>
                   <p className="text-caption-2 text-label-500 mt-0.5">
-                    회사 경력을 입력하세요
+                    {t('careerSubtitle')}
                   </p>
                 </div>
               </div>
@@ -522,7 +524,7 @@ function ResumeEditor({
                 className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
               >
                 <Plus size={14} />
-                추가
+                {t('addBtn')}
               </button>
             </div>
 
@@ -539,7 +541,7 @@ function ResumeEditor({
                 style={{ overflow: 'hidden' }}
               >
                 <div className="flex justify-between items-start mb-4">
-                  <h4 className="text-body-3 font-semibold">경력 {index + 1}</h4>
+                  <h4 className="text-body-3 font-semibold">{t('careerItem', { n: index + 1 })}</h4>
                   <button
                     type="button"
                     onClick={() => removeCareer(index)}
@@ -553,8 +555,8 @@ function ResumeEditor({
                 <FormField
                   name={`career_history.${index}.company_name`}
                   control={control}
-                  label="회사명"
-                  rules={{ required: '회사명을 입력해주세요' }}
+                  label={t('companyNameLabel')}
+                  rules={{ required: t('companyNameRequired') }}
                   render={(field, fieldId) => (
                     <input
                       {...field}
@@ -567,8 +569,8 @@ function ResumeEditor({
                 <FormField
                   name={`career_history.${index}.position_title`}
                   control={control}
-                  label="직책"
-                  rules={{ required: '직책을 입력해주세요' }}
+                  label={t('positionLabel')}
+                  rules={{ required: t('positionRequired') }}
                   render={(field, fieldId) => (
                     <input
                       {...field}
@@ -581,7 +583,7 @@ function ResumeEditor({
                 <FormField
                   name={`career_history.${index}.department`}
                   control={control}
-                  label="부서"
+                  label={t('departmentLabel')}
                   render={(field, fieldId) => (
                     <input
                       {...field}
@@ -594,25 +596,25 @@ function ResumeEditor({
                 <FormField
                   name={`career_history.${index}.start_date`}
                   control={control}
-                  label="시작일"
-                  rules={{ required: '시작일을 입력해주세요' }}
+                  label={t('startDateLabel')}
+                  rules={{ required: t('startDateRequired') }}
                   render={(field) => (
                     <DatePicker
                       value={field.value}
                       onChange={field.onChange}
-                      placeholder="시작일을 선택하세요"
+                      placeholder={t('startDatePlaceholder')}
                     />
                   )}
                 />
                 <FormField
                   name={`career_history.${index}.end_date`}
                   control={control}
-                  label="종료일"
+                  label={t('endDateLabel')}
                   render={(field) => (
                     <DatePicker
                       value={field.value}
                       onChange={field.onChange}
-                      placeholder="종료일을 선택하세요"
+                      placeholder={t('endDatePlaceholder')}
                       disabled={watch(`career_history.${index}.is_working`)}
                     />
                   )}
@@ -629,7 +631,7 @@ function ResumeEditor({
                           onChange={(e) => field.onChange(e.target.checked)}
                           className="w-4 h-4"
                         />
-                        <span className="text-caption-2 text-label-700">재직중</span>
+                        <span className="text-caption-2 text-label-700">{t('currentlyWorking')}</span>
                       </label>
                     )}
                   />
@@ -638,7 +640,7 @@ function ResumeEditor({
                   <FormField
                     name={`career_history.${index}.main_role`}
                     control={control}
-                    label="주요 업무"
+                    label={t('mainRoleLabel')}
                     render={(field, fieldId) => (
                       <textarea
                         {...field}
@@ -669,10 +671,10 @@ function ResumeEditor({
                 </div>
                 <div>
                   <h3 className="text-body-2 font-bold text-label-900">
-                    학력사항
+                    {t('educationTitle')}
                   </h3>
                   <p className="text-caption-2 text-label-500 mt-0.5">
-                    학력 정보를 입력하세요
+                    {t('educationSubtitle')}
                   </p>
                 </div>
               </div>
@@ -688,7 +690,7 @@ function ResumeEditor({
                 className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
               >
                 <Plus size={14} />
-                추가
+                {t('addBtn')}
               </button>
             </div>
 
@@ -705,7 +707,7 @@ function ResumeEditor({
                 style={{ overflow: 'hidden' }}
               >
                 <div className="flex justify-between items-start mb-4">
-                  <h4 className="text-body-3 font-semibold">학력 {index + 1}</h4>
+                  <h4 className="text-body-3 font-semibold">{t('educationItem', { n: index + 1 })}</h4>
                   <button
                     type="button"
                     onClick={() => removeSchool(index)}
@@ -719,21 +721,21 @@ function ResumeEditor({
                 <FormField
                   name={`schools.${index}.school_name`}
                   control={control}
-                  label="학교명"
-                  rules={{ required: '학교명을 입력해주세요' }}
+                  label={t('schoolNameLabel')}
+                  rules={{ required: t('schoolNameRequired') }}
                   render={(field) => (
                     <SchoolSearch
                       value={field.value}
                       onChange={field.onChange}
-                      placeholder="학교명을 검색하세요"
+                      placeholder={t('schoolNamePlaceholder')}
                     />
                   )}
                 />
                 <FormField
                   name={`schools.${index}.major_name`}
                   control={control}
-                  label="전공"
-                  rules={{ required: '전공을 입력해주세요' }}
+                  label={t('majorLabel')}
+                  rules={{ required: t('majorRequired') }}
                   render={(field, fieldId) => (
                     <input
                       {...field}
@@ -746,25 +748,25 @@ function ResumeEditor({
                 <FormField
                   name={`schools.${index}.start_date`}
                   control={control}
-                  label="입학일"
-                  rules={{ required: '입학일을 입력해주세요' }}
+                  label={t('admissionDateLabel')}
+                  rules={{ required: t('admissionDateRequired') }}
                   render={(field) => (
                     <DatePicker
                       value={field.value}
                       onChange={field.onChange}
-                      placeholder="입학일을 선택하세요"
+                      placeholder={t('admissionDatePlaceholder')}
                     />
                   )}
                 />
                 <FormField
                   name={`schools.${index}.end_date`}
                   control={control}
-                  label="졸업일"
+                  label={t('graduationDateLabel')}
                   render={(field) => (
                     <DatePicker
                       value={field.value}
                       onChange={field.onChange}
-                      placeholder="졸업일을 선택하세요"
+                      placeholder={t('graduationDatePlaceholder')}
                     />
                   )}
                 />
@@ -780,7 +782,7 @@ function ResumeEditor({
                           onChange={(e) => field.onChange(e.target.checked)}
                           className="w-4 h-4"
                         />
-                        <span className="text-caption-2 text-label-700">졸업</span>
+                        <span className="text-caption-2 text-label-700">{t('graduated')}</span>
                       </label>
                     )}
                   />
@@ -805,10 +807,10 @@ function ResumeEditor({
                 </div>
                 <div>
                   <h3 className="text-body-2 font-bold text-label-900">
-                    언어 능력
+                    {t('languageSectionTitle')}
                   </h3>
                   <p className="text-caption-2 text-label-500 mt-0.5">
-                    구사 가능한 언어를 입력하세요
+                    {t('languageSectionSubtitle')}
                   </p>
                 </div>
               </div>
@@ -818,7 +820,7 @@ function ResumeEditor({
                 className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
               >
                 <Plus size={14} />
-                추가
+                {t('addBtn')}
               </button>
             </div>
 
@@ -835,7 +837,7 @@ function ResumeEditor({
                 style={{ overflow: 'hidden' }}
               >
                 <div className="flex justify-between items-start mb-3">
-                  <h4 className="text-body-3 font-semibold">언어 {index + 1}</h4>
+                  <h4 className="text-body-3 font-semibold">{t('languageItem', { n: index + 1 })}</h4>
                   <button
                     type="button"
                     onClick={() => removeLanguage(index)}
@@ -849,48 +851,48 @@ function ResumeEditor({
                 <FormField
                   name={`language_skills.${index}.language_type`}
                   control={control}
-                  label="언어"
-                  rules={{ required: '언어를 선택해주세요' }}
+                  label={t('languageLabel')}
+                  rules={{ required: t('languageRequired') }}
                   render={(field, fieldId) => (
                     <select
                       {...field}
                       id={fieldId}
                       className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     >
-                      <option value="">언어 선택</option>
-                      <option value="한국어">한국어</option>
-                      <option value="영어">영어</option>
-                      <option value="중국어">중국어</option>
-                      <option value="일본어">일본어</option>
-                      <option value="스페인어">스페인어</option>
-                      <option value="프랑스어">프랑스어</option>
-                      <option value="독일어">독일어</option>
-                      <option value="러시아어">러시아어</option>
-                      <option value="아랍어">아랍어</option>
-                      <option value="베트남어">베트남어</option>
-                      <option value="태국어">태국어</option>
-                      <option value="포르투갈어">포르투갈어</option>
-                      <option value="이탈리아어">이탈리아어</option>
-                      <option value="기타">기타</option>
+                      <option value="">{t('langSelectPlaceholder')}</option>
+                      <option value="한국어">{t('langKorean')}</option>
+                      <option value="영어">{t('langEnglish')}</option>
+                      <option value="중국어">{t('langChinese')}</option>
+                      <option value="일본어">{t('langJapanese')}</option>
+                      <option value="스페인어">{t('langSpanish')}</option>
+                      <option value="프랑스어">{t('langFrench')}</option>
+                      <option value="독일어">{t('langGerman')}</option>
+                      <option value="러시아어">{t('langRussian')}</option>
+                      <option value="아랍어">{t('langArabic')}</option>
+                      <option value="베트남어">{t('langVietnamese')}</option>
+                      <option value="태국어">{t('langThai')}</option>
+                      <option value="포르투갈어">{t('langPortuguese')}</option>
+                      <option value="이탈리아어">{t('langItalian')}</option>
+                      <option value="기타">{t('langOther')}</option>
                     </select>
                   )}
                 />
                 <FormField
                   name={`language_skills.${index}.level`}
                   control={control}
-                  label="수준"
-                  rules={{ required: '수준을 선택해주세요' }}
+                  label={t('levelLabel')}
+                  rules={{ required: t('levelRequired') }}
                   render={(field, fieldId) => (
                     <select
                       {...field}
                       id={fieldId}
                       className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     >
-                      <option value="">선택하세요</option>
-                      <option value="beginner">초급</option>
-                      <option value="intermediate">중급</option>
-                      <option value="advanced">고급</option>
-                      <option value="native">모국어</option>
+                      <option value="">{t('levelSelectPlaceholder')}</option>
+                      <option value="beginner">{t('levelBeginner')}</option>
+                      <option value="intermediate">{t('levelIntermediate')}</option>
+                      <option value="advanced">{t('levelAdvanced')}</option>
+                      <option value="native">{t('levelNative')}</option>
                     </select>
                   )}
                 />
@@ -914,10 +916,10 @@ function ResumeEditor({
                 </div>
                 <div>
                   <h3 className="text-body-2 font-bold text-label-900">
-                    자격증
+                    {t('licenseTitle')}
                   </h3>
                   <p className="text-caption-2 text-label-500 mt-0.5">
-                    보유한 자격증을 입력하세요
+                    {t('licenseSubtitle')}
                   </p>
                 </div>
               </div>
@@ -927,7 +929,7 @@ function ResumeEditor({
                 className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
               >
                 <Plus size={14} />
-                추가
+                {t('addBtn')}
               </button>
             </div>
 
@@ -944,7 +946,7 @@ function ResumeEditor({
                 style={{ overflow: 'hidden' }}
               >
                 <div className="flex justify-between items-start mb-3">
-                  <h4 className="text-body-3 font-semibold">자격증 {index + 1}</h4>
+                  <h4 className="text-body-3 font-semibold">{t('licenseItem', { n: index + 1 })}</h4>
                   <button
                     type="button"
                     onClick={() => removeLicense(index)}
@@ -958,8 +960,8 @@ function ResumeEditor({
                 <FormField
                   name={`licenses.${index}.license_name`}
                   control={control}
-                  label="자격증명"
-                  rules={{ required: '자격증명을 입력해주세요' }}
+                  label={t('licenseNameLabel')}
+                  rules={{ required: t('licenseNameRequired') }}
                   render={(field, fieldId) => (
                     <input
                       {...field}
@@ -972,7 +974,7 @@ function ResumeEditor({
                 <FormField
                   name={`licenses.${index}.license_agency`}
                   control={control}
-                  label="발급기관"
+                  label={t('licenseAgencyLabel')}
                   render={(field, fieldId) => (
                     <input
                       {...field}
@@ -985,12 +987,12 @@ function ResumeEditor({
                 <FormField
                   name={`licenses.${index}.license_date`}
                   control={control}
-                  label="취득일"
+                  label={t('licenseDateLabel')}
                   render={(field) => (
                     <DatePicker
                       value={field.value}
                       onChange={field.onChange}
-                      placeholder="취득일을 선택하세요"
+                      placeholder={t('licenseDatePlaceholder')}
                     />
                   )}
                 />
@@ -1013,7 +1015,7 @@ function ResumeEditor({
                 disabled={isSubmitting}
                 className="w-full"
               >
-                {isSubmitting ? '저장중...' : isEditMode ? '수정하기' : '저장하기'}
+                {isSubmitting ? t('savingText') : isEditMode ? t('updateBtn') : t('saveBtn')}
               </Button>
               <Button
                 type="button"
@@ -1022,7 +1024,7 @@ function ResumeEditor({
                 className="w-full"
                 onClick={() => router.back()}
               >
-                취소
+                {t('cancelBtn')}
               </Button>
             </div>
 
@@ -1031,21 +1033,21 @@ function ResumeEditor({
               <div className="flex items-center gap-2">
                 <Lightbulb size={16} className="text-primary-600 shrink-0" />
                 <h4 className="text-body-3 font-semibold text-label-900">
-                  이력서 작성 팁
+                  {t('tipsTitle')}
                 </h4>
               </div>
               <ul className="space-y-1.5 text-caption-2 text-label-600">
                 <li className="flex gap-2">
                   <span className="text-primary-600">•</span>
-                  <span>구체적인 업무 경험을 작성하세요</span>
+                  <span>{t('tip1')}</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary-600">•</span>
-                  <span>성과 위주의 내용을 포함하세요</span>
+                  <span>{t('tip2')}</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary-600">•</span>
-                  <span>최신 정보를 유지하세요</span>
+                  <span>{t('tip3')}</span>
                 </li>
               </ul>
             </div>

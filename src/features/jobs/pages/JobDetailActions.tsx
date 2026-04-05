@@ -2,22 +2,21 @@
 
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function JobDetailActions() {
   const router = useRouter();
+  const t = useTranslations('jobs.detail');
 
   return (
     <>
-      {/* 뒤로가기 버튼 */}
       <button
         onClick={() => router.back()}
         className="flex items-center gap-2 text-label-600 hover:text-label-900 mb-6 transition-colors cursor-pointer"
       >
         <ArrowLeft size={20} />
-        <span>목록으로</span>
+        <span>{t('backToList')}</span>
       </button>
-
-      {/* 하단 지원하기 버튼은 나중에 추가 */}
     </>
   );
 }

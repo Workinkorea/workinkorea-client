@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { ResumeTemplate } from '@/features/user/types/user';
 
 interface TemplateSelectorProps {
@@ -15,47 +16,49 @@ function TemplateSelector({
   onTemplateSelect,
   onNext
 }: TemplateSelectorProps) {
+  const t = useTranslations('resume.template');
+
   const templates = [
     {
       type: 'modern' as ResumeTemplate,
-      name: '모던',
-      description: '깔끔하고 현대적인 디자인으로 IT 업계에 적합',
+      name: t('modernName'),
+      description: t('modernDesc'),
       preview: '📝',
       color: 'bg-primary-50 border-primary-200 text-primary-700',
-      features: ['심플한 레이아웃', '아이콘 활용', '컬러 포인트']
+      features: [t('modernF1'), t('modernF2'), t('modernF3')],
     },
     {
       type: 'classic' as ResumeTemplate,
-      name: '클래식',
-      description: '전통적이고 신뢰감 있는 스타일로 모든 업계에 적합',
+      name: t('classicName'),
+      description: t('classicDesc'),
       preview: '📄',
       color: 'bg-label-50 border-line-400 text-label-700',
-      features: ['정형화된 구조', '읽기 쉬운 폰트', '안정적인 인상']
+      features: [t('classicF1'), t('classicF2'), t('classicF3')],
     },
     {
       type: 'creative' as ResumeTemplate,
-      name: '크리에이티브',
-      description: '창의적이고 독특한 레이아웃으로 디자인 분야에 적합',
+      name: t('creativeName'),
+      description: t('creativeDesc'),
       preview: '🎨',
       color: 'bg-purple-50 border-purple-200 text-purple-700',
-      features: ['독창적인 디자인', '시각적 효과', '개성 표현']
+      features: [t('creativeF1'), t('creativeF2'), t('creativeF3')],
     },
     {
       type: 'minimal' as ResumeTemplate,
-      name: '미니멀',
-      description: '간단하고 깔끔한 구성으로 핵심 정보에 집중',
+      name: t('minimalName'),
+      description: t('minimalDesc'),
       preview: '📋',
       color: 'bg-green-50 border-green-200 text-green-700',
-      features: ['여백 활용', '핵심 정보 강조', '깔끔한 인상']
+      features: [t('minimalF1'), t('minimalF2'), t('minimalF3')],
     },
     {
       type: 'professional' as ResumeTemplate,
-      name: '프로페셔널',
-      description: '비즈니스 환경에 최적화된 공식적인 스타일',
+      name: t('professionalName'),
+      description: t('professionalDesc'),
       preview: '💼',
       color: 'bg-indigo-50 border-indigo-200 text-indigo-700',
-      features: ['공식적인 형식', '비즈니스 적합', '전문성 강조']
-    }
+      features: [t('professionalF1'), t('professionalF2'), t('professionalF3')],
+    },
   ];
 
   return (
@@ -63,10 +66,10 @@ function TemplateSelector({
       {/* 헤더 */}
       <div className="text-center">
         <h2 className="text-title-2 font-bold text-label-900 mb-2">
-          이력서 템플릿 선택
+          {t('title')}
         </h2>
         <p className="text-body-3 text-label-600">
-          나에게 맞는 템플릿을 선택해서 이력서를 작성해보세요
+          {t('subtitle')}
         </p>
       </div>
 
@@ -116,7 +119,7 @@ function TemplateSelector({
 
             {/* 특징 */}
             <div className="space-y-2">
-              <h4 className="text-caption-2 font-semibold text-label-700">주요 특징</h4>
+              <h4 className="text-caption-2 font-semibold text-label-700">{t('featuresLabel')}</h4>
               <ul className="space-y-1">
                 {template.features.map((feature, idx) => (
                   <li key={idx} className="text-caption-3 text-label-600 flex items-center gap-2">
@@ -153,7 +156,7 @@ function TemplateSelector({
           whileHover={selectedTemplate ? { scale: 1.02 } : {}}
           whileTap={selectedTemplate ? { scale: 0.98 } : {}}
         >
-          다음 단계로
+          {t('nextBtn')}
           <ArrowRight size={16} />
         </motion.button>
       </div>
@@ -161,7 +164,7 @@ function TemplateSelector({
       {/* 안내 메시지 */}
       <div className="text-center">
         <p className="text-caption-3 text-label-500">
-          템플릿은 나중에 변경할 수 있습니다
+          {t('changeHint')}
         </p>
       </div>
     </div>

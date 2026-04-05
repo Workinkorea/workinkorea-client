@@ -1,8 +1,10 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
+import { createMetadata } from '@/shared/lib/metadata';
 
-export const metadata: Metadata = {
-  title: '고객센터 | Work in Korea',
-};
+export const metadata: Metadata = createMetadata({
+  title: '고객센터',
+  description: '워크인코리아 고객센터입니다. 서비스 이용 문의, 불편사항 신고 및 제휴 문의를 접수하세요.',
+});
 
 export default function SupportPage() {
   return (

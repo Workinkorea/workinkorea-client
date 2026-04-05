@@ -73,8 +73,16 @@ export async function fetchAPI<T>(
       const refreshed = await refreshToken(isServer);
 
       if (refreshed) {
-        // Retry original request
-        const retryResponse = await fetch(`${baseURL}${endpoint}`, config);
+        // Retry original request with updated token
+        const newToken = !isServer ? tokenStore.get() : null;
+        const retryConfig: RequestInit = {
+          ...config,
+          headers: {
+            ...config.headers as Record<string, string>,
+            ...(newToken ? { Authorization: `Bearer ${newToken}` } : {}),
+          },
+        };
+        const retryResponse = await fetch(`${baseURL}${endpoint}`, retryConfig);
 
         if (!retryResponse.ok) {
           throw new FetchError('Retry failed after token refresh', retryResponse.status);
@@ -193,8 +201,9 @@ function getUserTypeFromCookie(): 'user' | 'company' | 'admin' | null {
 
   if (!userTypeCookie) return null;
 
-  const value = userTypeCookie.split('=')[1];
-  return value as 'user' | 'company' | 'admin' | null;
+  const value = userTypeCookie.trim().split('=')[1]?.trim();
+  if (value === 'user' || value === 'company' || value === 'admin') return value;
+  return null;
 }
 
 /**

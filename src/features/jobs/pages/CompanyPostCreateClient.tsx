@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { FileText, Lightbulb } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import Layout from '@/shared/components/layout/Layout';
 import { Button } from '@/shared/ui/Button';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -28,19 +29,20 @@ function CompanyPostCreateClient() {
   const router       = useRouter();
   const queryClient  = useQueryClient();
   const { isAuthenticated, isLoading: authLoading, userType } = useAuth();
+  const t = useTranslations('jobs.postCreate');
 
   const createPostMutation = useMutation({
     mutationFn: (data: CreateCompanyPostRequest) => postsApi.createCompanyPost(data),
     onSuccess: () => {
       // 대시보드의 공고 목록 캐시를 무효화해 즉시 최신 목록이 표시되도록 합니다.
       queryClient.invalidateQueries({ queryKey: ['myCompanyPosts'] });
-      toast.success('공고가 성공적으로 등록되었습니다!');
+      toast.success(t('successToast'));
       // 등록 완료 후 대시보드의 '관리 중인 공고' 탭으로 바로 이동
       router.push('/company?tab=posts');
     },
     onError: (error) => {
       logError(error, 'CompanyPostCreateClient.createPost');
-      const message = extractErrorMessage(error, '공고 등록에 실패했습니다. 다시 시도해주세요.');
+      const message = extractErrorMessage(error, t('errorToast'));
       toast.error(message);
     },
   });

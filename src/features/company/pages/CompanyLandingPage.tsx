@@ -6,16 +6,12 @@ import {
   FileText,
   Users,
   Search,
-  Phone,
-  Mail,
-  Clock,
   ChevronRight,
   Building2,
-  TrendingUp,
-  Star,
   CheckCircle2,
   ArrowRight,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/utils/utils';
 
 const fadeUp = {
@@ -27,80 +23,52 @@ const fadeUp = {
   }),
 };
 
-// ── 서비스 카드 데이터 ──────────────────────────────────────────────────────
-const services = [
-  {
-    key: 'post',
-    bg: 'bg-primary-50',
-    border: 'border-blue-100',
-    iconBg: 'bg-primary-100',
-    iconColor: 'text-primary-500',
-    icon: <FileText size={28} />,
-    title: '직접 공고 등록',
-    desc: (
-      <>
-        우리 회사 공고를 <span className="text-primary-600 font-semibold">직접 등록</span>할 수 있어요.{' '}
-        간단한 정보를 입력하고 채용을 시작하세요.
-      </>
-    ),
-    href: '/company-login',
-  },
-  {
-    key: 'manager',
-    bg: 'bg-teal-50',
-    border: 'border-teal-100',
-    iconBg: 'bg-teal-100',
-    iconColor: 'text-teal-500',
-    icon: <Users size={28} />,
-    title: '채용 전담 매니저',
-    desc: (
-      <>
-        공고 등록부터 FIT한 합격자까지!{' '}
-        <span className="text-teal-600 font-semibold">전담 매니저의 밀착 케어</span>를 받아보세요.
-      </>
-    ),
-    href: '/company-login',
-  },
-  {
-    key: 'search',
-    bg: 'bg-violet-50',
-    border: 'border-violet-100',
-    iconBg: 'bg-violet-100',
-    iconColor: 'text-violet-500',
-    icon: <Search size={28} />,
-    title: '인재 검색',
-    desc: (
-      <>
-        기다리지 말고 <span className="text-violet-600 font-semibold">인재를 직접 검색</span>해보세요.{' '}
-        조건에 맞는 추천 인재도 확인할 수 있어요!
-      </>
-    ),
-    href: '/company-login',
-  },
-];
-
-// ── 플랫폼 통계 ──────────────────────────────────────────────────────────────
-const stats = [
-  { value: '12,000+', label: '등록 기업' },
-  { value: '580,000+', label: '외국인 구직자' },
-  { value: '48,000+', label: '채용 공고' },
-  { value: '4.8★', label: '평균 만족도' },
-];
-
-// ── 채용 단계 ────────────────────────────────────────────────────────────────
-const steps = [
-  { num: '01', title: '기업 회원가입', desc: '간단한 정보 입력으로 30초 만에 가입 완료' },
-  { num: '02', title: '채용 공고 작성', desc: '직무·급여·복지 정보를 상세하게 등록하세요' },
-  { num: '03', title: '지원자 관리', desc: '지원서를 검토하고 단계별로 관리하세요' },
-  { num: '04', title: '채용 완료', desc: '최적의 인재와 함께 성장하세요' },
-];
-
 export function CompanyLandingPage() {
+  const t = useTranslations('company.landing');
+
+  const services = [
+    {
+      key: 'post',
+      bg: 'bg-primary-50', border: 'border-blue-100',
+      iconBg: 'bg-primary-100', iconColor: 'text-primary-500',
+      icon: <FileText size={28} />,
+      title: t('service1Title'),
+      href: '/company-login',
+    },
+    {
+      key: 'manager',
+      bg: 'bg-teal-50', border: 'border-teal-100',
+      iconBg: 'bg-teal-100', iconColor: 'text-teal-500',
+      icon: <Users size={28} />,
+      title: t('service2Title'),
+      href: '/company-login',
+    },
+    {
+      key: 'search',
+      bg: 'bg-violet-50', border: 'border-violet-100',
+      iconBg: 'bg-violet-100', iconColor: 'text-violet-500',
+      icon: <Search size={28} />,
+      title: t('service3Title'),
+      href: '/company-login',
+    },
+  ];
+
+  const steps = [
+    { num: '01', title: t('step1Title'), desc: t('step1Desc') },
+    { num: '02', title: t('step2Title'), desc: t('step2Desc') },
+    { num: '03', title: t('step3Title'), desc: t('step3Desc') },
+    { num: '04', title: t('step4Title'), desc: t('step4Desc') },
+  ];
+
+  const quickMenuItems = [
+    { label: t('quickMenu1'), href: '/company-login', icon: <FileText size={14} className="text-primary-500" /> },
+    { label: t('quickMenu2'), href: '/company-login', icon: <Search  size={14} className="text-teal-500" /> },
+    { label: t('quickMenu3'), href: '/company-signup', icon: <CheckCircle2 size={14} className="text-violet-500" /> },
+  ];
+
   return (
     <div className="min-h-screen bg-label-100">
       <div className="max-w-[1100px] mx-auto px-6 py-6">
-
-        {/* ── 상단 그리드: 메인 + 사이드바 ─────────────────────────────── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-5">
 
           {/* ── 좌측 메인 ─────────────────────────────────────────────── */}
@@ -117,13 +85,13 @@ export function CompanyLandingPage() {
               <div className="absolute bottom-0 right-20 w-16 h-16 rounded-full bg-primary-500/10" />
               <div className="relative">
                 <p className="text-caption-3 font-semibold text-blue-300 uppercase tracking-widest mb-1">
-                  WorkInKorea Hiring
+                  {t('promoBadge')}
                 </p>
                 <p className="text-body-2 font-extrabold text-white mb-0.5">
-                  외국인 채용, 더 쉽게 시작하세요
+                  {t('promoTitle')}
                 </p>
                 <p className="text-caption-2 text-label-400">
-                  검증된 외국인 인재와 기업을 연결하는 글로벌 채용 플랫폼
+                  {t('promoSubtitle')}
                 </p>
               </div>
               <div className="shrink-0 hidden sm:flex items-center justify-center w-14 h-14 bg-white/10 rounded-xl border border-white/20">
@@ -132,46 +100,31 @@ export function CompanyLandingPage() {
             </motion.div>
 
             {/* 서비스 선택 헤더 */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
               <h2 className="text-body-2 font-extrabold text-label-900 mb-0.5">
-                우리 회사에 딱 맞는 방식으로 채용을 시작해보세요!
+                {t('serviceHeaderTitle')}
               </h2>
               <p className="text-caption-1 text-label-400">
-                직접 등록부터 전담 매니저 케어까지, 필요한 방식을 선택하세요
+                {t('serviceHeaderSubtitle')}
               </p>
             </motion.div>
 
             {/* 서비스 카드 3개 */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {services.map((svc, i) => (
-                <motion.div
-                  key={svc.key}
-                  custom={i}
-                  variants={fadeUp}
-                  initial="hidden"
-                  animate="visible"
-                >
+                <motion.div key={svc.key} custom={i} variants={fadeUp} initial="hidden" animate="visible">
                   <Link
                     href={svc.href}
                     className={cn(
                       'flex flex-col justify-between h-full',
-                      'rounded-xl border p-5 min-h-[160px] group',
+                      'rounded-xl border p-5 min-h-[120px] group',
                       'hover:shadow-md transition-all duration-200 cursor-pointer',
                       svc.bg, svc.border,
                     )}
                   >
-                    <div>
-                      <p className="text-caption-1 font-extrabold text-label-800 mb-2">
-                        {svc.title}
-                      </p>
-                      <p className="text-caption-2 text-label-600 leading-relaxed">
-                        {svc.desc}
-                      </p>
-                    </div>
+                    <p className="text-caption-1 font-extrabold text-label-800 mb-2">
+                      {svc.title}
+                    </p>
                     <div className="flex justify-end mt-4">
                       <div className={cn(
                         'w-10 h-10 rounded-full flex items-center justify-center',
@@ -186,36 +139,15 @@ export function CompanyLandingPage() {
               ))}
             </div>
 
-            {/* 플랫폼 통계 */}
+            {/* 채용 프로세스 */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35 }}
               className="bg-white border border-line-400 rounded-xl p-5"
             >
-              <div className="flex items-center gap-2 mb-4">
-                <TrendingUp size={16} className="text-primary-600" />
-                <p className="text-caption-1 font-bold text-label-900">WorkInKorea 채용 현황</p>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {stats.map((stat, i) => (
-                  <div key={i} className="text-center">
-                    <p className="text-title-5 font-extrabold text-primary-600 mb-0.5">{stat.value}</p>
-                    <p className="text-caption-3 text-label-400">{stat.label}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* 채용 프로세스 */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.42 }}
-              className="bg-white border border-line-400 rounded-xl p-5"
-            >
               <p className="text-caption-1 font-bold text-label-900 mb-4">
-                간단한 4단계로 채용을 완료하세요
+                {t('stepsTitle')}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {steps.map((step, i) => (
@@ -234,7 +166,6 @@ export function CompanyLandingPage() {
                 ))}
               </div>
             </motion.div>
-
           </div>
 
           {/* ── 우측 사이드바 ──────────────────────────────────────────── */}
@@ -247,8 +178,8 @@ export function CompanyLandingPage() {
               transition={{ delay: 0.15 }}
               className="bg-white border border-line-400 rounded-xl p-5"
             >
-              <p className="text-body-3 font-extrabold text-label-900 mb-0.5">환영합니다.</p>
-              <p className="text-caption-2 text-white0 mb-4">로그인 후 이용하세요.</p>
+              <p className="text-body-3 font-extrabold text-label-900 mb-0.5">{t('sidebarWelcome')}</p>
+              <p className="text-caption-2 text-label-400 mb-4">{t('sidebarLoginHint')}</p>
               <div className="flex gap-2">
                 <Link
                   href="/company-login"
@@ -257,16 +188,16 @@ export function CompanyLandingPage() {
                     'hover:bg-primary-700 transition-colors cursor-pointer',
                   )}
                 >
-                  로그인
+                  {t('login')}
                 </Link>
                 <Link
                   href="/company-signup"
                   className={cn(
                     'flex-1 py-2.5 border border-line-400 text-label-600 text-caption-1 font-semibold rounded-lg text-center',
-                    'hover:bg-label-50 hover:border-line-400 transition-colors cursor-pointer',
+                    'hover:bg-label-50 transition-colors cursor-pointer',
                   )}
                 >
-                  회원가입
+                  {t('signup')}
                 </Link>
               </div>
             </motion.div>
@@ -279,13 +210,9 @@ export function CompanyLandingPage() {
               className="bg-white border border-line-400 rounded-xl overflow-hidden"
             >
               <div className="px-4 py-3 border-b border-line-200">
-                <p className="text-caption-1 font-bold text-label-900">채용 시작하기</p>
+                <p className="text-caption-1 font-bold text-label-900">{t('quickMenuTitle')}</p>
               </div>
-              {[
-                { label: '채용 공고 등록', href: '/company-login', icon: <FileText size={14} className="text-primary-500" /> },
-                { label: '인재 검색하기',  href: '/company-login', icon: <Search  size={14} className="text-teal-500" /> },
-                { label: '기업 회원가입',  href: '/company-signup', icon: <Star    size={14} className="text-violet-500" /> },
-              ].map(item => (
+              {quickMenuItems.map(item => (
                 <Link
                   key={item.label}
                   href={item.href}
@@ -309,14 +236,10 @@ export function CompanyLandingPage() {
             >
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 size={15} className="text-primary-500" />
-                <p className="text-caption-1 font-bold text-label-800">지금 가입하면</p>
+                <p className="text-caption-1 font-bold text-label-800">{t('benefitTitle')}</p>
               </div>
               <ul className="space-y-1.5">
-                {[
-                  '채용 공고 1건 무료 등록',
-                  '외국인 인재 DB 무료 열람',
-                  '전담 매니저 1:1 상담',
-                ].map(benefit => (
+                {[t('benefit1'), t('benefit2'), t('benefit3')].map(benefit => (
                   <li key={benefit} className="flex items-center gap-2 text-caption-2 text-label-600">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
                     {benefit}
@@ -331,35 +254,10 @@ export function CompanyLandingPage() {
                   'hover:bg-primary-700 transition-colors cursor-pointer',
                 )}
               >
-                무료로 시작하기
+                {t('benefitCta')}
                 <ArrowRight size={13} />
               </Link>
             </motion.div>
-
-            {/* 고객센터 */}
-            <motion.div
-              initial={{ opacity: 0, x: 12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.34 }}
-              className="bg-white border border-line-400 rounded-xl p-4"
-            >
-              <p className="text-caption-1 font-bold text-label-900 mb-3">고객센터</p>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-caption-2 text-label-700">
-                  <Phone size={13} className="text-label-400" />
-                  <span className="font-bold text-label-800">02-0000-0000</span>
-                </div>
-                <div className="flex items-center gap-2 text-caption-2 text-white0">
-                  <Mail size={13} className="text-label-400" />
-                  <span>help@workinkorea.net</span>
-                </div>
-                <div className="flex items-center gap-2 text-caption-3 text-label-400">
-                  <Clock size={12} className="text-label-300" />
-                  <span>평일 09:00 ~ 18:00</span>
-                </div>
-              </div>
-            </motion.div>
-
           </div>
         </div>
 
@@ -371,8 +269,8 @@ export function CompanyLandingPage() {
           className="mt-5 bg-white border border-line-400 rounded-xl px-6 py-4 flex items-center justify-between gap-4"
         >
           <div>
-            <p className="text-caption-1 font-bold text-label-900 mb-0.5">구직자이신가요?</p>
-            <p className="text-caption-2 text-white0">한국 취업을 원하는 외국인 구직자라면 개인 페이지를 이용하세요</p>
+            <p className="text-caption-1 font-bold text-label-900 mb-0.5">{t('jobSeekerBannerTitle')}</p>
+            <p className="text-caption-2 text-label-400">{t('jobSeekerBannerDesc')}</p>
           </div>
           <Link
             href="/"
@@ -382,10 +280,9 @@ export function CompanyLandingPage() {
               'hover:bg-label-50 transition-colors cursor-pointer whitespace-nowrap',
             )}
           >
-            개인 페이지 →
+            {t('jobSeekerBannerCta')}
           </Link>
         </motion.div>
-
       </div>
     </div>
   );
