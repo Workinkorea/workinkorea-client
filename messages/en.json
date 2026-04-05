@@ -264,6 +264,10 @@
       "notFound": "Job posting not found.",
       "backToDashboard": "Back to Company Dashboard"
     },
+    "postCreate": {
+      "successToast": "Job posting created successfully!",
+      "errorToast": "Failed to create job posting. Please try again."
+    },
     "manager": {
       "title": "Manager Information",
       "subtitle": "Enter contact information for applicant inquiries",
