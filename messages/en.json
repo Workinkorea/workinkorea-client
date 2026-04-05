@@ -317,7 +317,8 @@
       "promoTitle": "Couldn't find the right talent?",
       "promoSubtitle": "Try our Talent Pool (60 contacts / 30 days)\nto find outstanding candidates!",
       "promoBtn": "Use Talent Pool",
-      "accessDenied": "Access Denied"
+      "accessDenied": "Access Denied",
+      "manageJobs": "Manage Jobs"
     },
     "profile": {
       "edit": {
@@ -390,6 +391,41 @@
           }
         }
       }
+    },
+    "landing": {
+      "promoBadge": "Company Services",
+      "promoTitle": "Smarter Hiring Starts Here",
+      "promoSubtitle": "Connecting foreign talent with Korean companies",
+      "serviceHeaderTitle": "How can we help you?",
+      "serviceHeaderSubtitle": "Choose the service you need",
+      "service1Title": "Post a Job",
+      "service2Title": "Manage Talent",
+      "service3Title": "Search Talent",
+      "stepsTitle": "Hiring Process",
+      "step1Title": "Post Job",
+      "step1Desc": "Easily post your job opening",
+      "step2Title": "Review Applicants",
+      "step2Desc": "Check who has applied",
+      "step3Title": "Interview",
+      "step3Desc": "Interview your selected candidates",
+      "step4Title": "Hire",
+      "step4Desc": "Hire the best talent",
+      "sidebarWelcome": "Company Member Services",
+      "sidebarLoginHint": "Log in to access hiring services",
+      "login": "Log In",
+      "signup": "Sign Up",
+      "quickMenuTitle": "Quick Links",
+      "quickMenu1": "Post a Job",
+      "quickMenu2": "Search Talent",
+      "quickMenu3": "Company Sign Up",
+      "benefitTitle": "Company Member Benefits",
+      "benefit1": "Unlimited job postings",
+      "benefit2": "Access to foreign talent database",
+      "benefit3": "AI-powered talent matching",
+      "benefitCta": "Get Started Free",
+      "jobSeekerBannerTitle": "Looking for a job?",
+      "jobSeekerBannerDesc": "Check out our services for job seekers",
+      "jobSeekerBannerCta": "Go to Job Seeker Page"
     }
   },
   "auth": {

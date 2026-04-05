@@ -1,62 +1,145 @@
-# Work in Korea - 핵심 가이드
+# WorkinKorea — Claude 작업 가이드
 
-## 1. 프로젝트 스택 & 아키텍처
-
-- **Client**: Next.js 16 (App Router), React 19, TypeScript, TailwindCSS 4
-- **Server**: FastAPI, SQLAlchemy 2.0, PostgreSQL, Redis, MinIO
-- **Architecture**: FSD (Feature-Sliced Design)
-- **State**: Zustand (전역 클라이언트/인증), React Query (서버 데이터)
-
-## 2. 디자인 시스템 (Blue Design)
-
-- **Colors**: Primary `blue-600`, Text `slate-800`, Bg `white`
-- **Typography**:
-  - `Pretendard` (본문), `Plus Jakarta Sans` (로고/브랜드)
-  - ⚠️ **절대 규칙**: 임의의 픽셀(`text-[13px]`)이나 Tailwind 기본 크기(`text-sm`) **사용 금지**. 반드시 Canonical 클래스 사용 (`text-display-1`, `text-title-2`, `text-body-1`, `text-caption-1` 등)
-- **Spacing/Radius**: 4배수 간격, radius `sm`~`full`
-
-## 3. 개발/배포 규칙
-
-- **모듈/컴포넌트**: ES 모듈, Named export 지향, `React.FC` 및 `import React` 금지 (React 19)
-- **레이아웃**: `page.tsx` 내부에서 `max-w-*` 직접 사용 금지. 반드시 `layout.tsx`에서 주입.
-- **성능/최적화**: React Compiler(자동 메모이제이션), `next/image` 필수, `next/dynamic` 적극 활용.
-
-## 4. 폴더 구조 (FSD 요약)
-
-- `app/`: 라우팅 및 페이지 레이아웃 (`(admin)`, `(auth)`, `(main)`)
-- `features/`: 11개 도메인 슬라이스 (admin, auth, company, diagnosis, jobs, 등)
-- `shared/`: 공용 API, 컴포넌트, UI, 훅, 상수, 유틸
+## 프로젝트 개요
+외국인 구직자 ↔ 한국 기업 채용 플랫폼. Next.js 16 + FastAPI(:8000) + PostgreSQL, FSD 아키텍처.
 
 ---
 
-## 🤖 Claude AI 작업 지침 및 참조 파일
+## 아키텍처
 
-이 프로젝트에서 코드를 작성하거나 수정할 때는 본 가이드를 우선 숙지하고, **작업 맥락에 맞는 아래의 상세 가이드 파일을 반드시 먼저 읽으세요.**
+```
+FastAPI (:8000) → Next.js Route Handlers (src/app/api/**) → fetchClient → Components
+```
 
-### 📚 Core Guidelines (핵심 참조)
+**fetchClient** (`src/shared/api/fetchClient.ts` — 수정 금지)
+- 서버: `SERVER_API_URL` (Docker 내부), 클라이언트: `""` (상대경로) 자동 감지
+- `fetchClient.get/post/put/patch/delete<T>(url, options?)`
+- `FetchError` (status, data), `normalizeError()` (isAuth/isNotFound/isServer)
 
-- **상태 관리 및 커스텀 훅 가이드**: `.claude/skills/hooks-patterns.md` 읽기
-- **UI 컴포넌트 및 디자인 패턴 가이드**: `.claude/skills/ui-patterns.md` 읽기
+---
 
-### 🕵️‍♂️ Agents
+## 캐싱 전략
 
-- @.claude/agents/auth-specialist.md
-- @.claude/agents/nextjs-specialist.md
-- @.claude/agents/code-reviewer.md
-- @.claude/agents/debugger.md
-- @.claude/agents/feature-architect.md
-- @.claude/agents/planner.md
-- @.claude/agents/testing-specialist.md
-- @.claude/agents/ui-specialist.md
+| 데이터 | 전략 | 옵션 |
+|--------|------|------|
+| 공개 공고 목록/상세 | ISR | `{ next: { revalidate: 3600, tags: ['jobs'] } }` |
+| 사용자 프로필/이력서/진단 | SSR | `{ cache: 'no-store' }` |
+| 기업 프로필 | ISR | `{ next: { revalidate: 7200, tags: ['company'] } }` |
 
-### 🛠️ Skills (Patterns)
+ISR 무효화: `POST /api/revalidate { "tag": "jobs", "secret": "..." }`
 
-- @.claude/skills/api-patterns/SKILL.md
-- @.claude/skills/auth-patterns/SKILL.md
-- @.claude/skills/design-patterns/SKILL.md
-- @.claude/skills/form-patterns/SKILL.md
-- @.claude/skills/fsd-patterns/SKILL.md
-- @.claude/skills/testing-patterns/SKILL.md
-- @.claude/skills/hooks-patterns.md
-- @.claude/skills/ui-patterns.md
-- @.claude/skills/idempotency-patterns.md
+---
+
+## 인증
+
+- **refreshToken**: HttpOnly Cookie, **accessToken**: in-memory `tokenStore`, **userType**: Public Cookie
+- 401 → `POST /api/auth/refresh` → 성공 시 재시도, 실패 시 로그인 리다이렉트
+- JWT `type` 클레임: `access`→`/login`, `access_company`→`/company-login`, `admin_access`→`/admin/login`
+- 미들웨어 보호: `/company/*`, `/user/*`, `/admin/*`
+
+---
+
+## API 엔드포인트 현황
+
+### 구현됨
+```
+# Auth
+GET  /api/auth/login/google[/callback]
+POST /api/auth/signup, /auth/refresh, /auth/email/certify[/verify]
+POST /api/auth/company/signup, /auth/company/login
+DELETE /api/auth/logout
+
+# Profile (User 인증)
+GET/PUT /api/me, /api/contact, /api/account-config
+
+# Company Profile (Company 인증)
+GET/POST/PUT /api/company-profile
+
+# Posts - Company
+GET  /api/posts/company/list     공개 목록
+GET  /api/posts/company          내 공고 (Company 인증)
+GET  /api/posts/company/{id}     공개 상세
+POST/PUT/DELETE /api/posts/company[/{id}]  (Company 인증)
+
+# Posts - Resume (User 인증)
+GET/POST /api/posts/resume, /posts/resume/list/me
+GET/PUT/DELETE /api/posts/resume/{id}
+
+# Diagnosis (User 인증)
+POST /api/diagnosis/answer
+GET  /api/diagnosis/answer/{id}
+```
+
+### 미구현 (서버 구현 필요)
+| 기능 | 엔드포인트 | 우선순위 |
+|------|-----------|--------|
+| 채용 지원 | `POST /api/applications` | P0 |
+| 지원 내역 | `GET /api/applications/me` | P0 |
+| 지원 취소 | `DELETE /api/applications/{id}` | P1 |
+| 지원자 목록 | `GET /api/posts/company/{id}/applicants` | P1 |
+| 공개 기업 정보 | `GET /api/company/{id}` | P1 |
+| 북마크 | `POST/DELETE /api/bookmarks` | P2 |
+
+### Next.js Route Handlers (이 레포)
+`GET /api/health`, `POST /api/revalidate`, `POST /api/verify-business`
+> Route Handler는 시크릿 보호/ISR 재검증/파일 업로드/웹훅 수신 시만 작성. 일반 CRUD는 fetchClient 직접 사용.
+
+---
+
+## 타입 파일 위치
+
+| 파일 | 용도 |
+|------|------|
+| `src/shared/types/api.ts` | FastAPI 요청/응답 타입 |
+| `src/shared/types/common.types.ts` | UserInfo 등 공통 타입 |
+| `src/shared/types/enums.ts` | 열거형 상수 |
+| `src/shared/api/types.ts` | API 래퍼/에러 타입, 유틸 |
+| `src/features/*/types/*.ts` | feature 내부 전용 |
+
+타입 규칙: 필드명 `snake_case` 유지, Optional → `?:`, datetime → `string` (ISO 8601)
+
+---
+
+## 금지 사항
+- `fetchClient.ts` 직접 수정
+- `fetch()` 직접 호출
+- `import React from 'react'` (React 19)
+- `export default` (named export 사용)
+- 하드코딩 API URL
+
+---
+
+## FSD 도메인 슬라이스
+
+`auth` · `jobs` · `company` · `profile` · `resume` · `diagnosis` · `landing` · `admin` · `events` · `user` · `shared`
+
+---
+
+## 빠른 참조
+
+```typescript
+// Server ISR
+const data = await fetchClient.get<T>('/api/endpoint', {
+  next: { revalidate: 3600, tags: ['tag'] }
+});
+
+// Client (React Query)
+const { data } = useQuery({
+  queryKey: ['key', id],
+  queryFn: () => fetchClient.get<T>(`/api/endpoint/${id}`),
+});
+
+// 에러 처리
+const { isAuth, isNotFound, isServer, message } = normalizeError(error);
+
+// 동적 Route Handler params (Next.js 16)
+const { id } = await params; // params는 Promise
+```
+
+---
+
+## 관련 Skills
+- API 패턴: `.claude/skills/api-patterns/SKILL.md`
+- 인증 패턴: `.claude/skills/auth-patterns/SKILL.md`
+- FSD 패턴: `.claude/skills/fsd-patterns/SKILL.md`
+- 디자인: `.claude/skills/design-patterns/SKILL.md`
