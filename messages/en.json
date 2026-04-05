@@ -1244,6 +1244,11 @@
         ]
       }
     },
+    "client": {
+      "title": "Korea Job Self-Assessment",
+      "subtitle": "Start a personalized assessment to find the right career for you",
+      "submitError": "Failed to submit assessment results. Please try again."
+    },
     "selfDiagnosis": {
       "title": "Self-Assessment",
       "subtitle": "Enter the information below and we'll provide customized job information.",
