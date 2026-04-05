@@ -1,4 +1,12 @@
+import { Metadata } from 'next';
+import { createMetadata } from '@/shared/lib/metadata';
 import { ReactNode } from 'react';
+
+export const metadata: Metadata = createMetadata({
+  title: '이력서 관리',
+  description: '이력서를 작성하고 편집하세요.',
+  noIndex: true,
+});
 
 interface ResumeLayoutProps {
   children: ReactNode;

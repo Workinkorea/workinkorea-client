@@ -1,8 +1,10 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
+import { createMetadata } from '@/shared/lib/metadata';
 
-export const metadata: Metadata = {
-  title: '자주 묻는 질문 | Work in Korea',
-};
+export const metadata: Metadata = createMetadata({
+  title: '자주 묻는 질문',
+  description: '워크인코리아 자주 묻는 질문(FAQ)입니다. 서비스 이용 방법, 채용 절차, 비자 관련 문의를 확인하세요.',
+});
 
 const faqs = [
   {
