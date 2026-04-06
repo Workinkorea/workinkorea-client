@@ -35,14 +35,14 @@ export default function StatCards({ stats }: StatCardsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
       {statCards.map((card) => (
         <Link
           key={card.title}
           href={card.link}
           className="overflow-hidden rounded-lg bg-white shadow hover:shadow-lg transition-shadow"
         >
-          <div className={`${card.color} px-4 py-5 sm:p-6`}>
+          <div className={`${card.color} px-4 py-5 sm:px-5 sm:py-5 lg:p-6`}>
             <dt className="text-caption-1 font-medium text-white truncate">
               {card.title}
             </dt>

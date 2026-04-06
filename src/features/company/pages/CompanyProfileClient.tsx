@@ -195,7 +195,7 @@ const CompanyProfileClient = () => {
         <div className="max-w-[1100px] mx-auto px-6 py-5">
 
           {/* ── 요약 통계 카드 4개 ───────────────────────────────────────────── */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
             {[
               {
                 icon: <Briefcase size={18} className="text-primary-600" />,
@@ -298,7 +298,7 @@ const CompanyProfileClient = () => {
                         <motion.button
                           key={post.id}
                           onClick={() => router.push(`/company/posts/edit/${post.id}`)}
-                          className="w-full flex items-center gap-4 px-5 py-3.5 hover:bg-label-50 transition-colors group cursor-pointer text-left"
+                          className="w-full flex items-center gap-2 sm:gap-4 px-3 sm:px-5 py-3.5 hover:bg-label-50 transition-colors group cursor-pointer text-left"
                           whileHover={{ x: 2 }}
                           transition={{ type: 'spring', stiffness: 500 }}
                         >
@@ -312,8 +312,8 @@ const CompanyProfileClient = () => {
                             <p className="text-caption-3 text-label-400 mt-0.5">{post.employment_type}</p>
                           </div>
                           <div className="flex items-center gap-3 shrink-0">
-                            <div className="text-right">
-                              <p className="text-caption-3 font-semibold text-white0">
+                            <div className="hidden sm:block text-right">
+                              <p className="text-caption-3 font-semibold text-label-500">
                                 미검토 <span className="text-primary-600 font-bold">0</span>명
                               </p>
                             </div>

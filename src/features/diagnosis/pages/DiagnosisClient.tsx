@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDiagnosisStore } from '@/features/diagnosis/store/diagnosisStore';
 import { DiagnosisStepProgress } from '@/features/diagnosis/components/DiagnosisStepProgress';
@@ -20,6 +21,7 @@ const TOTAL_STEPS = 4;
 
 const DiagnosisClient = () => {
   const router = useRouter();
+  const t = useTranslations('diagnosis.client');
   const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId, reset } = useDiagnosisStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -76,7 +78,7 @@ const DiagnosisClient = () => {
       reset(); // sessionStorage 임시 저장 데이터 초기화
       router.push(`/diagnosis/result?id=${response.id}`);
     } catch (error) {
-      toast.error('진단 결과 제출에 실패했습니다. 다시 시도해주세요.');
+      toast.error(t('submitError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -98,10 +100,10 @@ const DiagnosisClient = () => {
             className="mb-8"
           >
             <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-label-900 mb-2">
-              한국 취업 자가진단
+              {t('title')}
             </h1>
             <p className="text-caption-1 sm:text-body-3 text-label-500">
-              당신에게 딱 맞는 직업을 찾기 위한 맞춤형 진단을 시작해보세요
+              {t('subtitle')}
             </p>
           </motion.div>
 

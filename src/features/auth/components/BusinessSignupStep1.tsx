@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { SignupStep1Data } from '@/features/auth/types/signup.types';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { Checkbox } from '@/shared/ui/Checkbox';
 import { Button } from '@/shared/ui/Button';
 import { IconButton } from '@/shared/ui/IconButton';
@@ -20,6 +21,7 @@ export default function BusinessSignupStep1({
   onNextAction,
   onViewTermsAction
 }: BusinessSignupStep1Props) {
+  const t = useTranslations('auth.companySignup');
   const [agreements, setAgreements] = useState(
     initialData?.agreements || {
       all: false,
@@ -89,7 +91,7 @@ export default function BusinessSignupStep1({
 
   const handleNext = () => {
     if (!isRequiredAgreementsChecked) {
-      toast.error('필수 약관에 모두 동의해주세요.');
+      toast.error(t('termsRequired'));
       return;
     }
     onNextAction({ agreements });
@@ -110,7 +112,7 @@ export default function BusinessSignupStep1({
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-title-2 sm:text-title-1 text-label-900 text-center mb-4 leading-tight">
-            <p>회원가입 정보동의</p>
+            <p>{t('step1Title')}</p>
           </h1>
           <div className="flex items-center justify-between text-body-3">
             <div />
@@ -131,7 +133,7 @@ export default function BusinessSignupStep1({
           <Checkbox
             checked={agreements.all}
             onChange={(e) => handleAllAgreement(e.target.checked)}
-            label="전체 동의"
+            label={t('agreeAllLabel')}
             size="md"
           />
         </motion.div>
@@ -147,7 +149,7 @@ export default function BusinessSignupStep1({
             <Checkbox
               checked={agreements.termsOfService}
               onChange={(e) => handleIndividualAgreement('termsOfService', e.target.checked)}
-              label="서비스 이용약관 동의 (필수)"
+              label={t('terms1Label')}
               size="md"
               className="flex-1"
             />
@@ -156,9 +158,9 @@ export default function BusinessSignupStep1({
               variant="ghost"
               size="sm"
               shape="circle"
-              label="서비스 이용약관 보기"
+              label={t('terms1View')}
               type="button"
-              onClick={() => handleViewTerms('서비스 이용약관')}
+              onClick={() => handleViewTerms(t('terms1Key'))}
             />
           </motion.div>
 
@@ -172,7 +174,7 @@ export default function BusinessSignupStep1({
             <Checkbox
               checked={agreements.privacyPolicy}
               onChange={(e) => handleIndividualAgreement('privacyPolicy', e.target.checked)}
-              label="개인(신용)정보 수집 및 이용동의 (필수)"
+              label={t('terms2Label')}
               size="md"
               className="flex-1"
             />
@@ -181,9 +183,9 @@ export default function BusinessSignupStep1({
               variant="ghost"
               size="sm"
               shape="circle"
-              label="개인정보 수집 및 이용 보기"
+              label={t('terms2View')}
               type="button"
-              onClick={() => handleViewTerms('개인정보 수집 및 이용')}
+              onClick={() => handleViewTerms(t('terms2Key'))}
             />
           </motion.div>
 
@@ -197,7 +199,7 @@ export default function BusinessSignupStep1({
             <Checkbox
               checked={agreements.personalInfo}
               onChange={(e) => handleIndividualAgreement('personalInfo', e.target.checked)}
-              label="개인(신용)정보 제공 및 위탁동의 (필수)"
+              label={t('terms3Label')}
               size="md"
               className="flex-1"
             />
@@ -206,9 +208,9 @@ export default function BusinessSignupStep1({
               variant="ghost"
               size="sm"
               shape="circle"
-              label="개인정보 제공 및 위탁 보기"
+              label={t('terms3View')}
               type="button"
-              onClick={() => handleViewTerms('개인정보 제공 및 위탁')}
+              onClick={() => handleViewTerms(t('terms3Key'))}
             />
           </motion.div>
 
@@ -222,7 +224,7 @@ export default function BusinessSignupStep1({
             <Checkbox
               checked={agreements.thirdParty}
               onChange={(e) => handleIndividualAgreement('thirdParty', e.target.checked)}
-              label="개인(신용)정보 조회 동의 (필수)"
+              label={t('terms4Label')}
               size="md"
               className="flex-1"
             />
@@ -231,9 +233,9 @@ export default function BusinessSignupStep1({
               variant="ghost"
               size="sm"
               shape="circle"
-              label="개인정보 조회 보기"
+              label={t('terms4View')}
               type="button"
-              onClick={() => handleViewTerms('개인정보 조회')}
+              onClick={() => handleViewTerms(t('terms4Key'))}
             />
           </motion.div>
 
@@ -247,7 +249,7 @@ export default function BusinessSignupStep1({
             <Checkbox
               checked={agreements.marketing}
               onChange={(e) => handleIndividualAgreement('marketing', e.target.checked)}
-              label="마케팅 활용 및 광고성 정보 수신동의"
+              label={t('terms5Label')}
               size="md"
               className="flex-1"
             />
@@ -267,7 +269,7 @@ export default function BusinessSignupStep1({
             size="lg"
             className="flex-1"
           >
-            다음
+            {t('nextBtn')}
           </Button>
         </motion.div>
       </div>

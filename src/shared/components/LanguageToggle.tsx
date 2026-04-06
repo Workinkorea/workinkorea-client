@@ -23,41 +23,31 @@ export function LanguageToggle({ className, variant = 'light' }: LanguageToggleP
   };
 
   const containerCls = variant === 'dark'
-    ? 'border-slate-600'
-    : 'border-slate-200';
+    ? 'border-slate-600 bg-transparent'
+    : 'border-slate-200 bg-white';
 
-  const activeCls = variant === 'dark'
-    ? 'bg-slate-50 text-slate-900'
-    : 'bg-slate-800 text-slate-50';
+  const activeCls = 'bg-blue-600 text-white';
 
   const inactiveCls = variant === 'dark'
     ? 'text-slate-400 hover:text-slate-200'
-    : 'bg-white text-slate-400 hover:text-slate-600';
+    : 'text-slate-500 hover:text-slate-700';
 
   return (
-    <div className={cn('flex items-center rounded-full border overflow-hidden', containerCls, className)}>
-      <button
-        onClick={() => switchTo('ko')}
-        disabled={isPending}
-        aria-label="한국어로 변경"
-        className={cn(
-          'flex items-center gap-1 px-2.5 py-1 text-caption-2 font-semibold transition-colors cursor-pointer select-none',
-          locale === 'ko' ? activeCls : inactiveCls,
-        )}
-      >
-        🇰🇷 KO
-      </button>
-      <button
-        onClick={() => switchTo('en')}
-        disabled={isPending}
-        aria-label="Switch to English"
-        className={cn(
-          'flex items-center gap-1 px-2.5 py-1 text-caption-2 font-semibold transition-colors cursor-pointer select-none',
-          locale === 'en' ? activeCls : inactiveCls,
-        )}
-      >
-        🌐 EN
-      </button>
+    <div className={cn('flex items-center rounded-full border p-0.5 gap-0.5 overflow-hidden', containerCls, className)}>
+      {(['ko', 'en'] as const).map((lang) => (
+        <button
+          key={lang}
+          onClick={() => switchTo(lang)}
+          disabled={isPending}
+          aria-label={lang === 'ko' ? '한국어로 변경' : 'Switch to English'}
+          className={cn(
+            'px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition-colors cursor-pointer select-none uppercase',
+            locale === lang ? activeCls : inactiveCls,
+          )}
+        >
+          {lang}
+        </button>
+      ))}
     </div>
   );
 }

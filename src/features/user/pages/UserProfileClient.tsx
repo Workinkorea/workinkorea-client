@@ -189,7 +189,7 @@ function UserProfileClient() {
 
       return profile;
     },
-    enabled: !!firstResumeId && !!profileData,
+    enabled: !!firstResumeId,
   });
 
   // 경력 계산 함수
@@ -235,6 +235,28 @@ function UserProfileClient() {
     leadership: 55
   });
 
+  // 이력서가 없는 경우 profileData만으로 최소 프로필 구성
+  const fallbackProfile: UserProfile | null = !firstResumeId && profileData ? {
+    id: String(profileData.user_id || ''),
+    name: profileData.name || '',
+    email: '',
+    profileImage: profileData.profile_image_url || undefined,
+    position_id: profileData.position_id || undefined,
+    location: profileData.location || '',
+    introduction: profileData.introduction || '',
+    experience: 0,
+    completedProjects: 0,
+    certifications: [],
+    job_status: 'available',
+    skills: [],
+    education: [],
+    languages: [],
+    createdAt: profileData.created_at || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  } : null;
+
+  const effectiveData = resumeData || fallbackProfile;
+
   if (authLoading || resumeListLoading || resumeDetailLoading) {
     return (
       <Layout>
@@ -253,7 +275,7 @@ function UserProfileClient() {
     );
   }
 
-  if (error || !resumeData) {
+  if ((error && !effectiveData) || (!effectiveData && !authLoading && !resumeListLoading)) {
     return (
       <Layout>
         <div className="min-h-screen bg-white py-16 sm:py-20 lg:py-24 flex items-center justify-center px-4 sm:px-6">
@@ -265,26 +287,17 @@ function UserProfileClient() {
               {t('loadingError')}
             </h2>
             <p className="text-caption-1 sm:text-body-3 text-label-500 mb-6 sm:mb-8">
-              {!resumeList?.length
-                ? t('noResumeHint')
-                : t('retryHint')}
+              {t('retryHint')}
             </p>
-            {!resumeList?.length && (
-              <button
-                onClick={() => router.push('/user/resume/create')}
-                className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-primary-600 text-white text-caption-1 sm:text-body-3 font-semibold rounded-lg hover:bg-primary-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
-              >
-                <FileText size={16} />
-                {t('writeResume')}
-              </button>
-            )}
           </div>
         </div>
       </Layout>
     );
   }
 
-  const radarData = generateRadarData(resumeData.skills);
+  if (!effectiveData) return null;
+
+  const radarData = generateRadarData(effectiveData.skills);
   const averageRadarData = generateAverageRadarData();
 
   return (
@@ -357,7 +370,7 @@ function UserProfileClient() {
 
           {/* 헤더 */}
           <UserProfileHeader
-            profile={resumeData}
+            profile={effectiveData}
             isOwnProfile={true}
           />
 
@@ -416,14 +429,14 @@ function UserProfileClient() {
                 {/* 프로필 완성도 */}
                 {(() => {
                   const items = [
-                    { label: t('checklistPhoto'), done: !!resumeData.profileImage },
+                    { label: t('checklistPhoto'), done: !!effectiveData.profileImage },
                     { label: t('checklistName'), done: !!profileData?.name },
                     { label: t('checklistLocation'), done: !!profileData?.location },
-                    { label: t('checklistIntro'), done: !!resumeData.introduction },
-                    { label: t('checklistEducation'), done: resumeData.education.length > 0 },
-                    { label: t('checklistLanguage'), done: resumeData.languages.length > 0 },
-                    { label: t('checklistCert'), done: resumeData.certifications.length > 0 },
-                    { label: t('checklistContact'), done: !!(contactData?.github_url || contactData?.linkedin_url || resumeData.portfolioUrl) },
+                    { label: t('checklistIntro'), done: !!effectiveData.introduction },
+                    { label: t('checklistEducation'), done: effectiveData.education.length > 0 },
+                    { label: t('checklistLanguage'), done: effectiveData.languages.length > 0 },
+                    { label: t('checklistCert'), done: effectiveData.certifications.length > 0 },
+                    { label: t('checklistContact'), done: !!(contactData?.github_url || contactData?.linkedin_url || effectiveData.portfolioUrl) },
                   ];
                   const done = items.filter(i => i.done).length;
                   const pct = Math.round((done / items.length) * 100);
@@ -631,7 +644,7 @@ function UserProfileClient() {
 
             {activeTab === 'skills' && (
               <SkillBarChart
-                skills={resumeData.skills}
+                skills={effectiveData.skills}
                 title={t('skillAnalysisTitle')}
                 maxItems={12}
                 showCategory={true}
@@ -655,11 +668,11 @@ function UserProfileClient() {
                   </div>
 
                   <div className="space-y-3">
-                    {resumeData.education.length > 0 ? (
+                    {effectiveData.education.length > 0 ? (
                       <>
                         {/* 타임라인 */}
                         <div className="relative pl-6 sm:pl-8">
-                          {resumeData.education.map((edu, idx) => (
+                          {effectiveData.education.map((edu, idx) => (
                             <motion.div
                               key={edu.id}
                               className="relative pb-5 sm:pb-6 last:pb-0"
@@ -690,7 +703,7 @@ function UserProfileClient() {
                 </motion.div>
 
                 {/* 자격증 섹션 */}
-                {resumeData.certifications.length > 0 && (
+                {effectiveData.certifications.length > 0 && (
                   <motion.div
                     className="bg-white rounded-xl p-4 sm:p-6 lg:p-7 shadow-sm border border-line-400"
                     initial={{ opacity: 0, y: 10 }}
@@ -705,7 +718,7 @@ function UserProfileClient() {
                     </div>
 
                     <div className="flex flex-wrap gap-2 sm:gap-3">
-                      {resumeData.certifications.map((cert, index) => (
+                      {effectiveData.certifications.map((cert, index) => (
                         <motion.span
                           key={index}
                           className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-linear-to-br from-amber-50 to-yellow-50 text-amber-700 text-caption-3 sm:text-caption-2 font-semibold rounded-full border border-amber-200 hover:border-amber-300 hover:shadow-sm transition-all"

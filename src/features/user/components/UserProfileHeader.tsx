@@ -85,7 +85,7 @@ function UserProfileHeader({
             ) : (
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-label-100 border-4 border-blue-100 flex items-center justify-center">
                 <span className="text-title-3 md:text-title-2 font-semibold text-label-400">
-                  {profile.name.charAt(0).toUpperCase()}
+                  {profile.name ? profile.name.charAt(0).toUpperCase() : '?'}
                 </span>
               </div>
             )}
@@ -175,13 +175,13 @@ function UserProfileHeader({
             </div>
 
             {/* 행동 버튼 */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-row md:flex-col gap-2">
               {isOwnProfile && (
                 <>
                   {onEditClick && (
                     <button
                       onClick={onEditClick}
-                      className="px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer"
+                      className="flex-1 md:flex-none px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer"
                     >
                       {t('editProfile')}
                     </button>
@@ -191,10 +191,10 @@ function UserProfileHeader({
 
               {!isOwnProfile && (
                 <>
-                  <button className="px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer">
+                  <button className="flex-1 md:flex-none px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer">
                     {t('contact')}
                   </button>
-                  <button className="px-4 py-2 border border-blue-600 text-primary-600 rounded-lg text-caption-1 font-medium hover:bg-primary-50 transition-colors cursor-pointer">
+                  <button className="flex-1 md:flex-none px-4 py-2 border border-blue-600 text-primary-600 rounded-lg text-caption-1 font-medium hover:bg-primary-50 transition-colors cursor-pointer">
                     {t('favorite')}
                   </button>
                 </>

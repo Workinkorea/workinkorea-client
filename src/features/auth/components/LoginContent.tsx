@@ -8,6 +8,7 @@ import { GoogleIcon } from '@/shared/ui/AccessibleIcon';
 import { Divider } from '@/shared/ui/Divider';
 import { API_BASE_URL } from '@/shared/api/fetchClient';
 import { saveCallbackUrl } from '@/shared/lib/callbackUrl';
+import { useTranslations } from 'next-intl';
 
 const containerVariants = {
   hidden: {},
@@ -23,24 +24,26 @@ const itemVariants = {
   },
 };
 
-const features = [
-  '맞춤형 채용 공고 추천',
-  '이력서 관리 및 자동 저장',
-  '자가진단 및 커리어 상담',
-];
-
-const OAUTH_ERROR_MESSAGES: Record<string, string> = {
-  oauth_failed: 'Google 로그인에 실패했습니다. 다시 시도해주세요.',
-  unknown:      '인증 처리 중 문제가 발생했습니다. 다시 시도해주세요.',
-};
-
 interface LoginContentProps {
   callbackUrl?: string;
   error?: string;
 }
 
 export default function LoginContent({ callbackUrl, error }: LoginContentProps) {
+  const t = useTranslations('auth.login');
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  const features = [
+    t('leftFeature1'),
+    t('leftFeature2'),
+    t('leftFeature3'),
+  ];
+
+  const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+    oauth_failed: t('oauthFailed'),
+    unknown: t('oauthUnknown'),
+  };
+
   const errorMessage = error ? (OAUTH_ERROR_MESSAGES[error] ?? OAUTH_ERROR_MESSAGES.unknown) : null;
 
   const handleGoogleLogin = () => {
@@ -81,7 +84,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            <span className="text-caption-1 font-semibold text-blue-200">개인 구직 파트너</span>
+            <span className="text-caption-1 font-semibold text-blue-200">{t('leftBadge')}</span>
           </motion.div>
 
           {/* 타이틀 */}
@@ -91,9 +94,9 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            한국 취업,
-            <br />
-            지금 바로 시작하세요
+            {t('leftTitle').split('\n').map((line, i) => (
+              <span key={i}>{line}{i === 0 && <br />}</span>
+            ))}
           </motion.h2>
 
           {/* 기능 리스트 */}
@@ -138,10 +141,10 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
           {/* 타이틀 */}
           <motion.div variants={itemVariants} className="mb-8">
             <h1 className="text-title-2 sm:text-title-1 font-black text-label-900 mb-2 tracking-tight">
-              개인 로그인
+              {t('title')}
             </h1>
             <p className="text-body-3 text-label-500">
-              Google 계정으로 간편하게 시작하세요
+              {t('subtitle')}
             </p>
           </motion.div>
 
@@ -170,11 +173,11 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
               aria-label="Google 계정으로 로그인"
             >
               <GoogleIcon label="Google 로고" size="md" />
-              <span>{isGoogleLoading ? '로그인 중...' : 'Google로 시작하기'}</span>
+              <span>{isGoogleLoading ? t('loggingInGoogle') : t('googleStart')}</span>
             </motion.button>
 
             {/* 구분선 */}
-            <Divider label="또는" className="py-2" />
+            <Divider label={t('divider')} className="py-2" />
 
             {/* 기업 로그인 */}
             <motion.a
@@ -183,16 +186,16 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
             >
-              기업 로그인
+              {t('companyLoginBtn')}
             </motion.a>
           </motion.div>
 
           {/* 회원가입 */}
           <motion.div variants={itemVariants} className="mt-8 pt-6 border-t border-line-400">
             <p className="text-center text-body-3 text-label-600">
-              아직 회원이 아니신가요?{' '}
+              {t('noAccountYet')}{' '}
               <Link href={signupHref} className="text-primary-600 hover:text-primary-700 font-semibold transition-colors inline-flex items-center gap-1">
-                회원가입
+                {t('signupLink')}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </p>
@@ -203,7 +206,7 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
             variants={itemVariants}
             className="text-center text-caption-2 text-label-400 mt-6"
           >
-            로그인함으로써 이용약관 및 개인정보처리방침에 동의합니다.
+            {t('termsAgreement')}
           </motion.p>
         </motion.div>
       </div>
