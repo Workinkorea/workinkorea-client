@@ -19,14 +19,14 @@ import {
   GraduationCap,
   Globe,
   Award,
-  Lightbulb
+  Lightbulb,
+  ChevronDown
 } from 'lucide-react';
 import { Button } from '@/shared/ui/Button';
 import { Resume, ResumeTemplate } from '@/features/user/types/user';
 import { resumeApi } from '@/features/resume/api/resumeApi';
 import { FormField } from '@/shared/ui/FormField';
 import DatePicker from '@/shared/ui/DatePicker';
-import SchoolSearch from '@/shared/ui/SchoolSearch';
 import type {
   CreateResumeRequest,
   UpdateResumeRequest
@@ -83,6 +83,18 @@ function ResumeEditor({
   const router = useRouter();
   const queryClient = useQueryClient();
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    introduction: true,
+    career: false,
+    education: false,
+    language: false,
+    license: false,
+  });
+
+  const toggleSection = (key: string) => {
+    setOpenSections(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
   const [previewImage, setPreviewImage] = useState<string | null>(
     initialData?.content?.personalInfo?.profileImage || null
   );
@@ -126,9 +138,9 @@ function ResumeEditor({
         main_role: ''
       }],
       introduction: initialData?.content?.objective ? [{
-        title: t('introTitle'),
+        title: '',
         content: initialData.content.objective
-      }] : [{ title: t('introTitle'), content: '' }],
+      }] : [{ title: '', content: '' }],
       licenses: initialData?.licenses && initialData.licenses.length > 0
         ? initialData.licenses.map(license => ({
             license_name: license.license_name,
@@ -410,7 +422,10 @@ function ResumeEditor({
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between">
+            <div
+              className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between cursor-pointer select-none"
+              onClick={() => toggleSection('introduction')}
+            >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
                   <MessageSquare size={18} className="text-primary-600" />
@@ -424,17 +439,26 @@ function ResumeEditor({
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => appendIntro({ title: t('introTitle'), content: '' })}
-                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
-              >
-                <Plus size={14} />
-                {t('addBtn')}
-              </button>
+              <div className="flex items-center gap-1">
+                {openSections.introduction && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); appendIntro({ title: '', content: '' }); }}
+                    className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                  >
+                    <Plus size={14} />
+                    {t('addBtn')}
+                  </button>
+                )}
+                <ChevronDown
+                  size={18}
+                  className={`text-label-500 transition-transform duration-200 ${openSections.introduction ? 'rotate-180' : ''}`}
+                />
+              </div>
             </div>
 
             {/* Card body */}
+            {openSections.introduction && (
             <AnimatePresence>
             {introFields.map((field, index) => (
               <motion.div
@@ -487,6 +511,7 @@ function ResumeEditor({
             </motion.div>
             ))}
             </AnimatePresence>
+            )}
           </motion.div>
 
           {/* 경력사항 */}
@@ -496,7 +521,10 @@ function ResumeEditor({
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between">
+            <div
+              className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between cursor-pointer select-none"
+              onClick={() => toggleSection('career')}
+            >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
                   <Briefcase size={18} className="text-primary-600" />
@@ -510,25 +538,26 @@ function ResumeEditor({
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => appendCareer({
-                  company_name: '',
-                  start_date: '',
-                  end_date: undefined,
-                  is_working: false,
-                  department: '',
-                  position_title: '',
-                  main_role: ''
-                })}
-                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
-              >
-                <Plus size={14} />
-                {t('addBtn')}
-              </button>
+              <div className="flex items-center gap-1">
+                {openSections.career && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); appendCareer({ company_name: '', start_date: '', end_date: undefined, is_working: false, department: '', position_title: '', main_role: '' }); }}
+                    className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                  >
+                    <Plus size={14} />
+                    {t('addBtn')}
+                  </button>
+                )}
+                <ChevronDown
+                  size={18}
+                  className={`text-label-500 transition-transform duration-200 ${openSections.career ? 'rotate-180' : ''}`}
+                />
+              </div>
             </div>
 
             {/* Card body */}
+            {openSections.career && (
             <AnimatePresence>
             {careerFields.map((field, index) => (
               <motion.div
@@ -655,6 +684,7 @@ function ResumeEditor({
             </motion.div>
             ))}
             </AnimatePresence>
+            )}
           </motion.div>
 
           {/* 학력사항 */}
@@ -664,7 +694,10 @@ function ResumeEditor({
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between">
+            <div
+              className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between cursor-pointer select-none"
+              onClick={() => toggleSection('education')}
+            >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
                   <GraduationCap size={18} className="text-primary-600" />
@@ -678,23 +711,26 @@ function ResumeEditor({
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => appendSchool({
-                  school_name: '',
-                  major_name: '',
-                  start_date: '',
-                  end_date: undefined,
-                  is_graduated: false
-                })}
-                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
-              >
-                <Plus size={14} />
-                {t('addBtn')}
-              </button>
+              <div className="flex items-center gap-1">
+                {openSections.education && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); appendSchool({ school_name: '', major_name: '', start_date: '', end_date: undefined, is_graduated: false }); }}
+                    className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                  >
+                    <Plus size={14} />
+                    {t('addBtn')}
+                  </button>
+                )}
+                <ChevronDown
+                  size={18}
+                  className={`text-label-500 transition-transform duration-200 ${openSections.education ? 'rotate-180' : ''}`}
+                />
+              </div>
             </div>
 
             {/* Card body */}
+            {openSections.education && (
             <AnimatePresence>
             {schoolFields.map((field, index) => (
               <motion.div
@@ -723,11 +759,13 @@ function ResumeEditor({
                   control={control}
                   label={t('schoolNameLabel')}
                   rules={{ required: t('schoolNameRequired') }}
-                  render={(field) => (
-                    <SchoolSearch
-                      value={field.value}
-                      onChange={field.onChange}
+                  render={(field, fieldId) => (
+                    <input
+                      {...field}
+                      id={fieldId}
+                      type="text"
                       placeholder={t('schoolNamePlaceholder')}
+                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -791,6 +829,7 @@ function ResumeEditor({
             </motion.div>
             ))}
             </AnimatePresence>
+            )}
           </motion.div>
 
           {/* 언어 능력 */}
@@ -800,7 +839,10 @@ function ResumeEditor({
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between">
+            <div
+              className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between cursor-pointer select-none"
+              onClick={() => toggleSection('language')}
+            >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
                   <Globe size={18} className="text-primary-600" />
@@ -814,17 +856,26 @@ function ResumeEditor({
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => appendLanguage({ language_type: '', level: '' })}
-                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
-              >
-                <Plus size={14} />
-                {t('addBtn')}
-              </button>
+              <div className="flex items-center gap-1">
+                {openSections.language && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); appendLanguage({ language_type: '', level: '' }); }}
+                    className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                  >
+                    <Plus size={14} />
+                    {t('addBtn')}
+                  </button>
+                )}
+                <ChevronDown
+                  size={18}
+                  className={`text-label-500 transition-transform duration-200 ${openSections.language ? 'rotate-180' : ''}`}
+                />
+              </div>
             </div>
 
             {/* Card body */}
+            {openSections.language && (
             <AnimatePresence>
             {languageFields.map((field, index) => (
               <motion.div
@@ -900,6 +951,7 @@ function ResumeEditor({
             </motion.div>
             ))}
             </AnimatePresence>
+            )}
           </motion.div>
 
           {/* 자격증 */}
@@ -909,7 +961,10 @@ function ResumeEditor({
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between">
+            <div
+              className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between cursor-pointer select-none"
+              onClick={() => toggleSection('license')}
+            >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
                   <Award size={18} className="text-primary-600" />
@@ -923,17 +978,26 @@ function ResumeEditor({
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => appendLicense({ license_name: '', license_agency: '', license_date: '' })}
-                className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap ml-3"
-              >
-                <Plus size={14} />
-                {t('addBtn')}
-              </button>
+              <div className="flex items-center gap-1">
+                {openSections.license && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); appendLicense({ license_name: '', license_agency: '', license_date: '' }); }}
+                    className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                  >
+                    <Plus size={14} />
+                    {t('addBtn')}
+                  </button>
+                )}
+                <ChevronDown
+                  size={18}
+                  className={`text-label-500 transition-transform duration-200 ${openSections.license ? 'rotate-180' : ''}`}
+                />
+              </div>
             </div>
 
             {/* Card body */}
+            {openSections.license && (
             <AnimatePresence>
             {licenseFields.map((field, index) => (
               <motion.div
@@ -1000,6 +1064,7 @@ function ResumeEditor({
             </motion.div>
             ))}
             </AnimatePresence>
+            )}
           </motion.div>
           </div>
 
@@ -1052,6 +1117,28 @@ function ResumeEditor({
               </ul>
             </div>
           </div>
+        </div>
+
+        {/* 모바일 하단 정적 저장 버튼 */}
+        <div className="lg:hidden flex gap-3 pt-2 pb-6">
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="flex-1"
+            onClick={() => router.back()}
+          >
+            {t('cancelBtn')}
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            disabled={isSubmitting}
+            className="flex-1"
+          >
+            {isSubmitting ? t('savingText') : isEditMode ? t('updateBtn') : t('saveBtn')}
+          </Button>
         </div>
       </form>
     </div>

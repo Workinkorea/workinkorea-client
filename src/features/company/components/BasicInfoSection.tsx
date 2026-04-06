@@ -82,7 +82,7 @@ export const BasicInfoSection = ({
         </div>
 
         {/* 직원 수 & 설립일 */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label htmlFor="employee_count" className="text-caption-1 font-semibold text-label-700 mb-2 flex items-center gap-2">
               <Users size={16} />
