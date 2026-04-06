@@ -189,7 +189,7 @@ function UserProfileClient() {
 
       return profile;
     },
-    enabled: !!firstResumeId && !!profileData,
+    enabled: !!firstResumeId,
   });
 
   // 경력 계산 함수

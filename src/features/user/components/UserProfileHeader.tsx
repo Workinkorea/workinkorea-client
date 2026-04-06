@@ -85,7 +85,7 @@ function UserProfileHeader({
             ) : (
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-label-100 border-4 border-blue-100 flex items-center justify-center">
                 <span className="text-title-3 md:text-title-2 font-semibold text-label-400">
-                  {profile.name.charAt(0).toUpperCase()}
+                  {profile.name ? profile.name.charAt(0).toUpperCase() : '?'}
                 </span>
               </div>
             )}
