@@ -77,7 +77,41 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
 
   return (
     <>
-      <div className="overflow-x-auto">
+      {/* 모바일 카드 목록 (lg 미만) */}
+      <div className="lg:hidden divide-y divide-gray-200">
+        {users.map((user) => (
+          <div key={user.id} className="p-4 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-caption-2 text-label-400">#{user.id}</p>
+              <p className="text-body-3 font-medium text-label-900 truncate">{user.email}</p>
+              <span
+                className={`inline-flex mt-1 px-2 py-0.5 text-caption-2 font-semibold rounded-full ${
+                  user.passport_certi ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                }`}
+              >
+                {user.passport_certi ? '인증됨' : '미인증'}
+              </span>
+            </div>
+            <div className="flex gap-3 shrink-0">
+              <button
+                onClick={() => openEditModal(user)}
+                className="text-primary-600 hover:text-primary-900 text-caption-1 font-medium cursor-pointer"
+              >
+                수정
+              </button>
+              <button
+                onClick={() => handleDelete(user.id)}
+                className="text-status-error hover:text-red-900 text-caption-1 font-medium cursor-pointer"
+              >
+                삭제
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 데스크탑 테이블 (lg 이상) */}
+      <div className="hidden lg:block overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-label-50">
             <tr>

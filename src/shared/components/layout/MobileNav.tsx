@@ -6,6 +6,9 @@ import { Menu, X, Home, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/utils/utils';
+import { UserTypeToggle } from '@/shared/components/UserTypeToggle';
+import type { ViewType } from '@/shared/components/UserTypeToggle';
+import { LanguageToggle } from '@/shared/components/LanguageToggle';
 
 interface NavItem {
   name: string;
@@ -17,6 +20,8 @@ interface MobileNavProps {
   type?: 'homepage' | 'business';
   isAuthenticated?: boolean;
   onLogout?: () => void;
+  viewType?: ViewType;
+  onViewTypeChange?: (v: ViewType) => void;
 }
 
 const panelContentVariants = {
@@ -29,7 +34,7 @@ const panelItemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.28 } },
 };
 
-export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout }: MobileNavProps) {
+export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout, viewType, onViewTypeChange }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations('common.nav');
 
@@ -143,6 +148,16 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout 
                 >
                   <Home size={20} />
                 </Link>
+                {/* 모바일 전용: 개인/기업 토글 + 언어 전환 */}
+                <div className="flex items-center gap-2 sm:hidden">
+                  {viewType && onViewTypeChange && (
+                    <UserTypeToggle
+                      value={viewType}
+                      onChange={(v) => { onViewTypeChange(v); close(); }}
+                    />
+                  )}
+                  <LanguageToggle />
+                </div>
                 <button
                   onClick={close}
                   className="p-1.5 rounded-lg text-label-400 hover:text-label-700 hover:bg-label-50 transition-colors focus:outline-none cursor-pointer"

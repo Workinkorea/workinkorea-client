@@ -175,13 +175,13 @@ function UserProfileHeader({
             </div>
 
             {/* 행동 버튼 */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-row md:flex-col gap-2">
               {isOwnProfile && (
                 <>
                   {onEditClick && (
                     <button
                       onClick={onEditClick}
-                      className="px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer"
+                      className="flex-1 md:flex-none px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer"
                     >
                       {t('editProfile')}
                     </button>
@@ -191,10 +191,10 @@ function UserProfileHeader({
 
               {!isOwnProfile && (
                 <>
-                  <button className="px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer">
+                  <button className="flex-1 md:flex-none px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer">
                     {t('contact')}
                   </button>
-                  <button className="px-4 py-2 border border-blue-600 text-primary-600 rounded-lg text-caption-1 font-medium hover:bg-primary-50 transition-colors cursor-pointer">
+                  <button className="flex-1 md:flex-none px-4 py-2 border border-blue-600 text-primary-600 rounded-lg text-caption-1 font-medium hover:bg-primary-50 transition-colors cursor-pointer">
                     {t('favorite')}
                   </button>
                 </>

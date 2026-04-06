@@ -45,12 +45,12 @@ export function Header({ type, viewType, onViewTypeChange, isAuthenticated, onLo
             </span>
           </Link>
 
-          {/* 개인/기업 토글 */}
+          {/* 개인/기업 토글 — sm 이상에서만 표시 */}
           {viewType && onViewTypeChange && (
             <UserTypeToggle
               value={viewType}
               onChange={onViewTypeChange}
-              className="ml-2"
+              className="ml-2 hidden sm:flex"
             />
           )}
 
@@ -59,8 +59,8 @@ export function Header({ type, viewType, onViewTypeChange, isAuthenticated, onLo
 
           {/* 우측 아이콘 영역 */}
           <div className="flex items-center gap-1">
-            {/* 언어 전환 */}
-            <LanguageToggle />
+            {/* 언어 전환 — sm 이상에서만 표시 */}
+            <LanguageToggle className="hidden sm:flex" />
 
             {/* 검색 아이콘 */}
             <button
@@ -85,6 +85,8 @@ export function Header({ type, viewType, onViewTypeChange, isAuthenticated, onLo
               type={type}
               isAuthenticated={isAuthenticated}
               onLogout={onLogout}
+              viewType={viewType}
+              onViewTypeChange={onViewTypeChange}
             />
           </div>
 

@@ -187,7 +187,7 @@ const CompanyProfileEditClient = () => {
           </div>
 
           {/* 2-column layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_288px] gap-5 items-start">
 
             {/* ─── 좌측: 폼 ─── */}
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -234,7 +234,7 @@ const CompanyProfileEditClient = () => {
               </div>
 
               {/* 모바일 저장 버튼 (lg 이하에서만 표시) */}
-              <div className="flex gap-3 lg:hidden">
+              <div className="flex gap-3 md:hidden">
                 <Button
                   type="button"
                   variant="outline"
@@ -257,7 +257,7 @@ const CompanyProfileEditClient = () => {
             </form>
 
             {/* ─── 우측: 사이드바 ─── */}
-            <aside className="hidden lg:flex flex-col gap-4 sticky top-20">
+            <aside className="hidden md:flex flex-col gap-4 sticky top-20">
 
               {/* 저장 버튼 */}
               <Button

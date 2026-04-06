@@ -103,7 +103,27 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
 
   return (
     <>
-      <div className="overflow-x-auto">
+      {/* 모바일 카드 목록 (lg 미만) */}
+      <div className="lg:hidden divide-y divide-gray-200">
+        {posts.map((post) => (
+          <div key={post.id} className="p-4 space-y-2">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-caption-2 text-label-400">#{post.id}</p>
+                <p className="text-body-3 font-medium text-label-900 truncate">{post.title}</p>
+                <p className="text-caption-2 text-label-500 mt-0.5">회사 ID: {post.company_id} · {post.work_location}</p>
+              </div>
+              <div className="flex gap-3 shrink-0">
+                <button onClick={() => openEditModal(post)} className="text-purple-600 hover:text-purple-900 text-caption-1 font-medium cursor-pointer">수정</button>
+                <button onClick={() => handleDelete(post.id)} className="text-status-error hover:text-red-900 text-caption-1 font-medium cursor-pointer">삭제</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 데스크탑 테이블 (lg 이상) */}
+      <div className="hidden lg:block overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-label-50">
             <tr>
@@ -189,7 +209,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
             <h3 className="text-title-5 font-medium text-label-900 mb-4">공고 수정</h3>
             <form onSubmit={handleSubmit}>
               <div className="space-y-4 max-h-[70vh] overflow-y-auto">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="col-span-2">
                     <label className="block text-body-3 font-medium text-label-700 mb-1">
                       공고 제목

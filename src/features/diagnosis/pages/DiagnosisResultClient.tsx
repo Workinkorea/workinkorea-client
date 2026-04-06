@@ -231,8 +231,8 @@ const DiagnosisResultClient = () => {
             <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-label-900 mb-6">
               {t('resultTitle')}
             </h1>
-            <div className="inline-grid w-32 h-32 sm:w-40 sm:h-40 mb-6">
-              <svg className="col-start-1 row-start-1 transform -rotate-90 w-32 h-32 sm:w-40 sm:h-40">
+            <div className="inline-grid w-28 h-28 sm:w-36 sm:h-36 mb-6">
+              <svg className="col-start-1 row-start-1 transform -rotate-90 w-28 h-28 sm:w-36 sm:h-36" viewBox="0 0 128 128">
                 <circle
                   cx="64"
                   cy="64"
@@ -257,7 +257,7 @@ const DiagnosisResultClient = () => {
               </svg>
               <div className="col-start-1 row-start-1 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-title-2 sm:text-title-1 font-bold text-primary-600">{result.score}%</div>
+                  <div className="text-2xl sm:text-title-1 font-bold text-primary-600">{result.score}%</div>
                   <div className="text-caption-2 text-label-500 mt-1">{t('readinessLabel')}</div>
                 </div>
               </div>
@@ -338,7 +338,7 @@ const DiagnosisResultClient = () => {
               </div>
               <h2 className="text-body-1 sm:text-title-5 font-bold text-label-900">{t('recommendedJobsTitle')}</h2>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
               {result.recommendedJobs.map((job, index) => (
                 <motion.div
                   key={index}
@@ -346,11 +346,11 @@ const DiagnosisResultClient = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   className={cn(
-                    'px-3 py-2.5 bg-primary-50 border border-blue-100 rounded-lg text-center',
+                    'px-3 py-2.5 bg-primary-50 border border-blue-100 rounded-lg',
                     'hover:bg-primary-100 transition-colors duration-150'
                   )}
                 >
-                  <span className="text-caption-2 sm:text-caption-1 font-semibold text-primary-700 line-clamp-2">
+                  <span className="text-caption-1 font-semibold text-primary-700">
                     {job}
                   </span>
                 </motion.div>
