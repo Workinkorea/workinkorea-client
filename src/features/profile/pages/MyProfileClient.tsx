@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Edit3 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
@@ -96,6 +96,14 @@ function MyProfileClient() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('redirected') === '1') {
+      toast.error('해당 페이지에 접근 권한이 없습니다.');
+      router.replace('/user/profile', { scroll: false });
+    }
+  }, [searchParams, router]);
 
   // 프로필 데이터 조회
   const { data: profileData, isLoading: profileLoading, error: profileError } = useQuery({
