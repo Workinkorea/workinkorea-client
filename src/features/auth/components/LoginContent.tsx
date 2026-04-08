@@ -27,9 +27,10 @@ const itemVariants = {
 interface LoginContentProps {
   callbackUrl?: string;
   error?: string;
+  signup?: string;
 }
 
-export default function LoginContent({ callbackUrl, error }: LoginContentProps) {
+export default function LoginContent({ callbackUrl, error, signup }: LoginContentProps) {
   const t = useTranslations('auth.login');
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
@@ -41,6 +42,9 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
 
   const OAUTH_ERROR_MESSAGES: Record<string, string> = {
     oauth_failed: t('oauthFailed'),
+    account_not_found: t('oauthAccountNotFound'),
+    email_exists: t('oauthEmailExists'),
+    suspended: t('oauthSuspended'),
     unknown: t('oauthUnknown'),
   };
 
@@ -147,6 +151,18 @@ export default function LoginContent({ callbackUrl, error }: LoginContentProps) 
               {t('subtitle')}
             </p>
           </motion.div>
+
+          {/* 회원가입 성공 배너 */}
+          {signup === 'success' && (
+            <motion.div
+              variants={itemVariants}
+              className="flex items-start gap-2.5 px-4 py-3 mb-6 rounded-lg bg-green-50 border border-green-200 text-caption-1 font-medium text-green-700"
+              role="status"
+            >
+              <CheckCircle2 size={15} className="mt-0.5 shrink-0" />
+              <span>{t('signupSuccess')}</span>
+            </motion.div>
+          )}
 
           {/* 에러 배너 */}
           {errorMessage && (
