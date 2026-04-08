@@ -20,19 +20,25 @@ const itemVariants = {
   },
 };
 
-export default function SignupSelectContent() {
+interface SignupSelectContentProps {
+  callbackUrl?: string;
+}
+
+export default function SignupSelectContent({ callbackUrl }: SignupSelectContentProps) {
   const t = useTranslations('auth.signupSelect');
+
+  const qs = callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : '';
 
   const SIGNUP_OPTIONS = [
     {
-      href: '/signup',
+      href: `/signup${qs}`,
       icon: User,
       title: t('personalMember'),
       description: t('personalMemberDesc'),
       features: [t('personalFeature1'), t('personalFeature2'), t('personalFeature3')],
     },
     {
-      href: '/company-signup/step1',
+      href: `/company-signup/step1${qs}`,
       icon: Building2,
       title: t('companyMember'),
       description: t('companyMemberDesc'),

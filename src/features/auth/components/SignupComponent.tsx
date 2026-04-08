@@ -59,7 +59,7 @@ const TERM_KEYS: TermKey[] = [
   'cookiePolicy',
 ];
 
-export default function SignupComponent({ userEmail }: { userEmail?: string }) {
+export default function SignupComponent({ userEmail, callbackUrl }: { userEmail?: string; callbackUrl?: string }) {
   const router = useRouter();
   const t = useTranslations('auth.signup');
 
@@ -164,7 +164,10 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
     try {
       await authApi.signup({ email, name, birth_date, country_code: country });
       toast.success(t('toastSuccess'));
-      router.push('/login');
+      const loginRedirect = callbackUrl
+        ? `/login?signup=success&callbackUrl=${encodeURIComponent(callbackUrl)}`
+        : '/login?signup=success';
+      router.push(loginRedirect);
     } catch (error: unknown) {
       const errorMessage =
         error && typeof error === 'object' && 'response' in error
