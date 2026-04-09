@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useDiagnosisStore } from '@/features/diagnosis/store/diagnosisStore';
 import Layout from '@/shared/components/layout/Layout';
@@ -42,6 +42,7 @@ function convertResponseToDiagnosisData(response: DiagnosisAnswerResponse): Part
 const DiagnosisResultClient = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const { isAuthenticated } = useAuth();
   const { diagnosisId } = useDiagnosisStore();
   const [result, setResult] = useState<MatchingResult | null>(null);
@@ -145,12 +146,20 @@ const DiagnosisResultClient = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, diagnosisId]);
 
+  const currentUrl = diagnosisId
+    ? `${pathname}?id=${diagnosisId}`
+    : pathname;
+
   const handleRestart = () => {
     router.push('/diagnosis');
   };
 
   const handleSignup = () => {
-    router.push('/signup');
+    router.push(`/signup-select?callbackUrl=${encodeURIComponent(currentUrl)}`);
+  };
+
+  const handleLogin = () => {
+    router.push(`/login-select?callbackUrl=${encodeURIComponent(currentUrl)}`);
   };
 
   const handleJobSearch = () => {
@@ -379,9 +388,38 @@ const DiagnosisResultClient = () => {
               {t('ctaSubtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              {!isAuthenticated && (
+              {!isAuthenticated ? (
+                <>
+                  <motion.button
+                    onClick={handleLogin}
+                    className={cn(
+                      'px-6 py-2.5 bg-white text-primary-600 font-semibold rounded-lg',
+                      'hover:bg-label-50 transition-colors duration-150 cursor-pointer',
+                      'focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2',
+                      'text-body-3 sm:text-body-1'
+                    )}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {t('loginButton')}
+                  </motion.button>
+                  <motion.button
+                    onClick={handleSignup}
+                    className={cn(
+                      'px-6 py-2.5 bg-white/20 backdrop-blur text-white font-semibold rounded-lg',
+                      'hover:bg-white/30 transition-colors duration-150 border border-white/50 cursor-pointer',
+                      'focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2',
+                      'text-body-3 sm:text-body-1'
+                    )}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {t('signupButton')}
+                  </motion.button>
+                </>
+              ) : (
                 <motion.button
-                  onClick={handleSignup}
+                  onClick={handleJobSearch}
                   className={cn(
                     'px-6 py-2.5 bg-white text-primary-600 font-semibold rounded-lg',
                     'hover:bg-label-50 transition-colors duration-150 cursor-pointer',
@@ -391,22 +429,9 @@ const DiagnosisResultClient = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  {t('signupButton')}
+                  {t('browseJobsButton')}
                 </motion.button>
               )}
-              <motion.button
-                onClick={handleJobSearch}
-                className={cn(
-                  'px-6 py-2.5 bg-white/20 backdrop-blur text-white font-semibold rounded-lg',
-                  'hover:bg-white/30 transition-colors duration-150 border border-white/50 cursor-pointer',
-                  'focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2',
-                  'text-body-3 sm:text-body-1'
-                )}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {t('browseJobsButton')}
-              </motion.button>
             </div>
           </motion.div>
 

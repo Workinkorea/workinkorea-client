@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Plus,
   PenSquare,
@@ -32,12 +32,21 @@ import { profileApi } from '../api/profileCompany';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import type { CompanyPost } from '@/shared/types/api';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { toast } from 'sonner';
 
 type TodoTab = 'unread' | 'accepted' | 'interview' | 'evaluated';
 
 const CompanyProfileClient = () => {
   const t = useTranslations('company.dashboard');
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('redirected') === '1') {
+      toast.error('해당 페이지에 접근 권한이 없습니다.');
+      router.replace('/company', { scroll: false });
+    }
+  }, [searchParams, router]);
 
   const [activeTodoTab, setActiveTodoTab] = useState<TodoTab>('unread');
 

@@ -11,13 +11,14 @@ export const metadata: Metadata = createMetadata({
 interface SignupPageProps {
   searchParams: Promise<{
     user_email?: string;
+    callbackUrl?: string;
   }>;
 }
 
 export default async function SignupPage({ searchParams }: SignupPageProps) {
-  const { user_email: userEmail } = await searchParams;
+  const { user_email: userEmail, callbackUrl } = await searchParams;
 
   return (
-    <SignupComponent userEmail={userEmail} />
-  )
-};
+    <SignupComponent userEmail={userEmail} callbackUrl={callbackUrl} />
+  );
+}
