@@ -630,6 +630,7 @@
       "toastVerifyFirst": "이메일 인증 완료해주세요.",
       "toastSuccess": "회원가입이 완료되었습니다. 로그인 해주세요.",
       "toastError": "회원가입 중 오류가 발생했습니다.",
+      "oauthSignupGuide": "Google 계정 인증은 완료됐습니다. 아래 정보를 입력해 회원가입을 완료해주세요.",
       "alreadyAccount": "이미 계정이 있으신가요?",
       "loginLink": "로그인",
       "termLabels": {

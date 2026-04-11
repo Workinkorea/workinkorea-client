@@ -630,6 +630,7 @@
       "toastVerifyFirst": "Please complete email verification first.",
       "toastSuccess": "Sign up complete. Please log in.",
       "toastError": "An error occurred during sign up.",
+      "oauthSignupGuide": "Google account verified. Please fill in the details below to complete your registration.",
       "alreadyAccount": "Already have an account?",
       "loginLink": "Sign In",
       "termLabels": {

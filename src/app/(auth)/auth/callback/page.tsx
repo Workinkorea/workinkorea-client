@@ -17,9 +17,13 @@ function CallbackContent() {
       const token = searchParams.get('token');
       const message = searchParams.get('message');
 
-      // 회원가입 필요
+      // 회원가입 필요 (Google OAuth — 신규 사용자)
       if (status === 'signup') {
-        router.push('/signup');
+        const email = searchParams.get('email') || searchParams.get('user_email');
+        const signupUrl = email
+          ? `/signup?user_email=${encodeURIComponent(email)}&status=error`
+          : '/signup?status=error';
+        router.push(signupUrl);
         return;
       }
 
