@@ -146,9 +146,30 @@ export const useAuthStore = create<AuthState>((set) => ({
           });
           return;
         }
+      } else {
+        // refresh non-200 (서버 오류, 토큰 만료 등) — 쿠키로 마지막 폴백
+        // access_token / userType 쿠키가 살아 있으면 인증 상태 유지
+        const cookieUserType = cookieManager.getUserType();
+        if (cookieUserType) {
+          set({
+            isAuthenticated: true,
+            userType: cookieUserType,
+            isInitialized: true,
+          });
+          return;
+        }
       }
     } catch {
-      // 네트워크 오류 등 — 비인증 상태로 처리
+      // 네트워크 오류 — 쿠키로 마지막 폴백
+      const cookieUserType = cookieManager.getUserType();
+      if (cookieUserType) {
+        set({
+          isAuthenticated: true,
+          userType: cookieUserType,
+          isInitialized: true,
+        });
+        return;
+      }
     }
 
     tokenStore.clear();
