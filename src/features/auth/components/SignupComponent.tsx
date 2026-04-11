@@ -11,6 +11,7 @@ import { Input } from '@/shared/ui/Input';
 import { Checkbox } from '@/shared/ui/Checkbox';
 import { Button } from '@/shared/ui/Button';
 import { cn } from '@/shared/lib/utils/utils';
+import { AlertCircle } from 'lucide-react';
 import { COUNTRIES } from '@/shared/constants/countries';
 import { validateEmail } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
@@ -59,7 +60,17 @@ const TERM_KEYS: TermKey[] = [
   'cookiePolicy',
 ];
 
-export default function SignupComponent({ userEmail }: { userEmail?: string }) {
+export default function SignupComponent({
+  userEmail,
+  callbackUrl,
+  oauthStatus,
+  oauthMessage,
+}: {
+  userEmail?: string;
+  callbackUrl?: string;
+  oauthStatus?: string;
+  oauthMessage?: string;
+}) {
   const router = useRouter();
   const t = useTranslations('auth.signup');
 
@@ -164,7 +175,10 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
     try {
       await authApi.signup({ email, name, birth_date, country_code: country });
       toast.success(t('toastSuccess'));
-      router.push('/login');
+      const loginRedirect = callbackUrl
+        ? `/login?signup=success&callbackUrl=${encodeURIComponent(callbackUrl)}`
+        : '/login?signup=success';
+      router.push(loginRedirect);
     } catch (error: unknown) {
       const errorMessage =
         error && typeof error === 'object' && 'response' in error
@@ -296,6 +310,20 @@ export default function SignupComponent({ userEmail }: { userEmail?: string }) {
             <h1 className="text-title-3 sm:text-title-2 font-bold text-label-900 mb-2">{t('personalTitle')}</h1>
             <p className="text-caption-1 text-label-500">{t('formSubtitle')}</p>
           </motion.div>
+
+          {/* Google OAuth 신규 사용자 안내 배너 */}
+          {oauthStatus === 'error' && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="flex items-start gap-2.5 px-4 py-3 rounded-lg bg-blue-50 border border-blue-200 text-caption-1 font-medium text-blue-700"
+              role="status"
+            >
+              <AlertCircle size={15} className="mt-0.5 shrink-0" />
+              <span>{t('oauthSignupGuide')}</span>
+            </motion.div>
+          )}
 
           <motion.form
             className="space-y-6"

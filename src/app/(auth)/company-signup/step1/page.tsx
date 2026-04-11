@@ -8,6 +8,11 @@ export const metadata: Metadata = createMetadata({
   noIndex: true,
 });
 
-export default function SignupStep1Page() {
-  return <BusinessSignupComponent />;
+export default async function SignupStep1Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}) {
+  const { callbackUrl } = await searchParams;
+  return <BusinessSignupComponent callbackUrl={callbackUrl} />;
 }

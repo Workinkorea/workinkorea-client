@@ -70,7 +70,9 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
     if (userType !== 'user') {
-      return NextResponse.redirect(new URL(getDashboardUrl(userType), request.url));
+      const url = new URL(getDashboardUrl(userType), request.url);
+      url.searchParams.set('redirected', '1');
+      return NextResponse.redirect(url);
     }
     return NextResponse.next();
   }
@@ -85,7 +87,9 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
     if (userType !== 'company') {
-      return NextResponse.redirect(new URL(getDashboardUrl(userType), request.url));
+      const url = new URL(getDashboardUrl(userType), request.url);
+      url.searchParams.set('redirected', '1');
+      return NextResponse.redirect(url);
     }
     return NextResponse.next();
   }
@@ -98,7 +102,9 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
     if (userType !== 'admin') {
-      return NextResponse.redirect(new URL(getDashboardUrl(userType), request.url));
+      const url = new URL(getDashboardUrl(userType), request.url);
+      url.searchParams.set('redirected', '1');
+      return NextResponse.redirect(url);
     }
     return NextResponse.next();
   }

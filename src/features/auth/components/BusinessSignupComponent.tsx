@@ -6,6 +6,7 @@ import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { FormField } from '@/shared/ui/FormField';
 import { Input } from '@/shared/ui/Input';
 import {
@@ -60,9 +61,10 @@ const TERM_KEYS: { key: TermKey; required: boolean }[] = [
   { key: 'marketing', required: false },
 ];
 
-export default function BusinessSignupComponent() {
+export default function BusinessSignupComponent({ callbackUrl }: { callbackUrl?: string }) {
   const router = useRouter();
   const t = useTranslations('auth.companySignup');
+  const { login } = useAuth();
 
   const [terms, setTerms] = useState<TermsState>({
     allAgree: false,
@@ -207,8 +209,11 @@ export default function BusinessSignupComponent() {
         name: data.name,
         phone: data.phoneNumber.replace(/[^0-9]/g, ''),
       });
+      // 가입 완료 후 자동 로그인
+      await authApi.companyLogin({ username: data.email, password: data.password });
+      login('company');
       toast.success(t('toastSuccess'));
-      router.push('/company-login?signup=success');
+      router.push(callbackUrl || '/company');
     } catch (error: unknown) {
       logError(error, 'BusinessSignupComponent.onSubmit');
       const rawMessage = extractErrorMessage(error, '');
