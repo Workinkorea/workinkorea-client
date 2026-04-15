@@ -184,7 +184,7 @@ export function ResumeSection({
                 </button>
                 <button
                   onClick={handleCreateResume}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg text-body-3 font-medium hover:bg-primary-700 transition-colors cursor-pointer"
                 >
                   {t('createFirst')}
                 </button>

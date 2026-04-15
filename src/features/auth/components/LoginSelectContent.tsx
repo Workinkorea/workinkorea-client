@@ -86,15 +86,15 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
                 <motion.div
                   className="group relative h-full border-2 border-line-400 rounded-2xl p-6 sm:p-8 bg-white cursor-pointer transition-all overflow-hidden"
                   whileHover={{
-                    borderColor: '#2563EB',
-                    backgroundColor: '#F0F9FF',
+                    borderColor: '#425AD5',
+                    backgroundColor: '#F3F6FF',
                     y: -4,
                   }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: 'spring', stiffness: 300 }}
                 >
                   {/* 배경 그라데이션 (호버 시 표시) */}
-                  <div className="absolute inset-0 bg-linear-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-linear-to-br from-primary-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                   <div className="relative z-10 flex flex-col h-full">
                     {/* 아이콘 */}

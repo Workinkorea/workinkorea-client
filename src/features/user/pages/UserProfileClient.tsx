@@ -351,7 +351,7 @@ function UserProfileClient() {
                   router.push('/user/resume/create');
                 }
               }}
-              className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-primary-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
+              className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-primary-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 cursor-pointer shadow-[0_4px_14px_rgba(66,90,213,0.25)] hover:shadow-[0_6px_20px_rgba(66,90,213,0.35)]"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0, x: 20 }}
@@ -402,7 +402,7 @@ function UserProfileClient() {
                   {activeTab === tab.key && (
                     <motion.div
                       layoutId="tab-bg"
-                      className="absolute inset-0 bg-primary-600 rounded-lg shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+                      className="absolute inset-0 bg-primary-600 rounded-lg shadow-[0_4px_14px_rgba(66,90,213,0.25)]"
                       style={{ zIndex: -1 }}
                       transition={{ type: 'spring', stiffness: 340, damping: 28 }}
                     />
@@ -536,7 +536,7 @@ function UserProfileClient() {
               <div className="space-y-5 sm:space-y-6">
                 {/* 파일 업로드 섹션 */}
                 <motion.div
-                  className="bg-linear-to-br from-blue-50 to-blue-100/50 rounded-xl p-4 sm:p-6 border border-primary-200 hover:border-blue-300 transition-colors"
+                  className="bg-linear-to-br from-primary-50 to-primary-100/50 rounded-xl p-4 sm:p-6 border border-primary-200 hover:border-primary-300 transition-colors"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
@@ -559,7 +559,7 @@ function UserProfileClient() {
                         accept="image/*"
                         className="absolute inset-0 opacity-0 cursor-pointer"
                       />
-                      <div className="px-4 py-2.5 sm:py-3 bg-white border-2 border-dashed border-blue-300 rounded-lg text-center cursor-pointer hover:border-blue-400 hover:bg-primary-50/30 transition-colors">
+                      <div className="px-4 py-2.5 sm:py-3 bg-white border-2 border-dashed border-primary-300 rounded-lg text-center cursor-pointer hover:border-primary-400 hover:bg-primary-50/30 transition-colors">
                         <p className="text-caption-2 sm:text-caption-1 font-semibold text-label-700">
                           {selectedFile ? selectedFile.name : t('clickToSelect')}
                         </p>
@@ -568,7 +568,7 @@ function UserProfileClient() {
                     <motion.button
                       onClick={handleUploadImage}
                       disabled={!selectedFile || uploadImageMutation.isPending}
-                      className="px-4 sm:px-6 py-2.5 sm:py-3 bg-primary-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+                      className="px-4 sm:px-6 py-2.5 sm:py-3 bg-primary-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap shadow-[0_4px_14px_rgba(66,90,213,0.25)]"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -632,7 +632,7 @@ function UserProfileClient() {
                     <p className="text-caption-1 sm:text-body-3 text-label-500 mb-4 sm:mb-6">{t('noResumeEmpty')}</p>
                     <button
                       onClick={() => router.push('/user/resume/create')}
-                      className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-primary-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-primary-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]"
+                      className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-primary-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-primary-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(66,90,213,0.25)]"
                     >
                       <FileText size={16} />
                       {t('writeResume')}

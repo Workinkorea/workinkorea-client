@@ -131,8 +131,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 key={exp.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === exp.value
-                    ? 'border-blue-600 bg-primary-50'
-                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
                 }`}
               >
                 <input
@@ -163,8 +163,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 key={job.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === job.value
-                    ? 'border-blue-600 bg-primary-50'
-                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
                 }`}
               >
                 <input
@@ -195,8 +195,8 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
                 key={edu.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === edu.value
-                    ? 'border-blue-600 bg-primary-50'
-                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
                 }`}
               >
                 <input
@@ -244,7 +244,7 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
         <motion.button
           type="button"
           onClick={() => setShowLanguageModal(true)}
-          className="px-6 py-3 border-2 border-blue-600 text-primary-600 rounded-lg font-medium hover:bg-primary-50 transition-all cursor-pointer"
+          className="px-6 py-3 border-2 border-primary-600 text-primary-600 rounded-lg font-medium hover:bg-primary-50 transition-all cursor-pointer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -255,7 +255,7 @@ export const Session2CareerSkills = ({ initialData, onNext, onBack }: Session2Pr
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-6 border-2 border-blue-300 rounded-lg bg-primary-50"
+            className="mt-4 p-6 border-2 border-primary-300 rounded-lg bg-primary-50"
           >
             <h3 className="text-body-1 font-semibold text-label-900 mb-4">{t('languageModalTitle')}</h3>
             <div className="space-y-4">

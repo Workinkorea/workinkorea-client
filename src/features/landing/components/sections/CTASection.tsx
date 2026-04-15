@@ -32,10 +32,10 @@ export default function CTASection() {
       className="relative py-16 sm:py-20 lg:py-28 overflow-hidden"
     >
       {/* 배경 그래디언트 */}
-      <div className="absolute inset-0 bg-linear-to-br from-blue-600 via-blue-700 to-blue-900" />
+      <div className="absolute inset-0 bg-linear-to-br from-primary-600 via-primary-700 to-primary-900" />
 
       {/* 장식 원 1 */}
-      <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400/20 rounded-full -mr-36 sm:-mr-48 -mt-36 sm:-mt-48 blur-3xl" />
+      <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-primary-400/20 rounded-full -mr-36 sm:-mr-48 -mt-36 sm:-mt-48 blur-3xl" />
 
       {/* 장식 원 2 */}
       <div className="absolute bottom-0 left-0 w-64 sm:w-80 h-64 sm:h-80 bg-primary-500/20 rounded-full -ml-32 sm:-ml-40 -mb-32 sm:-mb-40 blur-3xl" />
@@ -56,7 +56,7 @@ export default function CTASection() {
 
         {/* 부제 */}
         <motion.p
-          className="text-body-3 sm:text-body-2 lg:text-body-1 text-blue-100 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed"
+          className="text-body-3 sm:text-body-2 lg:text-body-1 text-primary-100 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed"
           variants={itemVariants}
         >
           {t('description')}
@@ -119,7 +119,7 @@ export default function CTASection() {
 
         {/* 보충 텍스트 */}
         <motion.p
-          className="mt-6 sm:mt-8 lg:mt-10 text-caption-3 sm:text-caption-2 text-blue-200"
+          className="mt-6 sm:mt-8 lg:mt-10 text-caption-3 sm:text-caption-2 text-primary-200"
           variants={itemVariants}
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}

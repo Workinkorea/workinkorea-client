@@ -204,7 +204,7 @@ export default function BusinessLoginForm() {
 
       {/* ── 좌측 그라데이션 패널 ──────────────────────────────────── */}
       <motion.div
-        className="hidden lg:flex flex-1 bg-linear-to-br from-blue-400 to-blue-600 flex-col justify-center p-16 relative overflow-hidden"
+        className="hidden lg:flex flex-1 bg-linear-to-br from-primary-400 to-primary-600 flex-col justify-center p-16 relative overflow-hidden"
         initial={{ opacity: 0, x: -24 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}
@@ -230,7 +230,7 @@ export default function BusinessLoginForm() {
           animate="visible"
           className="space-y-4 mb-12"
         >
-          <motion.p variants={fadeUp} className="text-blue-200 text-caption-1 font-semibold uppercase tracking-[1.5px]">
+          <motion.p variants={fadeUp} className="text-primary-200 text-caption-1 font-semibold uppercase tracking-[1.5px]">
             {t('partnerBadge')}
           </motion.p>
           <motion.h2 variants={fadeUp} className="text-white text-title-1 font-extrabold leading-tight">
@@ -238,7 +238,7 @@ export default function BusinessLoginForm() {
               <span key={i}>{line}{i === 0 && <br />}</span>
             ))}
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-blue-200 text-body-2 leading-relaxed">
+          <motion.p variants={fadeUp} className="text-primary-200 text-body-2 leading-relaxed">
             {t('description')}
           </motion.p>
         </motion.div>
@@ -255,7 +255,7 @@ export default function BusinessLoginForm() {
               <div className="w-8 h-8 rounded-lg bg-white/12 flex items-center justify-center shrink-0">
                 <Icon size={15} className="text-white" />
               </div>
-              <span className="text-blue-100 text-caption-1 font-medium">{text}</span>
+              <span className="text-primary-100 text-caption-1 font-medium">{text}</span>
             </motion.li>
           ))}
         </motion.ul>
@@ -368,7 +368,7 @@ export default function BusinessLoginForm() {
                 className={`w-full py-3 px-4 rounded-lg font-semibold text-body-3 transition-colors flex items-center justify-center gap-2 ${
                   isLoading || !isFormValid
                     ? 'bg-label-100 cursor-not-allowed text-label-400'
-                    : 'bg-primary-600 text-white hover:bg-primary-700 cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.25)]'
+                    : 'bg-primary-600 text-white hover:bg-primary-700 cursor-pointer shadow-[0_4px_14px_rgba(66,90,213,0.25)]'
                 }`}
                 whileTap={isFormValid && !isLoading ? { scale: 0.98 } : {}}
               >

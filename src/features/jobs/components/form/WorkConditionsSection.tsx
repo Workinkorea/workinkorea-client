@@ -132,7 +132,7 @@ export function WorkConditionsSection({
                 checked={isNegotiableSalary}
                 onChange={e => onNegotiableSalaryChange(e.target.checked)}
                 disabled={isSubmitting}
-                className="w-4 h-4 accent-blue-600 cursor-pointer rounded"
+                className="w-4 h-4 accent-primary-600 cursor-pointer rounded"
               />
               <span className="text-caption-1 text-label-600 select-none group-hover:text-label-800 transition-colors">
                 급여 협의 가능

@@ -63,7 +63,7 @@ export const BasicInfoSection = ({
             value={formData.company_type}
             onChange={onChange}
             onBlur={onBlur}
-            className={`w-full px-3.5 py-2.5 border ${errors.company_type ? 'border-red-500' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-[3px] focus:ring-blue-100 transition-colors cursor-pointer ${!errors.company_type && touchedFields.company_type && formData.company_type ? 'border-emerald-500' : ''}`}
+            className={`w-full px-3.5 py-2.5 border ${errors.company_type ? 'border-red-500' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-[3px] focus:ring-primary-100 transition-colors cursor-pointer ${!errors.company_type && touchedFields.company_type && formData.company_type ? 'border-emerald-500' : ''}`}
           >
             <option value="">선택하세요</option>
             <option value="주식회사">주식회사</option>
@@ -94,7 +94,7 @@ export const BasicInfoSection = ({
               value={formData.employee_count || ''}
               onChange={onChange}
               onBlur={onBlur}
-              className={`w-full px-3.5 py-2.5 border ${errors.employee_count ? 'border-red-500' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-[3px] focus:ring-blue-100 transition-colors cursor-pointer ${!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 ? 'border-emerald-500' : ''}`}
+              className={`w-full px-3.5 py-2.5 border ${errors.employee_count ? 'border-red-500' : 'border-line-400'} rounded-lg focus:outline-none focus:ring-[3px] focus:ring-primary-100 transition-colors cursor-pointer ${!errors.employee_count && touchedFields.employee_count && formData.employee_count > 0 ? 'border-emerald-500' : ''}`}
             >
               <option value="">선택하세요</option>
               <option value="10">1-10명</option>

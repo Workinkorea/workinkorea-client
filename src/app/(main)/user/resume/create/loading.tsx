@@ -15,8 +15,8 @@ function SectionCard({
 }) {
   const items = rowWidths || Array.from({ length: rows || 3 }, (_, i) => i % 2 === 0 ? 'full' : '4/5');
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-      <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-slate-100">
+    <div className="bg-white rounded-2xl border border-line-400 overflow-hidden">
+      <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-line-200">
         <Skeleton variant="circle" className="w-5 h-5 shrink-0" />
         <Skeleton variant="text" className={`h-5 w-${titleWidth}`} />
       </div>
@@ -48,7 +48,7 @@ function SectionCard({
 
 export default function ResumeCreateLoading() {
   return (
-    <div className="min-h-screen bg-slate-50 py-6 sm:py-8">
+    <div className="min-h-screen bg-label-50 py-6 sm:py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-5">
 
         {/* 페이지 헤더: 뒤로가기 + 제목 + 저장 버튼 */}
@@ -61,7 +61,7 @@ export default function ResumeCreateLoading() {
         </div>
 
         {/* 이력서 제목 */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">
+        <div className="bg-white rounded-2xl border border-line-400 p-5 sm:p-6">
           <div className="space-y-2">
             <Skeleton variant="text" className="h-3 w-24" />
             <Skeleton className="h-11 w-full rounded-lg" />
@@ -69,8 +69,8 @@ export default function ResumeCreateLoading() {
         </div>
 
         {/* 프로필 사진 */}
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-slate-100">
+        <div className="bg-white rounded-2xl border border-line-400 overflow-hidden">
+          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-line-200">
             <Skeleton variant="circle" className="w-5 h-5 shrink-0" />
             <Skeleton variant="text" className="h-5 w-24" />
           </div>
@@ -87,8 +87,8 @@ export default function ResumeCreateLoading() {
         <SectionCard titleWidth="24" hasPair rows={2} />
 
         {/* 학력 사항 */}
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-slate-100">
+        <div className="bg-white rounded-2xl border border-line-400 overflow-hidden">
+          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-line-200">
             <Skeleton variant="circle" className="w-5 h-5 shrink-0" />
             <Skeleton variant="text" className="h-5 w-20" />
           </div>
@@ -114,8 +114,8 @@ export default function ResumeCreateLoading() {
         </div>
 
         {/* 경력 사항 */}
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-slate-100">
+        <div className="bg-white rounded-2xl border border-line-400 overflow-hidden">
+          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-line-200">
             <Skeleton variant="circle" className="w-5 h-5 shrink-0" />
             <Skeleton variant="text" className="h-5 w-24" />
           </div>
@@ -139,8 +139,8 @@ export default function ResumeCreateLoading() {
         </div>
 
         {/* 자기소개 */}
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-slate-100">
+        <div className="bg-white rounded-2xl border border-line-400 overflow-hidden">
+          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-line-200">
             <Skeleton variant="circle" className="w-5 h-5 shrink-0" />
             <Skeleton variant="text" className="h-5 w-28" />
           </div>
@@ -158,8 +158,8 @@ export default function ResumeCreateLoading() {
         </div>
 
         {/* 자격증 */}
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-slate-100">
+        <div className="bg-white rounded-2xl border border-line-400 overflow-hidden">
+          <div className="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-line-200">
             <Skeleton variant="circle" className="w-5 h-5 shrink-0" />
             <Skeleton variant="text" className="h-5 w-20" />
           </div>

@@ -81,7 +81,7 @@ export default function HeroSearchClient() {
   return (
     <form
       onSubmit={handleSearch}
-      className="flex items-center w-full border-2 border-line-400 rounded-full bg-white shadow-sm hover:shadow-md focus-within:border-blue-400 focus-within:shadow-md transition-all overflow-hidden"
+      className="flex items-center w-full border-2 border-line-400 rounded-full bg-white shadow-sm hover:shadow-md focus-within:border-primary-400 focus-within:shadow-md transition-all overflow-hidden"
     >
       {/* 직무 검색 */}
       <div className="relative flex items-center flex-1 px-4 md:px-5 py-3 gap-2.5 min-w-0">

@@ -29,7 +29,7 @@ export function CompanyLandingPage() {
   const services = [
     {
       key: 'post',
-      bg: 'bg-primary-50', border: 'border-blue-100',
+      bg: 'bg-primary-50', border: 'border-primary-100',
       iconBg: 'bg-primary-100', iconColor: 'text-primary-500',
       icon: <FileText size={28} />,
       title: t('service1Title'),
@@ -79,12 +79,12 @@ export function CompanyLandingPage() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="bg-gradient-to-r from-[#1B2C4A] to-[#243658] rounded-xl p-5 flex items-center justify-between overflow-hidden relative"
+              className="bg-gradient-to-r from-[#1B1F4B] to-[#272D6E] rounded-xl p-5 flex items-center justify-between overflow-hidden relative"
             >
               <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/5" />
               <div className="absolute bottom-0 right-20 w-16 h-16 rounded-full bg-primary-500/10" />
               <div className="relative">
-                <p className="text-caption-3 font-semibold text-blue-300 uppercase tracking-widest mb-1">
+                <p className="text-caption-3 font-semibold text-primary-300 uppercase tracking-widest mb-1">
                   {t('promoBadge')}
                 </p>
                 <p className="text-body-2 font-extrabold text-white mb-0.5">
@@ -95,7 +95,7 @@ export function CompanyLandingPage() {
                 </p>
               </div>
               <div className="shrink-0 hidden sm:flex items-center justify-center w-14 h-14 bg-white/10 rounded-xl border border-white/20">
-                <Building2 size={24} className="text-blue-300" />
+                <Building2 size={24} className="text-primary-300" />
               </div>
             </motion.div>
 
@@ -232,7 +232,7 @@ export function CompanyLandingPage() {
               initial={{ opacity: 0, x: 12 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.28 }}
-              className="bg-primary-50 border border-blue-100 rounded-xl p-4"
+              className="bg-primary-50 border border-primary-100 rounded-xl p-4"
             >
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 size={15} className="text-primary-500" />
@@ -241,7 +241,7 @@ export function CompanyLandingPage() {
               <ul className="space-y-1.5">
                 {[t('benefit1'), t('benefit2'), t('benefit3')].map(benefit => (
                   <li key={benefit} className="flex items-center gap-2 text-caption-2 text-label-600">
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary-400 shrink-0" />
                     {benefit}
                   </li>
                 ))}

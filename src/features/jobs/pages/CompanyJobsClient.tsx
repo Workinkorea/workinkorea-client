@@ -89,7 +89,7 @@ function CompanyJobsClient() {
                 'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white rounded-lg text-body-3 font-semibold',
                 'hover:bg-primary-700 transition-colors duration-150 cursor-pointer',
                 'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                'shadow-[0_4px_14px_rgba(37,99,235,0.25)] shrink-0'
+                'shadow-[0_4px_14px_rgba(66,90,213,0.25)] shrink-0'
               )}
             >
               <Plus size={18} />

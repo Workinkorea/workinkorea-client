@@ -170,7 +170,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
           <motion.button
             onClick={handleApply}
             whileTap={{ scale: 0.97 }}
-            className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-xl font-bold text-body-2 shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
+            className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3.5 rounded-xl font-bold text-body-2 shadow-[0_4px_14px_rgba(66,90,213,0.25)] transition-colors cursor-pointer"
           >
             {tCommon('button.apply')}
           </motion.button>
@@ -199,7 +199,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   <div className="flex items-start gap-4 justify-between">
                     <div className="flex items-start gap-4 flex-1 min-w-0">
                       {/* Company Icon */}
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm">
                         <Building2 className="w-8 h-8 sm:w-10 sm:h-10" />
                       </div>
 
@@ -239,7 +239,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                         whileTap={{ scale: 0.9 }}
                         aria-label={bookmarked ? tCard('bookmarkRemove') : t('bookmarkBtn')}
                       >
-                        <Bookmark size={20} className={bookmarked ? 'fill-blue-600 text-primary-600' : ''} />
+                        <Bookmark size={20} className={bookmarked ? 'fill-primary-600 text-primary-600' : ''} />
                       </motion.button>
                       <motion.button
                         onClick={handleShare}
@@ -253,7 +253,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   </div>
 
                   {/* Key Info Banner */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-primary-50 border border-blue-100 rounded-lg">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-primary-50 border border-primary-100 rounded-lg">
                     <div className="flex flex-col">
                       <p className="text-caption-3 font-semibold text-label-400 mb-1">{tCommon('label.salary')}</p>
                       <p className="text-body-3 font-extrabold text-primary-600">
@@ -368,7 +368,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                 ) : (
                   <motion.button
                     onClick={handleApply}
-                    className="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-bold text-body-2 shadow-[0_4px_14px_rgba(37,99,235,0.25)] transition-colors cursor-pointer"
+                    className="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-bold text-body-2 shadow-[0_4px_14px_rgba(66,90,213,0.25)] transition-colors cursor-pointer"
                     whileTap={{ scale: 0.98 }}
                   >
                     {tCommon('button.apply')}
@@ -381,7 +381,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   className="w-full flex items-center justify-center gap-2 py-3 border border-line-400 text-label-700 rounded-lg font-semibold text-caption-1 hover:bg-label-50 transition-colors cursor-pointer"
                   whileTap={{ scale: 0.98 }}
                 >
-                  <Bookmark size={16} className={bookmarked ? 'fill-blue-600 text-primary-600' : ''} />
+                  <Bookmark size={16} className={bookmarked ? 'fill-primary-600 text-primary-600' : ''} />
                   {bookmarked ? t('bookmarkSaved') : t('bookmarkSave')}
                 </motion.button>
 

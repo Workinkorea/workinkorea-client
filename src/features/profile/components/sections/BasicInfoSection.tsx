@@ -207,7 +207,7 @@ function BasicInfoSection({
                 {...field}
                 className={cn(
                   'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800 bg-white transition-colors appearance-none cursor-pointer',
-                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                   'border-line-400',
                   errors.job_status && 'border-red-500 focus:ring-red-100'
                 )}
@@ -231,7 +231,7 @@ function BasicInfoSection({
                 {...field}
                 className={cn(
                   'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800 bg-white transition-colors appearance-none cursor-pointer',
-                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                   'border-line-400',
                   errors.career && 'border-red-500 focus:ring-red-100'
                 )}
@@ -272,7 +272,7 @@ function BasicInfoSection({
                 onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                 className={cn(
                   'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800 bg-white transition-colors appearance-none cursor-pointer',
-                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                   'border-line-400',
                   errors.position_id && 'border-red-500 focus:ring-red-100'
                 )}
@@ -306,7 +306,7 @@ function BasicInfoSection({
                 onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 122)}
                 className={cn(
                   'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800 bg-white transition-colors appearance-none cursor-pointer',
-                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                   'border-line-400',
                   errors.country_id && 'border-red-500 focus:ring-red-100'
                 )}
@@ -324,7 +324,7 @@ function BasicInfoSection({
 
         {/* Portfolio Upload */}
         <FieldRow label="포트폴리오" optional>
-          <div className="border-2 border-dashed border-line-400 rounded-xl p-5 flex items-center gap-4 hover:border-blue-300 transition-colors">
+          <div className="border-2 border-dashed border-line-400 rounded-xl p-5 flex items-center gap-4 hover:border-primary-300 transition-colors">
             <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
               <FileText size={20} className="text-primary-600" />
             </div>
@@ -392,7 +392,7 @@ function BasicInfoSection({
                   maxLength={500}
                   className={cn(
                     'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800',
-                    'transition-colors focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100 resize-none',
+                    'transition-colors focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100 resize-none',
                     'border-line-400',
                     errors.introduction && 'border-red-500 focus:ring-red-100'
                   )}

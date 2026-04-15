@@ -188,7 +188,7 @@ const CompanyProfileClient = () => {
                   'inline-flex items-center gap-1.5 px-4 py-2',
                   'bg-primary-600 text-white text-caption-1 font-semibold rounded-lg',
                   'hover:bg-primary-700 transition-colors cursor-pointer',
-                  'shadow-[0_4px_14px_rgba(79,70,229,0.25)]',
+                  'shadow-[0_4px_14px_rgba(66,90,213,0.25)]',
                   'focus:outline-none',
                 )}
                 whileHover={{ scale: 1.02 }}
@@ -287,7 +287,7 @@ const CompanyProfileClient = () => {
                   </button>
                 </div>
 
-                <div className="divide-y divide-slate-50">
+                <div className="divide-y divide-label-50">
                   {postsLoading ? (
                     <div className="p-4 space-y-3">
                       {[0,1,2].map(i => (
@@ -427,7 +427,7 @@ const CompanyProfileClient = () => {
                       <span className="text-label-400 font-semibold ml-0.5">{expiredPosts.length}</span>
                     </div>
                   </div>
-                  <div className="divide-y divide-slate-50">
+                  <div className="divide-y divide-label-50">
                     {expiredPosts.slice(0, 3).map(post => (
                       <div key={post.id} className="flex items-center gap-4 px-5 py-3 opacity-60">
                         <div className="w-7 h-7 bg-label-100 rounded-lg flex items-center justify-center shrink-0">
@@ -446,7 +446,7 @@ const CompanyProfileClient = () => {
             <div className="space-y-4">
 
               {/* 채용공고 등록 CTA */}
-              <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-5 relative overflow-hidden">
+              <div className="bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl p-5 relative overflow-hidden">
                 <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white/10" />
                 <div className="absolute bottom-2 -right-2 w-12 h-12 rounded-full bg-white/5" />
                 <div className="relative">
@@ -456,7 +456,7 @@ const CompanyProfileClient = () => {
                   <p className="text-body-3 font-extrabold text-white mb-1">
                     인재를 찾고 계신가요?
                   </p>
-                  <p className="text-caption-2 text-blue-200 mb-4 leading-relaxed">
+                  <p className="text-caption-2 text-primary-200 mb-4 leading-relaxed">
                     채용 공고를 등록하고<br />최적의 후보자를 만나보세요
                   </p>
                   <button
@@ -482,7 +482,7 @@ const CompanyProfileClient = () => {
                 </div>
                 <div className="p-4">
                   <div className="bg-primary-50 rounded-lg flex flex-col items-center py-5 text-center">
-                    <Search size={20} className="text-blue-300 mb-2" />
+                    <Search size={20} className="text-primary-300 mb-2" />
                     <p className="text-caption-2 text-white0 mb-3 leading-relaxed whitespace-pre-line">
                       {t('talentPoolCta')}
                     </p>
@@ -540,7 +540,7 @@ const CompanyProfileClient = () => {
                   <span className="text-caption-1 font-bold text-label-900">{t('productsTitle')}</span>
                   <ChevronRight size={14} className="text-label-300" />
                 </div>
-                <div className="divide-y divide-slate-50">
+                <div className="divide-y divide-label-50">
                   {[
                     { icon: <FileText size={13} />, label: t('recruitAd'),  status: '미이용' },
                     { icon: <Users    size={13} />, label: t('talentPool'), status: '미이용' },
@@ -564,7 +564,7 @@ const CompanyProfileClient = () => {
               </div>
 
               {/* 프로모 배너 */}
-              <div className="bg-primary-50 border border-blue-100 rounded-xl p-4">
+              <div className="bg-primary-50 border border-primary-100 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-1.5">
                   <CheckCircle2 size={15} className="text-primary-500 shrink-0" />
                   <p className="text-caption-1 font-semibold text-label-700 leading-snug">

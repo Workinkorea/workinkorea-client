@@ -583,7 +583,7 @@ function ProfileEditContainer() {
               <Button
                 type="button"
                 size="lg"
-                className="w-full shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
+                className="w-full shadow-[0_4px_14px_rgba(66,90,213,0.25)] hover:shadow-[0_6px_20px_rgba(66,90,213,0.35)]"
                 isLoading={updateProfileMutation.isPending || updateContactMutation.isPending || updateAccountConfigMutation.isPending}
                 disabled={!hasUnsavedChanges}
                 onClick={handleSave}
