@@ -50,7 +50,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         className={cn(
           'inline-flex items-center justify-center shrink-0',
           'transition-colors duration-150 cursor-pointer',
-          'focus:outline-none',
+          'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
           'disabled:opacity-40 disabled:cursor-not-allowed',
           shape === 'circle' ? 'rounded-full' : 'rounded-lg',
           btn,

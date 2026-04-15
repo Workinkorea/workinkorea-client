@@ -38,7 +38,7 @@ export function ResumeCard({
       case 'completed':
         return 'bg-status-correct-bg text-status-correct border-status-correct-bg';
       case 'published':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
+        return 'bg-primary-50 text-primary-700 border-primary-200';
       default:
         return 'bg-label-50 text-label-700 border-line-400';
     }
