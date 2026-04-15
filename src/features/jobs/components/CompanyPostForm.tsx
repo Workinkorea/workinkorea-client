@@ -219,7 +219,7 @@ export function CompanyPostForm({
       className={cn(
         'inline-flex items-center justify-center gap-2 px-7 py-2.5 rounded-lg font-semibold text-body-3 text-white',
         'bg-primary-600 hover:bg-primary-700 transition-colors',
-        'shadow-[0_4px_14px_rgba(79,70,229,0.25)]',   // --shadow-blue (indigo 기반)
+        'shadow-[0_4px_14px_rgba(66,90,213,0.25)]',   // --shadow-blue (indigo 기반)
         'disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer',
         'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
         extraClassName,
@@ -353,7 +353,7 @@ export function CompanyPostForm({
             'flex-1 inline-flex items-center justify-center gap-2',
             'py-2.5 rounded-lg font-semibold text-body-3 text-white',
             'bg-primary-600 hover:bg-primary-700 transition-colors',
-            'shadow-[0_4px_14px_rgba(79,70,229,0.25)]',
+            'shadow-[0_4px_14px_rgba(66,90,213,0.25)]',
             'disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer',
             'focus:outline-none',
           )}

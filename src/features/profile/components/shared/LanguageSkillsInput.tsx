@@ -151,7 +151,7 @@ function LanguageSkillsInput({
                   id={fieldId}
                   className={cn(
                     'w-full border rounded-lg px-3.5 py-2.5 text-body-3',
-                    'transition-colors focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                    'transition-colors focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                     'border-line-400',
                     errors?.language_skills?.[index]?.language_type &&
                       'border-red-500 focus:ring-red-100'
@@ -179,7 +179,7 @@ function LanguageSkillsInput({
                   id={fieldId}
                   className={cn(
                     'w-full border rounded-lg px-3.5 py-2.5 text-body-3',
-                    'transition-colors focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                    'transition-colors focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                     'border-line-400',
                     errors?.language_skills?.[index]?.level &&
                       'border-red-500 focus:ring-red-100'

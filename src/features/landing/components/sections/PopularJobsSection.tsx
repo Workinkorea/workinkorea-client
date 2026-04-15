@@ -173,7 +173,7 @@ export default function PopularJobsSection() {
                       {/* 회사명과 시간 */}
                       <div className="flex items-start justify-between mb-3 md:mb-4">
                         <div className="flex items-center gap-2 md:gap-3">
-                          <div className="w-10 h-10 md:w-12 md:h-12 bg-linear-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white font-bold text-body-3 md:text-body-1 shrink-0">
+                          <div className="w-10 h-10 md:w-12 md:h-12 bg-linear-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center text-white font-bold text-body-3 md:text-body-1 shrink-0">
                             {post.company_id}
                           </div>
                           <div>

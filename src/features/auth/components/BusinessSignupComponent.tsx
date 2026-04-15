@@ -238,7 +238,7 @@ export default function BusinessSignupComponent({ callbackUrl }: { callbackUrl?:
           </motion.div>
 
           <motion.div
-            className="bg-white border-2 border-blue-600 rounded-xl p-5 sm:p-6 shadow-sm"
+            className="bg-white border-2 border-primary-600 rounded-xl p-5 sm:p-6 shadow-sm"
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
           >
             <label className="flex items-center cursor-pointer group">
@@ -246,7 +246,7 @@ export default function BusinessSignupComponent({ callbackUrl }: { callbackUrl?:
                 type="checkbox"
                 checked={terms.allAgree}
                 onChange={(e) => handleAllAgree(e.target.checked)}
-                className="w-5 h-5 text-primary-600 border-line-400 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                className="w-5 h-5 text-primary-600 border-line-400 rounded focus:ring-2 focus:ring-primary-600 cursor-pointer"
               />
               <span className="ml-3 text-body-3 font-semibold text-label-900 group-hover:text-primary-600 transition-colors">{t('agreeAll')}</span>
             </label>
@@ -264,7 +264,7 @@ export default function BusinessSignupComponent({ callbackUrl }: { callbackUrl?:
                     type="checkbox"
                     checked={terms[key]}
                     onChange={(e) => handleTermChange(key, e.target.checked)}
-                    className="w-4 h-4 mt-0.5 text-primary-600 border-line-400 rounded focus:ring-2 focus:ring-blue-600 cursor-pointer shrink-0"
+                    className="w-4 h-4 mt-0.5 text-primary-600 border-line-400 rounded focus:ring-2 focus:ring-primary-600 cursor-pointer shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -332,7 +332,7 @@ export default function BusinessSignupComponent({ callbackUrl }: { callbackUrl?:
                     <div className="flex gap-2">
                       <input
                         {...field} id={fieldId} type="text"
-                        className="flex-1 border border-line-400 rounded-lg px-3.5 py-2.5 text-body-3 focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100 transition-colors"
+                        className="flex-1 border border-line-400 rounded-lg px-3.5 py-2.5 text-body-3 focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100 transition-colors"
                         placeholder={t('bizNumberPlaceholder')} maxLength={12}
                         onChange={(e) => {
                           const formatted = formatBusinessNumber(e.target.value.replace(/[^0-9]/g, ''));

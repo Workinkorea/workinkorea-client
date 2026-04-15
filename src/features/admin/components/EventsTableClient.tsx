@@ -70,7 +70,7 @@ function EditModal({ event, onClose, onSave, isSaving }: EditModalProps) {
 
   const inputCls = cn(
     'w-full px-3.5 py-2.5 border border-line-400 rounded-lg text-body-3 text-label-800 bg-white',
-    'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100 transition-colors',
+    'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100 transition-colors',
   );
 
   return (
@@ -337,7 +337,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-line-200">
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i} className="animate-pulse">

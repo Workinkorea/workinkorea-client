@@ -76,7 +76,7 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
         variant="diagnosis"
         render={(field) => (
           <div className="space-y-3">
-            <label className="flex items-center gap-3 p-4 border-2 border-line-400 rounded-lg cursor-pointer hover:border-blue-300 hover:bg-primary-50 transition-all">
+            <label className="flex items-center gap-3 p-4 border-2 border-line-400 rounded-lg cursor-pointer hover:border-primary-300 hover:bg-primary-50 transition-all">
               <input
                 type="radio"
                 value="korea"
@@ -86,7 +86,7 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
               />
               <span className="text-body-1 text-label-700">{t('q1Korea')}</span>
             </label>
-            <label className="flex items-center gap-3 p-4 border-2 border-line-400 rounded-lg cursor-pointer hover:border-blue-300 hover:bg-primary-50 transition-all">
+            <label className="flex items-center gap-3 p-4 border-2 border-line-400 rounded-lg cursor-pointer hover:border-primary-300 hover:bg-primary-50 transition-all">
               <input
                 type="radio"
                 value="other"
@@ -145,8 +145,8 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
                 key={level.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === level.value
-                    ? 'border-blue-600 bg-primary-50'
-                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
                 }`}
               >
                 <input
@@ -177,8 +177,8 @@ export const Session1BasicInfo = ({ initialData, onNext }: Session1Props) => {
                 key={visa.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === visa.value
-                    ? 'border-blue-600 bg-primary-50'
-                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
                 }`}
               >
                 <input

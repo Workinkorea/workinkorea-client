@@ -1,36 +1,38 @@
 # Work in Korea — Designer 가이드
 
-## Blue Design System
+## Indigo Design System
 
 ### 컬러 토큰
 
 ```css
-/* Primary */
-blue-600   #2563EB   /* 주요 액션, 버튼, 링크 */
-blue-500   #3B82F6   /* hover 상태 */
-blue-50    #EFF6FF   /* 배경 강조 영역 */
-blue-100   #DBEAFE   /* 연한 배경 */
+/* Primary (Vivid Indigo) */
+blue-600   #425AD5   /* 주요 액션, 버튼, 링크 */
+blue-700   #4250B8   /* hover 상태 */
+blue-500   #516AEC   /* 보조 강조 */
+blue-50    #F3F6FF   /* 배경 강조 영역 */
+blue-100   #E5E8FD   /* 연한 배경 */
+blue-200   #CBD2FA   /* 매우 연한 배경/보더 */
 
-/* Text */
-slate-900  #0F172A   /* 헤딩 */
-slate-800  #1E293B   /* 본문 */
-slate-700  #334155   /* 서브텍스트 */
-slate-500  #64748B   /* placeholder, 비활성 */
-slate-400  #94A3B8   /* 비활성 아이콘 */
+/* Text (Clean Gray) */
+slate-900  #24292E   /* 헤딩 */
+slate-800  #2F363D   /* 본문 */
+slate-700  #3F4750   /* 서브텍스트 */
+slate-500  #6A737D   /* placeholder, 비활성 */
+slate-400  #868E96   /* 비활성 아이콘 */
 
-/* Border */
-slate-200  #E2E8F0   /* 기본 구분선 */
-slate-100  #F1F5F9   /* 연한 구분선 */
+/* Border (Clean) */
+slate-200  #DEE2E6   /* 기본 구분선 */
+slate-100  #F1F3F5   /* 연한 구분선 */
 
-/* Background */
+/* Background (Clean) */
 white      #FFFFFF   /* 카드, 모달 배경 */
-slate-50   #F8FAFC   /* 페이지 배경 */
-slate-100  #F1F5F9   /* 대체 배경 (구 bg-component-alternative) */
+slate-50   #F8F9FA   /* 페이지 배경 */
+slate-100  #F1F3F5   /* 대체 배경 */
 
-/* Status */
-green-600  /* success */
-red-500    /* error/danger */
-yellow-500 /* warning */
+/* Status (Vivid) */
+emerald-500 #40C057  /* success */
+red-500     #FA5252  /* error */
+amber-500   #FAB005  /* warning */
 ```
 
 ### 타이포그래피 (Canonical 클래스 — 반드시 이것만 사용)
@@ -79,9 +81,9 @@ rounded-full /* 아바타, 배지 */
 ### 그림자 (토큰 매핑)
 
 ```
-shadow-sm   /* 구 shadow-normal: 카드 기본 */
-shadow-md   /* 구 shadow-strong: 드롭다운, 호버 */
-shadow-xl   /* 구 shadow-heavy: 모달, 팝업 */
+shadow-sm   /* 카드 기본 */
+shadow-md   /* 드롭다운, 호버 */
+shadow-xl   /* 모달, 팝업 */
 ```
 
 ---

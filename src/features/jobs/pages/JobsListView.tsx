@@ -151,8 +151,8 @@ export default function JobsListView({
                 onClick={() => setShowBookmarksOnly(v => !v)}
                 className={`hidden sm:flex items-center gap-1.5 px-4 py-2.5 rounded-lg border text-body-3 font-semibold transition-all cursor-pointer shrink-0 ${
                   showBookmarksOnly
-                    ? 'bg-primary-600 text-white border-blue-600 shadow-[0_4px_14px_rgba(37,99,235,0.25)]'
-                    : 'bg-white text-label-600 border-line-400 hover:border-blue-300 hover:text-primary-600'
+                    ? 'bg-primary-600 text-white border-primary-600 shadow-[0_4px_14px_rgba(66,90,213,0.25)]'
+                    : 'bg-white text-label-600 border-line-400 hover:border-primary-300 hover:text-primary-600'
                 }`}
               >
                 <Bookmark size={16} className={showBookmarksOnly ? 'fill-white' : ''} />
@@ -164,7 +164,7 @@ export default function JobsListView({
                 onClick={() => setShowBookmarksOnly(v => !v)}
                 className={`sm:hidden p-2.5 rounded-lg border transition-colors cursor-pointer ${
                   showBookmarksOnly
-                    ? 'bg-primary-600 text-white border-blue-600'
+                    ? 'bg-primary-600 text-white border-primary-600'
                     : 'bg-white text-label-400 border-line-400'
                 }`}
                 aria-label={t('savedOnly')}
@@ -174,7 +174,7 @@ export default function JobsListView({
             </div>
 
             {/* Search Bar */}
-            <div className="flex items-center gap-2 border border-line-400 rounded-lg px-3.5 py-2.5 focus-within:border-primary-500 focus-within:ring-[3px] focus-within:ring-blue-100 transition-all bg-white">
+            <div className="flex items-center gap-2 border border-line-400 rounded-lg px-3.5 py-2.5 focus-within:border-primary-500 focus-within:ring-[3px] focus-within:ring-primary-100 transition-all bg-white">
               <Search size={18} className="text-label-400 shrink-0" />
               <input
                 type="text"
@@ -199,10 +199,10 @@ export default function JobsListView({
                   <button
                     key={value}
                     onClick={() => handleType(value)}
-                    className={`px-3 py-1.5 rounded-full text-caption-2 font-semibold border whitespace-nowrap transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-full text-caption-2 font-semibold border whitespace-nowrap transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
                       selectedType === value
-                        ? 'bg-primary-600 text-white border-blue-600'
-                        : 'bg-white text-label-600 border-line-400 hover:border-blue-300'
+                        ? 'bg-primary-600 text-white border-primary-600'
+                        : 'bg-white text-label-600 border-line-400 hover:border-primary-300'
                     }`}
                   >
                     {label}
@@ -217,9 +217,9 @@ export default function JobsListView({
                 <button
                   key={opt.value}
                   onClick={() => handleSort(opt.value)}
-                  className={`px-3.5 py-2 text-caption-2 font-semibold rounded-lg border whitespace-nowrap transition-all cursor-pointer ${
+                  className={`px-3.5 py-2 text-caption-2 font-semibold rounded-lg border whitespace-nowrap transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
                     sortBy === opt.value
-                      ? 'bg-primary-600 text-white border-blue-600'
+                      ? 'bg-primary-600 text-white border-primary-600'
                       : 'bg-white text-label-600 border-line-400'
                   }`}
                 >
@@ -252,7 +252,7 @@ export default function JobsListView({
                       <button
                         key={value}
                         onClick={() => handleType(value)}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-caption-1 font-medium transition-all cursor-pointer ${
+                        className={`w-full text-left px-3 py-2 rounded-lg text-caption-1 font-medium transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
                           selectedType === value
                             ? 'bg-primary-50 text-primary-700 font-semibold'
                             : 'text-label-600 hover:bg-label-50'
@@ -270,7 +270,7 @@ export default function JobsListView({
                   <select
                     value={sortBy}
                     onChange={e => handleSort(e.target.value)}
-                    className="w-full text-caption-1 font-medium text-label-600 border border-line-400 rounded-lg px-3 py-2 bg-white appearance-none focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100 cursor-pointer"
+                    className="w-full text-caption-1 font-medium text-label-600 border border-line-400 rounded-lg px-3 py-2 bg-white appearance-none focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100 cursor-pointer"
                   >
                     {SORT_OPTIONS.map(opt => (
                       <option key={opt.value} value={opt.value}>
@@ -290,7 +290,7 @@ export default function JobsListView({
                         : 'bg-white text-label-600 border-line-400 hover:border-primary-200'
                     }`}
                   >
-                    <Bookmark size={16} className={showBookmarksOnly ? 'fill-blue-700' : ''} />
+                    <Bookmark size={16} className={showBookmarksOnly ? 'fill-primary-700' : ''} />
                     {t('savedOnly')}
                   </button>
                 </div>
@@ -326,10 +326,10 @@ export default function JobsListView({
                       <button
                         key={opt.value}
                         onClick={() => handleSort(opt.value)}
-                        className={`px-3.5 py-2 text-caption-1 font-semibold rounded-lg border transition-all cursor-pointer ${
+                        className={`px-3.5 py-2 text-caption-1 font-semibold rounded-lg border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
                           sortBy === opt.value
-                            ? 'bg-primary-600 text-white border-blue-600 shadow-sm'
-                            : 'bg-white text-label-600 border-line-400 hover:border-blue-300 hover:text-primary-600'
+                            ? 'bg-primary-600 text-white border-primary-600 shadow-sm'
+                            : 'bg-white text-label-600 border-line-400 hover:border-primary-300 hover:text-primary-600'
                         }`}
                       >
                         {opt.label}

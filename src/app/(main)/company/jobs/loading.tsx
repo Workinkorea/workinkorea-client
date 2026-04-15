@@ -2,7 +2,7 @@ import { Skeleton } from '@/shared/ui/Skeleton';
 
 function PostCardSkeleton() {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 space-y-3">
+    <div className="bg-white border border-line-400 rounded-xl p-4 sm:p-6 space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 space-y-2">
           <Skeleton variant="text" className="h-5 w-2/3" />
@@ -17,7 +17,7 @@ function PostCardSkeleton() {
           <Skeleton variant="text" className="h-6 w-16 rounded-full" />
         </div>
       </div>
-      <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-100">
+      <div className="flex items-center justify-end gap-2 pt-1 border-t border-line-200">
         <Skeleton className="h-8 w-20 rounded-lg" />
         <Skeleton className="h-8 w-16 rounded-lg" />
       </div>
@@ -27,7 +27,7 @@ function PostCardSkeleton() {
 
 export default function CompanyJobsLoading() {
   return (
-    <div className="min-h-screen bg-slate-50 py-8 sm:py-12">
+    <div className="min-h-screen bg-label-50 py-8 sm:py-12">
       <div className="page-container space-y-6">
 
         {/* 페이지 헤더 */}

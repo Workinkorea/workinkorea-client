@@ -87,8 +87,8 @@ export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = f
               key={challenge.value}
               className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                 selectedChallenges.includes(challenge.value)
-                  ? 'border-blue-600 bg-primary-50'
-                  : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
+                  ? 'border-primary-600 bg-primary-50'
+                  : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
               }`}
             >
               <input

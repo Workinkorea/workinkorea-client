@@ -70,7 +70,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
             cy={centerY}
             r={(level / 100) * radius}
             fill="none"
-            stroke="rgb(229 231 235)"
+            stroke="rgb(222 226 230)"
             strokeWidth={index === gridLevels.length - 1 ? 2 : 1}
             opacity={0.5}
           />
@@ -86,7 +86,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
               y1={centerY}
               x2={endPoint.x}
               y2={endPoint.y}
-              stroke="rgb(229 231 235)"
+              stroke="rgb(222 226 230)"
               strokeWidth="1"
               opacity={0.5}
             />
@@ -97,8 +97,8 @@ const RadarChart: React.FC<RadarChartProps> = ({
         {averageData && averagePoints.length > 0 && (
           <motion.path
             d={createPath(averagePoints)}
-            fill="rgb(156 163 175 / 0.2)"
-            stroke="rgb(156 163 175)"
+            fill="rgb(134 142 150 / 0.2)"
+            stroke="rgb(134 142 150)"
             strokeWidth="2"
             strokeDasharray="5,5"
             initial={{ pathLength: 0 }}
@@ -110,8 +110,8 @@ const RadarChart: React.FC<RadarChartProps> = ({
         {/* 사용자 데이터 영역 */}
         <motion.path
           d={createPath(userPoints)}
-          fill="rgb(16 185 129 / 0.2)"
-          stroke="rgb(16 185 129)"
+          fill="rgb(64 192 87 / 0.2)"
+          stroke="rgb(64 192 87)"
           strokeWidth="3"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
@@ -125,7 +125,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
             cx={point.x}
             cy={point.y}
             r="6"
-            fill="rgb(16 185 129)"
+            fill="rgb(64 192 87)"
             stroke="white"
             strokeWidth="2"
             initial={{ scale: 0 }}
@@ -141,7 +141,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
             cx={point.x}
             cy={point.y}
             r="4"
-            fill="rgb(156 163 175)"
+            fill="rgb(134 142 150)"
             stroke="white"
             strokeWidth="2"
             initial={{ scale: 0 }}

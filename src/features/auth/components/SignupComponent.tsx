@@ -229,7 +229,7 @@ export default function SignupComponent({
 
           {/* 모두 동의 */}
           <motion.div
-            className="bg-white border-2 border-blue-600 rounded-xl p-5 sm:p-6 shadow-sm"
+            className="bg-white border-2 border-primary-600 rounded-xl p-5 sm:p-6 shadow-sm"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -317,7 +317,7 @@ export default function SignupComponent({
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="flex items-start gap-2.5 px-4 py-3 rounded-lg bg-blue-50 border border-blue-200 text-caption-1 font-medium text-blue-700"
+              className="flex items-start gap-2.5 px-4 py-3 rounded-lg bg-primary-50 border border-primary-200 text-caption-1 font-medium text-primary-700"
               role="status"
             >
               <AlertCircle size={15} className="mt-0.5 shrink-0" />

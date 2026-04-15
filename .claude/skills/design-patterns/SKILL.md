@@ -1,9 +1,9 @@
 ---
 name: design-system
-description: Blue Design System tokens, component specifications, and page layout patterns for WorkinKorea. Use when creating or refactoring any UI component.
+description: Indigo Design System tokens, component specifications, and page layout patterns for WorkinKorea. Use when creating or refactoring any UI component.
 ---
 
-# Blue Design System — WorkinKorea
+# Indigo Design System — WorkinKorea
 
 ## 목적
 
@@ -16,53 +16,53 @@ description: Blue Design System tokens, component specifications, and page layou
 - 페이지 레이아웃 구성 시
 - 디자인 일관성 검증 시
 
-## 디자인 참고 파일
+## 디자인 톤앤매너
 
-- `file:///Users/apple/Downloads/workinkorea-redesign.html`
+- 선명한 인디고 + 깨끗한 뉴트럴 그레이, 모던하고 전문적인 느낌
 
 ---
 
 ## Color Tokens
 
-### Primary (Blue)
+### Primary (Vivid Indigo)
 
-| Token    | Hex     | Tailwind        | 용도                                  |
-| -------- | ------- | --------------- | ------------------------------------- |
-| blue-50  | #EFF6FF | bg-blue-50      | 배경 강조, 아이콘 배경, info-bg       |
-| blue-100 | #DBEAFE | bg-blue-100     | 배지, 프로그레스 바 배경, focus ring  |
-| blue-200 | #BFDBFE | border-blue-200 | secondary 버튼 보더, 카드 hover 보더  |
-| blue-300 | #93C5FD | text-blue-300   | 히어로 서브텍스트, gradient text 시작 |
-| blue-400 | #60A5FA | text-blue-400   | 풋터 브랜드, 아바타 gradient 시작     |
-| blue-500 | #3B82F6 | bg-blue-500     | 타임라인 도트, 로고 gradient 시작     |
-| blue-600 | #2563EB | bg-blue-600     | **메인 액션 색상**, 버튼, 링크, CTA   |
-| blue-700 | #1D4ED8 | bg-blue-700     | 버튼 hover, 로고 gradient 끝          |
-| blue-800 | #1E40AF | -               | 히어로 gradient 중간                  |
-| blue-900 | #1E3A8A | -               | 히어로 gradient 끝, 다크 배경         |
-| blue-950 | #172554 | -               | 히어로 gradient 최끝                  |
+| Token    | Hex     | Tailwind             | 용도                                  |
+| -------- | ------- | -------------------- | ------------------------------------- |
+| blue-50  | #F3F6FF | bg-primary-50        | 배경 강조, 아이콘 배경, info-bg       |
+| blue-100 | #E5E8FD | bg-primary-100       | 배지, 프로그레스 바 배경, focus ring  |
+| blue-200 | #CBD2FA | border-primary-200   | secondary 버튼 보더, 카드 hover 보더  |
+| blue-300 | #A5B2F6 | text-primary-300     | 히어로 서브텍스트, gradient text 시작 |
+| blue-400 | #7B8EF2 | text-primary-400     | 풋터 브랜드, 아바타 gradient 시작     |
+| blue-500 | #516AEC | bg-primary-500       | 타임라인 도트, 로고 gradient 시작     |
+| blue-600 | #425AD5 | bg-primary-600       | **메인 액션 색상**, 버튼, 링크, CTA   |
+| blue-700 | #4250B8 | bg-primary-700       | 버튼 hover, 로고 gradient 끝          |
+| blue-800 | #333D94 | -                    | 히어로 gradient 중간                  |
+| blue-900 | #272D6E | -                    | 히어로 gradient 끝, 다크 배경         |
+| blue-950 | #1B1F4B | -                    | 히어로 gradient 최끝                  |
 
-### Neutral (Slate)
+### Neutral (Clean Gray)
 
 | Token               | 용도                               |
 | ------------------- | ---------------------------------- |
-| slate-50 (#F8FAFC)  | 페이지 배경, 입력 내부 배경        |
-| slate-100 (#F1F5F9) | 구분선, 탭 border, 태그 배경       |
-| slate-200 (#E2E8F0) | 카드/입력 border, 풋터 구분        |
-| slate-300 (#CBD5E1) | 체크박스 border, 북마크 비활성     |
-| slate-400 (#94A3B8) | 캡션, 힌트, placeholder            |
-| slate-500 (#64748B) | 서브텍스트, 비활성 탭              |
-| slate-600 (#475569) | 본문 보조, 아웃라인 버튼 텍스트    |
-| slate-700 (#334155) | 레이블, 강조 본문                  |
-| slate-800 (#1E293B) | **기본 본문 텍스트**               |
-| slate-900 (#0F172A) | **제목 텍스트**, 다크 배경(Footer) |
+| slate-50 (#F8F9FA)  | 페이지 배경, 입력 내부 배경        |
+| slate-100 (#F1F3F5) | 구분선, 탭 border, 태그 배경       |
+| slate-200 (#DEE2E6) | 카드/입력 border, 풋터 구분        |
+| slate-300 (#ADB5BD) | 체크박스 border, 북마크 비활성     |
+| slate-400 (#868E96) | 캡션, 힌트, placeholder            |
+| slate-500 (#6A737D) | 서브텍스트, 비활성 탭              |
+| slate-600 (#586069) | 본문 보조, 아웃라인 버튼 텍스트    |
+| slate-700 (#3F4750) | 레이블, 강조 본문                  |
+| slate-800 (#2F363D) | **기본 본문 텍스트**               |
+| slate-900 (#24292E) | **제목 텍스트**, 다크 배경(Footer) |
 
-### Semantic
+### Semantic (Vivid)
 
 | 용도    | 색상                       | 배경                    |
 | ------- | -------------------------- | ----------------------- |
-| Success | #10B981 (text-emerald-500) | #ECFDF5 (bg-emerald-50) |
-| Warning | #F59E0B (text-amber-500)   | #FFFBEB (bg-amber-50)   |
-| Error   | #EF4444 (text-red-500)     | #FEF2F2 (bg-red-50)     |
-| Info    | #3B82F6 (text-blue-500)    | #EFF6FF (bg-blue-50)    |
+| Success | #40C057 (text-emerald-500) | #EBFBEE (bg-emerald-50) |
+| Warning | #FAB005 (text-amber-500)   | #FFF9DB (bg-amber-50)   |
+| Error   | #FA5252 (text-red-500)     | #FFF0F0 (bg-red-50)     |
+| Info    | #516AEC (text-primary-500) | #F3F6FF (bg-primary-50) |
 
 ---
 
@@ -223,15 +223,17 @@ bg-slate-900 text-slate-400 px-10 py-12
 
 ## Gradient 참고
 
+> 아래는 시맨틱 토큰(primary-*) 사용. `@theme` 오버라이드로 인디고 색상 자동 적용.
+
 ```
-Hero:           from-blue-600 via-blue-800 to-blue-950 (135deg)
-CTA Banner:     from-blue-600 to-blue-800
-Auth Side:      from-blue-600 to-blue-900
-Resume Header:  from-blue-600 to-blue-800
-Avatar:         from-blue-400 to-blue-600
-Logo Icon:      from-blue-500 to-blue-700
+Hero:           from-primary-600 via-primary-800 to-primary-950 (135deg)
+CTA Banner:     from-primary-600 to-primary-800
+Auth Side:      from-primary-600 to-primary-900
+Resume Header:  from-primary-600 to-primary-800
+Avatar:         from-primary-400 to-primary-600
+Logo Icon:      from-primary-500 to-primary-700
 Glassmorphism:  bg-white/[0.12] backdrop-blur-[10px] border-white/[0.15]
-Text Gradient:  bg-gradient-to-br from-blue-300 to-blue-400 bg-clip-text text-transparent
+Text Gradient:  bg-gradient-to-br from-primary-300 to-primary-400 bg-clip-text text-transparent
 ```
 
 ---

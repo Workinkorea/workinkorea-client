@@ -41,6 +41,21 @@ export interface ProfileUpdateRequest {
   country_id?: number;
 }
 
+export interface CreateProfileRequest {
+  name: string;
+  birth_date: string;
+  country_id: number;
+  profile_image_url?: string;
+  location?: string;
+  introduction?: string;
+  address?: string;
+  position_id?: number;
+  career?: string;
+  job_status?: string;
+  portfolio_url?: string;
+  language_skills?: LanguageSkill[];
+}
+
 // ============================================================================
 // Contact Information
 // ============================================================================

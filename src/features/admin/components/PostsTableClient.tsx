@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { adminApi } from '@/features/admin/api/adminApi';
 import { toast } from 'sonner';
+import { FileText } from 'lucide-react';
 import type { AdminPost } from '@/shared/types/api';
 
 interface PostsTableClientProps {
@@ -101,10 +102,22 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
     deleteMutation.mutate(postId);
   }
 
+  if (posts.length === 0) {
+    return (
+      <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-100 flex items-center justify-center">
+          <FileText className="w-6 h-6 text-slate-400" />
+        </div>
+        <p className="text-body-1 font-medium text-slate-700 mb-1">등록된 공고가 없습니다</p>
+        <p className="text-caption-1 text-slate-500">아직 등록된 채용공고가 없거나 조건에 맞는 공고가 없습니다.</p>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* 모바일 카드 목록 (lg 미만) */}
-      <div className="lg:hidden divide-y divide-gray-200">
+      <div className="lg:hidden divide-y divide-line-400">
         {posts.map((post) => (
           <div key={post.id} className="p-4 space-y-2">
             <div className="flex items-start justify-between gap-2">
@@ -124,7 +137,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
 
       {/* 데스크탑 테이블 (lg 이상) */}
       <div className="hidden lg:block overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="min-w-full divide-y divide-line-400">
           <thead className="bg-label-50">
             <tr>
               <th className="px-6 py-3 text-left text-caption-2 font-medium text-label-500 uppercase tracking-wider">
@@ -144,7 +157,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-line-400">
             {posts.map((post) => (
               <tr key={post.id} className="hover:bg-label-50">
                 <td className="px-6 py-4 whitespace-nowrap text-body-3 text-label-900">
@@ -188,14 +201,14 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-gray-300 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-line-400 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             이전
           </button>
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={posts.length < limit}
-            className="rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-gray-300 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-line-400 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             다음
           </button>
@@ -219,7 +232,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       required
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                     />
                   </div>
 
@@ -232,7 +245,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       rows={4}
                       value={formData.content}
                       onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                     />
                   </div>
 
@@ -245,7 +258,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       required
                       value={formData.work_experience}
                       onChange={(e) => setFormData({ ...formData, work_experience: e.target.value })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                       placeholder="예: 신입, 경력 3년 이상"
                     />
                   </div>
@@ -259,7 +272,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       required
                       value={formData.position_id}
                       onChange={(e) => setFormData({ ...formData, position_id: parseInt(e.target.value) })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                     />
                   </div>
 
@@ -272,7 +285,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       required
                       value={formData.education}
                       onChange={(e) => setFormData({ ...formData, education: e.target.value })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                       placeholder="예: 대졸, 고졸"
                     />
                   </div>
@@ -286,7 +299,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       required
                       value={formData.language}
                       onChange={(e) => setFormData({ ...formData, language: e.target.value })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                       placeholder="예: 한국어, 영어"
                     />
                   </div>
@@ -300,7 +313,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       required
                       value={formData.employment_type}
                       onChange={(e) => setFormData({ ...formData, employment_type: e.target.value })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                       placeholder="예: 정규직, 계약직"
                     />
                   </div>
@@ -314,7 +327,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       required
                       value={formData.work_location}
                       onChange={(e) => setFormData({ ...formData, work_location: e.target.value })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                       placeholder="예: 서울 강남구"
                     />
                   </div>
@@ -328,7 +341,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       required
                       value={formData.working_hours}
                       onChange={(e) => setFormData({ ...formData, working_hours: parseInt(e.target.value) })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                     />
                   </div>
 
@@ -341,7 +354,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       required
                       value={formData.salary}
                       onChange={(e) => setFormData({ ...formData, salary: parseInt(e.target.value) })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                     />
                   </div>
 
@@ -354,7 +367,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       required
                       value={formData.start_date}
                       onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                     />
                   </div>
 
@@ -367,7 +380,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                       required
                       value={formData.end_date}
                       onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3"
+                      className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3"
                     />
                   </div>
                 </div>
@@ -376,7 +389,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-gray-300 hover:bg-label-50 cursor-pointer"
+                  className="flex-1 rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-line-400 hover:bg-label-50 cursor-pointer"
                 >
                   취소
                 </button>

@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { consumeCallbackUrl } from '@/shared/lib/callbackUrl';
 import { tokenStore } from '@/shared/api/tokenStore';
+import { profileApi } from '@/features/profile/api/profileApi';
 
 function CallbackContent() {
   const searchParams = useSearchParams();
@@ -38,9 +39,17 @@ function CallbackContent() {
 
         login('user');
 
-        // 로그인 전 방문 중이던 페이지로 복귀 (없으면 메인)
-        const callbackUrl = consumeCallbackUrl();
-        window.location.href = callbackUrl ?? '/';
+        // 프로필 존재 여부 확인 → 없으면 프로필 생성 페이지로
+        try {
+          await profileApi.getProfile();
+          // 프로필 존재 → 기존 페이지로 복귀
+          const callbackUrl = consumeCallbackUrl();
+          window.location.href = callbackUrl ?? '/';
+        } catch {
+          // 404 = 프로필 미생성 → 프로필 생성 페이지로
+          consumeCallbackUrl(); // 콜백 URL 소비 (나중에 사용 안 함)
+          router.replace('/user/profile/setup');
+        }
         return;
       }
 
@@ -66,8 +75,8 @@ function CallbackContent() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <h2 className="text-xl font-semibold">인증 처리 중...</h2>
-        <p className="mt-2 text-gray-600">잠시만 기다려주세요.</p>
+        <h2 className="text-title-4 font-semibold">인증 처리 중...</h2>
+        <p className="mt-2 text-label-500">잠시만 기다려주세요.</p>
       </div>
     </div>
   );
@@ -78,7 +87,7 @@ export default function CallbackPage() {
     <Suspense fallback={
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold">로딩 중...</h2>
+          <h2 className="text-title-4 font-semibold">로딩 중...</h2>
         </div>
       </div>
     }>
