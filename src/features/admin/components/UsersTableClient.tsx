@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { adminApi } from '@/features/admin/api/adminApi';
 import { toast } from 'sonner';
+import { Users } from 'lucide-react';
 import type { AdminUser } from '@/shared/types/api';
 
 interface UsersTableClientProps {
@@ -75,10 +76,22 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
     deleteMutation.mutate(userId);
   }
 
+  if (users.length === 0) {
+    return (
+      <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-100 flex items-center justify-center">
+          <Users className="w-6 h-6 text-slate-400" />
+        </div>
+        <p className="text-body-1 font-medium text-slate-700 mb-1">등록된 회원이 없습니다</p>
+        <p className="text-caption-1 text-slate-500">아직 가입한 회원이 없거나 조건에 맞는 회원이 없습니다.</p>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* 모바일 카드 목록 (lg 미만) */}
-      <div className="lg:hidden divide-y divide-gray-200">
+      <div className="lg:hidden divide-y divide-line-400">
         {users.map((user) => (
           <div key={user.id} className="p-4 flex items-center justify-between gap-3">
             <div className="min-w-0">
@@ -112,7 +125,7 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
 
       {/* 데스크탑 테이블 (lg 이상) */}
       <div className="hidden lg:block overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="min-w-full divide-y divide-line-400">
           <thead className="bg-label-50">
             <tr>
               <th className="px-6 py-3 text-left text-caption-2 font-medium text-label-500 uppercase tracking-wider">
@@ -129,7 +142,7 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-line-400">
             {users.map((user) => (
               <tr key={user.id} className="hover:bg-label-50">
                 <td className="px-6 py-4 whitespace-nowrap text-body-3 text-label-900">
@@ -178,14 +191,14 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-gray-300 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-line-400 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             이전
           </button>
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={users.length < limit}
-            className="rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-gray-300 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-line-400 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             다음
           </button>
@@ -207,7 +220,7 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
                     type="email"
                     disabled
                     value={editingUser.email}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-body-3 bg-label-100"
+                    className="w-full rounded-md border border-line-400 px-3 py-2 text-body-3 bg-label-100"
                   />
                 </div>
                 <div>
@@ -216,7 +229,7 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
                       type="checkbox"
                       checked={passportCerti}
                       onChange={(e) => setPassportCerti(e.target.checked)}
-                      className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                      className="w-4 h-4 text-primary-600 border-line-400 rounded focus:ring-primary-500"
                     />
                     <span className="text-body-3 font-medium text-label-700">
                       여권 인증
@@ -228,14 +241,14 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-gray-300 hover:bg-label-50 cursor-pointer"
+                  className="flex-1 rounded-md bg-white px-4 py-2 text-body-3 font-medium text-label-700 border border-line-400 hover:bg-label-50 cursor-pointer"
                 >
                   취소
                 </button>
                 <button
                   type="submit"
                   disabled={updateMutation.isPending}
-                  className="flex-1 rounded-md bg-primary-600 px-4 py-2 text-body-3 font-medium text-white hover:bg-primary-500 cursor-pointer disabled:opacity-50"
+                  className="flex-1 rounded-md bg-primary-600 px-4 py-2 text-body-3 font-medium text-white hover:bg-primary-700 cursor-pointer disabled:opacity-50"
                 >
                   {updateMutation.isPending ? '처리 중...' : '수정'}
                 </button>
