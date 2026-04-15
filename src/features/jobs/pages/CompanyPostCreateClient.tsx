@@ -174,7 +174,7 @@ function CompanyPostCreateClient() {
                 size="lg"
                 form="company-post-form"
                 isLoading={createPostMutation.isPending}
-                className="w-full shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
+                className="w-full shadow-[0_4px_14px_rgba(66,90,213,0.25)] hover:shadow-[0_6px_20px_rgba(66,90,213,0.35)]"
               >
                 공고 등록하기
               </Button>
@@ -191,7 +191,7 @@ function CompanyPostCreateClient() {
               </Button>
 
               {/* 작성 팁 카드 */}
-              <div className="bg-primary-50 rounded-xl p-4 border border-blue-100">
+              <div className="bg-primary-50 rounded-xl p-4 border border-primary-100">
                 <div className="flex items-start gap-3">
                   <Lightbulb size={16} className="text-primary-600 shrink-0 mt-1" />
                   <div>

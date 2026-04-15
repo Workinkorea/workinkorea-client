@@ -91,8 +91,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                 key={salary.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === salary.value
-                    ? 'border-blue-600 bg-primary-50'
-                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
                 }`}
               >
                 <input
@@ -123,8 +123,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                 key={type.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === type.value
-                    ? 'border-blue-600 bg-primary-50'
-                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
                 }`}
               >
                 <input
@@ -155,8 +155,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                 key={size.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === size.value
-                    ? 'border-blue-600 bg-primary-50'
-                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
                 }`}
               >
                 <input
@@ -190,8 +190,8 @@ export const Session3Preferences = ({ initialData, onNext, onBack }: Session3Pro
                 key={date.value}
                 className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   field.value === date.value
-                    ? 'border-blue-600 bg-primary-50'
-                    : 'border-line-400 hover:border-blue-300 hover:bg-primary-50'
+                    ? 'border-primary-600 bg-primary-50'
+                    : 'border-line-400 hover:border-primary-300 hover:bg-primary-50'
                 }`}
               >
                 <input

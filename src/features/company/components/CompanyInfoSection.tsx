@@ -47,7 +47,7 @@ const FieldRow = ({
 const selectCls = (error: boolean, touched: boolean, hasValue: boolean) =>
   cn(
     'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800 bg-white transition-colors appearance-none cursor-pointer',
-    'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+    'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
     error ? 'border-red-500 focus:ring-red-100' : 'border-line-400',
     !error && touched && hasValue && 'border-emerald-500',
   );

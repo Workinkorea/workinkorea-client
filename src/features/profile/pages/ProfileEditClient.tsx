@@ -547,6 +547,13 @@ function ProfileEditClient() {
     setHasUnsavedChanges(true);
   };
 
+  // 프로필 미생성 상태 → 프로필 생성 페이지로 리다이렉트
+  useEffect(() => {
+    if (error && (error as { status?: number }).status === 404) {
+      router.replace('/user/profile/setup');
+    }
+  }, [error, router]);
+
   if (isLoading) {
     return (
       <Layout>
@@ -574,7 +581,7 @@ function ProfileEditClient() {
             </p>
             <button
               onClick={handleBack}
-              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors cursor-pointer"
+              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors cursor-pointer"
             >
               {t('goBack')}
             </button>
@@ -590,11 +597,11 @@ function ProfileEditClient() {
         <div className="relative">
           {imagePreview || profile.profile_image_url ? (
             <div
-              className="w-20 h-20 rounded-full bg-cover bg-center border-4 border-blue-100"
+              className="w-20 h-20 rounded-full bg-cover bg-center border-4 border-primary-100"
               style={{ backgroundImage: `url(${imagePreview || profile.profile_image_url})` }}
             />
           ) : (
-            <div className="w-20 h-20 rounded-full bg-label-100 border-4 border-blue-100 flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full bg-label-100 border-4 border-primary-100 flex items-center justify-center">
               <span className="text-title-3 font-semibold text-label-500">
                 {profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}
               </span>
@@ -603,7 +610,7 @@ function ProfileEditClient() {
           <button
             type="button"
             onClick={handleImageButtonClick}
-            className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white hover:bg-primary-600 transition-colors cursor-pointer"
+            className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white hover:bg-primary-700 transition-colors cursor-pointer"
           >
             <Camera size={16} />
           </button>
@@ -1203,7 +1210,7 @@ function ProfileEditClient() {
               <button
                 onClick={handleSave}
                 disabled={updateProfileMutation.isPending}
-                className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg text-body-3 font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg text-body-3 font-medium hover:bg-primary-700 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {updateProfileMutation.isPending ? (
                   <>

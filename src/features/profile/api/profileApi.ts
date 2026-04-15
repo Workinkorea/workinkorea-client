@@ -2,6 +2,7 @@ import { fetchClient } from '@/shared/api/fetchClient';
 import type {
   ProfileResponse,
   ProfileUpdateRequest,
+  CreateProfileRequest,
   ContactResponse,
   ContactUpdateRequest,
   AccountConfigResponse,
@@ -15,6 +16,15 @@ export const profileApi = {
    */
   async getProfile(): Promise<ProfileResponse> {
     return fetchClient.get<ProfileResponse>('/api/me');
+  },
+
+  /**
+   * 신규 사용자의 프로필을 생성합니다.
+   * @param data - 프로필 생성 정보 (name, birth_date, country_id 필수)
+   * @returns 생성된 프로필 정보
+   */
+  async createProfile(data: CreateProfileRequest): Promise<ProfileResponse> {
+    return fetchClient.post<ProfileResponse>('/api/me', data);
   },
 
   /**

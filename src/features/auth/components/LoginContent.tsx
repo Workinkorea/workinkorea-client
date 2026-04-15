@@ -71,7 +71,7 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
     <div className="flex min-h-[calc(100vh-4rem)] flex-1">
       {/* 좌측 패널 - 데스크탑만 표시 */}
       <motion.div
-        className="hidden lg:flex flex-1 bg-linear-to-br from-blue-400 to-blue-600 flex-col justify-center items-center relative px-12 overflow-hidden"
+        className="hidden lg:flex flex-1 bg-linear-to-br from-primary-400 to-primary-600 flex-col justify-center items-center relative px-12 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -88,7 +88,7 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            <span className="text-caption-1 font-semibold text-blue-200">{t('leftBadge')}</span>
+            <span className="text-caption-1 font-semibold text-primary-200">{t('leftBadge')}</span>
           </motion.div>
 
           {/* 타이틀 */}
@@ -113,7 +113,7 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
             {features.map((feature, index) => (
               <motion.div
                 key={index}
-                className="flex items-center gap-3 text-blue-200"
+                className="flex items-center gap-3 text-primary-200"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
@@ -183,8 +183,8 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
               type="button"
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading}
-              className="w-full py-3.5 px-5 border-2 border-line-400 rounded-xl font-semibold text-body-1 text-label-700 hover:border-blue-300 hover:bg-primary-50 transition-all cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
-              whileHover={{ borderColor: '#93C5FD', backgroundColor: '#F0F9FF', scale: 1.01 }}
+              className="w-full py-3.5 px-5 border-2 border-line-400 rounded-xl font-semibold text-body-1 text-label-700 hover:border-primary-300 hover:bg-primary-50 transition-all cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              whileHover={{ borderColor: '#7B8EF2', backgroundColor: '#F3F6FF', scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
               aria-label="Google 계정으로 로그인"
             >

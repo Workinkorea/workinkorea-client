@@ -61,95 +61,136 @@
   --font-weight-extrabold: 800;
   --font-weight-black: 900;
 
-  /* ─── Primary (Indigo) — Blue-Violet Design System ─── */
-  --color-primary-950: #1E1B4B;
-  --color-primary-900: #312E81;
-  --color-primary-800: #3730A3;
-  --color-primary-700: #4338CA;
-  --color-primary-600: #4F46E5;
-  --color-primary-500: #6366F1;
-  --color-primary-400: #818CF8;
-  --color-primary-300: #A5B4FC;
-  --color-primary-200: #C7D2FE;
-  --color-primary-100: #E0E7FF;
-  --color-primary-50:  #EEF2FF;
+  /* ─── Primary (Indigo) ─── */
+  --color-primary-950: #1B1F4B;
+  --color-primary-900: #272D6E;
+  --color-primary-800: #333D94;
+  --color-primary-700: #4250B8;
+  --color-primary-600: #425AD5;
+  --color-primary-500: #516AEC;
+  --color-primary-400: #7B8EF2;
+  --color-primary-300: #A5B2F6;
+  --color-primary-200: #CBD2FA;
+  --color-primary-100: #E5E8FD;
+  --color-primary-50:  #F3F6FF;
 
   /* ─── Tailwind blue-* → Indigo 팔레트 오버라이드 ─── */
-  /* bg-blue-*, text-blue-*, border-blue-* 등 모든 blue 클래스에 자동 적용 */
-  --color-blue-950: #1E1B4B;
-  --color-blue-900: #312E81;
-  --color-blue-800: #3730A3;
-  --color-blue-700: #4338CA;
-  --color-blue-600: #4F46E5;
-  --color-blue-500: #6366F1;
-  --color-blue-400: #818CF8;
-  --color-blue-300: #A5B4FC;
-  --color-blue-200: #C7D2FE;
-  --color-blue-100: #E0E7FF;
-  --color-blue-50:  #EEF2FF;
+  --color-blue-950: #1B1F4B;
+  --color-blue-900: #272D6E;
+  --color-blue-800: #333D94;
+  --color-blue-700: #4250B8;
+  --color-blue-600: #425AD5;
+  --color-blue-500: #516AEC;
+  --color-blue-400: #7B8EF2;
+  --color-blue-300: #A5B2F6;
+  --color-blue-200: #CBD2FA;
+  --color-blue-100: #E5E8FD;
+  --color-blue-50:  #F3F6FF;
 
-  /* ─── Neutral (Slate) — 텍스트 / 배경 / 보더 ─── */
-  --color-label-900: #0F172A;   /* slate-900 — 제목 */
-  --color-label-800: #1E293B;   /* slate-800 — 본문 기본 */
-  --color-label-700: #334155;   /* slate-700 — 레이블, 강조 본문 */
-  --color-label-600: #475569;   /* slate-600 — 보조 본문 */
-  --color-label-500: #64748B;   /* slate-500 — 서브텍스트 */
-  --color-label-400: #94A3B8;   /* slate-400 — 캡션, placeholder */
-  --color-label-300: #CBD5E1;   /* slate-300 — 비활성 */
-  --color-label-100: #F1F5F9;   /* slate-100 */
-  --color-label-50:  #F8FAFC;   /* slate-50 */
+  /* ─── Tailwind slate-* → Clean Gray ─── */
+  --color-slate-950: #1A1D21;
+  --color-slate-900: #24292E;
+  --color-slate-800: #2F363D;
+  --color-slate-700: #3F4750;
+  --color-slate-600: #586069;
+  --color-slate-500: #6A737D;
+  --color-slate-400: #868E96;
+  --color-slate-300: #ADB5BD;
+  --color-slate-200: #DEE2E6;
+  --color-slate-100: #F1F3F5;
+  --color-slate-50:  #F8F9FA;
 
-  /* ─── Border / Divider (Slate) ─── */
-  --color-line-900: #0F172A;
-  --color-line-400: #E2E8F0;    /* slate-200 — 기본 보더 */
-  --color-line-300: #CBD5E1;    /* slate-300 */
-  --color-line-200: #F1F5F9;    /* slate-100 — 구분선 */
-  --color-line-100: #F8FAFC;    /* slate-50 */
+  /* ─── Tailwind emerald-* → Vivid Green ─── */
+  --color-emerald-600: #2D9F44;
+  --color-emerald-500: #40C057;
+  --color-emerald-400: #69DB7C;
+  --color-emerald-100: #C3FAD5;
+  --color-emerald-50:  #EBFBEE;
 
-  /* ─── Background ─── */
+  /* ─── Tailwind red-* → Vivid Red ─── */
+  --color-red-600: #DC1818;
+  --color-red-500: #FA5252;
+  --color-red-400: #FC7373;
+  --color-red-100: #FED3D3;
+  --color-red-50:  #FFF0F0;
+
+  /* ─── Tailwind amber-* → Vivid Amber ─── */
+  --color-amber-600: #E8A500;
+  --color-amber-500: #FAB005;
+  --color-amber-400: #FCC419;
+  --color-amber-100: #FEF0C7;
+  --color-amber-50:  #FFF9DB;
+
+  /* ─── Tailwind yellow-* ─── */
+  --color-yellow-500: #FAB005;
+  --color-yellow-400: #FCC419;
+
+  /* ─── Tailwind green-* ─── */
+  --color-green-600: #2D9F44;
+  --color-green-500: #40C057;
+
+  /* ─── Neutral (Clean Gray) ─── */
+  --color-label-900: #24292E;   /* 제목 — GitHub-style dark */
+  --color-label-800: #2F363D;   /* 본문 기본 */
+  --color-label-700: #3F4750;   /* 레이블, 강조 본문 */
+  --color-label-600: #586069;   /* 보조 본문 */
+  --color-label-500: #6A737D;   /* 서브텍스트 */
+  --color-label-400: #868E96;   /* 캡션, placeholder */
+  --color-label-300: #ADB5BD;   /* 비활성 */
+  --color-label-100: #F1F3F5;   /* 연한 그레이 */
+  --color-label-50:  #F8F9FA;   /* 가장 연한 그레이 */
+
+  /* ─── Border / Divider (Clean Gray) ─── */
+  --color-line-900: #24292E;
+  --color-line-400: #DEE2E6;    /* 기본 보더 */
+  --color-line-300: #ADB5BD;    /* 보더 중간 */
+  --color-line-200: #F1F3F5;    /* 연한 구분선 */
+  --color-line-100: #F8F9FA;    /* 가장 연한 구분선 */
+
+  /* ─── Background (Clean) ─── */
   --color-background-default: #FFFFFF;
-  --color-background-subtle: #F8FAFC;   /* slate-50 — 페이지 배경 */
-  --color-background-alternative: #F1F5F9; /* slate-100 */
+  --color-background-subtle: #F8F9FA;   /* 페이지 배경 */
+  --color-background-alternative: #F1F3F5; /* 대체 배경 */
 
   /* ─── Surface / Component ─── */
-  --color-component-dark: #0F172A;       /* slate-900 */
-  --color-component-light: #CBD5E1;      /* slate-300 */
-  --color-component-assistive: #F8FAFC;  /* slate-50 */
-  --color-component-alternative: #F1F5F9; /* slate-100 */
+  --color-component-dark: #24292E;
+  --color-component-light: #ADB5BD;
+  --color-component-assistive: #F8F9FA;
+  --color-component-alternative: #F1F3F5;
 
-  /* ─── Semantic ─── */
-  --color-status-correct: #10B981;   /* emerald-500 */
-  --color-status-correct-bg: #ECFDF5; /* emerald-50 */
-  --color-status-caution: #F59E0B;   /* amber-500 */
-  --color-status-caution-bg: #FFFBEB; /* amber-50 */
-  --color-status-error: #EF4444;     /* red-500 */
-  --color-status-error-bg: #FEF2F2;  /* red-50 */
-  --color-status-info: #6366F1;      /* indigo-500 */
-  --color-status-info-bg: #EEF2FF;   /* indigo-50 */
-  --color-status-disable: #CBD5E1;   /* slate-300 */
+  /* ─── Semantic (Vivid) ─── */
+  --color-status-correct: #40C057;   /* vivid green */
+  --color-status-correct-bg: #EBFBEE; /* green bg */
+  --color-status-caution: #FAB005;   /* vivid amber */
+  --color-status-caution-bg: #FFF9DB; /* amber bg */
+  --color-status-error: #FA5252;     /* vivid red */
+  --color-status-error-bg: #FFF0F0;  /* red bg */
+  --color-status-info: #516AEC;      /* indigo */
+  --color-status-info-bg: #F3F6FF;   /* indigo bg */
+  --color-status-disable: #ADB5BD;   /* gray */
 
   /* ─── Material / Overlay ─── */
   --color-material-dimmed: rgba(0, 0, 0, 0.5);
-  --color-material-scroll: #94A3B8;   /* slate-400 */
+  --color-material-scroll: #868E96;
 
-  /* ─── Shadows ─── */
-  --shadow-sm:     0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-normal: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md:     0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-strong: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg:     0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-  --shadow-xl:     0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-  --shadow-heavy:  0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-  --shadow-primary: 0 4px 14px rgba(79, 70, 229, 0.25);   /* 구: shadow-blue */
-  --shadow-blue:    0 4px 14px rgba(79, 70, 229, 0.25);   /* 하위 호환 유지 */
+  /* ─── Shadows (Clean) ─── */
+  --shadow-sm:     0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-normal: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md:     0 3px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-strong: 0 3px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg:     0 4px 12px -2px rgba(0, 0, 0, 0.10), 0 2px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl:     0 8px 24px -4px rgba(0, 0, 0, 0.10), 0 4px 8px -4px rgba(0, 0, 0, 0.04);
+  --shadow-heavy:  0 8px 24px -4px rgba(0, 0, 0, 0.10), 0 4px 8px -4px rgba(0, 0, 0, 0.04);
+  --shadow-primary: 0 4px 14px rgba(66, 90, 213, 0.25);
+  --shadow-blue:    0 4px 14px rgba(66, 90, 213, 0.25);
 
   /* ─── Border Radius ─── */
   --radius-none: 0px;
-  --radius-sm:   4px;
-  --radius-md:   8px;
-  --radius-lg:   12px;
-  --radius-xl:   16px;
-  --radius-2xl:  24px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-2xl:  32px;
   --radius-full: 9999px;
 
   /* ─── Spacing Scale (4배수) ─── */
@@ -182,7 +223,7 @@
   --transition-slow:   300ms ease;
 
   /* ─── Focus Ring ─── */
-  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.35);
+  --focus-ring: 0 0 0 3px rgba(81, 106, 236, 0.3);
 }
 
 /* ─── Global Reset ─── */
@@ -332,7 +373,7 @@ body {
 .form-select:focus {
   outline: none;
   border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 0 3px rgba(81, 106, 236, 0.15);
 }
 
 .form-select:disabled {
@@ -359,7 +400,7 @@ body {
 .form-textarea:focus {
   outline: none;
   border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 0 3px rgba(81, 106, 236, 0.15);
 }
 
 .form-textarea::placeholder {
@@ -463,7 +504,7 @@ body {
 }
 
 .animated-gradient {
-  background: linear-gradient(-45deg, #2563EB, #1D4ED8, #1E3A8A, #4338CA);
+  background: linear-gradient(-45deg, #425AD5, #516AEC, #333D94, #7B8EF2);
   background-size: 300% 300%;
   animation: gradient-pan 7s ease infinite;
 }
@@ -480,7 +521,7 @@ body {
 }
 
 .skeleton-shimmer {
-  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+  background: linear-gradient(90deg, #F1F3F5 25%, #DEE2E6 50%, #F1F3F5 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s ease infinite, skeleton-fade-in 0.2s ease forwards;
   will-change: background-position;

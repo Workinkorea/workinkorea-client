@@ -46,7 +46,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const wrapperClasses = cn(
       "flex items-center border rounded-lg bg-white transition-colors",
-      error && "border-red-500 focus-within:border-red-500 focus-within:ring-[3px] focus-within:ring-red-100",
+      error && "border-status-error focus-within:border-status-error focus-within:ring-[3px] focus-within:ring-red-50",
       success && "border-emerald-500 focus-within:border-emerald-500 focus-within:ring-[3px] focus-within:ring-emerald-100",
       !error && !success && "border-line-400 focus-within:border-primary-500 focus-within:ring-[3px] focus-within:ring-primary-100",
       className

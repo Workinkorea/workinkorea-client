@@ -81,9 +81,9 @@ function UserProfileHeader({
         >
           <div className="relative">
             {profile.profileImage ? (
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-blue-100 bg-cover bg-center" style={{backgroundImage: `url(${profile.profileImage})`}} aria-label={`${profile.name}의 프로필`} />
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-primary-100 bg-cover bg-center" style={{backgroundImage: `url(${profile.profileImage})`}} aria-label={`${profile.name}의 프로필`} />
             ) : (
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-label-100 border-4 border-blue-100 flex items-center justify-center">
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-label-100 border-4 border-primary-100 flex items-center justify-center">
                 <span className="text-title-3 md:text-title-2 font-semibold text-label-400">
                   {profile.name ? profile.name.charAt(0).toUpperCase() : '?'}
                 </span>
@@ -194,7 +194,7 @@ function UserProfileHeader({
                   <button className="flex-1 md:flex-none px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer">
                     {t('contact')}
                   </button>
-                  <button className="flex-1 md:flex-none px-4 py-2 border border-blue-600 text-primary-600 rounded-lg text-caption-1 font-medium hover:bg-primary-50 transition-colors cursor-pointer">
+                  <button className="flex-1 md:flex-none px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-caption-1 font-medium hover:bg-primary-50 transition-colors cursor-pointer">
                     {t('favorite')}
                   </button>
                 </>

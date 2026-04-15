@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { adminApi } from '../api/adminApi';
 import { toast } from 'sonner';
+import { Building2 } from 'lucide-react';
 import type { AdminCompany } from '@/shared/types/api';
 
 interface CompaniesTableClientProps {
@@ -75,10 +76,22 @@ export default function CompaniesTableClient({ initialCompanies }: CompaniesTabl
     deleteMutation.mutate(companyId);
   }
 
+  if (companies.length === 0) {
+    return (
+      <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-100 flex items-center justify-center">
+          <Building2 className="w-6 h-6 text-slate-400" />
+        </div>
+        <p className="text-body-1 font-medium text-slate-700 mb-1">등록된 기업이 없습니다</p>
+        <p className="text-caption-1 text-slate-500">아직 가입한 기업이 없거나 조건에 맞는 기업이 없습니다.</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-slate-200">
+        <table className="min-w-full divide-y divide-line-400">
           <thead className="bg-label-50">
             <tr>
               <th className="px-6 py-3 text-left text-caption-2 font-medium text-label-500 uppercase tracking-wider">
@@ -95,7 +108,7 @@ export default function CompaniesTableClient({ initialCompanies }: CompaniesTabl
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-slate-200">
+          <tbody className="bg-white divide-y divide-line-400">
             {companies.map((company) => (
               <tr key={company.id} className="hover:bg-label-50">
                 <td className="px-6 py-4 whitespace-nowrap text-body-3 text-label-900">

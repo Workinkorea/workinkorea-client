@@ -141,7 +141,7 @@ function ProfileImageUpload({
           {displayImage ? (
             // Image preview (circular)
             <div
-              className="rounded-full bg-cover bg-center border-4 border-blue-100"
+              className="rounded-full bg-cover bg-center border-4 border-primary-100"
               style={{
                 width: `${size}px`,
                 height: `${size}px`,
@@ -151,7 +151,7 @@ function ProfileImageUpload({
           ) : (
             // Fallback: Initials avatar
             <div
-              className="rounded-full bg-linear-to-br from-blue-100 to-blue-50 border-4 border-blue-100 flex items-center justify-center"
+              className="rounded-full bg-linear-to-br from-primary-100 to-primary-50 border-4 border-primary-100 flex items-center justify-center"
               style={{
                 width: `${size}px`,
                 height: `${size}px`,
@@ -200,7 +200,7 @@ function ProfileImageUpload({
           'border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors',
           isDragging
             ? 'border-primary-500 bg-primary-50'
-            : 'border-line-400 hover:border-blue-400 hover:bg-primary-50'
+            : 'border-line-400 hover:border-primary-400 hover:bg-primary-50'
         )}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}

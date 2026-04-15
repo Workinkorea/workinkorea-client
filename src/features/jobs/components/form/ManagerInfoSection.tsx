@@ -68,7 +68,7 @@ export function ManagerInfoSection({
             'inline-flex items-center gap-1.5 shrink-0',
             'px-3 py-1.5 text-caption-2 font-semibold rounded-lg transition-colors cursor-pointer',
             'border border-primary-200 text-primary-600 bg-primary-50',
-            'hover:bg-primary-100 hover:border-blue-300',
+            'hover:bg-primary-100 hover:border-primary-300',
             'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
             'disabled:opacity-50 disabled:cursor-not-allowed',
           )}

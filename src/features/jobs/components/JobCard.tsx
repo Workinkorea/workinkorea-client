@@ -47,7 +47,7 @@ export default function JobCard({ post }: JobCardProps) {
     <motion.div
       className={cn(
         'bg-white border border-line-400 rounded-xl overflow-hidden',
-        'hover:border-blue-300 hover:shadow-md transition-all duration-200 group',
+        'hover:border-primary-300 hover:shadow-md transition-all duration-200 group',
         isExpired && 'opacity-60'
       )}
       whileHover={{ y: -6 }}
@@ -58,7 +58,7 @@ export default function JobCard({ post }: JobCardProps) {
           {/* Top Section: Icon + Type + Badges + Bookmark */}
           <div className="flex items-start gap-3 mb-4">
             {/* Company Icon */}
-            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shrink-0 shadow-sm">
+            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white shrink-0 shadow-sm">
               <Building2 className="w-6 h-6" />
             </div>
 
@@ -101,7 +101,7 @@ export default function JobCard({ post }: JobCardProps) {
                   size={18}
                   className={cn(
                     'transition-colors duration-200',
-                    bookmarked ? 'fill-blue-600 text-primary-600' : 'text-label-300 group-hover:text-label-400'
+                    bookmarked ? 'fill-primary-600 text-primary-600' : 'text-label-300 group-hover:text-label-400'
                   )}
                 />
               </motion.div>

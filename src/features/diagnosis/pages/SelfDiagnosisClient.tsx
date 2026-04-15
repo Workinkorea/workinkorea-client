@@ -123,7 +123,7 @@ const SelfDiagnosisClient = () => {
                           className={`px-6 py-3 rounded-lg font-medium text-body-3 transition-all border-2 cursor-pointer ${
                             field.value === level.value
                               ? 'bg-primary-500 text-white border-primary-500 shadow-md'
-                              : 'bg-white text-label-700 border-line-400 hover:border-blue-300 hover:bg-primary-50'
+                              : 'bg-white text-label-700 border-line-400 hover:border-primary-300 hover:bg-primary-50'
                           }`}
                         >
                           {level.description}
@@ -151,7 +151,7 @@ const SelfDiagnosisClient = () => {
                   }
                 }}
                 render={(field, fieldId) => (
-                  <div className="flex items-center border border-line-400 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 bg-white">
+                  <div className="flex items-center border border-line-400 rounded-lg focus-within:ring-2 focus-within:ring-primary-500 bg-white">
                     <input
                       {...field}
                       id={fieldId}

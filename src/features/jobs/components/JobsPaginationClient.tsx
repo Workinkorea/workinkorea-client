@@ -21,7 +21,8 @@ export default function JobsPaginationClient({ currentPage, totalPages }: JobsPa
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="p-2 rounded-lg border border-line-400 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+        aria-label="이전 페이지"
+        className="p-2 rounded-lg border border-line-400 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
@@ -43,7 +44,9 @@ export default function JobsPaginationClient({ currentPage, totalPages }: JobsPa
             <button
               key={pageNum}
               onClick={() => handlePageChange(pageNum)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
+              aria-label={`${pageNum} 페이지`}
+              aria-current={currentPage === pageNum ? 'page' : undefined}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
                 currentPage === pageNum
                   ? 'bg-primary-600 text-white'
                   : 'border border-line-400 hover:bg-label-50 text-label-700'
@@ -58,7 +61,8 @@ export default function JobsPaginationClient({ currentPage, totalPages }: JobsPa
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="p-2 rounded-lg border border-line-400 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+        aria-label="다음 페이지"
+        className="p-2 rounded-lg border border-line-400 hover:bg-label-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
       >
         <ChevronRight className="w-5 h-5" />
       </button>

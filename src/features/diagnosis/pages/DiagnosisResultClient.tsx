@@ -246,7 +246,7 @@ const DiagnosisResultClient = () => {
                   cx="64"
                   cy="64"
                   r="56"
-                  stroke="#e5e7eb"
+                  stroke="#DEE2E6"
                   strokeWidth="10"
                   fill="none"
                 />
@@ -254,7 +254,7 @@ const DiagnosisResultClient = () => {
                   cx="64"
                   cy="64"
                   r="56"
-                  stroke="#3b82f6"
+                  stroke="#425AD5"
                   strokeWidth="10"
                   fill="none"
                   strokeLinecap="round"
@@ -266,7 +266,7 @@ const DiagnosisResultClient = () => {
               </svg>
               <div className="col-start-1 row-start-1 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-2xl sm:text-title-1 font-bold text-primary-600">{result.score}%</div>
+                  <div className="text-title-2 sm:text-title-1 font-bold text-primary-600">{result.score}%</div>
                   <div className="text-caption-2 text-label-500 mt-1">{t('readinessLabel')}</div>
                 </div>
               </div>
@@ -355,7 +355,7 @@ const DiagnosisResultClient = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   className={cn(
-                    'px-3 py-2.5 bg-primary-50 border border-blue-100 rounded-lg',
+                    'px-3 py-2.5 bg-primary-50 border border-primary-100 rounded-lg',
                     'hover:bg-primary-100 transition-colors duration-150'
                   )}
                 >
@@ -376,7 +376,7 @@ const DiagnosisResultClient = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
             className={cn(
-              'bg-linear-to-br from-blue-600 to-blue-800 rounded-2xl shadow-lg p-6 sm:p-8 lg:p-10',
+              'bg-linear-to-br from-primary-600 to-primary-800 rounded-2xl shadow-lg p-6 sm:p-8 lg:p-10',
               'text-center text-white mb-6'
             )}
           >

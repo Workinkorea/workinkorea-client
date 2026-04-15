@@ -2,7 +2,7 @@ import { Skeleton } from '@/shared/ui/Skeleton';
 
 function PostCardSkeleton() {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6">
+    <div className="bg-white border border-line-400 rounded-xl p-4 sm:p-6">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 space-y-2">
           <Skeleton variant="text" className="h-5 w-3/4" />
@@ -24,9 +24,9 @@ function PostCardSkeleton() {
 
 export default function CompanyLoading() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-label-50">
       {/* 기업 정보 헤더 */}
-      <div className="bg-white border-b border-slate-100 px-4 sm:px-6 py-5 sm:py-6">
+      <div className="bg-white border-b border-line-200 px-4 sm:px-6 py-5 sm:py-6">
         <div className="page-container">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -40,11 +40,11 @@ export default function CompanyLoading() {
           </div>
 
           {/* 탭 네비게이션 */}
-          <div className="flex gap-1 mt-5 border-b border-slate-100">
+          <div className="flex gap-1 mt-5 border-b border-line-200">
             {['관리 중인 공고', '기업 정보'].map((tab, i) => (
               <div
                 key={tab}
-                className={`flex items-center gap-1.5 px-4 py-3 ${i === 0 ? 'border-b-2 border-blue-600' : ''}`}
+                className={`flex items-center gap-1.5 px-4 py-3 ${i === 0 ? 'border-b-2 border-primary-600' : ''}`}
               >
                 <Skeleton variant="circle" className="w-4 h-4" />
                 <Skeleton variant="text" className={`h-4 ${i === 0 ? 'w-24' : 'w-16'}`} />

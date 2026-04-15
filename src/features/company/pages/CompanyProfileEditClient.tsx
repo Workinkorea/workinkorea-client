@@ -263,7 +263,7 @@ const CompanyProfileEditClient = () => {
               <Button
                 type="button"
                 size="lg"
-                className="w-full shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)]"
+                className="w-full shadow-[0_4px_14px_rgba(66,90,213,0.25)] hover:shadow-[0_6px_20px_rgba(66,90,213,0.35)]"
                 isLoading={updateProfileMutation.isPending}
                 disabled={!hasChanges}
                 onClick={handleSubmit}
@@ -289,7 +289,7 @@ const CompanyProfileEditClient = () => {
                       <circle
                         cx="24" cy="24" r="20"
                         fill="none" strokeWidth="4"
-                        className="stroke-slate-100"
+                        className="stroke-label-100"
                       />
                       <circle
                         cx="24" cy="24" r="20"
@@ -297,7 +297,7 @@ const CompanyProfileEditClient = () => {
                         strokeDasharray={`${2 * Math.PI * 20}`}
                         strokeDashoffset={`${2 * Math.PI * 20 * (1 - progress / 100)}`}
                         strokeLinecap="round"
-                        className="stroke-blue-600 transition-all duration-500"
+                        className="stroke-primary-600 transition-all duration-500"
                       />
                     </svg>
                     <span className="absolute inset-0 flex items-center justify-center text-caption-3 font-bold text-primary-600">

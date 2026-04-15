@@ -34,7 +34,7 @@ function EventCard({ event, labels }: { event: Event; labels: Record<EventType, 
           />
         </div>
       ) : (
-        <div className="h-40 bg-linear-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+        <div className="h-40 bg-linear-to-br from-primary-50 to-primary-100 flex items-center justify-center">
           <span className="text-title-1 select-none">
             {event.type === 'notice' ? '📢' : event.type === 'event' ? '🎉' : '🎁'}
           </span>

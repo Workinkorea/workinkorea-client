@@ -137,7 +137,7 @@ export function EventCreateClient() {
               className={cn(
                 'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
                 'text-body-3 text-label-800 placeholder:text-label-400 bg-white',
-                'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                 'transition-colors',
               )}
             />
@@ -153,7 +153,7 @@ export function EventCreateClient() {
                 className={cn(
                   'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
                   'text-body-3 text-label-800 bg-white',
-                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                   'transition-colors cursor-pointer',
                 )}
               >
@@ -171,7 +171,7 @@ export function EventCreateClient() {
                 className={cn(
                   'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
                   'text-body-3 text-label-800 bg-white',
-                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                   'transition-colors cursor-pointer',
                 )}
               >
@@ -193,7 +193,7 @@ export function EventCreateClient() {
                 className={cn(
                   'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
                   'text-body-3 text-label-800 bg-white',
-                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                   'transition-colors cursor-pointer',
                 )}
               />
@@ -208,7 +208,7 @@ export function EventCreateClient() {
                 className={cn(
                   'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
                   'text-body-3 text-label-800 bg-white',
-                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                  'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                   'transition-colors cursor-pointer',
                 )}
               />
@@ -228,7 +228,7 @@ export function EventCreateClient() {
               className={cn(
                 'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
                 'text-body-3 text-label-800 placeholder:text-label-400 bg-white',
-                'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                 'transition-colors resize-none',
               )}
             />
@@ -244,7 +244,7 @@ export function EventCreateClient() {
               className={cn(
                 'w-full px-3.5 py-2.5 border border-line-400 rounded-lg',
                 'text-body-3 text-label-800 placeholder:text-label-400 bg-white',
-                'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-blue-100',
+                'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
                 'transition-colors',
               )}
             />

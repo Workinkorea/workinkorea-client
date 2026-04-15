@@ -82,7 +82,7 @@ function TemplateSelector({
             className={`relative p-6 border-2 rounded-lg text-left transition-all hover:shadow-sm ${
               selectedTemplate === template.type
                 ? 'border-primary-500 bg-primary-50 shadow-sm'
-                : 'border-line-400 bg-white hover:border-blue-300'
+                : 'border-line-400 bg-white hover:border-primary-300'
             }`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -150,7 +150,7 @@ function TemplateSelector({
           disabled={!selectedTemplate}
           className={`flex items-center gap-2 px-6 py-3 rounded-lg text-body-3 font-medium transition-all ${
             selectedTemplate
-              ? 'bg-primary-500 text-white hover:bg-primary-600 shadow-sm'
+              ? 'bg-primary-600 text-white hover:bg-primary-700 shadow-sm'
               : 'bg-label-100 text-label-400 cursor-not-allowed'
           }`}
           whileHover={selectedTemplate ? { scale: 1.02 } : {}}

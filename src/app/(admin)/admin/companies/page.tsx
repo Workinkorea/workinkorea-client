@@ -19,7 +19,7 @@ export default async function AdminCompaniesPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">기업 회원 관리</h2>
+        <h2 className="text-title-2 font-bold text-label-900">기업 회원 관리</h2>
       </div>
       <CompaniesTableClient initialCompanies={companies} />
     </div>
