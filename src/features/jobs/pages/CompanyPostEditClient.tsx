@@ -67,8 +67,9 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
     },
     onError: (error) => {
       logError(error, 'CompanyPostEditClient.deletePost');
-      const errorMessage = extractErrorMessage(error, t('deleteError'));
-      toast.error(errorMessage);
+      const rawMessage = extractErrorMessage(error, '');
+      const isServerInternalError = rawMessage.includes('is not mapped') || rawMessage.includes('Internal');
+      toast.error(isServerInternalError ? t('deleteError') : rawMessage || t('deleteError'));
     },
   });
 

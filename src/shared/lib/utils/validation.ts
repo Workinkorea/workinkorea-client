@@ -114,6 +114,10 @@ export const validateEmail = (email: string): string | null => {
     return '이메일을 입력해주세요.';
   }
 
+  if (email.length > 320) {
+    return '이메일은 320자 이하로 입력해주세요.';
+  }
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return '올바른 이메일 형식을 입력해주세요.';

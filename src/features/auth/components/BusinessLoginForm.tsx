@@ -167,6 +167,15 @@ export default function BusinessLoginForm() {
 
         if (STATUS_ERRORS[status]) {
           errorInfo = STATUS_ERRORS[status];
+        } else if (status >= 500 && serverError) {
+          const msg = serverError.toLowerCase();
+          if (msg.includes('not found') || msg.includes('user not found')) {
+            errorInfo = { type: 'account', field: 'email', message: t('errorAccount404') };
+          } else if (msg.includes('password') && msg.includes('incorrect')) {
+            errorInfo = { type: 'credential', field: 'password', message: t('errorCredential401') };
+          } else {
+            errorInfo = { type: 'server', field: null, message: t('errorServerInternal') };
+          }
         } else if (status === 400) {
           const msg = serverError.toLowerCase();
           if (msg.includes('email')) {
@@ -176,8 +185,6 @@ export default function BusinessLoginForm() {
           } else {
             errorInfo = { type: 'credential', field: null, message: serverError || t('errorCredential400') };
           }
-        } else if (status >= 500) {
-          errorInfo = { type: 'server', field: null, message: t('errorServerInternal') };
         } else if (serverError) {
           errorInfo = { type: 'server', field: null, message: serverError };
         }

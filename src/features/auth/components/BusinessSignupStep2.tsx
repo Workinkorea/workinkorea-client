@@ -445,6 +445,7 @@ export default function BusinessSignupStep2({
                       id={fieldId}
                       type="email"
                       placeholder={t('emailPlaceholder')}
+                      maxLength={320}
                       onBlur={(e) => {
                         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                         if (!emailRegex.test(e.target.value)) {
