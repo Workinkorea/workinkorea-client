@@ -173,7 +173,7 @@ export const authApi = {
    */
   async verifyBusinessNumber(businessNumber: string): Promise<BusinessVerificationResponse> {
     return fetchClient.post<BusinessVerificationResponse>(
-      '/verify-business',
+      '/api/verify-business',
       { businessNumber }
     );
   },
