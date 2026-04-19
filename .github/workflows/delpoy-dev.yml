@@ -42,7 +42,7 @@ jobs:
             --ingress all \
             --allow-unauthenticated \
             --port 3000 \
-            --set-env-vars "NODE_ENV=development,NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}"
+            --set-env-vars "NODE_ENV=development,NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }},NTS_API_KEY=${{ secrets.NTS_API_KEY }}"
 
       - name: Send Discord Deployment Notification
         if: always()
