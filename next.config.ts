@@ -1,7 +1,22 @@
 import createNextIntlPlugin from 'next-intl/plugin';
+import withPWAInit from '@ducanh2912/next-pwa';
 import type { NextConfig } from "next";
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+const withPWA = withPWAInit({
+  dest: 'public',
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  reloadOnOnline: true,
+  disable: process.env.NODE_ENV === 'development',
+  workboxOptions: {
+    disableDevLogs: true,
+  },
+  fallbacks: {
+    document: '/offline',
+  },
+});
 
 const nextConfig: NextConfig = {
   output: 'standalone',
@@ -49,6 +64,8 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: https:",
               // 폰트는 자체 도메인만
               "font-src 'self' data:",
+              // Service Worker 허용 (PWA)
+              "worker-src 'self'",
 
               `connect-src 'self' https://wik-dev.moon-core.com https://t1.daumcdn.net https://static.cloudflareinsights.com`,
               // iframe 허용 안 함 (frame-ancestors와 함께 사용)
@@ -105,4 +122,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+export default withNextIntl(withPWA(nextConfig));
