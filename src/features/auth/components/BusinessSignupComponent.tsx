@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -115,6 +115,18 @@ export default function BusinessSignupComponent({ callbackUrl }: { callbackUrl?:
     phoneType: 'MOBILE' as PhoneType,
   });
 
+  const [verifyDisabled, setVerifyDisabled] = useState(false);
+  const [verifyCooldown, setVerifyCooldown] = useState(0);
+  const cooldownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (cooldownTimerRef.current !== null) {
+        clearInterval(cooldownTimerRef.current);
+      }
+    };
+  }, []);
+
   const businessNumber = watch('businessNumber');
   const name = watch('name');
   const phoneNumber = watch('phoneNumber');
@@ -137,7 +149,27 @@ export default function BusinessSignupComponent({ callbackUrl }: { callbackUrl?:
     else clearErrors('confirmPassword');
   };
 
+  const startCooldown = () => {
+    if (cooldownTimerRef.current !== null) {
+      clearInterval(cooldownTimerRef.current);
+    }
+    setVerifyDisabled(true);
+    let countdown = 30;
+    setVerifyCooldown(countdown);
+    cooldownTimerRef.current = setInterval(() => {
+      countdown -= 1;
+      setVerifyCooldown(countdown);
+      if (countdown <= 0) {
+        clearInterval(cooldownTimerRef.current!);
+        cooldownTimerRef.current = null;
+        setVerifyDisabled(false);
+        setVerifyCooldown(0);
+      }
+    }, 1000);
+  };
+
   const handleBusinessNumberCheck = async (bn: string) => {
+    if (verifyDisabled) return;
     if (!isValidBusinessNumber(bn)) {
       setError('businessNumber', { type: 'manual', message: t('errorBizNumberRequired') });
       return;
@@ -170,6 +202,7 @@ export default function BusinessSignupComponent({ callbackUrl }: { callbackUrl?:
       toast.error(t('toastBizError'));
     } finally {
       setFormState((prev) => ({ ...prev, isVerifying: false }));
+      startCooldown();
     }
   };
 
@@ -344,17 +377,23 @@ export default function BusinessSignupComponent({ callbackUrl }: { callbackUrl?:
                       <motion.button
                         type="button"
                         onClick={() => field.value && handleBusinessNumberCheck(field.value)}
-                        disabled={!field.value || !isValidBusinessNumber(field.value) || formState.isVerifying || formState.isBusinessNumberVerified}
+                        disabled={!field.value || !isValidBusinessNumber(field.value) || formState.isVerifying || formState.isBusinessNumberVerified || verifyDisabled}
                         className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-body-3 whitespace-nowrap transition-colors ${
-                          formState.isVerifying ? 'bg-primary-500 text-white cursor-not-allowed'
+                          formState.isVerifying || verifyCooldown > 0 ? 'bg-primary-500 text-white cursor-not-allowed'
                           : field.value && isValidBusinessNumber(field.value)
                             ? formState.isBusinessNumberVerified ? 'bg-label-100 text-label-400 cursor-not-allowed'
                               : 'bg-primary-600 text-white hover:bg-primary-700 cursor-pointer'
                             : 'bg-label-100 text-label-400 cursor-not-allowed'
                         }`}
-                        whileTap={field.value && isValidBusinessNumber(field.value) && !formState.isBusinessNumberVerified && !formState.isVerifying ? { scale: 0.95 } : {}}
+                        whileTap={field.value && isValidBusinessNumber(field.value) && !formState.isBusinessNumberVerified && !formState.isVerifying && !verifyDisabled ? { scale: 0.95 } : {}}
                       >
-                        {formState.isVerifying ? <><Loader2 size={14} className="animate-spin" />{t('verifying')}</> : formState.isBusinessNumberVerified ? t('verified') : t('verify')}
+                        {formState.isVerifying
+                          ? <><Loader2 size={14} className="animate-spin" />{t('verifying')}</>
+                          : verifyCooldown > 0
+                            ? `${verifyCooldown}초 후 재시도`
+                            : formState.isBusinessNumberVerified
+                              ? t('verified')
+                              : t('verify')}
                       </motion.button>
                     </div>
                     {formState.isBusinessNumberVerified && formState.businessNumberMessage && (
