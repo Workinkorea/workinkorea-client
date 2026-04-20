@@ -19,10 +19,10 @@ export default function MainError({
         <div className="mb-8">
           <h1 className="text-6xl font-extrabold text-slate-200 mb-2 leading-none">오류</h1>
           <h2 className="text-xl font-bold text-slate-900 mb-3">
-            페이지를 ���러올 수 없습니다
+            페이지를 불러올 수 없습니다
           </h2>
           <p className="text-slate-500">
-            일���적인 오류가 발생했습니다. 다시 시도해 주세요.
+            일시적인 오류가 발생했습니다. 다시 시도해 주세요.
           </p>
         </div>
 

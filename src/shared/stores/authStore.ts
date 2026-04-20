@@ -23,7 +23,7 @@ interface AuthState {
 }
 
 /**
- * GET /api/me 로 세션 유효성 ���인
+ * GET /api/me 로 세션 유효성 확인
  * HttpOnly access_token 쿠키가 살아있으면 200 반환 → userType 결정
  */
 async function verifySessionWithProfile(): Promise<UserType | null> {
