@@ -14,6 +14,24 @@ import {
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 12;
 
+/** 백엔드가 { company_posts } 또는 { data: { company_posts } } 로 래핑할 경우 모두 대응 */
+interface RawCompanyPostsApiResponse {
+  company_posts?: CompanyPostsResponse['company_posts'];
+  pagination?: {
+    count?: number;
+    skip?: number;
+    limit?: number;
+  };
+  data?: {
+    company_posts?: CompanyPostsResponse['company_posts'];
+    pagination?: {
+      count?: number;
+      skip?: number;
+      limit?: number;
+    };
+  };
+}
+
 /**
  * 서버 컴포넌트에서 사용하는 공고 목록 조회 함수
  *
@@ -34,25 +52,7 @@ export async function getCompanyPosts(
   const endpoint = `/api/posts/company/list?skip=${skip}&limit=${limit}`;
 
   try {
-    interface RawApiResponse {
-      company_posts?: CompanyPostsResponse['company_posts'];
-      pagination?: {
-        count?: number;
-        skip?: number;
-        limit?: number;
-      };
-      // 일부 백엔드가 { data: { company_posts, pagination } } 형태로 래핑할 경우 대응
-      data?: {
-        company_posts?: CompanyPostsResponse['company_posts'];
-        pagination?: {
-          count?: number;
-          skip?: number;
-          limit?: number;
-        };
-      };
-    }
-
-    const rawData = await fetchAPI<RawApiResponse>(endpoint, {
+    const rawData = await fetchAPI<RawCompanyPostsApiResponse>(endpoint, {
       skipAuth: true,
       // Next.js 16 캐싱: 1시간마다 재검증 (ISR)
       next: {
@@ -102,25 +102,7 @@ export const postsApi = {
 
     const endpoint = `/api/posts/company/list?skip=${skip}&limit=${limit}`;
 
-    interface RawApiResponse {
-      company_posts?: CompanyPostsResponse['company_posts'];
-      pagination?: {
-        count?: number;
-        skip?: number;
-        limit?: number;
-      };
-      // 일부 백엔드가 { data: { company_posts, pagination } } 형태로 래핑할 경우 대응
-      data?: {
-        company_posts?: CompanyPostsResponse['company_posts'];
-        pagination?: {
-          count?: number;
-          skip?: number;
-          limit?: number;
-        };
-      };
-    }
-
-    const rawData = await fetchClient.get<RawApiResponse>(endpoint, {
+    const rawData = await fetchClient.get<RawCompanyPostsApiResponse>(endpoint, {
       skipAuth: true,
     });
 
