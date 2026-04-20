@@ -440,16 +440,14 @@ function ResumeEditor({
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                {openSections.introduction && (
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); appendIntro({ title: '', content: '' }); }}
-                    className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
-                  >
-                    <Plus size={14} />
-                    {t('addBtn')}
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); appendIntro({ title: '', content: '' }); }}
+                  className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                >
+                  <Plus size={14} />
+                  {t('addBtn')}
+                </button>
                 <ChevronDown
                   size={18}
                   className={`text-label-500 transition-transform duration-200 ${openSections.introduction ? 'rotate-180' : ''}`}
@@ -539,16 +537,14 @@ function ResumeEditor({
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                {openSections.career && (
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); appendCareer({ company_name: '', start_date: '', end_date: undefined, is_working: false, department: '', position_title: '', main_role: '' }); }}
-                    className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
-                  >
-                    <Plus size={14} />
-                    {t('addBtn')}
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); appendCareer({ company_name: '', start_date: '', end_date: undefined, is_working: false, department: '', position_title: '', main_role: '' }); }}
+                  className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                >
+                  <Plus size={14} />
+                  {t('addBtn')}
+                </button>
                 <ChevronDown
                   size={18}
                   className={`text-label-500 transition-transform duration-200 ${openSections.career ? 'rotate-180' : ''}`}
@@ -712,16 +708,14 @@ function ResumeEditor({
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                {openSections.education && (
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); appendSchool({ school_name: '', major_name: '', start_date: '', end_date: undefined, is_graduated: false }); }}
-                    className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
-                  >
-                    <Plus size={14} />
-                    {t('addBtn')}
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); appendSchool({ school_name: '', major_name: '', start_date: '', end_date: undefined, is_graduated: false }); }}
+                  className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                >
+                  <Plus size={14} />
+                  {t('addBtn')}
+                </button>
                 <ChevronDown
                   size={18}
                   className={`text-label-500 transition-transform duration-200 ${openSections.education ? 'rotate-180' : ''}`}
@@ -857,16 +851,14 @@ function ResumeEditor({
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                {openSections.language && (
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); appendLanguage({ language_type: '', level: '' }); }}
-                    className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
-                  >
-                    <Plus size={14} />
-                    {t('addBtn')}
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); appendLanguage({ language_type: '', level: '' }); }}
+                  className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                >
+                  <Plus size={14} />
+                  {t('addBtn')}
+                </button>
                 <ChevronDown
                   size={18}
                   className={`text-label-500 transition-transform duration-200 ${openSections.language ? 'rotate-180' : ''}`}
@@ -979,16 +971,14 @@ function ResumeEditor({
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                {openSections.license && (
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); appendLicense({ license_name: '', license_agency: '', license_date: '' }); }}
-                    className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
-                  >
-                    <Plus size={14} />
-                    {t('addBtn')}
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); appendLicense({ license_name: '', license_agency: '', license_date: '' }); }}
+                  className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                >
+                  <Plus size={14} />
+                  {t('addBtn')}
+                </button>
                 <ChevronDown
                   size={18}
                   className={`text-label-500 transition-transform duration-200 ${openSections.license ? 'rotate-180' : ''}`}
@@ -1069,7 +1059,7 @@ function ResumeEditor({
           </div>
 
           {/* Right sidebar: Save buttons and tips */}
-          <div className="hidden lg:block sticky top-6 space-y-4">
+          <div className="block lg:sticky lg:top-6 space-y-4">
             {/* Save card */}
             <div className="bg-white border border-line-400 rounded-xl p-5 space-y-3">
               <Button
@@ -1119,27 +1109,6 @@ function ResumeEditor({
           </div>
         </div>
 
-        {/* 모바일 하단 정적 저장 버튼 */}
-        <div className="lg:hidden flex gap-3 pt-2 pb-6">
-          <Button
-            type="button"
-            variant="outline"
-            size="lg"
-            className="flex-1"
-            onClick={() => router.back()}
-          >
-            {t('cancelBtn')}
-          </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            disabled={isSubmitting}
-            className="flex-1"
-          >
-            {isSubmitting ? t('savingText') : isEditMode ? t('updateBtn') : t('saveBtn')}
-          </Button>
-        </div>
       </form>
     </div>
   );

@@ -1400,7 +1400,7 @@
       "uploadingText": "업로드 중...",
       "uploadText": "이미지 업로드",
       "imageHint": "JPG, PNG, GIF 파일 (최대 5MB)",
-      "introFieldTitle": "제목",
+      "introFieldTitle": "자기소개 제목",
       "introFieldContent": "내용",
       "companyNameLabel": "회사명",
       "companyNameRequired": "회사명을 입력해주세요",

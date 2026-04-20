@@ -1400,7 +1400,7 @@
       "uploadingText": "Uploading...",
       "uploadText": "Upload Image",
       "imageHint": "JPG, PNG, GIF files (max 5MB)",
-      "introFieldTitle": "Title",
+      "introFieldTitle": "Introduction Title",
       "introFieldContent": "Content",
       "companyNameLabel": "Company Name",
       "companyNameRequired": "Please enter company name",
