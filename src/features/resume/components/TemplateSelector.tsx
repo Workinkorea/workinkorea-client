@@ -24,7 +24,7 @@ function TemplateSelector({
       name: t('modernName'),
       description: t('modernDesc'),
       preview: '📝',
-      color: 'bg-primary-50 border-primary-200 text-primary-700',
+      color: 'bg-blue-50 border-blue-200 text-blue-700',
       features: [t('modernF1'), t('modernF2'), t('modernF3')],
     },
     {
@@ -32,7 +32,7 @@ function TemplateSelector({
       name: t('classicName'),
       description: t('classicDesc'),
       preview: '📄',
-      color: 'bg-label-50 border-line-400 text-label-700',
+      color: 'bg-slate-50 border-slate-200 text-slate-700',
       features: [t('classicF1'), t('classicF2'), t('classicF3')],
     },
     {
@@ -65,10 +65,10 @@ function TemplateSelector({
     <div className="space-y-6">
       {/* 헤더 */}
       <div className="text-center">
-        <h2 className="text-title-2 font-bold text-label-900 mb-2">
+        <h2 className="text-title-2 font-bold text-slate-900 mb-2">
           {t('title')}
         </h2>
-        <p className="text-body-3 text-label-600">
+        <p className="text-body-3 text-slate-600">
           {t('subtitle')}
         </p>
       </div>
@@ -81,8 +81,8 @@ function TemplateSelector({
             onClick={() => onTemplateSelect(template.type)}
             className={`relative p-6 border-2 rounded-lg text-left transition-all hover:shadow-sm ${
               selectedTemplate === template.type
-                ? 'border-primary-500 bg-primary-50 shadow-sm'
-                : 'border-line-400 bg-white hover:border-primary-300'
+                ? 'border-blue-500 bg-blue-50 shadow-sm'
+                : 'border-slate-200 bg-white hover:border-blue-300'
             }`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -98,7 +98,7 @@ function TemplateSelector({
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <CheckCircle size={24} className="text-primary-600" />
+                <CheckCircle size={24} className="text-blue-600" />
               </motion.div>
             )}
 
@@ -108,10 +108,10 @@ function TemplateSelector({
                 {template.preview}
               </div>
               <div className="flex-1">
-                <h3 className="text-body-2 font-semibold text-label-900 mb-1">
+                <h3 className="text-body-2 font-semibold text-slate-900 mb-1">
                   {template.name}
                 </h3>
-                <p className="text-caption-2 text-label-600 line-clamp-2">
+                <p className="text-caption-2 text-slate-600 line-clamp-2">
                   {template.description}
                 </p>
               </div>
@@ -119,11 +119,11 @@ function TemplateSelector({
 
             {/* 특징 */}
             <div className="space-y-2">
-              <h4 className="text-caption-2 font-semibold text-label-700">{t('featuresLabel')}</h4>
+              <h4 className="text-caption-2 font-semibold text-slate-700">{t('featuresLabel')}</h4>
               <ul className="space-y-1">
                 {template.features.map((feature, idx) => (
-                  <li key={idx} className="text-caption-3 text-label-600 flex items-center gap-2">
-                    <div className="w-1 h-1 bg-primary-500 rounded-full"></div>
+                  <li key={idx} className="text-caption-3 text-slate-600 flex items-center gap-2">
+                    <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
                     {feature}
                   </li>
                 ))}
@@ -134,8 +134,8 @@ function TemplateSelector({
             <motion.div
               className={`absolute inset-0 rounded-lg pointer-events-none ${
                 selectedTemplate === template.type
-                  ? 'bg-primary-500 opacity-5'
-                  : 'bg-primary-500 opacity-0 hover:opacity-3'
+                  ? 'bg-blue-500 opacity-5'
+                  : 'bg-blue-500 opacity-0 hover:opacity-3'
               }`}
               transition={{ duration: 0.2 }}
             />
@@ -150,8 +150,8 @@ function TemplateSelector({
           disabled={!selectedTemplate}
           className={`flex items-center gap-2 px-6 py-3 rounded-lg text-body-3 font-medium transition-all ${
             selectedTemplate
-              ? 'bg-primary-600 text-white hover:bg-primary-700 shadow-sm'
-              : 'bg-label-100 text-label-400 cursor-not-allowed'
+              ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
+              : 'bg-slate-100 text-slate-400 cursor-not-allowed'
           }`}
           whileHover={selectedTemplate ? { scale: 1.02 } : {}}
           whileTap={selectedTemplate ? { scale: 0.98 } : {}}
@@ -163,7 +163,7 @@ function TemplateSelector({
 
       {/* 안내 메시지 */}
       <div className="text-center">
-        <p className="text-caption-3 text-label-500">
+        <p className="text-caption-3 text-slate-500">
           {t('changeHint')}
         </p>
       </div>

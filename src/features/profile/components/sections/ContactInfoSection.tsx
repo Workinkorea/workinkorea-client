@@ -36,11 +36,11 @@ export interface ContactInfoSectionProps {
 const FieldRow = ({ label, required, optional, children }: {
   label: string; required?: boolean; optional?: boolean; children: React.ReactNode;
 }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-line-200 last:border-0 items-start">
-    <span className="text-caption-1 font-semibold text-label-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
+  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0 items-start">
+    <span className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
       {label}
-      {required && <span className="text-status-error">*</span>}
-      {optional && <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-label-100 text-label-500 rounded">선택</span>}
+      {required && <span className="text-red-500">*</span>}
+      {optional && <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">선택</span>}
     </span>
     <div>{children}</div>
   </div>
@@ -53,14 +53,14 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
   } = form;
 
   return (
-    <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
-      <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-line-200">
-        <span className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
-          <Phone size={16} className="text-primary-600" />
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
+        <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+          <Phone size={16} className="text-blue-600" />
         </span>
         <div>
-          <h2 className="text-body-2 font-bold text-label-900">연락처 정보</h2>
-          <p className="text-caption-3 text-label-400 mt-0.5">채용 담당자가 연락할 수 있는 정보를 입력하세요</p>
+          <h2 className="text-body-2 font-bold text-slate-900">연락처 정보</h2>
+          <p className="text-caption-3 text-slate-400 mt-0.5">채용 담당자가 연락할 수 있는 정보를 입력하세요</p>
         </div>
       </div>
 
@@ -71,7 +71,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
           control={control}
           render={({ field }) => (
             <div className="relative">
-              <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-label-400 pointer-events-none z-10" />
+              <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
               <Input
                 {...field}
                 type="tel"
@@ -82,7 +82,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
             </div>
           )}
         />
-        {errors.phone_number && <p className="text-caption-2 text-status-error mt-1">{errors.phone_number.message}</p>}
+        {errors.phone_number && <p className="text-caption-2 text-red-500 mt-1">{errors.phone_number.message}</p>}
       </FieldRow>
 
       {/* GitHub URL */}
@@ -92,7 +92,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
           control={control}
           render={({ field }) => (
             <div className="relative">
-              <Github size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-label-400 pointer-events-none z-10" />
+              <Github size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
               <Input
                 {...field}
                 placeholder="https://github.com/username"
@@ -102,7 +102,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
             </div>
           )}
         />
-        {errors.github_url && <p className="text-caption-2 text-status-error mt-1">{errors.github_url.message}</p>}
+        {errors.github_url && <p className="text-caption-2 text-red-500 mt-1">{errors.github_url.message}</p>}
       </FieldRow>
 
       {/* LinkedIn URL */}
@@ -112,7 +112,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
           control={control}
           render={({ field }) => (
             <div className="relative">
-              <Linkedin size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-label-400 pointer-events-none z-10" />
+              <Linkedin size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
               <Input
                 {...field}
                 placeholder="https://linkedin.com/in/username"
@@ -122,7 +122,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
             </div>
           )}
         />
-        {errors.linkedin_url && <p className="text-caption-2 text-status-error mt-1">{errors.linkedin_url.message}</p>}
+        {errors.linkedin_url && <p className="text-caption-2 text-red-500 mt-1">{errors.linkedin_url.message}</p>}
       </FieldRow>
 
       {/* Website URL */}
@@ -132,7 +132,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
           control={control}
           render={({ field }) => (
             <div className="relative">
-              <Globe size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-label-400 pointer-events-none z-10" />
+              <Globe size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
               <Input
                 {...field}
                 placeholder="https://yourportfolio.com"
@@ -142,7 +142,7 @@ function ContactInfoSection({ form }: ContactInfoSectionProps) {
             </div>
           )}
         />
-        {errors.website_url && <p className="text-caption-2 text-status-error mt-1">{errors.website_url.message}</p>}
+        {errors.website_url && <p className="text-caption-2 text-red-500 mt-1">{errors.website_url.message}</p>}
       </FieldRow>
     </div>
   );

@@ -20,7 +20,7 @@ export function BackToTop() {
       {visible && (
         <motion.button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-50 w-10 h-10 flex items-center justify-center bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 focus:outline-none cursor-pointer"
+          className="fixed bottom-6 right-6 z-50 w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none cursor-pointer"
           aria-label="맨 위로 이동"
           initial={{ opacity: 0, y: 16, scale: 0.85 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}

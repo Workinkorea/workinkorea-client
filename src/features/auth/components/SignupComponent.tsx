@@ -217,19 +217,19 @@ export default function SignupComponent({
   return (
     <div className="min-h-screen bg-white flex flex-col lg:flex-row">
       {/* 약관 동의 섹션 - 모바일: 전체 너비, 데스크탑: 좌측 */}
-      <div className="w-full lg:w-1/2 lg:border-r lg:border-line-400 px-4 sm:px-6 py-8 sm:py-12 lg:p-12">
+      <div className="w-full lg:w-1/2 lg:border-r lg:border-slate-200 px-4 sm:px-6 py-8 sm:py-12 lg:p-12">
         <div className="max-w-xl mx-auto space-y-6">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-body-2 font-bold text-label-900 mb-4">{t('termsTitle')}</h2>
+            <h2 className="text-body-2 font-bold text-slate-900 mb-4">{t('termsTitle')}</h2>
           </motion.div>
 
           {/* 모두 동의 */}
           <motion.div
-            className="bg-white border-2 border-primary-600 rounded-xl p-5 sm:p-6 shadow-sm"
+            className="bg-white border-2 border-blue-600 rounded-xl p-5 sm:p-6 shadow-sm"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -252,7 +252,7 @@ export default function SignupComponent({
             {TERM_KEYS.map((key, index) => (
               <motion.div
                 key={key}
-                className="bg-white border border-line-400 rounded-xl p-5 sm:p-6 shadow-sm hover:border-primary-200 transition-colors"
+                className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-sm hover:border-blue-200 transition-colors"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.05 * index }}
@@ -266,8 +266,8 @@ export default function SignupComponent({
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                      <span className="text-body-3 text-label-900">
-                        <span className="text-primary-600 font-semibold">{t('required')}</span>{' '}
+                      <span className="text-body-3 text-slate-900">
+                        <span className="text-blue-600 font-semibold">{t('required')}</span>{' '}
                         {t(`termLabels.${key}`)}
                       </span>
                       <Button
@@ -278,7 +278,7 @@ export default function SignupComponent({
                           e.preventDefault();
                           openTermsModal(key);
                         }}
-                        className="text-caption-3 text-label-500 hover:text-primary-600 underline whitespace-nowrap shrink-0 !px-0 !py-0 h-auto"
+                        className="text-caption-3 text-slate-500 hover:text-blue-600 underline whitespace-nowrap shrink-0 !px-0 !py-0 h-auto"
                       >
                         {t('viewButton')}
                       </Button>
@@ -307,8 +307,8 @@ export default function SignupComponent({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-title-3 sm:text-title-2 font-bold text-label-900 mb-2">{t('personalTitle')}</h1>
-            <p className="text-caption-1 text-label-500">{t('formSubtitle')}</p>
+            <h1 className="text-title-3 sm:text-title-2 font-bold text-slate-900 mb-2">{t('personalTitle')}</h1>
+            <p className="text-caption-1 text-slate-500">{t('formSubtitle')}</p>
           </motion.div>
 
           {/* Google OAuth 신규 사용자 안내 배너 */}
@@ -317,7 +317,7 @@ export default function SignupComponent({
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="flex items-start gap-2.5 px-4 py-3 rounded-lg bg-primary-50 border border-primary-200 text-caption-1 font-medium text-primary-700"
+              className="flex items-start gap-2.5 px-4 py-3 rounded-lg bg-blue-50 border border-blue-200 text-caption-1 font-medium text-blue-700"
               role="status"
             >
               <AlertCircle size={15} className="mt-0.5 shrink-0" />
@@ -333,9 +333,9 @@ export default function SignupComponent({
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             {/* 폼 카드 래퍼 */}
-            <div className="bg-white border border-line-400 rounded-xl p-5 sm:p-7 shadow-sm space-y-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm space-y-4">
               <div className="mb-2">
-                <h3 className="text-body-2 font-bold text-label-900 mb-4">{t('basicInfo')}</h3>
+                <h3 className="text-body-2 font-bold text-slate-900 mb-4">{t('basicInfo')}</h3>
               </div>
 
               {/* ISSUE-17: Google OAuth 정책 배너 */}
@@ -372,7 +372,7 @@ export default function SignupComponent({
                           setFormState(prev => ({ ...prev, isEmailSent: false, isEmailVerified: false }));
                           clearErrors('email');
                         }}
-                        className={cn('flex-1', isEmailFromParam && 'bg-label-50')}
+                        className={cn('flex-1', isEmailFromParam && 'bg-slate-50')}
                       />
                       {!isEmailFromParam && (
                         <Button
@@ -396,7 +396,7 @@ export default function SignupComponent({
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center gap-2 text-status-correct text-caption-2 -mt-2"
+                  className="flex items-center gap-2 text-emerald-500 text-caption-2 -mt-2"
                 >
                   <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path
@@ -437,7 +437,7 @@ export default function SignupComponent({
                               setFormState(prev => ({ ...prev, verificationCode: value }));
                               clearErrors('verificationCode');
                             }}
-                            className={cn('flex-1', formState.isEmailVerified && 'bg-label-50')}
+                            className={cn('flex-1', formState.isEmailVerified && 'bg-slate-50')}
                           />
                           <Button
                             type="button"
@@ -455,7 +455,7 @@ export default function SignupComponent({
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="flex items-center gap-2 text-status-correct text-caption-2"
+                            className="flex items-center gap-2 text-emerald-500 text-caption-2"
                           >
                             <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                               <path
@@ -538,7 +538,7 @@ export default function SignupComponent({
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-caption-3 text-status-error text-center"
+                  className="text-caption-3 text-red-500 text-center"
                 >
                   {t('termsRequired')}
                 </motion.p>

@@ -80,21 +80,21 @@ function DaumPostcodeSearch({
           onClick={handleSearchClick}
           className={cn(
             'flex-1 min-w-0 px-3 py-2 border rounded-lg text-body-3 bg-white',
-            'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100 cursor-pointer',
-            error ? 'border-status-error' : 'border-line-400',
+            'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 cursor-pointer',
+            error ? 'border-red-500' : 'border-slate-200',
           )}
         />
         <button
           type="button"
           onClick={handleSearchClick}
-          className="shrink-0 px-3 py-1.5 bg-primary-600 text-white rounded hover:bg-primary-700 flex items-center gap-1.5 cursor-pointer"
+          className="shrink-0 px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-1.5 cursor-pointer"
         >
           <Search size={14} />
           <span className="text-caption-2 font-medium">주소검색</span>
         </button>
       </div>
       {error && (
-        <p className="mt-1 text-caption-3 text-status-error">{error}</p>
+        <p className="mt-1 text-caption-3 text-red-500">{error}</p>
       )}
     </div>
   );

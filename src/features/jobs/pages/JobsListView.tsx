@@ -158,15 +158,15 @@ export default function JobsListView({
     <Layout>
       <div className="min-h-screen bg-white">
         {/* Page Header with Search */}
-        <div className="bg-white border-b border-line-200">
+        <div className="bg-white border-b border-slate-100">
           <div className="page-container py-6 sm:py-8">
             {/* Title Section */}
             <div className="flex items-end justify-between gap-4 mb-6">
               <div className="min-w-0 flex-1">
-                <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-label-900 mb-2">
+                <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-slate-900 mb-2">
                   {t('title')}
                 </h1>
-                <p className="text-caption-1 sm:text-body-3 text-label-600">
+                <p className="text-caption-1 sm:text-body-3 text-slate-600">
                   {t('subtitle')}
                 </p>
               </div>
@@ -176,8 +176,8 @@ export default function JobsListView({
                 onClick={handleBookmarkToggle}
                 className={`hidden sm:flex items-center gap-1.5 px-4 py-2.5 rounded-lg border text-body-3 font-semibold transition-all cursor-pointer shrink-0 ${
                   showBookmarksOnly
-                    ? 'bg-primary-600 text-white border-primary-600 shadow-[0_4px_14px_rgba(66,90,213,0.25)]'
-                    : 'bg-white text-label-600 border-line-400 hover:border-primary-300 hover:text-primary-600'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-[0_4px_14px_rgba(66,90,213,0.25)]'
+                    : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600'
                 }`}
               >
                 <Bookmark size={16} className={showBookmarksOnly ? 'fill-white' : ''} />
@@ -189,8 +189,8 @@ export default function JobsListView({
                 onClick={handleBookmarkToggle}
                 className={`sm:hidden p-2.5 rounded-lg border transition-colors cursor-pointer ${
                   showBookmarksOnly
-                    ? 'bg-primary-600 text-white border-primary-600'
-                    : 'bg-white text-label-400 border-line-400'
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'bg-white text-slate-400 border-slate-200'
                 }`}
                 aria-label={t('savedOnly')}
               >
@@ -199,14 +199,14 @@ export default function JobsListView({
             </div>
 
             {/* Search Bar */}
-            <div className="flex items-center gap-2 border border-line-400 rounded-lg px-3.5 py-2.5 focus-within:border-primary-500 focus-within:ring-[3px] focus-within:ring-primary-100 transition-all bg-white">
-              <Search size={18} className="text-label-400 shrink-0" />
+            <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3.5 py-2.5 focus-within:border-blue-500 focus-within:ring-[3px] focus-within:ring-blue-100 transition-all bg-white">
+              <Search size={18} className="text-slate-400 shrink-0" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => handleSearch(e.target.value)}
                 placeholder={t('searchPlaceholder')}
-                className="flex-1 min-w-0 text-body-3 text-label-800 placeholder:text-label-400 outline-none bg-transparent"
+                className="flex-1 min-w-0 text-body-3 text-slate-800 placeholder:text-slate-400 outline-none bg-transparent"
               />
             </div>
           </div>
@@ -224,10 +224,10 @@ export default function JobsListView({
                   <button
                     key={value}
                     onClick={() => handleType(value)}
-                    className={`px-3 py-1.5 rounded-full text-caption-2 font-semibold border whitespace-nowrap transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
+                    className={`px-3 py-1.5 rounded-full text-caption-2 font-semibold border whitespace-nowrap transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                       selectedType === value
-                        ? 'bg-primary-600 text-white border-primary-600'
-                        : 'bg-white text-label-600 border-line-400 hover:border-primary-300'
+                        ? 'bg-blue-600 text-white border-blue-600'
+                        : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'
                     }`}
                   >
                     {label}
@@ -242,10 +242,10 @@ export default function JobsListView({
                 <button
                   key={opt.value}
                   onClick={() => handleSort(opt.value)}
-                  className={`px-3.5 py-2 text-caption-2 font-semibold rounded-lg border whitespace-nowrap transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
+                  className={`px-3.5 py-2 text-caption-2 font-semibold rounded-lg border whitespace-nowrap transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                     sortBy === opt.value
-                      ? 'bg-primary-600 text-white border-primary-600'
-                      : 'bg-white text-label-600 border-line-400'
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white text-slate-600 border-slate-200'
                   }`}
                 >
                   {opt.label}
@@ -257,7 +257,7 @@ export default function JobsListView({
             {isFiltered && (
               <button
                 onClick={handleReset}
-                className="w-full py-2 text-body-3 font-medium text-primary-600 hover:bg-primary-50 border border-primary-200 rounded-lg transition-colors cursor-pointer"
+                className="w-full py-2 text-body-3 font-medium text-blue-600 hover:bg-blue-50 border border-blue-200 rounded-lg transition-colors cursor-pointer"
               >
                 {t('resetFilter')}
               </button>
@@ -268,19 +268,19 @@ export default function JobsListView({
           <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
             {/* Desktop Sidebar - Hidden on mobile/tablet */}
             <div className="hidden lg:block">
-              <div className="bg-white rounded-xl border border-line-400 p-5 sticky top-[calc(65px+73px+20px)] h-fit space-y-5">
+              <div className="bg-white rounded-xl border border-slate-200 p-5 sticky top-[calc(65px+73px+20px)] h-fit space-y-5">
                 {/* Employment Type Filter */}
                 <div>
-                  <h3 className="text-caption-1 font-bold text-label-900 mb-3">{t('employmentType')}</h3>
+                  <h3 className="text-caption-1 font-bold text-slate-900 mb-3">{t('employmentType')}</h3>
                   <div className="space-y-1.5">
                     {EMPLOYMENT_TYPES.map(({ value, label }) => (
                       <button
                         key={value}
                         onClick={() => handleType(value)}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-caption-1 font-medium transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
+                        className={`w-full text-left px-3 py-2 rounded-lg text-caption-1 font-medium transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                           selectedType === value
-                            ? 'bg-primary-50 text-primary-700 font-semibold'
-                            : 'text-label-600 hover:bg-label-50'
+                            ? 'bg-blue-50 text-blue-700 font-semibold'
+                            : 'text-slate-600 hover:bg-slate-50'
                         }`}
                       >
                         {label}
@@ -290,12 +290,12 @@ export default function JobsListView({
                 </div>
 
                 {/* Sort Filter */}
-                <div className="pt-4 border-t border-line-200">
-                  <h3 className="text-caption-1 font-bold text-label-900 mb-3">{t('sort')}</h3>
+                <div className="pt-4 border-t border-slate-100">
+                  <h3 className="text-caption-1 font-bold text-slate-900 mb-3">{t('sort')}</h3>
                   <select
                     value={sortBy}
                     onChange={e => handleSort(e.target.value)}
-                    className="w-full text-caption-1 font-medium text-label-600 border border-line-400 rounded-lg px-3 py-2 bg-white appearance-none focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100 cursor-pointer"
+                    className="w-full text-caption-1 font-medium text-slate-600 border border-slate-200 rounded-lg px-3 py-2 bg-white appearance-none focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 cursor-pointer"
                   >
                     {SORT_OPTIONS.map(opt => (
                       <option key={opt.value} value={opt.value}>
@@ -306,26 +306,26 @@ export default function JobsListView({
                 </div>
 
                 {/* Bookmark Filter */}
-                <div className="pt-4 border-t border-line-200">
+                <div className="pt-4 border-t border-slate-100">
                   <button
                     onClick={handleBookmarkToggle}
                     className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-lg border transition-all cursor-pointer text-body-3 font-semibold ${
                       showBookmarksOnly
-                        ? 'bg-primary-50 text-primary-700 border-primary-200'
-                        : 'bg-white text-label-600 border-line-400 hover:border-primary-200'
+                        ? 'bg-blue-50 text-blue-700 border-blue-200'
+                        : 'bg-white text-slate-600 border-slate-200 hover:border-blue-200'
                     }`}
                   >
-                    <Bookmark size={16} className={showBookmarksOnly ? 'fill-primary-700' : ''} />
+                    <Bookmark size={16} className={showBookmarksOnly ? 'fill-blue-700' : ''} />
                     {t('savedOnly')}
                   </button>
                 </div>
 
                 {/* Reset Button */}
                 {isFiltered && (
-                  <div className="pt-4 border-t border-line-200">
+                  <div className="pt-4 border-t border-slate-100">
                     <button
                       onClick={handleReset}
-                      className="w-full py-2 text-caption-1 font-medium text-primary-600 hover:bg-primary-50 rounded-lg transition-colors cursor-pointer"
+                      className="w-full py-2 text-caption-1 font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                     >
                       {t('resetFilter')}
                     </button>
@@ -338,8 +338,8 @@ export default function JobsListView({
             <div>
               {/* Results Header: Count + Sort Tabs */}
               {!showLoading && !error && (
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 pb-4 border-b border-line-400">
-                  <p className="text-body-2 font-semibold text-label-900">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+                  <p className="text-body-2 font-semibold text-slate-900">
                     {isFiltered
                       ? t('filteredCount', { count: filteredPosts.length })
                       : t('totalCount', { count: total })}
@@ -351,10 +351,10 @@ export default function JobsListView({
                       <button
                         key={opt.value}
                         onClick={() => handleSort(opt.value)}
-                        className={`px-3.5 py-2 text-caption-1 font-semibold rounded-lg border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
+                        className={`px-3.5 py-2 text-caption-1 font-semibold rounded-lg border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                           sortBy === opt.value
-                            ? 'bg-primary-600 text-white border-primary-600 shadow-sm'
-                            : 'bg-white text-label-600 border-line-400 hover:border-primary-300 hover:text-primary-600'
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600'
                         }`}
                       >
                         {opt.label}
@@ -368,7 +368,7 @@ export default function JobsListView({
               {showLoading && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="bg-white rounded-xl p-5 sm:p-6 border border-line-400 overflow-hidden">
+                    <div key={i} className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200 overflow-hidden">
                       <div className="flex items-start gap-3 mb-4">
                         <div className="w-12 h-12 skeleton-shimmer rounded-lg shrink-0" />
                         <div className="flex-1 space-y-2">
@@ -380,7 +380,7 @@ export default function JobsListView({
                         <div className="h-3 skeleton-shimmer rounded w-full" />
                         <div className="h-3 skeleton-shimmer rounded w-5/6" />
                       </div>
-                      <div className="flex gap-2 pt-3 border-t border-line-200">
+                      <div className="flex gap-2 pt-3 border-t border-slate-100">
                         <div className="h-5 skeleton-shimmer rounded-full w-16 shrink-0" />
                         <div className="h-5 skeleton-shimmer rounded-full w-20 shrink-0" />
                       </div>
@@ -392,11 +392,11 @@ export default function JobsListView({
               {/* Error State */}
               {error && (
                 <div className="text-center py-16 sm:py-20">
-                  <p className="text-label-900 text-body-1 font-semibold mb-2">{t('loadError')}</p>
-                  <p className="text-label-600 text-body-3 mb-6">{t('loadErrorSub')}</p>
+                  <p className="text-slate-900 text-body-1 font-semibold mb-2">{t('loadError')}</p>
+                  <p className="text-slate-600 text-body-3 mb-6">{t('loadErrorSub')}</p>
                   <button
                     onClick={() => window.location.reload()}
-                    className="px-4 py-2.5 bg-primary-600 text-white rounded-lg font-semibold text-body-3 hover:bg-primary-700 transition-colors cursor-pointer"
+                    className="px-4 py-2.5 bg-blue-600 text-white rounded-lg font-semibold text-body-3 hover:bg-blue-700 transition-colors cursor-pointer"
                   >
                     {tCommon('refresh')}
                   </button>
@@ -424,14 +424,14 @@ export default function JobsListView({
                   {showBookmarksOnly && bookmarks.length === 0 ? (
                     <>
                       <div className="mb-4 flex justify-center">
-                        <Bookmark size={56} className="text-label-300" />
+                        <Bookmark size={56} className="text-slate-300" />
                       </div>
-                      <h3 className="text-label-900 text-body-1 font-bold mb-2">{t('noSaved')}</h3>
-                      <p className="text-label-600 text-body-3 mb-6">{t('noSavedDesc')}</p>
+                      <h3 className="text-slate-900 text-body-1 font-bold mb-2">{t('noSaved')}</h3>
+                      <p className="text-slate-600 text-body-3 mb-6">{t('noSavedDesc')}</p>
                       <Link
                         href="/jobs"
                         onClick={() => setShowBookmarksOnly(false)}
-                        className="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white text-body-3 font-semibold rounded-lg hover:bg-primary-700 transition-colors cursor-pointer"
+                        className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-body-3 font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
                       >
                         {t('browseJobs')}
                       </Link>
@@ -439,13 +439,13 @@ export default function JobsListView({
                   ) : isFiltered ? (
                     <>
                       <div className="mb-4 flex justify-center">
-                        <Search size={56} className="text-label-300" />
+                        <Search size={56} className="text-slate-300" />
                       </div>
-                      <h3 className="text-label-900 text-body-1 font-bold mb-2">{t('noResults')}</h3>
-                      <p className="text-label-600 text-body-3 mb-6">{t('noResultsSub')}</p>
+                      <h3 className="text-slate-900 text-body-1 font-bold mb-2">{t('noResults')}</h3>
+                      <p className="text-slate-600 text-body-3 mb-6">{t('noResultsSub')}</p>
                       <button
                         onClick={handleReset}
-                        className="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white text-body-3 font-semibold rounded-lg hover:bg-primary-700 transition-colors cursor-pointer"
+                        className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white text-body-3 font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
                       >
                         {t('resetFilter')}
                       </button>
@@ -453,10 +453,10 @@ export default function JobsListView({
                   ) : (
                     <>
                       <div className="mb-4 flex justify-center">
-                        <Briefcase size={56} className="text-label-300" />
+                        <Briefcase size={56} className="text-slate-300" />
                       </div>
-                      <h3 className="text-label-900 text-body-1 font-bold mb-2">{t('comingSoon')}</h3>
-                      <p className="text-label-600 text-body-3">{t('comingSoonSub')}</p>
+                      <h3 className="text-slate-900 text-body-1 font-bold mb-2">{t('comingSoon')}</h3>
+                      <p className="text-slate-600 text-body-3">{t('comingSoonSub')}</p>
                     </>
                   )}
                 </div>

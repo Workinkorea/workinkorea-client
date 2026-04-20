@@ -11,10 +11,10 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const variantStyles: Record<NonNullable<CardProps['variant']>, string> = {
-  default:  'bg-white border border-line-400 shadow-sm',
-  elevated: 'bg-white shadow-md border border-line-400',
-  outlined: 'bg-white border-2 border-line-400',
-  ghost:    'bg-label-50',
+  default:  'bg-white border border-slate-200 shadow-sm',
+  elevated: 'bg-white shadow-md border border-slate-200',
+  outlined: 'bg-white border-2 border-slate-200',
+  ghost:    'bg-slate-50',
 };
 
 const paddingStyles: Record<NonNullable<CardProps['padding']>, string> = {
@@ -39,8 +39,8 @@ export function Card({
         'rounded-xl overflow-hidden',
         variantStyles[variant],
         paddingStyles[padding],
-        hoverable && 'hover:shadow-md hover:border-primary-200 transition-all duration-200',
-        clickable && 'cursor-pointer hover:shadow-md hover:border-primary-200 transition-all duration-200',
+        hoverable && 'hover:shadow-md hover:border-blue-200 transition-all duration-200',
+        clickable && 'cursor-pointer hover:shadow-md hover:border-blue-200 transition-all duration-200',
         className,
       )}
       {...rest}
@@ -60,7 +60,7 @@ export function CardHeader({
 }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn('flex flex-col gap-1.5 pb-4 border-b border-line-200', className)}
+      className={cn('flex flex-col gap-1.5 pb-4 border-b border-slate-100', className)}
       {...rest}
     >
       {children}
@@ -75,7 +75,7 @@ export function CardTitle({
 }: HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn('text-title-5 font-semibold text-label-900', className)}
+      className={cn('text-title-5 font-semibold text-slate-900', className)}
       {...rest}
     >
       {children}
@@ -90,7 +90,7 @@ export function CardDescription({
 }: HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn('text-caption-1 text-label-500', className)}
+      className={cn('text-caption-1 text-slate-500', className)}
       {...rest}
     >
       {children}
@@ -120,7 +120,7 @@ export function CardFooter({
 }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn('flex items-center pt-4 border-t border-line-200', className)}
+      className={cn('flex items-center pt-4 border-t border-slate-100', className)}
       {...rest}
     >
       {children}

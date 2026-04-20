@@ -7,9 +7,9 @@ import { getTranslations } from 'next-intl/server';
 // ── 타입 배지 ────────────────────────────────────────────────────────────────
 function EventTypeBadge({ type, labels }: { type: EventType; labels: Record<EventType, string> }) {
   const styles: Record<EventType, string> = {
-    notice: 'bg-primary-100 text-primary-700',
-    event: 'bg-status-caution-bg text-status-caution',
-    promotion: 'bg-status-correct-bg text-status-correct',
+    notice: 'bg-blue-100 text-blue-700',
+    event: 'bg-amber-500-bg text-amber-500',
+    promotion: 'bg-emerald-500-bg text-emerald-500',
   };
   return (
     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold ${styles[type]}`}>
@@ -21,7 +21,7 @@ function EventTypeBadge({ type, labels }: { type: EventType; labels: Record<Even
 // ── 이벤트 카드 ──────────────────────────────────────────────────────────────
 function EventCard({ event, labels }: { event: Event; labels: Record<EventType, string> }) {
   return (
-    <article className="group bg-white border border-line-400 rounded-xl overflow-hidden hover:shadow-lg hover:border-primary-200 transition-all duration-200 flex flex-col">
+    <article className="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-blue-200 transition-all duration-200 flex flex-col">
       {/* 배너 이미지 */}
       {event.banner_url ? (
         <div className="relative h-40 overflow-hidden">
@@ -47,11 +47,11 @@ function EventCard({ event, labels }: { event: Event; labels: Record<EventType, 
           <EventTypeBadge type={event.type} labels={labels} />
         </div>
 
-        <h3 className="text-body-2 font-bold text-label-900 leading-snug line-clamp-2 mb-auto">
+        <h3 className="text-body-2 font-bold text-slate-900 leading-snug line-clamp-2 mb-auto">
           {event.title}
         </h3>
 
-        <p className="text-caption-2 text-label-400 mt-3">
+        <p className="text-caption-2 text-slate-400 mt-3">
           {event.start_date} ~ {event.end_date}
         </p>
       </div>
@@ -86,13 +86,13 @@ export default async function EventBannerSection() {
         {/* 섹션 헤더 */}
         <div className="flex items-end justify-between mb-8">
           <div>
-            <p className="text-caption-2 font-bold text-primary-600 uppercase tracking-[1.5px] mb-2">
+            <p className="text-caption-2 font-bold text-blue-600 uppercase tracking-[1.5px] mb-2">
               {t('overline')}
             </p>
-            <h2 className="text-title-2 font-extrabold text-label-900">
+            <h2 className="text-title-2 font-extrabold text-slate-900">
               {t('title')}
             </h2>
-            <p className="text-body-3 text-label-500 mt-1.5">
+            <p className="text-body-3 text-slate-500 mt-1.5">
               {t('subtitle')}
             </p>
           </div>
@@ -100,7 +100,7 @@ export default async function EventBannerSection() {
           {events.length > 4 && (
             <Link
               href="/events"
-              className="text-caption-1 font-semibold text-primary-600 hover:text-primary-700 transition-colors flex items-center gap-1"
+              className="text-caption-1 font-semibold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1"
             >
               {t('viewAll')}
               <span aria-hidden="true">→</span>

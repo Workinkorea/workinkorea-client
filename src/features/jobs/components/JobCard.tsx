@@ -47,8 +47,8 @@ export default function JobCard({ post }: JobCardProps) {
   return (
     <motion.div
       className={cn(
-        'bg-white border border-line-400 rounded-xl overflow-hidden',
-        'hover:border-primary-300 hover:shadow-md transition-all duration-200 group',
+        'bg-white border border-slate-200 rounded-xl overflow-hidden',
+        'hover:border-blue-300 hover:shadow-md transition-all duration-200 group',
         isExpired && 'opacity-60'
       )}
       whileHover={{ y: -6 }}
@@ -65,16 +65,16 @@ export default function JobCard({ post }: JobCardProps) {
 
             {/* Type Label + Badges */}
             <div className="flex-1 min-w-0">
-              <p className="text-caption-2 font-semibold text-label-400 mb-1">{tCard('companyPost')}</p>
+              <p className="text-caption-2 font-semibold text-slate-400 mb-1">{tCard('companyPost')}</p>
               <div className="flex items-center gap-1.5 flex-wrap">
                 {isRecent && !isExpired && (
-                  <span className="inline-flex items-center px-2 py-0.5 bg-primary-600 text-white text-caption-3 font-bold rounded-md tracking-wide">
+                  <span className="inline-flex items-center px-2 py-0.5 bg-blue-600 text-white text-caption-3 font-bold rounded-md tracking-wide">
                     NEW
                   </span>
                 )}
                 {isUrgent && (
                   <motion.span
-                    className="inline-flex items-center px-2 py-0.5 bg-status-error-bg0 text-white text-caption-3 font-bold rounded-md"
+                    className="inline-flex items-center px-2 py-0.5 bg-red-500-bg0 text-white text-caption-3 font-bold rounded-md"
                     animate={{ opacity: [1, 0.6, 1] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                   >
@@ -82,7 +82,7 @@ export default function JobCard({ post }: JobCardProps) {
                   </motion.span>
                 )}
                 {isExpired && (
-                  <span className="inline-flex items-center px-2 py-0.5 bg-label-100 text-label-500 text-caption-3 font-bold rounded-md">
+                  <span className="inline-flex items-center px-2 py-0.5 bg-slate-100 text-slate-500 text-caption-3 font-bold rounded-md">
                     {tCommon('status.expired')}
                   </span>
                 )}
@@ -92,7 +92,7 @@ export default function JobCard({ post }: JobCardProps) {
             {/* Bookmark Button */}
             <motion.button
               onClick={handleBookmark}
-              className="shrink-0 p-1.5 rounded-lg cursor-pointer focus:outline-none hover:bg-primary-50 transition-colors"
+              className="shrink-0 p-1.5 rounded-lg cursor-pointer focus:outline-none hover:bg-blue-50 transition-colors"
               whileTap={{ scale: 0.85 }}
               transition={{ type: 'spring', stiffness: 400, damping: 20 }}
               aria-label={bookmarked ? tCard('bookmarkRemove') : tCard('bookmarkAdd')}
@@ -102,7 +102,7 @@ export default function JobCard({ post }: JobCardProps) {
                   size={18}
                   className={cn(
                     'transition-colors duration-200',
-                    bookmarked ? 'fill-primary-600 text-primary-600' : 'text-label-300 group-hover:text-label-400'
+                    bookmarked ? 'fill-blue-600 text-blue-600' : 'text-slate-300 group-hover:text-slate-400'
                   )}
                 />
               </motion.div>
@@ -110,30 +110,30 @@ export default function JobCard({ post }: JobCardProps) {
           </div>
 
           {/* Job Title */}
-          <h3 className="text-body-1 sm:text-title-5 font-bold text-label-900 line-clamp-2 group-hover:text-primary-700 transition-colors mb-3 leading-snug">
+          <h3 className="text-body-1 sm:text-title-5 font-bold text-slate-900 line-clamp-2 group-hover:text-blue-700 transition-colors mb-3 leading-snug">
             {post.title}
           </h3>
 
           {/* Location & Employment Type */}
-          <div className="flex items-center gap-1.5 text-caption-2 sm:text-caption-1 text-label-500 mb-2">
-            <MapPin className="w-3.5 h-3.5 shrink-0 text-label-400" />
+          <div className="flex items-center gap-1.5 text-caption-2 sm:text-caption-1 text-slate-500 mb-2">
+            <MapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />
             <span className="truncate">{post.work_location || tCommon('label.location')}</span>
             {post.employment_type && (
               <>
-                <span className="text-label-300">•</span>
-                <Briefcase className="w-3.5 h-3.5 shrink-0 text-label-400" />
+                <span className="text-slate-300">•</span>
+                <Briefcase className="w-3.5 h-3.5 shrink-0 text-slate-400" />
                 <span className="truncate">{post.employment_type}</span>
               </>
             )}
           </div>
 
           {/* Salary */}
-          <p className="text-body-2 sm:text-body-1 font-extrabold text-primary-600 mb-4">
+          <p className="text-body-2 sm:text-body-1 font-extrabold text-blue-600 mb-4">
             {formatSalary(post.salary)}
           </p>
 
           {/* Bottom: Language Tags + Expired Badge */}
-          <div className="border-t border-line-200 pt-4 mt-auto">
+          <div className="border-t border-slate-100 pt-4 mt-auto">
             <div className="flex items-center justify-between gap-2">
               <div className="flex-1 min-w-0">
                 {language.length > 0 ? (
@@ -141,19 +141,19 @@ export default function JobCard({ post }: JobCardProps) {
                     {language.slice(0, 3).map((lang, index) => (
                       <span
                         key={index}
-                        className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-label-100 text-label-600 border border-line-400 group-hover:bg-primary-50 group-hover:text-primary-700 group-hover:border-primary-200 transition-colors"
+                        className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200 transition-colors"
                       >
                         {lang}
                       </span>
                     ))}
                     {language.length > 3 && (
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold text-label-400">
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold text-slate-400">
                         +{language.length - 3}
                       </span>
                     )}
                   </div>
                 ) : (
-                  <p className="text-caption-2 text-label-400">{tCommon('label.noData')}</p>
+                  <p className="text-caption-2 text-slate-400">{tCommon('label.noData')}</p>
                 )}
               </div>
               {isExpired && (

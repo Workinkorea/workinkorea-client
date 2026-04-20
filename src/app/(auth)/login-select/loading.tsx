@@ -15,7 +15,7 @@ export default function LoginSelectLoading() {
           {Array.from({ length: 2 }).map((_, i) => (
             <div
               key={i}
-              className="border-2 border-line-200 rounded-2xl p-6 sm:p-8 space-y-5"
+              className="border-2 border-slate-100 rounded-2xl p-6 sm:p-8 space-y-5"
             >
               {/* 아이콘 */}
               <Skeleton className="w-14 h-14 rounded-2xl" />
@@ -33,7 +33,7 @@ export default function LoginSelectLoading() {
         </div>
 
         {/* 구분선 + 회원가입 링크 */}
-        <div className="pt-6 sm:pt-8 border-t border-line-200 flex justify-center">
+        <div className="pt-6 sm:pt-8 border-t border-slate-100 flex justify-center">
           <Skeleton variant="text" className="h-4 w-52" />
         </div>
       </div>

@@ -57,17 +57,17 @@ export default function SignupSelectContent({ callbackUrl }: SignupSelectContent
         >
           {/* Top Badge */}
           <motion.div className="text-center mb-8" variants={itemVariants}>
-            <div className="inline-flex items-center justify-center px-3 py-1.5 bg-primary-50 rounded-full mb-6">
-              <span className="text-caption-2 font-bold text-primary-600 uppercase tracking-wide">{t('badgeText')}</span>
+            <div className="inline-flex items-center justify-center px-3 py-1.5 bg-blue-50 rounded-full mb-6">
+              <span className="text-caption-2 font-bold text-blue-600 uppercase tracking-wide">{t('badgeText')}</span>
             </div>
           </motion.div>
 
           {/* Title */}
           <motion.div className="text-center mb-8 sm:mb-12" variants={itemVariants}>
-            <h1 className="text-title-2 sm:text-title-1 font-extrabold text-label-900 mb-2">
+            <h1 className="text-title-2 sm:text-title-1 font-extrabold text-slate-900 mb-2">
               {t('title')}
             </h1>
-            <p className="text-caption-1 sm:text-body-3 text-label-600 mt-3">
+            <p className="text-caption-1 sm:text-body-3 text-slate-600 mt-3">
               {t('description')}
             </p>
           </motion.div>
@@ -79,9 +79,9 @@ export default function SignupSelectContent({ callbackUrl }: SignupSelectContent
                 <Link href={href} className="block h-full">
                   <motion.div
                     className={cn(
-                      'bg-white rounded-2xl border-t-4 border-t-primary-600 border border-line-400',
+                      'bg-white rounded-2xl border-t-4 border-t-primary-600 border border-slate-200',
                       'p-6 lg:p-8 min-h-[340px] sm:min-h-[360px] flex flex-col cursor-pointer',
-                      'hover:border-primary-200 hover:shadow-lg transition-all duration-200'
+                      'hover:border-blue-200 hover:shadow-lg transition-all duration-200'
                     )}
                     style={{ transformStyle: 'preserve-3d', perspective: 1000 }}
                     whileHover={{
@@ -95,26 +95,26 @@ export default function SignupSelectContent({ callbackUrl }: SignupSelectContent
                     <div className="flex flex-col items-center text-center flex-1 space-y-4">
                       {/* Icon */}
                       <motion.div
-                        className="w-16 sm:w-18 h-16 sm:h-18 bg-primary-50 rounded-full flex items-center justify-center"
+                        className="w-16 sm:w-18 h-16 sm:h-18 bg-blue-50 rounded-full flex items-center justify-center"
                         whileHover={{ backgroundColor: '#CBD2FA', scale: 1.1 }}
                         transition={{ type: 'spring', stiffness: 300 }}
                       >
-                        <Icon className="w-8 sm:w-9 h-8 sm:h-9 text-primary-600" />
+                        <Icon className="w-8 sm:w-9 h-8 sm:h-9 text-blue-600" />
                       </motion.div>
 
                       {/* Title & Description */}
                       <div>
-                        <h2 className="text-title-4 sm:text-title-3 font-extrabold text-label-900 mb-1">
+                        <h2 className="text-title-4 sm:text-title-3 font-extrabold text-slate-900 mb-1">
                           {title}
                         </h2>
-                        <p className="text-caption-1 text-label-600">{description}</p>
+                        <p className="text-caption-1 text-slate-600">{description}</p>
                       </div>
 
                       {/* Features List */}
-                      <ul className="text-left text-caption-1 text-label-600 space-y-2.5 w-full">
+                      <ul className="text-left text-caption-1 text-slate-600 space-y-2.5 w-full">
                         {features.map((feature) => (
                           <li key={feature} className="flex items-start gap-2.5">
-                            <CheckCircle2 className="w-4.5 h-4.5 text-primary-600 mt-0.5 shrink-0" />
+                            <CheckCircle2 className="w-4.5 h-4.5 text-blue-600 mt-0.5 shrink-0" />
                             <span className="leading-relaxed">{feature}</span>
                           </li>
                         ))}
@@ -123,9 +123,9 @@ export default function SignupSelectContent({ callbackUrl }: SignupSelectContent
                       {/* CTA Button */}
                       <motion.button
                         className={cn(
-                          'w-full mt-auto pt-4 px-5 py-2.5 bg-primary-600 text-white rounded-lg',
-                          'text-body-3 font-semibold hover:bg-primary-700 transition-colors duration-150',
-                          'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 cursor-pointer'
+                          'w-full mt-auto pt-4 px-5 py-2.5 bg-blue-600 text-white rounded-lg',
+                          'text-body-3 font-semibold hover:bg-blue-700 transition-colors duration-150',
+                          'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer'
                         )}
                         whileHover={{ y: -2 }}
                         whileTap={{ scale: 0.98 }}
@@ -141,9 +141,9 @@ export default function SignupSelectContent({ callbackUrl }: SignupSelectContent
 
           {/* Login Link */}
           <motion.div className="text-center" variants={itemVariants}>
-            <p className="text-caption-1 sm:text-body-3 text-label-600">
+            <p className="text-caption-1 sm:text-body-3 text-slate-600">
               {t('alreadyMember')}{' '}
-              <Link href="/login-select" className="text-primary-600 hover:text-primary-700 font-semibold">
+              <Link href="/login-select" className="text-blue-600 hover:text-blue-700 font-semibold">
                 {t('loginButton')}
               </Link>
             </p>

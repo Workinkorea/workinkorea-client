@@ -37,7 +37,7 @@ export function SegmentedControl<T extends string = string>({
     <div
       role="tablist"
       className={cn(
-        'inline-flex items-center gap-0.5 p-1 bg-label-100 rounded-lg',
+        'inline-flex items-center gap-0.5 p-1 bg-slate-100 rounded-lg',
         fullWidth && 'w-full',
         className,
       )}
@@ -60,8 +60,8 @@ export function SegmentedControl<T extends string = string>({
               sizeStyles[size],
               fullWidth && 'flex-1',
               isActive
-                ? 'bg-white text-primary-700 shadow-sm font-semibold'
-                : 'text-label-500 hover:text-label-800 hover:bg-white/50',
+                ? 'bg-white text-blue-700 shadow-sm font-semibold'
+                : 'text-slate-500 hover:text-slate-800 hover:bg-white/50',
             )}
           >
             {opt.icon && <span className="shrink-0">{opt.icon}</span>}

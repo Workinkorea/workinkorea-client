@@ -10,7 +10,7 @@ const links = [
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-line-200 py-6">
+    <footer className="bg-white border-t border-slate-100 py-6">
       <div className="page-container flex flex-col items-center gap-3">
         {/* 링크 */}
         <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2">
@@ -18,7 +18,7 @@ export default function Footer() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-caption-1 text-label-400 hover:text-label-600 transition-colors"
+              className="text-caption-1 text-slate-400 hover:text-slate-600 transition-colors"
             >
               {link.name}
             </Link>
@@ -26,7 +26,7 @@ export default function Footer() {
         </nav>
 
         {/* 저작권 */}
-        <p className="text-caption-2 text-label-400">
+        <p className="text-caption-2 text-slate-400">
           © 2026 Work In Korea. All rights reserved.
         </p>
       </div>

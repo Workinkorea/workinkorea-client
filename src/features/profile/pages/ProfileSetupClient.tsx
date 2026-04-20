@@ -85,23 +85,23 @@ export function ProfileSetupClient() {
         >
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary-100 flex items-center justify-center">
-              <User className="w-8 h-8 text-primary-600" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
+              <User className="w-8 h-8 text-blue-600" />
             </div>
-            <h1 className="text-title-2 font-bold text-label-900 mb-2">
+            <h1 className="text-title-2 font-bold text-slate-900 mb-2">
               프로필 정보를 입력해주세요
             </h1>
-            <p className="text-body-3 text-label-500">
+            <p className="text-body-3 text-slate-500">
               서비스 이용을 위해 기본 정보가 필요합니다.
             </p>
           </div>
 
           {/* Form Card */}
-          <div className="bg-white rounded-2xl shadow-md border border-line-400 p-6 sm:p-8">
+          <div className="bg-white rounded-2xl shadow-md border border-slate-200 p-6 sm:p-8">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Name */}
               <div className="flex flex-col gap-2">
-                <label className="text-label-700 text-caption-1 font-semibold flex items-center gap-1.5">
+                <label className="text-slate-700 text-caption-1 font-semibold flex items-center gap-1.5">
                   <User className="w-3.5 h-3.5" />
                   이름
                   <span className="text-red-500">*</span>
@@ -118,7 +118,7 @@ export function ProfileSetupClient() {
 
               {/* Birth Date */}
               <div className="flex flex-col gap-2">
-                <label className="text-label-700 text-caption-1 font-semibold flex items-center gap-1.5">
+                <label className="text-slate-700 text-caption-1 font-semibold flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5" />
                   생년월일
                   <span className="text-red-500">*</span>
@@ -135,7 +135,7 @@ export function ProfileSetupClient() {
 
               {/* Country */}
               <div className="flex flex-col gap-2">
-                <label className="text-label-700 text-caption-1 font-semibold flex items-center gap-1.5">
+                <label className="text-slate-700 text-caption-1 font-semibold flex items-center gap-1.5">
                   <Globe className="w-3.5 h-3.5" />
                   국적
                   <span className="text-red-500">*</span>
@@ -164,15 +164,15 @@ export function ProfileSetupClient() {
                       setTimeout(() => setShowCountryDropdown(false), 200);
                     }}
                     placeholder="국가를 검색하세요..."
-                    className={`w-full border rounded-lg px-3.5 py-2.5 text-body-3 text-label-800 placeholder:text-label-400 bg-white transition-colors outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100 ${
-                      errors.country_id ? 'border-red-500' : 'border-line-400'
+                    className={`w-full border rounded-lg px-3.5 py-2.5 text-body-3 text-slate-800 placeholder:text-slate-400 bg-white transition-colors outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100 ${
+                      errors.country_id ? 'border-red-500' : 'border-slate-200'
                     }`}
                   />
 
                   {showCountryDropdown && countrySearch && (
-                    <div className="absolute z-20 mt-1 w-full max-h-48 overflow-y-auto bg-white border border-line-400 rounded-lg shadow-md">
+                    <div className="absolute z-20 mt-1 w-full max-h-48 overflow-y-auto bg-white border border-slate-200 rounded-lg shadow-md">
                       {filteredCountries.length === 0 ? (
-                        <div className="px-4 py-3 text-caption-1 text-label-500">
+                        <div className="px-4 py-3 text-caption-1 text-slate-500">
                           검색 결과가 없습니다.
                         </div>
                       ) : (
@@ -180,7 +180,7 @@ export function ProfileSetupClient() {
                           <button
                             key={country.id}
                             type="button"
-                            className="w-full text-left px-4 py-2.5 text-body-3 text-label-800 hover:bg-primary-50 transition-colors cursor-pointer"
+                            className="w-full text-left px-4 py-2.5 text-body-3 text-slate-800 hover:bg-blue-50 transition-colors cursor-pointer"
                             onMouseDown={(e) => e.preventDefault()}
                             onClick={() => {
                               setValue('country_id', country.id, { shouldValidate: true });
@@ -197,7 +197,7 @@ export function ProfileSetupClient() {
                 </div>
 
                 {selectedCountry && !showCountryDropdown && (
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary-50 text-primary-700 text-caption-1 rounded-full w-fit">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 text-caption-1 rounded-full w-fit">
                     <Globe className="w-3 h-3" />
                     {selectedCountry.name}
                   </div>
@@ -212,7 +212,7 @@ export function ProfileSetupClient() {
               <button
                 type="submit"
                 disabled={createProfileMutation.isPending}
-                className="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold text-body-2 rounded-xl transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-primary flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-body-2 rounded-xl transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-primary flex items-center justify-center gap-2"
               >
                 {createProfileMutation.isPending ? (
                   <>
@@ -226,7 +226,7 @@ export function ProfileSetupClient() {
             </form>
           </div>
 
-          <p className="text-center text-caption-1 text-label-400 mt-4">
+          <p className="text-center text-caption-1 text-slate-400 mt-4">
             나머지 정보는 프로필 수정에서 입력할 수 있습니다.
           </p>
         </motion.div>

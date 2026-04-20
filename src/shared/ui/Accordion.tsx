@@ -25,7 +25,7 @@ export function AccordionItem({
   return (
     <div
       className={cn(
-        'border border-line-400 rounded-lg overflow-hidden',
+        'border border-slate-200 rounded-lg overflow-hidden',
         disabled && 'opacity-40 pointer-events-none',
         className,
       )}
@@ -36,8 +36,8 @@ export function AccordionItem({
         aria-expanded={isOpen}
         className={cn(
           'w-full flex items-center justify-between px-5 py-4',
-          'text-left text-body-3 font-semibold text-label-800',
-          'bg-white hover:bg-label-50 transition-colors duration-150 cursor-pointer',
+          'text-left text-body-3 font-semibold text-slate-800',
+          'bg-white hover:bg-slate-50 transition-colors duration-150 cursor-pointer',
           'focus:outline-none',
         )}
       >
@@ -45,7 +45,7 @@ export function AccordionItem({
         <ChevronDown
           size={18}
           className={cn(
-            'shrink-0 text-label-400 transition-transform duration-200',
+            'shrink-0 text-slate-400 transition-transform duration-200',
             isOpen && 'rotate-180',
           )}
         />
@@ -57,7 +57,7 @@ export function AccordionItem({
           isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0',
         )}
       >
-        <div className="px-5 py-4 text-body-3 text-label-700 border-t border-line-200 bg-white">
+        <div className="px-5 py-4 text-body-3 text-slate-700 border-t border-slate-100 bg-white">
           {children}
         </div>
       </div>
@@ -113,7 +113,7 @@ export function AccordionGroup({
           <div
             key={item.id}
             className={cn(
-              'border border-line-400 rounded-lg overflow-hidden',
+              'border border-slate-200 rounded-lg overflow-hidden',
               item.disabled && 'opacity-40 pointer-events-none',
             )}
           >
@@ -123,8 +123,8 @@ export function AccordionGroup({
               aria-expanded={isOpen}
               className={cn(
                 'w-full flex items-center justify-between px-5 py-4',
-                'text-left text-body-3 font-semibold text-label-800',
-                'bg-white hover:bg-label-50 transition-colors duration-150 cursor-pointer',
+                'text-left text-body-3 font-semibold text-slate-800',
+                'bg-white hover:bg-slate-50 transition-colors duration-150 cursor-pointer',
                 'focus:outline-none',
               )}
             >
@@ -132,7 +132,7 @@ export function AccordionGroup({
               <ChevronDown
                 size={18}
                 className={cn(
-                  'shrink-0 text-label-400 transition-transform duration-200',
+                  'shrink-0 text-slate-400 transition-transform duration-200',
                   isOpen && 'rotate-180',
                 )}
               />
@@ -143,7 +143,7 @@ export function AccordionGroup({
                 isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0',
               )}
             >
-              <div className="px-5 py-4 text-body-3 text-label-700 border-t border-line-200 bg-white">
+              <div className="px-5 py-4 text-body-3 text-slate-700 border-t border-slate-100 bg-white">
                 {item.content}
               </div>
             </div>

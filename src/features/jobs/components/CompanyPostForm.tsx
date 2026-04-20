@@ -199,8 +199,8 @@ export function CompanyPostForm({
       disabled={isSubmitting}
       className={cn(
         'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-body-3',
-        'border border-red-300 text-status-error',
-        'hover:bg-status-error-bg hover:border-red-400 transition-colors',
+        'border border-red-300 text-red-500',
+        'hover:bg-red-600-bg hover:border-red-400 transition-colors',
         'disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer',
         'focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2',
       )}
@@ -218,10 +218,10 @@ export function CompanyPostForm({
       disabled={isSubmitting}
       className={cn(
         'inline-flex items-center justify-center gap-2 px-7 py-2.5 rounded-lg font-semibold text-body-3 text-white',
-        'bg-primary-600 hover:bg-primary-700 transition-colors',
+        'bg-blue-600 hover:bg-blue-700 transition-colors',
         'shadow-[0_4px_14px_rgba(66,90,213,0.25)]',   // --shadow-blue (indigo 기반)
         'disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer',
-        'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+        'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
         extraClassName,
       )}
       whileHover={!isSubmitting ? { scale: 1.01 } : {}}
@@ -250,9 +250,9 @@ export function CompanyPostForm({
           UX: 전체 폼 dim + 스피너 → 중복 제출 방지 + 진행 상태 명시 */}
       {isSubmitting && (
         <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 rounded-xl flex items-center justify-center pointer-events-none">
-          <div className="flex items-center gap-3 bg-white border border-line-400 rounded-xl px-5 py-3 shadow-lg">
-            <Loader2 size={18} className="text-primary-600 animate-spin" />
-            <span className="text-body-3 font-semibold text-label-700">
+          <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-5 py-3 shadow-lg">
+            <Loader2 size={18} className="text-blue-600 animate-spin" />
+            <span className="text-body-3 font-semibold text-slate-700">
               {mode === 'create' ? '공고를 등록하는 중...' : '공고를 수정하는 중...'}
             </span>
           </div>
@@ -320,7 +320,7 @@ export function CompanyPostForm({
         className={cn(
           'md:hidden fixed bottom-0 left-0 right-0 z-20',
           'flex items-center gap-3 px-4 py-3',
-          'bg-white border-t border-line-400',
+          'bg-white border-t border-slate-200',
           'shadow-[0_-4px_20px_rgba(0,0,0,0.08)]',
         )}
       >
@@ -333,8 +333,8 @@ export function CompanyPostForm({
             className={cn(
               'inline-flex items-center gap-1.5 shrink-0',
               'px-4 py-2.5 rounded-lg font-semibold text-body-3',
-              'border border-red-300 text-status-error',
-              'hover:bg-status-error-bg transition-colors',
+              'border border-red-300 text-red-500',
+              'hover:bg-red-600-bg transition-colors',
               'disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer',
               'focus:outline-none',
             )}
@@ -352,7 +352,7 @@ export function CompanyPostForm({
           className={cn(
             'flex-1 inline-flex items-center justify-center gap-2',
             'py-2.5 rounded-lg font-semibold text-body-3 text-white',
-            'bg-primary-600 hover:bg-primary-700 transition-colors',
+            'bg-blue-600 hover:bg-blue-700 transition-colors',
             'shadow-[0_4px_14px_rgba(66,90,213,0.25)]',
             'disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer',
             'focus:outline-none',

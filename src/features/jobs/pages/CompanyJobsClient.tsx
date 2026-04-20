@@ -51,7 +51,7 @@ function CompanyJobsClient() {
             </div>
             <div className="bg-white rounded-xl p-6 shadow-sm space-y-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="border border-line-200 rounded-lg p-4 space-y-3">
+                <div key={i} className="border border-slate-100 rounded-lg p-4 space-y-3">
                   <div className="skeleton-shimmer h-5 w-2/3 rounded" />
                   <div className="flex gap-3 flex-wrap">
                     <div className="skeleton-shimmer h-3 w-24 rounded" />
@@ -79,17 +79,17 @@ function CompanyJobsClient() {
             transition={{ duration: 0.5 }}
           >
             <div>
-              <h1 className="text-title-3 sm:text-title-2 font-extrabold text-label-900">{t('title')}</h1>
-              <p className="text-caption-1 sm:text-body-3 text-label-500 mt-1">
+              <h1 className="text-title-3 sm:text-title-2 font-extrabold text-slate-900">{t('title')}</h1>
+              <p className="text-caption-1 sm:text-body-3 text-slate-500 mt-1">
                 {t('subtitle')}
               </p>
             </div>
             <button
               onClick={() => router.push('/company/posts/create')}
               className={cn(
-                'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white rounded-lg text-body-3 font-semibold',
-                'hover:bg-primary-700 transition-colors duration-150 cursor-pointer',
-                'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+                'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-body-3 font-semibold',
+                'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
+                'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
                 'shadow-[0_4px_14px_rgba(66,90,213,0.25)] shrink-0'
               )}
             >
@@ -108,7 +108,7 @@ function CompanyJobsClient() {
             {postsLoading ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="bg-white border border-line-400 rounded-xl p-4 sm:p-6 shadow-sm">
+                  <div key={i} className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm">
                     <div className="space-y-3">
                       <div className="skeleton-shimmer h-5 w-2/3 rounded" />
                       <div className="flex gap-3 flex-wrap">
@@ -122,16 +122,16 @@ function CompanyJobsClient() {
               </div>
             ) : postsError ? (
               <div className="bg-white rounded-xl p-8 sm:p-12 shadow-sm text-center">
-                <p className="text-status-error font-medium mb-2">{t('loadError')}</p>
-                <p className="text-caption-1 text-label-500 mb-6">
+                <p className="text-red-500 font-medium mb-2">{t('loadError')}</p>
+                <p className="text-caption-1 text-slate-500 mb-6">
                   {postsError instanceof Error ? postsError.message : t('unknownError')}
                 </p>
                 <button
                   onClick={() => window.location.reload()}
                   className={cn(
-                    'inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white rounded-lg text-body-3 font-semibold',
-                    'hover:bg-primary-700 transition-colors duration-150 cursor-pointer',
-                    'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2'
+                    'inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-body-3 font-semibold',
+                    'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
+                    'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
                   )}
                 >
                   {tCommon('button.retry')}
@@ -140,7 +140,7 @@ function CompanyJobsClient() {
             ) : posts && posts.length > 0 ? (
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-title-5 font-semibold text-label-900">
+                  <h3 className="text-title-5 font-semibold text-slate-900">
                     {t('totalCount', { count: posts.length })}
                   </h3>
                 </div>
@@ -152,29 +152,29 @@ function CompanyJobsClient() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
                       className={cn(
-                        'bg-white border border-line-400 rounded-xl p-4 sm:p-6 shadow-sm',
-                        'hover:border-primary-200 hover:shadow-md transition-all duration-200 cursor-pointer'
+                        'bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm',
+                        'hover:border-blue-200 hover:shadow-md transition-all duration-200 cursor-pointer'
                       )}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
-                          <h4 className="text-body-1 sm:text-title-5 font-bold text-label-900 mb-3 line-clamp-2">
+                          <h4 className="text-body-1 sm:text-title-5 font-bold text-slate-900 mb-3 line-clamp-2">
                             {post.title}
                           </h4>
                           <div className="space-y-2 mb-3">
-                            <div className="flex flex-wrap gap-2 text-caption-2 text-label-600">
+                            <div className="flex flex-wrap gap-2 text-caption-2 text-slate-600">
                               <span className="flex items-center gap-1.5">
                                 <MapPin size={16} className="shrink-0" />
                                 {post.work_location}
                               </span>
-                              <span className="px-2 py-1 bg-label-100 rounded text-label-600 font-medium">
+                              <span className="px-2 py-1 bg-slate-100 rounded text-slate-600 font-medium">
                                 {post.employment_type}
                               </span>
                             </div>
-                            <p className="text-caption-2 text-label-500">
+                            <p className="text-caption-2 text-slate-500">
                               {formatSalary(post.salary, t('negotiable'))}
                             </p>
-                            <p className="text-caption-2 text-label-400">
+                            <p className="text-caption-2 text-slate-400">
                               {post.start_date} ~ {post.end_date}
                             </p>
                           </div>
@@ -182,14 +182,14 @@ function CompanyJobsClient() {
                             {new Date(post.end_date) > new Date() ? (
                               <span className={cn(
                                 'inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold',
-                                'bg-status-correct-bg text-status-correct border border-emerald-100'
+                                'bg-emerald-500-bg text-emerald-500 border border-emerald-100'
                               )}>
                                 {t('statusActive')}
                               </span>
                             ) : (
                               <span className={cn(
                                 'inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold',
-                                'bg-label-100 text-label-500 border border-line-400'
+                                'bg-slate-100 text-slate-500 border border-slate-200'
                               )}>
                                 {t('statusExpired')}
                               </span>
@@ -199,7 +199,7 @@ function CompanyJobsClient() {
                         <motion.button
                           onClick={() => router.push(`/company/posts/edit/${post.id}`)}
                           className={cn(
-                            'p-2 text-label-400 hover:text-primary-600 hover:bg-primary-50 transition-colors duration-150',
+                            'p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-150',
                             'rounded-lg shrink-0 focus:outline-none cursor-pointer'
                           )}
                           whileHover={{ scale: 1.1 }}
@@ -214,19 +214,19 @@ function CompanyJobsClient() {
               </div>
             ) : (
               <div className="bg-white rounded-xl p-8 sm:p-12 shadow-sm text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-primary-50 rounded-full mb-4">
-                  <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-primary-600" />
+                <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-blue-50 rounded-full mb-4">
+                  <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
                 </div>
-                <p className="text-label-600 font-medium mb-1">{t('noPostsTitle')}</p>
-                <p className="text-caption-1 text-label-500 mb-6">
+                <p className="text-slate-600 font-medium mb-1">{t('noPostsTitle')}</p>
+                <p className="text-caption-1 text-slate-500 mb-6">
                   {t('noPostsSubtitle')}
                 </p>
                 <motion.button
                   onClick={() => router.push('/company/posts/create')}
                   className={cn(
-                    'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white rounded-lg text-body-3 font-semibold',
-                    'hover:bg-primary-700 transition-colors duration-150 cursor-pointer',
-                    'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2'
+                    'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-body-3 font-semibold',
+                    'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
+                    'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
                   )}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}

@@ -88,7 +88,7 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            <span className="text-caption-1 font-semibold text-primary-200">{t('leftBadge')}</span>
+            <span className="text-caption-1 font-semibold text-blue-200">{t('leftBadge')}</span>
           </motion.div>
 
           {/* 타이틀 */}
@@ -113,7 +113,7 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
             {features.map((feature, index) => (
               <motion.div
                 key={index}
-                className="flex items-center gap-3 text-primary-200"
+                className="flex items-center gap-3 text-blue-200"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
@@ -137,17 +137,17 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
         >
           {/* 모바일 로고 */}
           <motion.div variants={itemVariants} className="mb-8 lg:hidden">
-            <p className="font-['Plus_Jakarta_Sans'] text-title-3 font-extrabold text-primary-600">
+            <p className="font-['Plus_Jakarta_Sans'] text-title-3 font-extrabold text-blue-600">
               Work In Korea
             </p>
           </motion.div>
 
           {/* 타이틀 */}
           <motion.div variants={itemVariants} className="mb-8">
-            <h1 className="text-title-2 sm:text-title-1 font-black text-label-900 mb-2 tracking-tight">
+            <h1 className="text-title-2 sm:text-title-1 font-black text-slate-900 mb-2 tracking-tight">
               {t('title')}
             </h1>
-            <p className="text-body-3 text-label-500">
+            <p className="text-body-3 text-slate-500">
               {t('subtitle')}
             </p>
           </motion.div>
@@ -168,7 +168,7 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
           {errorMessage && (
             <motion.div
               variants={itemVariants}
-              className="flex items-start gap-2.5 px-4 py-3 mb-6 rounded-lg bg-status-error-bg border border-status-error-bg text-caption-1 font-medium text-status-error"
+              className="flex items-start gap-2.5 px-4 py-3 mb-6 rounded-lg bg-red-500-bg border border-red-500-bg text-caption-1 font-medium text-red-500"
               role="alert"
               aria-live="polite"
             >
@@ -183,7 +183,7 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
               type="button"
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading}
-              className="w-full py-3.5 px-5 border-2 border-line-400 rounded-xl font-semibold text-body-1 text-label-700 hover:border-primary-300 hover:bg-primary-50 transition-all cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3.5 px-5 border-2 border-slate-200 rounded-xl font-semibold text-body-1 text-slate-700 hover:border-blue-300 hover:bg-blue-50 transition-all cursor-pointer flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
               whileHover={{ borderColor: '#7B8EF2', backgroundColor: '#F3F6FF', scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
               aria-label="Google 계정으로 로그인"
@@ -205,10 +205,10 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
           </motion.div>
 
           {/* 회원가입 */}
-          <motion.div variants={itemVariants} className="mt-8 pt-6 border-t border-line-400">
-            <p className="text-center text-body-3 text-label-600">
+          <motion.div variants={itemVariants} className="mt-8 pt-6 border-t border-slate-200">
+            <p className="text-center text-body-3 text-slate-600">
               {t('noAccountYet')}{' '}
-              <Link href={signupHref} className="text-primary-600 hover:text-primary-700 font-semibold transition-colors inline-flex items-center gap-1">
+              <Link href={signupHref} className="text-blue-600 hover:text-blue-700 font-semibold transition-colors inline-flex items-center gap-1">
                 {t('signupLink')}
                 <ArrowRight className="w-4 h-4" />
               </Link>
@@ -218,7 +218,7 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
           {/* 하단 텍스트 */}
           <motion.p
             variants={itemVariants}
-            className="text-center text-caption-2 text-label-400 mt-6"
+            className="text-center text-caption-2 text-slate-400 mt-6"
           >
             {t('termsAgreement')}
           </motion.p>

@@ -323,14 +323,14 @@ function ResumeEditor({
       <form onSubmit={handleSubmit(onSubmit)} id="resume-form" className="space-y-6">
         {/* 헤더 */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center shrink-0">
-            <FileText size={20} className="text-primary-600" />
+          <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+            <FileText size={20} className="text-blue-600" />
           </div>
           <div>
-            <h1 className="text-title-3 font-extrabold text-label-900">
+            <h1 className="text-title-3 font-extrabold text-slate-900">
               {isEditMode ? t('titleEdit') : t('titleCreate')}
             </h1>
-            <p className="text-caption-1 text-label-500 mt-0.5">
+            <p className="text-caption-1 text-slate-500 mt-0.5">
               {t('templateHint', { template: templateType })}
             </p>
           </div>
@@ -342,20 +342,20 @@ function ResumeEditor({
           <div className="space-y-4">
           {/* 기본 정보 */}
           <motion.div
-            className="bg-white border border-line-400 rounded-xl overflow-hidden"
+            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
-            <div className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center gap-3">
-              <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
-                <FileText size={18} className="text-primary-600" />
+            <div className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center gap-3">
+              <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                <FileText size={18} className="text-blue-600" />
               </div>
               <div>
-                <h3 className="text-body-2 font-bold text-label-900">
+                <h3 className="text-body-2 font-bold text-slate-900">
                   {t('basicInfoTitle')}
                 </h3>
-                <p className="text-caption-2 text-label-500 mt-0.5">
+                <p className="text-caption-2 text-slate-500 mt-0.5">
                   {t('basicInfoSubtitle')}
                 </p>
               </div>
@@ -374,13 +374,13 @@ function ResumeEditor({
                   id={fieldId}
                   type="text"
                   placeholder={t('resumeTitlePlaceholder')}
-                  className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               )}
             />
 
             <div>
-              <label className="block text-caption-2 font-medium text-label-700 mb-2">
+              <label className="block text-caption-2 font-medium text-slate-700 mb-2">
                 {t('profileImageLabel')}
               </label>
               <div className="flex items-start gap-4">
@@ -392,12 +392,12 @@ function ResumeEditor({
                       alt={t('profilePreviewAlt')}
                       width={96}
                       height={96}
-                      className="w-24 h-24 rounded-lg object-cover border border-line-400"
+                      className="w-24 h-24 rounded-lg object-cover border border-slate-200"
                     />
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="absolute -top-2 -right-2 bg-status-error-bg0 text-white rounded-full p-1 hover:bg-red-600 transition-colors cursor-pointer"
+                      className="absolute -top-2 -right-2 bg-red-500-bg0 text-white rounded-full p-1 hover:bg-red-600 transition-colors cursor-pointer"
                     >
                       <X size={14} />
                     </button>
@@ -408,7 +408,7 @@ function ResumeEditor({
                 <div className="flex-1">
                   <label
                     htmlFor="profile-image-upload"
-                    className={`flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-line-400 rounded-lg text-body-3 text-label-600 hover:border-primary-500 hover:text-primary-600 transition-colors cursor-pointer ${
+                    className={`flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-slate-200 rounded-lg text-body-3 text-slate-600 hover:border-blue-500 hover:text-blue-600 transition-colors cursor-pointer ${
                       uploadingImage ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                   >
@@ -423,7 +423,7 @@ function ResumeEditor({
                     disabled={uploadingImage}
                     className="hidden"
                   />
-                  <p className="text-caption-3 text-label-500 mt-2">
+                  <p className="text-caption-3 text-slate-500 mt-2">
                     {t('imageHint')}
                   </p>
                 </div>
@@ -434,24 +434,24 @@ function ResumeEditor({
 
           {/* 자기소개 */}
           <motion.div
-            className="bg-white border border-line-400 rounded-xl overflow-hidden"
+            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
             <div
-              className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between cursor-pointer select-none"
+              className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center justify-between cursor-pointer select-none"
               onClick={() => toggleSection('introduction')}
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
-                  <MessageSquare size={18} className="text-primary-600" />
+                <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                  <MessageSquare size={18} className="text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-body-2 font-bold text-label-900">
+                  <h3 className="text-body-2 font-bold text-slate-900">
                     {t('introTitle')}
                   </h3>
-                  <p className="text-caption-2 text-label-500 mt-0.5">
+                  <p className="text-caption-2 text-slate-500 mt-0.5">
                     {t('introSectionSubtitle')}
                   </p>
                 </div>
@@ -460,14 +460,14 @@ function ResumeEditor({
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); appendIntro({ title: '', content: '' }); }}
-                  className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
                 >
                   <Plus size={14} />
                   {t('addBtn')}
                 </button>
                 <ChevronDown
                   size={18}
-                  className={`text-label-500 transition-transform duration-200 ${openSections.introduction ? 'rotate-180' : ''}`}
+                  className={`text-slate-500 transition-transform duration-200 ${openSections.introduction ? 'rotate-180' : ''}`}
                 />
               </div>
             </div>
@@ -478,7 +478,7 @@ function ResumeEditor({
             {introFields.map((field, index) => (
               <motion.div
                 key={field.id}
-                className="px-5 sm:px-7 py-4 border-b border-line-200 last:border-0"
+                className="px-5 sm:px-7 py-4 border-b border-slate-100 last:border-0"
                 initial={{ opacity: 0, height: 0, scale: 0.96 }}
                 animate={{ opacity: 1, height: 'auto', scale: 1 }}
                 exit={{ opacity: 0, height: 0, scale: 0.96 }}
@@ -490,7 +490,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeIntro(index)}
-                    className="text-status-error hover:bg-status-error-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -505,7 +505,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -518,7 +518,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       rows={4}
-                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3 resize-none"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3 resize-none"
                     />
                   )}
                 />
@@ -531,24 +531,24 @@ function ResumeEditor({
 
           {/* 경력사항 */}
           <motion.div
-            className="bg-white border border-line-400 rounded-xl overflow-hidden"
+            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
             <div
-              className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between cursor-pointer select-none"
+              className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center justify-between cursor-pointer select-none"
               onClick={() => toggleSection('career')}
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
-                  <Briefcase size={18} className="text-primary-600" />
+                <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                  <Briefcase size={18} className="text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-body-2 font-bold text-label-900">
+                  <h3 className="text-body-2 font-bold text-slate-900">
                     {t('careerTitle')}
                   </h3>
-                  <p className="text-caption-2 text-label-500 mt-0.5">
+                  <p className="text-caption-2 text-slate-500 mt-0.5">
                     {t('careerSubtitle')}
                   </p>
                 </div>
@@ -557,14 +557,14 @@ function ResumeEditor({
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); appendCareer({ company_name: '', start_date: '', end_date: undefined, is_working: false, department: '', position_title: '', main_role: '' }); }}
-                  className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
                 >
                   <Plus size={14} />
                   {t('addBtn')}
                 </button>
                 <ChevronDown
                   size={18}
-                  className={`text-label-500 transition-transform duration-200 ${openSections.career ? 'rotate-180' : ''}`}
+                  className={`text-slate-500 transition-transform duration-200 ${openSections.career ? 'rotate-180' : ''}`}
                 />
               </div>
             </div>
@@ -575,7 +575,7 @@ function ResumeEditor({
             {careerFields.map((field, index) => (
               <motion.div
                 key={field.id}
-                className="px-5 sm:px-7 py-5 border-b border-line-200 last:border-0"
+                className="px-5 sm:px-7 py-5 border-b border-slate-100 last:border-0"
                 initial={{ opacity: 0, height: 0, scale: 0.96 }}
                 animate={{ opacity: 1, height: 'auto', scale: 1 }}
                 exit={{ opacity: 0, height: 0, scale: 0.96 }}
@@ -587,7 +587,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeCareer(index)}
-                    className="text-status-error hover:bg-status-error-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -604,7 +604,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -618,7 +618,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -631,7 +631,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -673,7 +673,7 @@ function ResumeEditor({
                           onChange={(e) => field.onChange(e.target.checked)}
                           className="w-4 h-4"
                         />
-                        <span className="text-caption-2 text-label-700">{t('currentlyWorking')}</span>
+                        <span className="text-caption-2 text-slate-700">{t('currentlyWorking')}</span>
                       </label>
                     )}
                   />
@@ -688,7 +688,7 @@ function ResumeEditor({
                         {...field}
                         id={fieldId}
                         rows={3}
-                        className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3 resize-none"
+                        className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3 resize-none"
                       />
                     )}
                   />
@@ -702,24 +702,24 @@ function ResumeEditor({
 
           {/* 학력사항 */}
           <motion.div
-            className="bg-white border border-line-400 rounded-xl overflow-hidden"
+            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
             <div
-              className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between cursor-pointer select-none"
+              className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center justify-between cursor-pointer select-none"
               onClick={() => toggleSection('education')}
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
-                  <GraduationCap size={18} className="text-primary-600" />
+                <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                  <GraduationCap size={18} className="text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-body-2 font-bold text-label-900">
+                  <h3 className="text-body-2 font-bold text-slate-900">
                     {t('educationTitle')}
                   </h3>
-                  <p className="text-caption-2 text-label-500 mt-0.5">
+                  <p className="text-caption-2 text-slate-500 mt-0.5">
                     {t('educationSubtitle')}
                   </p>
                 </div>
@@ -728,14 +728,14 @@ function ResumeEditor({
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); appendSchool({ school_name: '', major_name: '', start_date: '', end_date: undefined, is_graduated: false }); }}
-                  className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
                 >
                   <Plus size={14} />
                   {t('addBtn')}
                 </button>
                 <ChevronDown
                   size={18}
-                  className={`text-label-500 transition-transform duration-200 ${openSections.education ? 'rotate-180' : ''}`}
+                  className={`text-slate-500 transition-transform duration-200 ${openSections.education ? 'rotate-180' : ''}`}
                 />
               </div>
             </div>
@@ -746,7 +746,7 @@ function ResumeEditor({
             {schoolFields.map((field, index) => (
               <motion.div
                 key={field.id}
-                className="px-5 sm:px-7 py-5 border-b border-line-200 last:border-0"
+                className="px-5 sm:px-7 py-5 border-b border-slate-100 last:border-0"
                 initial={{ opacity: 0, height: 0, scale: 0.96 }}
                 animate={{ opacity: 1, height: 'auto', scale: 1 }}
                 exit={{ opacity: 0, height: 0, scale: 0.96 }}
@@ -758,7 +758,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeSchool(index)}
-                    className="text-status-error hover:bg-status-error-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -776,7 +776,7 @@ function ResumeEditor({
                       id={fieldId}
                       type="text"
                       placeholder={t('schoolNamePlaceholder')}
-                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -790,7 +790,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -831,7 +831,7 @@ function ResumeEditor({
                           onChange={(e) => field.onChange(e.target.checked)}
                           className="w-4 h-4"
                         />
-                        <span className="text-caption-2 text-label-700">{t('graduated')}</span>
+                        <span className="text-caption-2 text-slate-700">{t('graduated')}</span>
                       </label>
                     )}
                   />
@@ -845,24 +845,24 @@ function ResumeEditor({
 
           {/* 언어 능력 */}
           <motion.div
-            className="bg-white border border-line-400 rounded-xl overflow-hidden"
+            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
             <div
-              className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between cursor-pointer select-none"
+              className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center justify-between cursor-pointer select-none"
               onClick={() => toggleSection('language')}
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
-                  <Globe size={18} className="text-primary-600" />
+                <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                  <Globe size={18} className="text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-body-2 font-bold text-label-900">
+                  <h3 className="text-body-2 font-bold text-slate-900">
                     {t('languageSectionTitle')}
                   </h3>
-                  <p className="text-caption-2 text-label-500 mt-0.5">
+                  <p className="text-caption-2 text-slate-500 mt-0.5">
                     {t('languageSectionSubtitle')}
                   </p>
                 </div>
@@ -871,14 +871,14 @@ function ResumeEditor({
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); appendLanguage({ language_type: '', level: '' }); }}
-                  className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
                 >
                   <Plus size={14} />
                   {t('addBtn')}
                 </button>
                 <ChevronDown
                   size={18}
-                  className={`text-label-500 transition-transform duration-200 ${openSections.language ? 'rotate-180' : ''}`}
+                  className={`text-slate-500 transition-transform duration-200 ${openSections.language ? 'rotate-180' : ''}`}
                 />
               </div>
             </div>
@@ -889,7 +889,7 @@ function ResumeEditor({
             {languageFields.map((field, index) => (
               <motion.div
                 key={field.id}
-                className="px-5 sm:px-7 py-4 border-b border-line-200 last:border-0"
+                className="px-5 sm:px-7 py-4 border-b border-slate-100 last:border-0"
                 initial={{ opacity: 0, height: 0, scale: 0.96 }}
                 animate={{ opacity: 1, height: 'auto', scale: 1 }}
                 exit={{ opacity: 0, height: 0, scale: 0.96 }}
@@ -901,7 +901,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeLanguage(index)}
-                    className="text-status-error hover:bg-status-error-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -917,7 +917,7 @@ function ResumeEditor({
                     <select
                       {...field}
                       id={fieldId}
-                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3"
                     >
                       <option value="">{t('langSelectPlaceholder')}</option>
                       <option value="한국어">{t('langKorean')}</option>
@@ -946,7 +946,7 @@ function ResumeEditor({
                     <select
                       {...field}
                       id={fieldId}
-                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3"
                     >
                       <option value="">{t('levelSelectPlaceholder')}</option>
                       <option value="beginner">{t('levelBeginner')}</option>
@@ -965,24 +965,24 @@ function ResumeEditor({
 
           {/* 자격증 */}
           <motion.div
-            className="bg-white border border-line-400 rounded-xl overflow-hidden"
+            className="bg-white border border-slate-200 rounded-xl overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Card header */}
             <div
-              className="px-5 sm:px-7 py-5 border-b border-line-200 flex items-center justify-between cursor-pointer select-none"
+              className="px-5 sm:px-7 py-5 border-b border-slate-100 flex items-center justify-between cursor-pointer select-none"
               onClick={() => toggleSection('license')}
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
-                  <Award size={18} className="text-primary-600" />
+                <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                  <Award size={18} className="text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-body-2 font-bold text-label-900">
+                  <h3 className="text-body-2 font-bold text-slate-900">
                     {t('licenseTitle')}
                   </h3>
-                  <p className="text-caption-2 text-label-500 mt-0.5">
+                  <p className="text-caption-2 text-slate-500 mt-0.5">
                     {t('licenseSubtitle')}
                   </p>
                 </div>
@@ -991,14 +991,14 @@ function ResumeEditor({
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); appendLicense({ license_name: '', license_agency: '', license_date: '' }); }}
-                  className="flex items-center gap-2 px-3 py-1.5 text-primary-600 hover:bg-primary-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-caption-2 font-medium cursor-pointer whitespace-nowrap"
                 >
                   <Plus size={14} />
                   {t('addBtn')}
                 </button>
                 <ChevronDown
                   size={18}
-                  className={`text-label-500 transition-transform duration-200 ${openSections.license ? 'rotate-180' : ''}`}
+                  className={`text-slate-500 transition-transform duration-200 ${openSections.license ? 'rotate-180' : ''}`}
                 />
               </div>
             </div>
@@ -1009,7 +1009,7 @@ function ResumeEditor({
             {licenseFields.map((field, index) => (
               <motion.div
                 key={field.id}
-                className="px-5 sm:px-7 py-4 border-b border-line-200 last:border-0"
+                className="px-5 sm:px-7 py-4 border-b border-slate-100 last:border-0"
                 initial={{ opacity: 0, height: 0, scale: 0.96 }}
                 animate={{ opacity: 1, height: 'auto', scale: 1 }}
                 exit={{ opacity: 0, height: 0, scale: 0.96 }}
@@ -1021,7 +1021,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeLicense(index)}
-                    className="text-status-error hover:bg-status-error-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -1038,7 +1038,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -1051,7 +1051,7 @@ function ResumeEditor({
                       {...field}
                       id={fieldId}
                       type="text"
-                      className="w-full px-3 py-2 border border-line-400 rounded-lg text-body-3"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-body-3"
                     />
                   )}
                 />
@@ -1078,7 +1078,7 @@ function ResumeEditor({
           {/* Right sidebar: Save buttons and tips */}
           <div className="block lg:sticky lg:top-6 space-y-4">
             {/* Save card */}
-            <div className="bg-white border border-line-400 rounded-xl p-5 space-y-3">
+            <div className="bg-white border border-slate-200 rounded-xl p-5 space-y-3">
               <Button
                 type="submit"
                 form="resume-form"
@@ -1101,24 +1101,24 @@ function ResumeEditor({
             </div>
 
             {/* Tips card */}
-            <div className="bg-primary-50 rounded-xl p-4 space-y-2">
+            <div className="bg-blue-50 rounded-xl p-4 space-y-2">
               <div className="flex items-center gap-2">
-                <Lightbulb size={16} className="text-primary-600 shrink-0" />
-                <h4 className="text-body-3 font-semibold text-label-900">
+                <Lightbulb size={16} className="text-blue-600 shrink-0" />
+                <h4 className="text-body-3 font-semibold text-slate-900">
                   {t('tipsTitle')}
                 </h4>
               </div>
-              <ul className="space-y-1.5 text-caption-2 text-label-600">
+              <ul className="space-y-1.5 text-caption-2 text-slate-600">
                 <li className="flex gap-2">
-                  <span className="text-primary-600">•</span>
+                  <span className="text-blue-600">•</span>
                   <span>{t('tip1')}</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-primary-600">•</span>
+                  <span className="text-blue-600">•</span>
                   <span>{t('tip2')}</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-primary-600">•</span>
+                  <span className="text-blue-600">•</span>
                   <span>{t('tip3')}</span>
                 </li>
               </ul>

@@ -170,15 +170,15 @@ const RadarChart: React.FC<RadarChartProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 1.3 + index * 0.1 }}
           >
-            <div className="text-caption-1 font-medium text-label-700 mb-1">
+            <div className="text-caption-1 font-medium text-slate-700 mb-1">
               {label}
             </div>
             <div className="text-caption-3">
-              <span className="text-primary-600 font-semibold">{value}</span>
+              <span className="text-blue-600 font-semibold">{value}</span>
               {averageValue && (
                 <>
-                  <span className="text-label-500 mx-1">/</span>
-                  <span className="text-label-500">{averageValue}</span>
+                  <span className="text-slate-500 mx-1">/</span>
+                  <span className="text-slate-500">{averageValue}</span>
                 </>
               )}
             </div>
@@ -189,13 +189,13 @@ const RadarChart: React.FC<RadarChartProps> = ({
       {/* 범례 */}
       <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex gap-4 text-caption-3">
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded-full bg-primary-600"></div>
-          <span className="text-label-700">내 점수</span>
+          <div className="w-3 h-3 rounded-full bg-blue-600"></div>
+          <span className="text-slate-700">내 점수</span>
         </div>
         {averageData && (
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-label-500"></div>
-            <span className="text-label-700">평균</span>
+            <div className="w-3 h-3 rounded-full bg-slate-500"></div>
+            <span className="text-slate-700">평균</span>
           </div>
         )}
       </div>

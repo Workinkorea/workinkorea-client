@@ -38,7 +38,7 @@ describe('Input', () => {
   it('applies error border class when error is true', () => {
     const { container } = render(<Input error />);
     const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper.className).toContain('border-status-error');
+    expect(wrapper.className).toContain('border-red-500');
   });
 
   it('applies success border class when success is true', () => {
