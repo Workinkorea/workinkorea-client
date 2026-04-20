@@ -130,7 +130,7 @@ export const postsApi = {
    * 서버: GET /api/posts/company/ (company auth 필요, 페이지네이션 미지원)
    */
   async getMyCompanyPosts(): Promise<CompanyPostsResponse> {
-    const data = await fetchClient.get<{ company_posts: CompanyPostsResponse['company_posts'] }>('/api/posts/company/');
+    const data = await fetchClient.get<{ company_posts: CompanyPostsResponse['company_posts'] }>('/api/posts/company');
 
     const posts = data.company_posts || [];
     return {
