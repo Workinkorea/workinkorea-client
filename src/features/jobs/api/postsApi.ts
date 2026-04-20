@@ -34,16 +34,25 @@ export async function getCompanyPosts(
   const endpoint = `/api/posts/company/list?skip=${skip}&limit=${limit}`;
 
   try {
-    interface ApiResponse {
-      company_posts: CompanyPostsResponse['company_posts'];
+    interface RawApiResponse {
+      company_posts?: CompanyPostsResponse['company_posts'];
       pagination?: {
         count?: number;
         skip?: number;
         limit?: number;
       };
+      // 일부 백엔드가 { data: { company_posts, pagination } } 형태로 래핑할 경우 대응
+      data?: {
+        company_posts?: CompanyPostsResponse['company_posts'];
+        pagination?: {
+          count?: number;
+          skip?: number;
+          limit?: number;
+        };
+      };
     }
 
-    const data = await fetchAPI<ApiResponse>(endpoint, {
+    const rawData = await fetchAPI<RawApiResponse>(endpoint, {
       skipAuth: true,
       // Next.js 16 캐싱: 1시간마다 재검증 (ISR)
       next: {
@@ -52,13 +61,18 @@ export async function getCompanyPosts(
       },
     });
 
+    // 래핑된 응답({ data: { company_posts } })과 일반 응답({ company_posts }) 모두 처리
+    const inner = rawData.data ?? rawData;
+    const posts = inner.company_posts ?? [];
+    const pagination = inner.pagination;
+
     // Pagination 계산
-    const currentCount = data.pagination?.count || data.company_posts?.length || 0;
+    const currentCount = pagination?.count ?? posts.length;
     const isLastPage = currentCount < limit;
     const estimatedTotal = isLastPage ? skip + currentCount : skip + currentCount + 1;
 
     return {
-      company_posts: data.company_posts || [],
+      company_posts: posts,
       total: estimatedTotal,
       page,
       limit,
@@ -88,26 +102,40 @@ export const postsApi = {
 
     const endpoint = `/api/posts/company/list?skip=${skip}&limit=${limit}`;
 
-    interface ApiResponse {
-      company_posts: CompanyPostsResponse['company_posts'];
+    interface RawApiResponse {
+      company_posts?: CompanyPostsResponse['company_posts'];
       pagination?: {
         count?: number;
         skip?: number;
         limit?: number;
       };
+      // 일부 백엔드가 { data: { company_posts, pagination } } 형태로 래핑할 경우 대응
+      data?: {
+        company_posts?: CompanyPostsResponse['company_posts'];
+        pagination?: {
+          count?: number;
+          skip?: number;
+          limit?: number;
+        };
+      };
     }
 
-    const data = await fetchClient.get<ApiResponse>(endpoint, {
+    const rawData = await fetchClient.get<RawApiResponse>(endpoint, {
       skipAuth: true,
     });
 
+    // 래핑된 응답({ data: { company_posts } })과 일반 응답({ company_posts }) 모두 처리
+    const inner = rawData.data ?? rawData;
+    const posts = inner.company_posts ?? [];
+    const pagination = inner.pagination;
+
     // Pagination 계산
-    const currentCount = data.pagination?.count || data.company_posts?.length || 0;
+    const currentCount = pagination?.count ?? posts.length;
     const isLastPage = currentCount < limit;
     const estimatedTotal = isLastPage ? skip + currentCount : skip + currentCount + 1;
 
     return {
-      company_posts: data.company_posts || [],
+      company_posts: posts,
       total: estimatedTotal,
       page,
       limit,
