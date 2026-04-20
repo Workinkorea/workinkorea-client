@@ -239,10 +239,10 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout,
                       </Link>
                       <button
                         onClick={() => { onLogout?.(); close(); }}
-                        className="w-full flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-label-50 transition-colors group text-left cursor-pointer"
+                        className="w-full flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-red-50 transition-colors group text-left cursor-pointer"
                       >
-                        <span className="text-caption-1 font-medium text-label-700 group-hover:text-primary-600">{t('logout')}</span>
-                        <ChevronRight size={15} className="text-label-300 group-hover:text-primary-400" />
+                        <span className="text-caption-1 font-medium text-red-500 group-hover:text-red-600">{t('logout')}</span>
+                        <ChevronRight size={15} className="text-red-100 group-hover:text-red-400" />
                       </button>
                     </>
                   ) : (
