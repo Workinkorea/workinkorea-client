@@ -14,7 +14,7 @@ export default function UserProfileLoading() {
         </div>
 
         {/* UserProfileHeader 카드 */}
-        <div className="bg-white rounded-2xl border border-line-400 p-5 sm:p-6 shadow-sm">
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
             <Skeleton variant="circle" className="w-20 h-20 sm:w-24 sm:h-24 shrink-0" />
             <div className="flex-1 w-full space-y-2 text-center sm:text-left">
@@ -33,7 +33,7 @@ export default function UserProfileLoading() {
               <div
                 key={label}
                 className={`px-4 py-2 rounded-lg text-body-3 font-medium shrink-0 ${
-                  i === 0 ? 'bg-primary-500' : 'bg-transparent'
+                  i === 0 ? 'bg-blue-500' : 'bg-transparent'
                 }`}
               >
                 <Skeleton

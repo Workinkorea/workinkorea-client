@@ -32,43 +32,43 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <h2 className="text-title-2 font-bold text-label-900 mb-6">대시보드</h2>
+      <h2 className="text-title-2 font-bold text-slate-900 mb-6">대시보드</h2>
 
       <StatCards stats={stats} />
 
       <div className="mt-8">
-        <h3 className="text-title-5 font-medium text-label-900 mb-4">빠른 작업</h3>
+        <h3 className="text-title-5 font-medium text-slate-900 mb-4">빠른 작업</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Link
             href="/admin/users"
-            className="rounded-lg border border-line-400 bg-white px-4 py-3 hover:border-primary-500 hover:shadow-md transition-all"
+            className="rounded-lg border border-slate-200 bg-white px-4 py-3 hover:border-blue-500 hover:shadow-md transition-all"
           >
-            <div className="text-body-3 font-medium text-label-900">
+            <div className="text-body-3 font-medium text-slate-900">
               일반 회원 관리
             </div>
-            <div className="mt-1 text-caption-2 text-label-500">
+            <div className="mt-1 text-caption-2 text-slate-500">
               회원 목록 보기, 추가, 수정, 삭제
             </div>
           </Link>
           <Link
             href="/admin/companies"
-            className="rounded-lg border border-line-400 bg-white px-4 py-3 hover:border-primary-500 hover:shadow-md transition-all"
+            className="rounded-lg border border-slate-200 bg-white px-4 py-3 hover:border-blue-500 hover:shadow-md transition-all"
           >
-            <div className="text-body-3 font-medium text-label-900">
+            <div className="text-body-3 font-medium text-slate-900">
               기업 회원 관리
             </div>
-            <div className="mt-1 text-caption-2 text-label-500">
+            <div className="mt-1 text-caption-2 text-slate-500">
               기업 목록 보기, 추가, 수정, 삭제
             </div>
           </Link>
           <Link
             href="/admin/posts"
-            className="rounded-lg border border-line-400 bg-white px-4 py-3 hover:border-primary-500 hover:shadow-md transition-all"
+            className="rounded-lg border border-slate-200 bg-white px-4 py-3 hover:border-blue-500 hover:shadow-md transition-all"
           >
-            <div className="text-body-3 font-medium text-label-900">
+            <div className="text-body-3 font-medium text-slate-900">
               공고 관리
             </div>
-            <div className="mt-1 text-caption-2 text-label-500">
+            <div className="mt-1 text-caption-2 text-slate-500">
               공고 목록 보기, 수정, 삭제
             </div>
           </Link>

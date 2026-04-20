@@ -22,10 +22,10 @@ const FieldRow = ({
   required?: boolean;
   children: ReactNode;
 }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-line-200 last:border-0 items-start">
-    <span className="text-caption-1 font-semibold text-label-700 sm:pt-2.5 flex items-center gap-1">
+  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0 items-start">
+    <span className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1">
       {label}
-      {required && <span className="text-status-error">*</span>}
+      {required && <span className="text-red-500">*</span>}
     </span>
     <div>{children}</div>
   </div>
@@ -44,14 +44,14 @@ const FieldHint = ({
   hint?: string;
   inputComplete: string;
 }) => {
-  if (error) return <p className="mt-1.5 text-caption-3 text-status-error">{error}</p>;
+  if (error) return <p className="mt-1.5 text-caption-3 text-red-500">{error}</p>;
   if (touched && hasValue)
     return (
-      <p className="mt-1.5 text-caption-3 text-status-correct flex items-center gap-1">
+      <p className="mt-1.5 text-caption-3 text-emerald-500 flex items-center gap-1">
         <span>✓</span> {inputComplete}
       </p>
     );
-  if (hint) return <p className="mt-1.5 text-caption-3 text-label-400">{hint}</p>;
+  if (hint) return <p className="mt-1.5 text-caption-3 text-slate-400">{hint}</p>;
   return null;
 };
 

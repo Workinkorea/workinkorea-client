@@ -6,6 +6,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { consumeCallbackUrl } from '@/shared/lib/callbackUrl';
 import { tokenStore } from '@/shared/api/tokenStore';
 import { profileApi } from '@/features/profile/api/profileApi';
+import { cookieManager } from '@/shared/lib/utils/cookieManager';
 
 function CallbackContent() {
   const searchParams = useSearchParams();
@@ -38,6 +39,8 @@ function CallbackContent() {
         localStorage.removeItem('googleLoginRememberMe');
 
         login('user');
+        // Defensive: re-set cookie directly in case login() call is delayed
+        cookieManager.setUserType('user');
 
         // 프로필 존재 여부 확인 → 없으면 프로필 생성 페이지로
         try {
@@ -76,7 +79,7 @@ function CallbackContent() {
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
         <h2 className="text-title-4 font-semibold">인증 처리 중...</h2>
-        <p className="mt-2 text-label-500">잠시만 기다려주세요.</p>
+        <p className="mt-2 text-slate-500">잠시만 기다려주세요.</p>
       </div>
     </div>
   );

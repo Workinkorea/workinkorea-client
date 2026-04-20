@@ -48,10 +48,10 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
               'border-2 transition-colors duration-150',
               outer,
               checked
-                ? 'border-primary-600 bg-white'
-                : 'border-line-400 bg-white hover:border-primary-400',
-              error && !checked && 'border-status-error',
-              disabled && 'bg-label-100 border-label-300',
+                ? 'border-blue-600 bg-white'
+                : 'border-slate-200 bg-white hover:border-blue-400',
+              error && !checked && 'border-red-500',
+              disabled && 'bg-slate-100 border-slate-300',
             )}
             aria-hidden
           >
@@ -60,7 +60,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
                 className={cn(
                   'rounded-full transition-transform duration-150',
                   inner,
-                  disabled ? 'bg-label-300' : 'bg-primary-600',
+                  disabled ? 'bg-slate-300' : 'bg-blue-600',
                 )}
               />
             )}
@@ -69,19 +69,19 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
           {(label || description) && (
             <span className="flex flex-col gap-0.5">
               {label && (
-                <span className={cn(labelCls, 'font-medium text-label-800', disabled && 'text-label-400')}>
+                <span className={cn(labelCls, 'font-medium text-slate-800', disabled && 'text-slate-400')}>
                   {label}
                 </span>
               )}
               {description && (
-                <span className={cn(descCls, 'text-label-500')}>{description}</span>
+                <span className={cn(descCls, 'text-slate-500')}>{description}</span>
               )}
             </span>
           )}
         </label>
 
         {error && (
-          <p className="text-caption-2 text-status-error pl-7">{error}</p>
+          <p className="text-caption-2 text-red-500 pl-7">{error}</p>
         )}
       </div>
     );
@@ -141,7 +141,7 @@ export function RadioGroup({
         />
       ))}
       {error && (
-        <p className="text-caption-2 text-status-error">{error}</p>
+        <p className="text-caption-2 text-red-500">{error}</p>
       )}
     </div>
   );

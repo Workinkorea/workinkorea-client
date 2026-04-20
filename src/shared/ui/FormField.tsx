@@ -30,8 +30,8 @@ export const FormField = <T extends FieldValues, N extends Path<T>>({
   const fieldId = `field-${name}`;
 
   const labelClassName = variant === 'diagnosis'
-    ? "cursor-pointer text-label-900 text-title-5 font-semibold text-left self-start"
-    : "cursor-pointer text-label-700 text-caption-1 font-semibold text-left self-start";
+    ? "cursor-pointer text-slate-900 text-title-5 font-semibold text-left self-start"
+    : "cursor-pointer text-slate-700 text-caption-1 font-semibold text-left self-start";
 
   return (
     <div className="relative flex flex-col gap-2 w-full">
@@ -49,7 +49,7 @@ export const FormField = <T extends FieldValues, N extends Path<T>>({
         render={({ field, fieldState }) => (
           <>
             {render(field as ControllerRenderProps<T, N>, fieldId)}
-            {fieldState.error && <ErrorMessage message={fieldState.error.message || ''} />}
+            {fieldState.error && <ErrorMessage message={fieldState.error.message || ''} variant={variant} />}
           </>
         )}
       />

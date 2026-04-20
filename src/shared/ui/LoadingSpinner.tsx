@@ -14,9 +14,9 @@ const sizeMap = {
 };
 
 const colorMap = {
-  blue:  'border-primary-200 border-t-primary-600',
+  blue:  'border-blue-200 border-t-primary-600',
   white: 'border-white/30 border-t-white',
-  slate: 'border-line-400 border-t-label-500',
+  slate: 'border-slate-200 border-t-label-500',
 };
 
 export function LoadingSpinner({

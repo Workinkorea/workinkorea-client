@@ -12,10 +12,10 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
 }
 
 const variantStyles: Record<NonNullable<IconButtonProps['variant']>, string> = {
-  ghost:       'text-label-600 hover:bg-label-100 hover:text-label-800',
-  outline:     'text-label-600 border border-line-400 hover:bg-label-50 hover:border-line-300',
-  filled:      'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800',
-  destructive: 'text-status-error hover:bg-status-error-bg',
+  ghost:       'text-slate-600 hover:bg-slate-100 hover:text-slate-800',
+  outline:     'text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-200',
+  filled:      'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800',
+  destructive: 'text-red-500 hover:bg-red-600-bg',
 };
 
 const sizeStyles: Record<NonNullable<IconButtonProps['size']>, { btn: string; icon: number }> = {
@@ -50,7 +50,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         className={cn(
           'inline-flex items-center justify-center shrink-0',
           'transition-colors duration-150 cursor-pointer',
-          'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+          'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
           'disabled:opacity-40 disabled:cursor-not-allowed',
           shape === 'circle' ? 'rounded-full' : 'rounded-lg',
           btn,

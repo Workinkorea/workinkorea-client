@@ -42,6 +42,8 @@ export function useCompanyPosts(
     queryFn: () => postsApi.getPublicCompanyPosts({ page, limit }),
     // Hydrate with SSR data on first render (skip if empty so client refetches)
     initialData: effectiveInitialData,
+    // initialDataUpdatedAt: 0 → SSR 데이터를 즉시 stale 처리하여 마운트 시 클라이언트 재시도 보장
+    initialDataUpdatedAt: effectiveInitialData ? 0 : undefined,
     // Keep previous data while fetching next page (better UX)
     placeholderData: (previousData) => previousData,
     // Cache for 5 minutes

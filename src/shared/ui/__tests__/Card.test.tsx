@@ -34,7 +34,7 @@ describe('Card', () => {
   it('applies ghost variant styles', () => {
     const { container } = render(<Card variant="ghost">Ghost</Card>);
     const card = container.firstChild as HTMLElement;
-    expect(card.className).toContain('bg-label-50');
+    expect(card.className).toContain('bg-slate-50');
   });
 
   it('applies default md padding', () => {

@@ -34,13 +34,13 @@ export function Header({ type, viewType, onViewTypeChange, isAuthenticated, onLo
     : '/login-select';
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-line-200 shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-slate-100 shadow-sm">
       <div className="page-container">
         <div className="flex items-center h-16 gap-4">
 
           {/* 로고 */}
           <Link href="/" className="flex items-center shrink-0">
-            <span className="font-['Plus_Jakarta_Sans'] text-title-4 font-extrabold text-primary-600 tracking-tight">
+            <span className="font-['Plus_Jakarta_Sans'] text-title-4 font-extrabold text-blue-600 tracking-tight">
               WorkInKorea
             </span>
           </Link>
@@ -64,7 +64,7 @@ export function Header({ type, viewType, onViewTypeChange, isAuthenticated, onLo
 
             {/* 검색 아이콘 */}
             <button
-              className="p-2 text-label-400 hover:text-primary-600 hover:bg-label-50 transition-colors focus:outline-none rounded-lg cursor-pointer"
+              className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none rounded-lg cursor-pointer"
               aria-label={t('jobs')}
             >
               <SearchIcon />
@@ -73,7 +73,7 @@ export function Header({ type, viewType, onViewTypeChange, isAuthenticated, onLo
             {/* 사람 아이콘 — 비인증: 로그인, 인증: MY홈 */}
             <Link
               href={myHomeHref}
-              className="p-2 text-label-400 hover:text-primary-600 hover:bg-label-50 transition-colors focus:outline-none rounded-lg cursor-pointer"
+              className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 transition-colors focus:outline-none rounded-lg cursor-pointer"
               aria-label={isAuthenticated ? t('myHome') : t('login')}
             >
               <User size={20} />

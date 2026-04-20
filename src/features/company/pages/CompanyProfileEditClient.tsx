@@ -168,8 +168,8 @@ const CompanyProfileEditClient = () => {
   if (authLoading || (profileLoading && !profile)) {
     return (
       <Layout>
-        <main className="flex-1 bg-label-100 flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full" />
+        <main className="flex-1 bg-slate-100 flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full" />
         </main>
       </Layout>
     );
@@ -177,13 +177,13 @@ const CompanyProfileEditClient = () => {
 
   return (
     <Layout>
-      <main className="flex-1 bg-label-100">
+      <main className="flex-1 bg-slate-100">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
           {/* 페이지 헤더 */}
           <div className="mb-6">
-            <h1 className="text-title-3 font-bold text-label-900">{t('title')}</h1>
-            <p className="text-body-3 text-label-500 mt-1">{t('subtitle')}</p>
+            <h1 className="text-title-3 font-bold text-slate-900">{t('title')}</h1>
+            <p className="text-body-3 text-slate-500 mt-1">{t('subtitle')}</p>
           </div>
 
           {/* 2-column layout */}
@@ -193,14 +193,14 @@ const CompanyProfileEditClient = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
 
               {/* 기업 정보 섹션 */}
-              <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
-                <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-line-200">
-                  <span className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
-                    <Building2 size={16} className="text-primary-600" />
+              <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
+                  <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                    <Building2 size={16} className="text-blue-600" />
                   </span>
                   <div>
-                    <h2 className="text-body-2 font-bold text-label-900">{t('sectionInfo')}</h2>
-                    <p className="text-caption-3 text-label-400 mt-0.5">{t('sectionInfoHint')}</p>
+                    <h2 className="text-body-2 font-bold text-slate-900">{t('sectionInfo')}</h2>
+                    <p className="text-caption-3 text-slate-400 mt-0.5">{t('sectionInfoHint')}</p>
                   </div>
                 </div>
                 <CompanyInfoSection
@@ -214,14 +214,14 @@ const CompanyProfileEditClient = () => {
               </div>
 
               {/* 담당자 정보 섹션 */}
-              <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
-                <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-line-200">
-                  <span className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
-                    <UserCircle size={16} className="text-primary-600" />
+              <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-slate-100">
+                  <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                    <UserCircle size={16} className="text-blue-600" />
                   </span>
                   <div>
-                    <h2 className="text-body-2 font-bold text-label-900">{t('sectionContact')}</h2>
-                    <p className="text-caption-3 text-label-400 mt-0.5">{t('sectionContactHint')}</p>
+                    <h2 className="text-body-2 font-bold text-slate-900">{t('sectionContact')}</h2>
+                    <p className="text-caption-3 text-slate-400 mt-0.5">{t('sectionContactHint')}</p>
                   </div>
                 </div>
                 <ContactPersonSection
@@ -281,7 +281,7 @@ const CompanyProfileEditClient = () => {
               </Button>
 
               {/* 완성도 카드 */}
-              <div className="bg-white border border-line-400 rounded-xl p-5">
+              <div className="bg-white border border-slate-200 rounded-xl p-5">
                 {/* 진행률 */}
                 <div className="flex items-center gap-3 mb-4">
                   <div className="relative w-12 h-12 shrink-0">
@@ -289,7 +289,7 @@ const CompanyProfileEditClient = () => {
                       <circle
                         cx="24" cy="24" r="20"
                         fill="none" strokeWidth="4"
-                        className="stroke-label-100"
+                        className="stroke-slate-100"
                       />
                       <circle
                         cx="24" cy="24" r="20"
@@ -297,33 +297,33 @@ const CompanyProfileEditClient = () => {
                         strokeDasharray={`${2 * Math.PI * 20}`}
                         strokeDashoffset={`${2 * Math.PI * 20 * (1 - progress / 100)}`}
                         strokeLinecap="round"
-                        className="stroke-primary-600 transition-all duration-500"
+                        className="stroke-blue-600 transition-all duration-500"
                       />
                     </svg>
-                    <span className="absolute inset-0 flex items-center justify-center text-caption-3 font-bold text-primary-600">
+                    <span className="absolute inset-0 flex items-center justify-center text-caption-3 font-bold text-blue-600">
                       {progress}%
                     </span>
                   </div>
                   <div>
-                    <p className="text-caption-1 font-bold text-label-900">
+                    <p className="text-caption-1 font-bold text-slate-900">
                       {t('completionTitle')}{' '}
-                      <span className="text-primary-600">{progress}%</span>
+                      <span className="text-blue-600">{progress}%</span>
                     </p>
-                    <p className="text-caption-3 text-label-400 mt-0.5">
+                    <p className="text-caption-3 text-slate-400 mt-0.5">
                       {t('completionCount', { filled: filledCount, total: REQUIRED_FIELDS.length })}
                     </p>
                   </div>
                 </div>
 
-                <div className="h-1.5 bg-label-100 rounded-full overflow-hidden mb-5">
+                <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden mb-5">
                   <div
-                    className="h-full bg-primary-600 rounded-full transition-all duration-500"
+                    className="h-full bg-blue-600 rounded-full transition-all duration-500"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
 
                 {/* 기업 정보 체크리스트 */}
-                <p className="text-caption-3 font-bold text-label-500 uppercase tracking-wider mb-2">
+                <p className="text-caption-3 font-bold text-slate-500 uppercase tracking-wider mb-2">
                   {t('checklistInfo')}
                 </p>
                 <ul className="space-y-1.5 mb-4">
@@ -335,7 +335,7 @@ const CompanyProfileEditClient = () => {
                         <span
                           className={cn(
                             'w-4 h-4 rounded-full flex items-center justify-center shrink-0',
-                            filled ? 'bg-primary-600' : 'bg-label-100',
+                            filled ? 'bg-blue-600' : 'bg-slate-100',
                           )}
                         >
                           {filled && <Check size={10} className="text-white" strokeWidth={3} />}
@@ -343,7 +343,7 @@ const CompanyProfileEditClient = () => {
                         <span
                           className={cn(
                             'text-caption-2',
-                            filled ? 'text-label-700 font-medium' : 'text-label-400',
+                            filled ? 'text-slate-700 font-medium' : 'text-slate-400',
                           )}
                         >
                           {label}
@@ -354,7 +354,7 @@ const CompanyProfileEditClient = () => {
                 </ul>
 
                 {/* 담당자 정보 체크리스트 */}
-                <p className="text-caption-3 font-bold text-label-500 uppercase tracking-wider mb-2">
+                <p className="text-caption-3 font-bold text-slate-500 uppercase tracking-wider mb-2">
                   {t('checklistContact')}
                 </p>
                 <ul className="space-y-1.5">
@@ -366,7 +366,7 @@ const CompanyProfileEditClient = () => {
                         <span
                           className={cn(
                             'w-4 h-4 rounded-full flex items-center justify-center shrink-0',
-                            filled ? 'bg-primary-600' : 'bg-label-100',
+                            filled ? 'bg-blue-600' : 'bg-slate-100',
                           )}
                         >
                           {filled && <Check size={10} className="text-white" strokeWidth={3} />}
@@ -374,7 +374,7 @@ const CompanyProfileEditClient = () => {
                         <span
                           className={cn(
                             'text-caption-2',
-                            filled ? 'text-label-700 font-medium' : 'text-label-400',
+                            filled ? 'text-slate-700 font-medium' : 'text-slate-400',
                           )}
                         >
                           {label}
@@ -385,7 +385,7 @@ const CompanyProfileEditClient = () => {
                 </ul>
 
                 {hasChanges && (
-                  <p className="mt-4 text-caption-3 text-status-caution flex items-center gap-1">
+                  <p className="mt-4 text-caption-3 text-amber-500 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
                     {t('unsavedChanges')}
                   </p>

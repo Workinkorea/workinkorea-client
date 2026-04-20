@@ -64,10 +64,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               'border-2 transition-colors duration-150',
               box,
               isChecked
-                ? 'bg-primary-600 border-primary-600'
-                : 'bg-white border-line-400 hover:border-primary-400',
-              error && !isChecked && 'border-status-error',
-              disabled && 'bg-label-100 border-label-300',
+                ? 'bg-blue-600 border-blue-600'
+                : 'bg-white border-slate-200 hover:border-blue-400',
+              error && !isChecked && 'border-red-500',
+              disabled && 'bg-slate-100 border-slate-300',
             )}
             aria-hidden
           >
@@ -82,12 +82,12 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           {(label || description) && (
             <span className="flex flex-col gap-0.5">
               {label && (
-                <span className={cn(labelCls, 'font-medium text-label-800', disabled && 'text-label-400')}>
+                <span className={cn(labelCls, 'font-medium text-slate-800', disabled && 'text-slate-400')}>
                   {label}
                 </span>
               )}
               {description && (
-                <span className={cn(descCls, 'text-label-500')}>
+                <span className={cn(descCls, 'text-slate-500')}>
                   {description}
                 </span>
               )}
@@ -96,7 +96,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         </label>
 
         {error && (
-          <p className="text-caption-2 text-status-error pl-7">{error}</p>
+          <p className="text-caption-2 text-red-500 pl-7">{error}</p>
         )}
       </div>
     );

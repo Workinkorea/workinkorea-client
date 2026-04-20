@@ -52,7 +52,7 @@ export function BetaPopup() {
                     <FlaskConical size={18} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-caption-3 font-semibold text-primary-200 uppercase tracking-wider">Beta Service</p>
+                    <p className="text-caption-3 font-semibold text-blue-200 uppercase tracking-wider">Beta Service</p>
                     <h2 className="text-title-5 font-bold text-white leading-tight">베타 서비스 안내</h2>
                   </div>
                 </div>
@@ -67,13 +67,13 @@ export function BetaPopup() {
 
               {/* body */}
               <div className="px-6 py-5 space-y-4">
-                <p className="text-body-3 text-label-700 leading-relaxed">
-                  현재 <span className="font-semibold text-primary-600">워크인코리아</span>는 베타 서비스 테스트 중입니다.
+                <p className="text-body-3 text-slate-700 leading-relaxed">
+                  현재 <span className="font-semibold text-blue-600">워크인코리아</span>는 베타 서비스 테스트 중입니다.
                 </p>
-                <p className="text-caption-1 text-label-500 leading-relaxed">
+                <p className="text-caption-1 text-slate-500 leading-relaxed">
                   일부 기능이 제한되거나 변경될 수 있으며, 예상치 못한 오류가 발생할 수 있습니다. 불편을 드려 죄송합니다.
                 </p>
-                <div className="bg-primary-50 rounded-xl px-4 py-3 text-caption-2 text-primary-700 leading-relaxed">
+                <div className="bg-blue-50 rounded-xl px-4 py-3 text-caption-2 text-blue-700 leading-relaxed">
                   더 나은 서비스를 위해 지속적으로 개선하고 있습니다. 이용해주셔서 감사합니다! 🙏
                 </div>
               </div>
@@ -82,7 +82,7 @@ export function BetaPopup() {
               <div className="px-6 pb-5">
                 <button
                   onClick={dismiss}
-                  className="w-full bg-primary-600 hover:bg-primary-700 text-white rounded-xl py-3 text-body-3 font-semibold transition-colors cursor-pointer"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3 text-body-3 font-semibold transition-colors cursor-pointer"
                 >
                   확인했습니다
                 </button>

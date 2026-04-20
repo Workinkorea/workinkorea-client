@@ -38,21 +38,21 @@ export function EmptyState({
       {/* 아이콘 */}
       <div
         className={cn(
-          'inline-flex items-center justify-center rounded-full bg-label-100 mb-4',
+          'inline-flex items-center justify-center rounded-full bg-slate-100 mb-4',
           s.iconBox,
         )}
       >
-        <Icon size={s.icon} className="text-label-400" strokeWidth={1.5} />
+        <Icon size={s.icon} className="text-slate-400" strokeWidth={1.5} />
       </div>
 
       {/* 제목 */}
-      <p className={cn('font-semibold text-label-700 mb-2', s.title)}>
+      <p className={cn('font-semibold text-slate-700 mb-2', s.title)}>
         {title}
       </p>
 
       {/* 설명 */}
       {description && (
-        <p className={cn('text-label-500 mb-6 max-w-sm', s.desc)}>
+        <p className={cn('text-slate-500 mb-6 max-w-sm', s.desc)}>
           {description}
         </p>
       )}

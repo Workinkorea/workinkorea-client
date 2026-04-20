@@ -15,11 +15,11 @@ function CreateResumePage() {
       {/* <div className="flex items-center justify-center">
         <div className="flex items-center gap-4">
           <div className={`flex items-center gap-2 ${
-            currentStep === 'template' ? 'text-primary-600' : 'text-green-600'
+            currentStep === 'template' ? 'text-blue-600' : 'text-green-600'
           }`}>
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-caption-1 font-semibold ${
               currentStep === 'template'
-                ? 'bg-primary-500 text-white'
+                ? 'bg-blue-500 text-white'
                 : 'bg-green-500 text-white'
             }`}>
               1
@@ -28,16 +28,16 @@ function CreateResumePage() {
           </div>
 
           <div className={`w-8 h-0.5 ${
-            currentStep === 'editor' ? 'bg-primary-500' : 'bg-line-300'
+            currentStep === 'editor' ? 'bg-blue-500' : 'bg-slate-200'
           }`} />
 
           <div className={`flex items-center gap-2 ${
-            currentStep === 'editor' ? 'text-primary-600' : 'text-label-400'
+            currentStep === 'editor' ? 'text-blue-600' : 'text-slate-400'
           }`}>
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-caption-1 font-semibold ${
               currentStep === 'editor'
-                ? 'bg-primary-500 text-white'
-                : 'bg-line-300 text-label-400'
+                ? 'bg-blue-500 text-white'
+                : 'bg-slate-200 text-slate-400'
             }`}>
               2
             </div>

@@ -18,36 +18,36 @@ describe('Badge', () => {
   it('applies primary color classes by default', () => {
     const { container } = render(<Badge label="Primary" />);
     const badge = container.firstChild as HTMLElement;
-    expect(badge.className).toContain('bg-primary-50');
-    expect(badge.className).toContain('text-primary-700');
+    expect(badge.className).toContain('bg-blue-50');
+    expect(badge.className).toContain('text-blue-700');
   });
 
   it('applies success color classes', () => {
     const { container } = render(<Badge label="Success" color="success" />);
     const badge = container.firstChild as HTMLElement;
-    expect(badge.className).toContain('bg-status-correct-bg');
-    expect(badge.className).toContain('text-status-correct');
+    expect(badge.className).toContain('bg-emerald-500-bg');
+    expect(badge.className).toContain('text-emerald-500');
   });
 
   it('applies warning color classes', () => {
     const { container } = render(<Badge label="Warning" color="warning" />);
     const badge = container.firstChild as HTMLElement;
-    expect(badge.className).toContain('bg-status-caution-bg');
-    expect(badge.className).toContain('text-status-caution');
+    expect(badge.className).toContain('bg-amber-500-bg');
+    expect(badge.className).toContain('text-amber-500');
   });
 
   it('applies danger color classes', () => {
     const { container } = render(<Badge label="Error" color="danger" />);
     const badge = container.firstChild as HTMLElement;
-    expect(badge.className).toContain('bg-status-error-bg');
-    expect(badge.className).toContain('text-status-error');
+    expect(badge.className).toContain('bg-red-500-bg');
+    expect(badge.className).toContain('text-red-500');
   });
 
   it('applies neutral color classes', () => {
     const { container } = render(<Badge label="Neutral" color="neutral" />);
     const badge = container.firstChild as HTMLElement;
-    expect(badge.className).toContain('bg-label-100');
-    expect(badge.className).toContain('text-label-500');
+    expect(badge.className).toContain('bg-slate-100');
+    expect(badge.className).toContain('text-slate-500');
   });
 
   it('renders with sm size', () => {

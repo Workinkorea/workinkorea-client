@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import { useDiagnosisStore } from '@/features/diagnosis/store/diagnosisStore';
 import { DiagnosisStepProgress } from '@/features/diagnosis/components/DiagnosisStepProgress';
 import { Session1BasicInfo } from '@/features/diagnosis/components/Session1BasicInfo';
@@ -16,14 +17,26 @@ import { DiagnosisAnswerRequest } from '@/shared/types/api';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { cn } from '@/shared/lib/utils/utils';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { profileApi } from '@/features/profile/api/profileApi';
 
 const TOTAL_STEPS = 4;
 
 const DiagnosisClient = () => {
   const router = useRouter();
   const t = useTranslations('diagnosis.client');
+  const { isAuthenticated, userType } = useAuth();
   const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId, reset } = useDiagnosisStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Prefill email for Q13 from authenticated user profile
+  const { data: profile } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => profileApi.getProfile(),
+    enabled: isAuthenticated && userType === 'user',
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  });
 
   const handleSession1Next = (data: Partial<DiagnosisData>) => {
     updateData(data);
@@ -99,10 +112,10 @@ const DiagnosisClient = () => {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-label-900 mb-2">
+            <h1 className="text-title-3 sm:text-title-2 lg:text-title-1 font-extrabold text-slate-900 mb-2">
               {t('title')}
             </h1>
-            <p className="text-caption-1 sm:text-body-3 text-label-500">
+            <p className="text-caption-1 sm:text-body-3 text-slate-500">
               {t('subtitle')}
             </p>
           </motion.div>
@@ -113,7 +126,7 @@ const DiagnosisClient = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className={cn(
-              'bg-white rounded-xl border border-line-400 shadow-sm p-4 sm:p-6 mb-6',
+              'bg-white rounded-xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-6',
               'overflow-x-auto sm:overflow-visible'
             )}
           >
@@ -126,7 +139,7 @@ const DiagnosisClient = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className={cn(
-              'bg-white border border-line-400 rounded-xl shadow-sm',
+              'bg-white border border-slate-200 rounded-xl shadow-sm',
               'p-5 sm:p-7 lg:p-8'
             )}
           >
@@ -161,6 +174,7 @@ const DiagnosisClient = () => {
                   onNext={handleSession4Next}
                   onBack={handleBack}
                   isSubmitting={isSubmitting}
+                  prefillEmail={profile?.email}
                 />
               )}
             </AnimatePresence>

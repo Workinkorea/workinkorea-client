@@ -78,23 +78,23 @@ export function ResumeSection({
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-title-5 font-semibold text-label-900">
+          <h3 className="text-title-5 font-semibold text-slate-900">
             {t('manageTitle')}
           </h3>
-          <p className="text-body-3 text-label-600 mt-1">
+          <p className="text-body-3 text-slate-600 mt-1">
             {t('manageSubtitle')}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowUpload(!showUpload)}
-            className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-caption-1 font-medium text-label-700 hover:bg-label-100 transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-caption-1 font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
           >
             {t('fileUpload')}
           </button>
           <button
             onClick={handleCreateResume}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg text-caption-1 font-medium hover:bg-primary-700 transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-caption-1 font-medium hover:bg-blue-700 transition-colors cursor-pointer"
           >
             <Plus size={16} />
             {t('createNew')}
@@ -105,19 +105,19 @@ export function ResumeSection({
       {/* 업로드/생성 영역 */}
       {showUpload && (
         <motion.div
-          className="bg-white border border-line-400 rounded-lg p-6"
+          className="bg-white border border-slate-200 rounded-lg p-6"
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-caption-1 font-semibold text-label-900">
+            <h4 className="text-caption-1 font-semibold text-slate-900">
               {t('addTitle')}
             </h4>
             <button
               onClick={() => setShowUpload(false)}
-              className="text-label-400 hover:text-label-600 transition-colors cursor-pointer"
+              className="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
             >
               ✕
             </button>
@@ -156,7 +156,7 @@ export function ResumeSection({
         </div>
       ) : (
         <motion.div
-          className="bg-label-100 border border-line-400 rounded-lg p-12 text-center"
+          className="bg-slate-100 border border-slate-200 rounded-lg p-12 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
@@ -164,27 +164,27 @@ export function ResumeSection({
           {resumes.length === 0 ? (
             // 이력서가 없는 경우
             <div className="space-y-4">
-              <div className="w-16 h-16 mx-auto bg-primary-100 rounded-full flex items-center justify-center">
-                <FileText size={24} className="text-primary-600" />
+              <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+                <FileText size={24} className="text-blue-600" />
               </div>
               <div className="space-y-2">
-                <h4 className="text-caption-1 font-semibold text-label-900">
+                <h4 className="text-caption-1 font-semibold text-slate-900">
                   {t('noResumes')}
                 </h4>
-                <p className="text-body-3 text-label-600">
+                <p className="text-body-3 text-slate-600">
                   {t('noResumesHint')}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowUpload(true)}
-                  className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-label-100 transition-colors cursor-pointer"
+                  className="px-4 py-2 border border-slate-200 rounded-lg text-body-3 font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   {t('fileUpload')}
                 </button>
                 <button
                   onClick={handleCreateResume}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg text-body-3 font-medium hover:bg-primary-700 transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-body-3 font-medium hover:bg-blue-700 transition-colors cursor-pointer"
                 >
                   {t('createFirst')}
                 </button>
@@ -193,14 +193,14 @@ export function ResumeSection({
           ) : (
             // 필터링 결과가 없는 경우
             <div className="space-y-4">
-              <div className="w-16 h-16 mx-auto bg-label-100 rounded-full flex items-center justify-center">
-                <Search size={24} className="text-label-400" />
+              <div className="w-16 h-16 mx-auto bg-slate-100 rounded-full flex items-center justify-center">
+                <Search size={24} className="text-slate-400" />
               </div>
               <div className="space-y-2">
-                <h4 className="text-caption-1 font-semibold text-label-900">
+                <h4 className="text-caption-1 font-semibold text-slate-900">
                   {t('noResults')}
                 </h4>
-                <p className="text-body-3 text-label-600">
+                <p className="text-body-3 text-slate-600">
                   {t('noResultsHint')}
                 </p>
               </div>
@@ -210,7 +210,7 @@ export function ResumeSection({
                     setSearchQuery('');
                     setFilterStatus('all');
                   }}
-                  className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-label-100 transition-colors cursor-pointer"
+                  className="px-4 py-2 border border-slate-200 rounded-lg text-body-3 font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   {t('resetFilter')}
                 </button>
@@ -222,29 +222,29 @@ export function ResumeSection({
 
       {/* 통계 요약 */}
       {resumes.length > 0 && (
-        <div className="bg-white border border-line-400 rounded-lg p-6">
-          <h4 className="text-body-3 font-semibold text-label-900 mb-4">
+        <div className="bg-white border border-slate-200 rounded-lg p-6">
+          <h4 className="text-body-3 font-semibold text-slate-900 mb-4">
             {t('summaryTitle')}
           </h4>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-title-5 font-bold text-primary-600">
+              <div className="text-title-5 font-bold text-blue-600">
                 {statusCounts.all}
               </div>
-              <div className="text-caption-3 text-label-600">{t('totalResumes')}</div>
+              <div className="text-caption-3 text-slate-600">{t('totalResumes')}</div>
             </div>
             <div className="text-center">
-              <div className="text-title-5 font-bold text-status-caution">
+              <div className="text-title-5 font-bold text-amber-500">
                 {statusCounts.draft}
               </div>
-              <div className="text-caption-3 text-label-600">{t('draft')}</div>
+              <div className="text-caption-3 text-slate-600">{t('draft')}</div>
             </div>
             <div className="text-center">
-              <div className="text-title-5 font-bold text-status-correct">
+              <div className="text-title-5 font-bold text-emerald-500">
                 {statusCounts.completed}
               </div>
-              <div className="text-caption-3 text-label-600">{t('completed')}</div>
+              <div className="text-caption-3 text-slate-600">{t('completed')}</div>
             </div>
           </div>
         </div>

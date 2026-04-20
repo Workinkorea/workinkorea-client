@@ -190,8 +190,12 @@ function MyProfileClient() {
 
         return resumes;
       } catch (err) {
-        // 에러 시 빈 배열 반환
-        return [];
+        // 404 = 이력서 없음 (에러 아님)
+        if (err instanceof FetchError && err.status === 404) {
+          return [];
+        }
+        // 기타 에러는 throw
+        throw err;
       }
     }
   });
@@ -231,13 +235,13 @@ function MyProfileClient() {
   if (authLoading || isLoading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-label-100 py-8">
+        <div className="min-h-screen bg-slate-100 py-8">
           <div className="page-container">
             <div className="animate-pulse space-y-6">
-              <div className="bg-label-100 rounded-xl h-64"></div>
+              <div className="bg-slate-100 rounded-xl h-64"></div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-label-100 rounded-xl h-96"></div>
-                <div className="bg-label-100 rounded-xl h-96"></div>
+                <div className="bg-slate-100 rounded-xl h-96"></div>
+                <div className="bg-slate-100 rounded-xl h-96"></div>
               </div>
             </div>
           </div>
@@ -257,10 +261,10 @@ function MyProfileClient() {
       <Layout>
         <div className="min-h-screen bg-white py-8 flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-title-3 font-semibold text-label-700 mb-2">
+            <h2 className="text-title-3 font-semibold text-slate-700 mb-2">
               {t('errorTitle')}
             </h2>
-            <p className="text-body-3 text-label-500">
+            <p className="text-body-3 text-slate-500">
               {t('errorSubtitle')}
             </p>
           </div>
@@ -272,20 +276,20 @@ function MyProfileClient() {
   if (!profile) {
     return (
       <Layout>
-        <div className="min-h-screen bg-label-100 py-16 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-slate-100 py-16 flex items-center justify-center px-4">
           <div className="text-center max-w-md mx-auto">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary-100 flex items-center justify-center">
-              <Edit3 className="w-8 h-8 text-primary-600" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
+              <Edit3 className="w-8 h-8 text-blue-600" />
             </div>
-            <h2 className="text-title-4 font-bold text-label-900 mb-2">
+            <h2 className="text-title-4 font-bold text-slate-900 mb-2">
               {t('errorTitle')}
             </h2>
-            <p className="text-caption-1 text-label-500 mb-6">
+            <p className="text-caption-1 text-slate-500 mb-6">
               {t('errorSubtitle')}
             </p>
             <button
               onClick={() => router.push('/user/resume/create')}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white text-caption-1 font-semibold rounded-lg hover:bg-primary-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(66,90,213,0.25)]"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(66,90,213,0.25)]"
             >
               {t('createResume')}
             </button>
@@ -309,8 +313,8 @@ function MyProfileClient() {
             transition={{ duration: 0.5 }}
           >
             <div>
-              <h1 className="text-title-2 font-bold text-label-900">{t('title')}</h1>
-              <p className="text-body-3 text-label-500 mt-1">
+              <h1 className="text-title-2 font-bold text-slate-900">{t('title')}</h1>
+              <p className="text-body-3 text-slate-500 mt-1">
                 {t('subtitle')}
               </p>
             </div>
@@ -318,14 +322,14 @@ function MyProfileClient() {
             {/* <div className="flex items-center gap-2">
               <button
                 onClick={handleShare}
-                className="flex items-center gap-2 px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-label-100 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-body-3 font-medium text-slate-700 hover:bg-slate-100 transition-colors"
               >
                 <Share2 size={16} />
                 공유
               </button>
               <button
                 onClick={() => setActiveTab('settings')}
-                className="flex items-center gap-2 px-4 py-2 bg-label-700 text-white rounded-lg text-body-3 font-medium hover:bg-label-800 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg text-body-3 font-medium hover:bg-slate-800 transition-colors"
               >
                 <Settings size={16} />
                 이력서
@@ -359,8 +363,8 @@ function MyProfileClient() {
                   onClick={() => setActiveTab(tab.key as typeof activeTab)}
                   className={`px-4 py-2 rounded-lg text-body-3 font-medium transition-all cursor-pointer ${
                     activeTab === tab.key
-                      ? 'bg-primary-600 text-white shadow-sm'
-                      : 'text-label-700 hover:bg-label-100'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'text-slate-700 hover:bg-slate-100'
                   }`}
                 >
                   {tab.label}
@@ -382,12 +386,12 @@ function MyProfileClient() {
                     transition={{ duration: 0.5, delay: 0.4 }}
                   >
                     <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-title-5 font-semibold text-label-900">
+                      <h3 className="text-title-5 font-semibold text-slate-900">
                         {t('overview.radarTitle')}
                       </h3>
                       <button
                         onClick={handleEditClick}
-                        className="text-primary-500 hover:text-primary-600 transition-colors cursor-pointer"
+                        className="text-blue-500 hover:text-blue-600 transition-colors cursor-pointer"
                       >
                         <Edit3 size={16} />
                       </button>
@@ -406,10 +410,10 @@ function MyProfileClient() {
             {activeTab === 'skills' && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-title-5 font-semibold text-label-900">
+                  <h3 className="text-title-5 font-semibold text-slate-900">
                     {t('skillsSection.title')}
                   </h3>
-                  <button className="px-4 py-2 bg-primary-600 text-white rounded-lg text-body-3 font-medium hover:bg-primary-700 transition-colors cursor-pointer">
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-body-3 font-medium hover:bg-blue-700 transition-colors cursor-pointer">
                     {t('skillsSection.addButton')}
                   </button>
                 </div>
@@ -423,10 +427,10 @@ function MyProfileClient() {
                   />
                 ) : (
                   <div className="bg-white rounded-lg p-12 shadow-sm text-center">
-                    <p className="text-body-3 text-label-600 mb-1">
+                    <p className="text-body-3 text-slate-600 mb-1">
                       {t('skillsSection.empty')}
                     </p>
-                    <p className="text-caption-3 text-label-500">
+                    <p className="text-caption-3 text-slate-500">
                       {t('skillsSection.emptyHint')}
                     </p>
                   </div>
@@ -442,14 +446,14 @@ function MyProfileClient() {
                 transition={{ duration: 0.5 }}
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="text-title-5 font-semibold text-label-900">
+                  <h3 className="text-title-5 font-semibold text-slate-900">
                     {t('experienceSection.title')}
                   </h3>
                   <div className="flex gap-2">
-                    <button className="px-4 py-2 border border-line-400 rounded-lg text-body-3 font-medium text-label-700 hover:bg-label-100 transition-colors cursor-pointer">
+                    <button className="px-4 py-2 border border-slate-200 rounded-lg text-body-3 font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
                       {t('experienceSection.addEducation')}
                     </button>
-                    <button className="px-4 py-2 bg-primary-600 text-white rounded-lg text-body-3 font-medium hover:bg-primary-700 transition-colors cursor-pointer">
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-body-3 font-medium hover:bg-blue-700 transition-colors cursor-pointer">
                       {t('experienceSection.addExperience')}
                     </button>
                   </div>
@@ -458,25 +462,25 @@ function MyProfileClient() {
                 <div className="bg-white rounded-lg p-6 shadow-sm">
                   {/* 교육 이력 */}
                   <div className="space-y-4 mb-8">
-                    <h4 className="text-body-2 font-semibold text-label-700">{t('experienceSection.educationTitle')}</h4>
+                    <h4 className="text-body-2 font-semibold text-slate-700">{t('experienceSection.educationTitle')}</h4>
                     {profile.education.length > 0 ? (
                       profile.education.map((edu) => (
-                        <div key={edu.id} className="flex items-start justify-between border-l-4 border-primary-200 pl-4 py-2">
+                        <div key={edu.id} className="flex items-start justify-between border-l-4 border-blue-200 pl-4 py-2">
                           <div>
-                            <h5 className="text-body-3 font-semibold text-label-900">{edu.institution}</h5>
-                            <p className="text-body-3 text-label-600">{edu.degree} - {edu.field}</p>
-                            <p className="text-caption-3 text-label-500">
+                            <h5 className="text-body-3 font-semibold text-slate-900">{edu.institution}</h5>
+                            <p className="text-body-3 text-slate-600">{edu.degree} - {edu.field}</p>
+                            <p className="text-caption-3 text-slate-500">
                               {edu.startDate} ~ {edu.endDate || t('experienceSection.present')}
                             </p>
                           </div>
-                          <button className="text-label-400 hover:text-label-600 transition-colors cursor-pointer">
+                          <button className="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
                             <Edit3 size={16} />
                           </button>
                         </div>
                       ))
                     ) : (
                       <div className="text-center py-8">
-                        <p className="text-body-3 text-label-500">
+                        <p className="text-body-3 text-slate-500">
                           {t('experienceSection.educationEmpty')}
                         </p>
                       </div>
@@ -486,9 +490,9 @@ function MyProfileClient() {
                   {/* 자격증 */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-body-2 font-semibold text-label-700">{t('experienceSection.certTitle')}</h4>
+                      <h4 className="text-body-2 font-semibold text-slate-700">{t('experienceSection.certTitle')}</h4>
                       {profile.certifications.length > 0 && (
-                        <button className="text-primary-500 hover:text-primary-600 text-caption-3 font-medium transition-colors cursor-pointer">
+                        <button className="text-blue-500 hover:text-blue-600 text-caption-3 font-medium transition-colors cursor-pointer">
                           {t('experienceSection.certManage')}
                         </button>
                       )}
@@ -498,7 +502,7 @@ function MyProfileClient() {
                         {profile.certifications.map((cert, index) => (
                           <span
                             key={index}
-                            className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-caption-3 border border-primary-200 cursor-pointer hover:bg-primary-100 transition-colors"
+                            className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-caption-3 border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors"
                           >
                             {cert}
                           </span>
@@ -506,7 +510,7 @@ function MyProfileClient() {
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <p className="text-body-3 text-label-500">
+                        <p className="text-body-3 text-slate-500">
                           {t('experienceSection.certEmpty')}
                         </p>
                       </div>
@@ -524,7 +528,7 @@ function MyProfileClient() {
               >
                 {resumesLoading ? (
                   <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full"></div>
+                    <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
                   </div>
                 ) : (
                   <ResumeSection

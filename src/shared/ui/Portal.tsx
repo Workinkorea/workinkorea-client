@@ -1,8 +1,14 @@
-import { type ReactNode } from "react";
+'use client';
+
+import { type ReactNode, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 
 export const Portal = ({ children }: { children: ReactNode }) => {
-  const modalRoot = document.getElementById('modal-root');
+  const [modalRoot, setModalRoot] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setModalRoot(document.getElementById('modal-root'));
+  }, []);
 
   if (!modalRoot) {
     return null;

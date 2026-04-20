@@ -262,16 +262,16 @@ export default function BusinessSignupStep2({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-title-2 sm:text-title-1 text-label-900 text-center mb-4 leading-tight">
+          <h1 className="text-title-2 sm:text-title-1 text-slate-900 text-center mb-4 leading-tight">
             <p>{t('title')}</p>
           </h1>
           <div className="flex items-center justify-between text-body-3">
             <div />
-            <span className="text-primary-600">{currentProgress}%</span>
+            <span className="text-blue-600">{currentProgress}%</span>
           </div>
           <div className="mt-2">
-            <div className="w-full bg-label-100 rounded-full h-2">
-              <div className="bg-primary-600 h-2 rounded-full" style={{ width: `${currentProgress}%` }}></div>
+            <div className="w-full bg-slate-100 rounded-full h-2">
+              <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${currentProgress}%` }}></div>
             </div>
           </div>
         </motion.div>
@@ -323,7 +323,7 @@ export default function BusinessSignupStep2({
                         {formState.isVerifying ? t('verifying') : formState.isBusinessNumberVerified ? t('verified') : t('verify')}
                       </Button>
                     </div>
-                    <p className='text-right text-caption-2 underline hover:text-label-700 cursor-pointer'
+                    <p className='text-right text-caption-2 underline hover:text-slate-700 cursor-pointer'
                       onClick={() => window.open(
                         "https://github.com/Workinkorea/workinkorea-client",
                         "_blank"
@@ -336,7 +336,7 @@ export default function BusinessSignupStep2({
               />
 
               {formState.isBusinessNumberVerified && formState.businessNumberMessage && (
-                <p className="text-caption-3 text-primary-600 mt-1">
+                <p className="text-caption-3 text-blue-600 mt-1">
                   {formState.businessNumberMessage}
                 </p>
               )}
@@ -423,7 +423,7 @@ export default function BusinessSignupStep2({
 
                     {/* Helper Text */}
                     {!errors.phoneNumber && field.value && (
-                      <p className="text-caption-3 text-label-500">
+                      <p className="text-caption-3 text-slate-500">
                         {formState.phoneType === 'MOBILE'
                           ? t('phoneHintMobile')
                           : t('phoneHintLandline')}
@@ -459,8 +459,8 @@ export default function BusinessSignupStep2({
                       }}
                       error={!!errors.email}
                     />
-                    <p className="text-caption-2 text-label-500 flex items-center gap-1">
-                      <span className="text-primary-500">ℹ</span>
+                    <p className="text-caption-2 text-slate-500 flex items-center gap-1">
+                      <span className="text-blue-500">ℹ</span>
                       {t('emailLoginHint')}
                     </p>
                   </div>

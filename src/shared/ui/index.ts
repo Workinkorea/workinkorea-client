@@ -86,4 +86,5 @@ export { default as ResumeUpload } from './ResumeUpload';
 export { default as SkillProgressBar } from './SkillProgressBar';
 export { default as RadarChart } from './RadarChart';
 export { default as TermsModal } from './TermsModal';
+export { MarkdownContent } from './MarkdownContent';
 export { default as AccessibleIcon, SearchIcon, CheckIcon, GoogleIcon } from './AccessibleIcon';

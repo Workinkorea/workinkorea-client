@@ -29,12 +29,12 @@ const FieldRow = ({
   optionalLabel?: string;
   children: ReactNode;
 }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-line-200 last:border-0 items-start">
-    <span className="text-caption-1 font-semibold text-label-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
+  <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0 items-start">
+    <span className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
       {label}
-      {required && <span className="text-status-error">*</span>}
+      {required && <span className="text-red-500">*</span>}
       {optional && (
-        <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-label-100 text-label-500 rounded">
+        <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">
           {optionalLabel}
         </span>
       )}
@@ -46,9 +46,9 @@ const FieldRow = ({
 // 공통 select 스타일
 const selectCls = (error: boolean, touched: boolean, hasValue: boolean) =>
   cn(
-    'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-label-800 bg-white transition-colors appearance-none cursor-pointer',
-    'focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
-    error ? 'border-red-500 focus:ring-red-100' : 'border-line-400',
+    'w-full px-3.5 py-2.5 border rounded-lg text-body-3 text-slate-800 bg-white transition-colors appearance-none cursor-pointer',
+    'focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+    error ? 'border-red-500 focus:ring-red-100' : 'border-slate-200',
     !error && touched && hasValue && 'border-emerald-500',
   );
 
@@ -66,14 +66,14 @@ const FieldHint = ({
   hint?: string;
   inputComplete: string;
 }) => {
-  if (error) return <p className="mt-1.5 text-caption-3 text-status-error">{error}</p>;
+  if (error) return <p className="mt-1.5 text-caption-3 text-red-500">{error}</p>;
   if (touched && hasValue)
     return (
-      <p className="mt-1.5 text-caption-3 text-status-correct flex items-center gap-1">
+      <p className="mt-1.5 text-caption-3 text-emerald-500 flex items-center gap-1">
         <span>✓</span> {inputComplete}
       </p>
     );
-  if (hint) return <p className="mt-1.5 text-caption-3 text-label-400">{hint}</p>;
+  if (hint) return <p className="mt-1.5 text-caption-3 text-slate-400">{hint}</p>;
   return null;
 };
 
@@ -205,7 +205,7 @@ export const CompanyInfoSection = ({
           success={!!formData.insurance}
         />
         {!formData.insurance && (
-          <p className="mt-1.5 text-caption-3 text-label-400">{t('fields.insuranceHint')}</p>
+          <p className="mt-1.5 text-caption-3 text-slate-400">{t('fields.insuranceHint')}</p>
         )}
       </FieldRow>
 
