@@ -14,11 +14,13 @@ import { useJobApplication } from '@/features/jobs/hooks/useJobApplication';
 import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { resumeApi } from '@/features/resume/api/resumeApi';
+import { postsApi } from '@/features/jobs/api/postsApi';
 import type { CompanyPostDetailResponse } from '@/shared/types/api';
 import { formatSalary } from '@/shared/lib/utils/formatSalary';
 
 interface JobDetailViewProps {
-  job: CompanyPostDetailResponse;
+  job: CompanyPostDetailResponse | null;
+  jobId: number;
 }
 
 function getDaysLeft(endDate: string): number | null {
@@ -26,7 +28,7 @@ function getDaysLeft(endDate: string): number | null {
   return Math.ceil((new Date(endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 }
 
-export default function JobDetailView({ job }: JobDetailViewProps) {
+export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
   const t = useTranslations('jobs.detail');
   const tCommon = useTranslations('common');
   const tCard = useTranslations('jobs.card');
@@ -38,6 +40,17 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [selectedResumeId, setSelectedResumeId] = useState<number | null>(null);
 
+  // Client-side fallback: only runs when server-side fetch returned null
+  const { data: clientJob, isLoading: clientLoading } = useQuery({
+    queryKey: ['job-detail', jobId],
+    queryFn: () => postsApi.getCompanyPostById(jobId),
+    enabled: !job,
+    staleTime: 5 * 60 * 1000,
+    retry: 2,
+  });
+
+  const effectiveJob = job ?? clientJob;
+
   const { data: resumeData, isLoading: isLoadingResumes } = useQuery({
     queryKey: ['resumes', 'me'],
     queryFn: () => resumeApi.getMyResumes(),
@@ -46,10 +59,10 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
   });
 
   const resumes = resumeData?.resume_list ?? [];
-  const daysLeft = getDaysLeft(job.end_date);
+  const daysLeft = getDaysLeft(effectiveJob?.end_date ?? '');
   const isUrgent = daysLeft !== null && daysLeft >= 0 && daysLeft <= 3;
   const isExpired = daysLeft !== null && daysLeft < 0;
-  const language = job.language ? job.language.split(',').map(l => l.trim()) : [];
+  const language = effectiveJob?.language ? effectiveJob.language.split(',').map(l => l.trim()) : [];
 
   const redirectToLogin = () => {
     router.push(`/login-select?callbackUrl=${encodeURIComponent(pathname)}`);
@@ -69,13 +82,13 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
       redirectToLogin();
       return;
     }
-    toggle(job.id);
+    toggle(effectiveJob!.id);
   };
 
   const handleConfirmApply = () => {
     applyToJob(
       {
-        company_post_id: job.id,
+        company_post_id: effectiveJob!.id,
         ...(selectedResumeId !== null && { resume_id: selectedResumeId }),
       },
       { onSuccess: () => setShowApplyModal(false) }
@@ -91,7 +104,32 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
     }
   };
 
-  const bookmarked = isBookmarked(job.id);
+  // Client-side loading state: server fetch failed, waiting for client fetch
+  if (!effectiveJob && clientLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-body-2 text-slate-500">공고를 불러오는 중...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Not found: both server and client fetches returned nothing
+  if (!effectiveJob) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-title-3 font-bold text-slate-900 mb-2">공고를 찾을 수 없습니다</p>
+            <p className="text-body-2 text-slate-500">삭제되었거나 존재하지 않는 공고입니다.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  const bookmarked = isBookmarked(effectiveJob.id);
 
   return (
     <Layout>
@@ -227,7 +265,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
 
                         {/* Title */}
                         <h1 className="text-title-4 sm:text-title-3 lg:text-title-2 font-extrabold text-label-900 leading-tight line-clamp-3">
-                          {job.title}
+                          {effectiveJob.title}
                         </h1>
                       </div>
                     </div>
@@ -258,20 +296,20 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                     <div className="flex flex-col">
                       <p className="text-caption-3 font-semibold text-label-400 mb-1">{tCommon('label.salary')}</p>
                       <p className="text-body-3 font-extrabold text-primary-600">
-                        {formatSalary(job.salary)}
+                        {formatSalary(effectiveJob.salary)}
                       </p>
                     </div>
                     <div className="flex flex-col">
                       <p className="text-caption-3 font-semibold text-label-400 mb-1">{tCommon('label.location')}</p>
-                      <p className="text-body-3 font-bold text-label-900 line-clamp-2">{job.work_location}</p>
+                      <p className="text-body-3 font-bold text-label-900 line-clamp-2">{effectiveJob.work_location}</p>
                     </div>
                     <div className="flex flex-col">
                       <p className="text-caption-3 font-semibold text-label-400 mb-1">{tCommon('label.employmentType')}</p>
-                      <p className="text-body-3 font-bold text-label-900">{job.employment_type}</p>
+                      <p className="text-body-3 font-bold text-label-900">{effectiveJob.employment_type}</p>
                     </div>
                     <div className="flex flex-col">
                       <p className="text-caption-3 font-semibold text-label-400 mb-1">{tCommon('label.workingHours')}</p>
-                      <p className="text-body-3 font-bold text-label-900">{t('workingHoursUnit', { hours: job.working_hours })}</p>
+                      <p className="text-body-3 font-bold text-label-900">{t('workingHoursUnit', { hours: effectiveJob.working_hours })}</p>
                     </div>
                   </div>
 
@@ -279,7 +317,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                   <div className="flex items-center gap-3 p-4 bg-status-caution-bg border border-amber-100 rounded-lg">
                     <Calendar className="text-status-caution shrink-0" size={18} />
                     <p className="text-caption-1 text-label-900">
-                      <span className="font-semibold">{t('recruitPeriod')}:</span> {job.start_date} ~ {job.end_date}
+                      <span className="font-semibold">{t('recruitPeriod')}:</span> {effectiveJob.start_date} ~ {effectiveJob.end_date}
                     </p>
                   </div>
                 </div>
@@ -295,7 +333,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                     <FileText size={16} className="text-primary-600" />
                     {t('jobContent')}
                   </h3>
-                  <p className="text-caption-1 text-label-700 leading-relaxed whitespace-pre-wrap">{job.content}</p>
+                  <p className="text-caption-1 text-label-700 leading-relaxed whitespace-pre-wrap">{effectiveJob.content}</p>
                 </div>
 
                 <div className="border-t border-line-200" />
@@ -306,7 +344,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                     <Briefcase size={16} className="text-primary-600" />
                     {t('experience')}
                   </h3>
-                  <p className="text-caption-1 text-label-700 leading-relaxed">{job.work_experience}</p>
+                  <p className="text-caption-1 text-label-700 leading-relaxed">{effectiveJob.work_experience}</p>
                 </div>
 
                 <div className="border-t border-line-200" />
@@ -317,7 +355,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                     <GraduationCap size={16} className="text-primary-600" />
                     {t('education')}
                   </h3>
-                  <p className="text-caption-1 text-label-700 leading-relaxed">{job.education}</p>
+                  <p className="text-caption-1 text-label-700 leading-relaxed">{effectiveJob.education}</p>
                 </div>
 
                 {/* Languages Section */}
@@ -357,7 +395,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                 <div className="space-y-1">
                   <p className="text-caption-3 font-semibold text-label-400">{tCommon('label.salary')}</p>
                   <p className="text-title-1 font-extrabold text-primary-600 leading-tight">
-                    {formatSalary(job.salary)}
+                    {formatSalary(effectiveJob.salary)}
                   </p>
                 </div>
 
@@ -399,8 +437,8 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                 {/* Recruitment Info */}
                 <div className="p-4 bg-label-50 rounded-lg border border-line-200 space-y-2 mt-6 pt-6 border-t">
                   <p className="text-caption-3 font-semibold text-label-400">{tCommon('label.period')}</p>
-                  <p className="text-caption-1 font-semibold text-label-900">{job.start_date}</p>
-                  <p className="text-caption-1 text-label-600">~ {job.end_date}</p>
+                  <p className="text-caption-1 font-semibold text-label-900">{effectiveJob.start_date}</p>
+                  <p className="text-caption-1 text-label-600">~ {effectiveJob.end_date}</p>
                 </div>
               </motion.div>
             </div>

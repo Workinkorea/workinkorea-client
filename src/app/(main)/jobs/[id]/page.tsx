@@ -27,27 +27,31 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   if (!job) {
     return {
-      title: '공고를 찾을 수 없습니다 - WorkInKorea',
+      title: '채용 공고 - WorkInKorea',
     };
   }
 
   return {
     title: `${job.title} - WorkInKorea`,
-    description: `${job.content.substring(0, 150)}...`,
+    description: `${job.content?.substring(0, 150) ?? ''}`,
     openGraph: {
       title: job.title,
-      description: job.content.substring(0, 150),
+      description: job.content?.substring(0, 150) ?? '',
     },
   };
 }
 
 export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const job = await getJobDetail(id);
+  const jobId = Number(id);
 
-  if (!job) {
+  if (isNaN(jobId) || jobId <= 0) {
     notFound();
   }
 
-  return <JobDetailView job={job} />;
+  const job = await getJobDetail(id);
+  // Note: job may be null if server-side fetch failed.
+  // JobDetailView will attempt client-side fetch when job is null.
+
+  return <JobDetailView job={job} jobId={jobId} />;
 }
