@@ -9,6 +9,7 @@ import { cn } from '@/shared/lib/utils/utils';
 import { UserTypeToggle } from '@/shared/components/UserTypeToggle';
 import type { ViewType } from '@/shared/components/UserTypeToggle';
 import { LanguageToggle } from '@/shared/components/LanguageToggle';
+import { Portal } from '@/shared/ui/Portal';
 
 interface NavItem {
   name: string;
@@ -112,9 +113,10 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout,
         <Menu size={22} />
       </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <>
+      <Portal>
+        <AnimatePresence>
+          {isOpen && (
+            <>
             {/* ① 딤 오버레이 — fixed inset-0, 클릭 시 닫기 */}
             <motion.div
               key="overlay"
@@ -277,9 +279,10 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout,
               </div>
 
             </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+            </>
+          )}
+        </AnimatePresence>
+      </Portal>
     </div>
   );
 }
