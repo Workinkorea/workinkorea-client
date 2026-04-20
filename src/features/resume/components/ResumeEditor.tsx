@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   Plus,
@@ -25,6 +25,7 @@ import {
 import { Button } from '@/shared/ui/Button';
 import { Resume, ResumeTemplate } from '@/features/user/types/user';
 import { resumeApi } from '@/features/resume/api/resumeApi';
+import { profileApi } from '@/features/profile/api/profileApi';
 import { FormField } from '@/shared/ui/FormField';
 import DatePicker from '@/shared/ui/DatePicker';
 import type {
@@ -91,6 +92,15 @@ function ResumeEditor({
     license: false,
   });
 
+  // ISSUE-29: 프로필 데이터 조회하여 이력서 제목 프리필
+  const { data: profileData } = useQuery({
+    queryKey: ['profile', 'me'],
+    queryFn: () => profileApi.getProfile(),
+    enabled: !isEditMode, // 신규 작성 시에만 조회
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  });
+
   const toggleSection = (key: string) => {
     setOpenSections(prev => ({ ...prev, [key]: !prev[key] }));
   };
@@ -154,6 +164,13 @@ function ResumeEditor({
           })) || [{ license_name: '', license_agency: '', license_date: '' }]
     }
   });
+
+  // ISSUE-29: 프로필 데이터가 로드되면 이름으로 이력서 제목 프리필
+  useEffect(() => {
+    if (!isEditMode && profileData?.name && !watch('title')) {
+      setValue('title', `${profileData.name}의 이력서`);
+    }
+  }, [profileData, isEditMode, setValue, watch]);
 
   const { fields: languageFields, append: appendLanguage, remove: removeLanguage } = useFieldArray({
     control,

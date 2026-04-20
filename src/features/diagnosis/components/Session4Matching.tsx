@@ -99,10 +99,9 @@ export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = f
                 onChange={() => toggleChallenge(challenge.value)}
                 className="w-5 h-5 text-primary-600 focus:ring-primary-500 rounded"
               />
-              <div className="flex items-center gap-2">
-                <span className="text-title-4">{challenge.emoji}</span>
-                <span className="text-body-3 text-label-700">{challenge.label}</span>
-              </div>
+              <span className="text-body-3 text-label-700">
+                {challenge.emoji} {challenge.label}
+              </span>
             </label>
           ))}
         </div>

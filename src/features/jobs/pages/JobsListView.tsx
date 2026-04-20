@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Search, Bookmark, X, ChevronDown, Briefcase } from 'lucide-react';
 import Link from 'next/link';
@@ -58,6 +58,18 @@ export default function JobsListView({
   const { data, isLoading, error } = useCompanyPosts(currentPage, limit, initialData);
   const { bookmarks, isBookmarked } = useBookmarks();
   const { isAuthenticated } = useAuth();
+
+  // ISSUE-60: 기업 세션에서 로딩 스켈레톤이 무한히 표시되는 문제 방지
+  // 10초 후에도 로딩 중이면 강제로 로딩 해제
+  const [loadingTimedOut, setLoadingTimedOut] = useState(false);
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingTimedOut(false);
+      return;
+    }
+    const timer = setTimeout(() => setLoadingTimedOut(true), 10000);
+    return () => clearTimeout(timer);
+  }, [isLoading]);
 
   const handleBookmarkToggle = useCallback(() => {
     if (!isAuthenticated) {
@@ -138,6 +150,9 @@ export default function JobsListView({
   }, [posts, searchQuery, selectedType, sortBy, showBookmarksOnly, isBookmarked]);
 
   const isFiltered = searchQuery.trim() !== '' || selectedType !== 'all' || showBookmarksOnly;
+
+  // ISSUE-60: 타임아웃 발생 시 로딩 상태 해제 (기업 세션 무한 스켈레톤 방지)
+  const showLoading = isLoading && !loadingTimedOut;
 
   return (
     <Layout>
@@ -322,7 +337,7 @@ export default function JobsListView({
             {/* Main Content Area */}
             <div>
               {/* Results Header: Count + Sort Tabs */}
-              {!isLoading && !error && (
+              {!showLoading && !error && (
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 pb-4 border-b border-line-400">
                   <p className="text-body-2 font-semibold text-label-900">
                     {isFiltered
@@ -350,7 +365,7 @@ export default function JobsListView({
               )}
 
               {/* Skeleton Loading */}
-              {isLoading && (
+              {showLoading && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <div key={i} className="bg-white rounded-xl p-5 sm:p-6 border border-line-400 overflow-hidden">
@@ -389,7 +404,7 @@ export default function JobsListView({
               )}
 
               {/* Job Grid */}
-              {!isLoading && !error && filteredPosts.length > 0 ? (
+              {!showLoading && !error && filteredPosts.length > 0 ? (
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {filteredPosts.map(post => (
@@ -404,7 +419,7 @@ export default function JobsListView({
                     </div>
                   )}
                 </>
-              ) : !isLoading && !error ? (
+              ) : !showLoading && !error ? (
                 <div className="text-center py-16 sm:py-24">
                   {showBookmarksOnly && bookmarks.length === 0 ? (
                     <>
