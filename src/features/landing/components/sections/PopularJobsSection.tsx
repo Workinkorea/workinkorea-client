@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { useTranslations } from 'next-intl';
+import { formatSalary } from '@/shared/lib/utils/formatSalary';
 
 export default function PopularJobsSection() {
   const t = useTranslations('landing.popularJobs');
@@ -203,7 +204,7 @@ export default function PopularJobsSection() {
                           <span className="text-caption-2 md:text-body-3">• {post.employment_type}</span>
                         </div>
                         <p className="text-primary-600 font-semibold text-caption-1 md:text-body-2">
-                          {post.salary ? `${post.salary.toLocaleString()}원` : tCommon('label.negotiable')}
+                          {formatSalary(post.salary, tCommon('label.negotiable'))}
                         </p>
                       </div>
 

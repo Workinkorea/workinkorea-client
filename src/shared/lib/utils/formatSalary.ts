@@ -5,8 +5,13 @@
  * formatSalary(3800) → "3,800만원"
  * formatSalary(0) → "급여 협의"
  * formatSalary(null) → "급여 협의"
+ * formatSalary(3800, 'Negotiable') → "3,800만원"
+ * formatSalary(0, 'Negotiable') → "Negotiable"
  */
-export function formatSalary(salary: number | null | undefined): string {
-  if (!salary || salary === 0) return '급여 협의';
+export function formatSalary(
+  salary: number | null | undefined,
+  negotiableLabel = '급여 협의'
+): string {
+  if (!salary) return negotiableLabel;
   return `${salary.toLocaleString('ko-KR')}만원`;
 }

@@ -11,6 +11,7 @@ import { postsApi } from '@/features/jobs/api/postsApi';
 import type { CompanyPost } from '@/shared/types/api';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/shared/lib/utils/utils';
+import { formatSalary } from '@/shared/lib/utils/formatSalary';
 
 function CompanyJobsClient() {
   const t = useTranslations('jobs.manage');
@@ -171,7 +172,7 @@ function CompanyJobsClient() {
                               </span>
                             </div>
                             <p className="text-caption-2 text-label-500">
-                              {post.salary ? `${post.salary.toLocaleString()}원` : t('negotiable')}
+                              {formatSalary(post.salary, t('negotiable'))}
                             </p>
                             <p className="text-caption-2 text-label-400">
                               {post.start_date} ~ {post.end_date}
