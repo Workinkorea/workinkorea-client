@@ -39,6 +39,12 @@ function CallbackContent() {
 
         login('user');
 
+        // Fallback: ensure userType cookie is set before redirect
+        // (cookieManager.setUserType() already called in login(), but check to be safe)
+        if (!document.cookie.includes('userType=')) {
+          document.cookie = 'userType=user;path=/;max-age=604800;SameSite=Lax';
+        }
+
         // 프로필 존재 여부 확인 → 없으면 프로필 생성 페이지로
         try {
           await profileApi.getProfile();

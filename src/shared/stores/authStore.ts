@@ -127,6 +127,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
         if (userTypeFromBody) {
           // Current path: backend sets token as cookie, returns user_type in body
+          // Ensure userType cookie is set (in case it expired or was deleted)
+          cookieManager.setUserType(userTypeFromBody);
           set({
             isAuthenticated: true,
             userType: userTypeFromBody,

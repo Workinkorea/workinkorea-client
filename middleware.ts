@@ -96,8 +96,9 @@ export function middleware(request: NextRequest) {
 
   // Admin routes
   if (pathname.startsWith('/admin')) {
+    if (pathname === '/admin/login') return NextResponse.next();  // pass-through
     if (!userType) {
-      const loginUrl = new URL('/login-select', request.url);
+      const loginUrl = new URL('/admin/login', request.url);
       loginUrl.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(loginUrl);
     }
