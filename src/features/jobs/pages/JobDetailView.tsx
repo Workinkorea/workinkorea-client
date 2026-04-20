@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MapPin, DollarSign, Briefcase, GraduationCap, Languages, Calendar, Building2, FileText, Bookmark, Share2, ChevronLeft } from 'lucide-react';
+import { MapPin, DollarSign, Briefcase, GraduationCap, Languages, Calendar, Building2, FileText, Bookmark, Share2, ChevronLeft, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
@@ -41,7 +41,7 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
   const [selectedResumeId, setSelectedResumeId] = useState<number | null>(null);
 
   // Client-side fallback: only runs when server-side fetch returned null
-  const { data: clientJob, isLoading: clientLoading } = useQuery({
+  const { data: clientJob, isLoading: clientLoading, error: clientError, refetch } = useQuery({
     queryKey: ['job-detail', jobId],
     queryFn: () => postsApi.getCompanyPostById(jobId),
     enabled: !job,
@@ -106,12 +106,39 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
     }
   };
 
+  // Determine if the client-side error is a server error (5xx)
+  const isServerError = clientError && typeof clientError === 'object' && 'status' in clientError && (clientError as { status: number }).status >= 500;
+
   // Client-side loading state: server fetch failed, waiting for client fetch
   if (!effectiveJob && clientLoading) {
     return (
       <Layout>
         <div className="min-h-screen flex items-center justify-center">
-          <div className="text-body-2 text-slate-500">공고를 불러오는 중...</div>
+          <div className="text-body-2 text-slate-500">{t('loadingText')}</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Server error (5xx): show retry UI
+  if (!effectiveJob && isServerError) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center px-4">
+          <div className="text-center max-w-sm mx-auto">
+            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <RefreshCw className="w-8 h-8 text-red-400" />
+            </div>
+            <p className="text-title-3 font-bold text-slate-900 mb-2">{t('serverErrorTitle')}</p>
+            <p className="text-body-2 text-slate-500 mb-6">{t('serverErrorDesc')}</p>
+            <button
+              onClick={() => refetch()}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
+            >
+              <RefreshCw size={16} />
+              {tCommon('button.retry')}
+            </button>
+          </div>
         </div>
       </Layout>
     );
@@ -121,10 +148,16 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
   if (!effectiveJob) {
     return (
       <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-title-3 font-bold text-slate-900 mb-2">공고를 찾을 수 없습니다</p>
-            <p className="text-body-2 text-slate-500">삭제되었거나 존재하지 않는 공고입니다.</p>
+        <div className="min-h-screen flex items-center justify-center px-4">
+          <div className="text-center max-w-sm mx-auto">
+            <p className="text-title-3 font-bold text-slate-900 mb-2">{t('notFoundTitle')}</p>
+            <p className="text-body-2 text-slate-500 mb-6">{t('notFoundDesc')}</p>
+            <Link
+              href="/jobs"
+              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              {t('backToListFull')}
+            </Link>
           </div>
         </div>
       </Layout>

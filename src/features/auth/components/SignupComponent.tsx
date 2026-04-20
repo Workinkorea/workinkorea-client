@@ -345,6 +345,13 @@ export default function SignupComponent({
                 </p>
               </div>
 
+              {/* ISSUE-18: 이메일 일치 안내 */}
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+                <p className="text-caption-1 text-amber-700">
+                  {t('emailMatchHint')}
+                </p>
+              </div>
+
               <div className="mb-6">
                 <FormField
                   name="email"

@@ -132,27 +132,36 @@ export default function JobCard({ post }: JobCardProps) {
             {formatSalary(post.salary)}
           </p>
 
-          {/* Bottom: Language Tags */}
+          {/* Bottom: Language Tags + Expired Badge */}
           <div className="border-t border-line-200 pt-4 mt-auto">
-            {language.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5">
-                {language.slice(0, 3).map((lang, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-label-100 text-label-600 border border-line-400 group-hover:bg-primary-50 group-hover:text-primary-700 group-hover:border-primary-200 transition-colors"
-                  >
-                    {lang}
-                  </span>
-                ))}
-                {language.length > 3 && (
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold text-label-400">
-                    +{language.length - 3}
-                  </span>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                {language.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5">
+                    {language.slice(0, 3).map((lang, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-label-100 text-label-600 border border-line-400 group-hover:bg-primary-50 group-hover:text-primary-700 group-hover:border-primary-200 transition-colors"
+                      >
+                        {lang}
+                      </span>
+                    ))}
+                    {language.length > 3 && (
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold text-label-400">
+                        +{language.length - 3}
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-caption-2 text-label-400">{tCommon('label.noData')}</p>
                 )}
               </div>
-            ) : (
-              <p className="text-caption-2 text-label-400">{tCommon('label.noData')}</p>
-            )}
+              {isExpired && (
+                <span className="inline-flex items-center bg-slate-100 text-slate-500 text-caption-2 px-2 py-0.5 rounded-full shrink-0 font-semibold">
+                  {tCommon('status.closed')}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </Link>

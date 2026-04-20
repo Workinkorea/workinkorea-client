@@ -236,7 +236,12 @@
       "expiredBadge": "Closed",
       "bookmarkBtn": "Bookmark",
       "shareLabel": "Share Link",
-      "workingHoursUnit": "{hours}h"
+      "workingHoursUnit": "{hours}h",
+      "loadingText": "Loading job details...",
+      "serverErrorTitle": "Server Error",
+      "serverErrorDesc": "Unable to load the job posting due to a server error. Please try again shortly.",
+      "notFoundTitle": "Job Not Found",
+      "notFoundDesc": "This job posting has been removed or does not exist."
     },
     "manage": {
       "title": "Job Post Management",
@@ -635,6 +640,7 @@
       "toastError": "An error occurred during sign up.",
       "oauthSignupGuide": "Google account verified. Please fill in the details below to complete your registration.",
       "oauthPolicyBanner": "Work In Korea uses Google accounts for login. The registration email is for verification only — please use your Google account for actual sign-in.",
+      "emailMatchHint": "For a smooth login experience, please use the same email as your Google account.",
       "alreadyAccount": "Already have an account?",
       "loginLink": "Sign In",
       "termLabels": {
