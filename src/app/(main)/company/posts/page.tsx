@@ -8,7 +8,7 @@ export const metadata: Metadata = createMetadata({
   description: '등록한 채용 공고를 관리하세요.',
 });
 
-export default function CompanyJobsPage() {
+export default function CompanyPostsPage() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-slate-50 animate-pulse" />}>
       <CompanyJobsClient />
