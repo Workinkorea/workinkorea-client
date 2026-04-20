@@ -176,11 +176,21 @@ async function refreshToken(isServer: boolean): Promise<boolean> {
 /**
  * 인증 실패 시 로그아웃 처리
  * - Client-side only
+ * - userType 쿠키를 삭제해야 미들웨어 리다이렉트 루프 방지
  */
 function handleAuthFailure(): void {
   if (typeof window === 'undefined') return;
 
   const userType = getUserTypeFromCookie();
+
+  // userType 쿠키 삭제 (미들웨어가 보호 라우트 → 로그인 리다이렉트 루프 방지)
+  document.cookie = 'userType=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
+  const hostname = window.location.hostname;
+  if (hostname.includes('workinkorea.net')) {
+    document.cookie = 'userType=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.workinkorea.net; SameSite=Lax';
+  } else if (hostname.includes('moon-core.com')) {
+    document.cookie = 'userType=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.moon-core.com; SameSite=Lax';
+  }
 
   const loginPath =
     userType === 'company' ? '/company-login' :

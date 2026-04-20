@@ -37,10 +37,15 @@ function setCookie(name: string, value: string, days: number = 7): void {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
 
-  const domain = window.location.hostname.includes('moon-core.com') ? '.moon-core.com' : '';
-  const domainAttr = domain ? `domain=${domain};` : '';
+  const hostname = window.location.hostname;
+  let domainAttr = '';
+  if (hostname.includes('moon-core.com')) {
+    domainAttr = 'domain=.moon-core.com;';
+  } else if (hostname.includes('workinkorea.net')) {
+    domainAttr = 'domain=.workinkorea.net;';
+  }
 
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;${domainAttr}SameSite=Lax`;
+  document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; ${domainAttr}SameSite=Lax`;
 }
 
 /**
@@ -54,28 +59,30 @@ function deleteCookie(name: string): void {
   if (typeof window === 'undefined') return;
 
   const hostname = window.location.hostname;
-  const expired = 'expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax';
+  const expired = 'expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
 
   // 1. 도메인 속성 없음 (hostname 기본)
-  document.cookie = `${name}=;${expired}`;
+  document.cookie = `${name}=; ${expired}`;
   // 2. dot prefix 포함 (백엔드 Set-Cookie 방식)
-  document.cookie = `${name}=;${expired};domain=.${hostname}`;
+  document.cookie = `${name}=; ${expired}; domain=.${hostname}`;
   // 3. dot prefix 없음 (명시적 hostname)
-  document.cookie = `${name}=;${expired};domain=${hostname}`;
+  document.cookie = `${name}=; ${expired}; domain=${hostname}`;
+  // 4. 루트 도메인 (.workinkorea.net, .moon-core.com)
+  if (hostname.includes('workinkorea.net')) {
+    document.cookie = `${name}=; ${expired}; domain=.workinkorea.net`;
+  } else if (hostname.includes('moon-core.com')) {
+    document.cookie = `${name}=; ${expired}; domain=.moon-core.com`;
+  }
 }
 
 export const cookieManager = {
   /**
    * userType 읽기 (Public Cookie)
    *
-   * @deprecated HttpOnly 쿠키 전환으로 인해 클라이언트에서 읽을 수 없음 (항상 null 반환)
-   * 인증 상태 확인은 authApi.getProfile()을 사용하세요.
+   * 클라이언트에서 설정한 non-HttpOnly userType 쿠키를 읽는다.
+   * authStore.initialize() 의 폴백 경로에서 사용.
    *
    * @returns 'user' | 'company' | 'admin' | null
-   *
-   * @example
-   * // Don't use this for auth check
-   * // const userType = cookieManager.getUserType() // returns null
    */
   getUserType: (): UserType | null => {
     const value = getCookie('userType');
