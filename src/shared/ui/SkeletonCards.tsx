@@ -297,6 +297,33 @@ export function DiagnosisSkeleton() {
   );
 }
 
+/** 홈 히어로 섹션 스켈레톤 */
+export function HeroSectionSkeleton() {
+  return (
+    <section className="bg-white min-h-[calc(100vh-65px)] sm:min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+      {/* 검색바 */}
+      <div className="w-full max-w-2xl mb-12 sm:mb-16">
+        <Skeleton className="h-14 w-full rounded-full" />
+      </div>
+
+      {/* 텍스트 + 버튼 */}
+      <div className="flex flex-col items-center text-center">
+        {/* 브랜드 타이틀 */}
+        <Skeleton variant="text" className="h-12 sm:h-16 w-48 sm:w-64 mb-3" />
+
+        {/* 서브타이틀 */}
+        <Skeleton variant="text" className="h-6 sm:h-8 w-44 sm:w-56 mb-3" />
+
+        {/* 설명 */}
+        <Skeleton variant="text" className="h-4 sm:h-5 w-60 sm:w-80 mb-8" />
+
+        {/* CTA 버튼 */}
+        <Skeleton className="h-12 w-32 rounded-lg" />
+      </div>
+    </section>
+  );
+}
+
 /** 어드민 대시보드 스켈레톤 */
 export function AdminDashboardSkeleton() {
   return (
