@@ -78,17 +78,19 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
   };
 
   const handleBookmarkToggle = () => {
+    if (!effectiveJob) return;
     if (!isAuthLoading && !isAuthenticated) {
       redirectToLogin();
       return;
     }
-    toggle(effectiveJob!.id);
+    toggle(effectiveJob.id);
   };
 
   const handleConfirmApply = () => {
+    if (!effectiveJob) return;
     applyToJob(
       {
-        company_post_id: effectiveJob!.id,
+        company_post_id: effectiveJob.id,
         ...(selectedResumeId !== null && { resume_id: selectedResumeId }),
       },
       { onSuccess: () => setShowApplyModal(false) }
