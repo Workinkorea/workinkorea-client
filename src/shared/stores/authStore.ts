@@ -6,6 +6,9 @@ import { tokenStore, decodeUserType } from '@/shared/api/tokenStore';
 const BYPASS_AUTH = process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true';
 const BYPASS_AUTH_TYPE = (process.env.NEXT_PUBLIC_BYPASS_AUTH_TYPE ?? 'user') as UserType;
 
+// initialize() 중복 실행 방지 (페이지 이동마다 refresh 호출 방지)
+let _initializationPromise: Promise<void> | null = null;
+
 interface AuthState {
   // State
   isAuthenticated: boolean;
@@ -19,7 +22,7 @@ interface AuthState {
   checkAuth: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   // Initial state
   isAuthenticated: false,
   userType: null,
@@ -94,7 +97,10 @@ export const useAuthStore = create<AuthState>((set) => ({
    */
   initialize: async () => {
     if (typeof window === 'undefined') return;
+    if (get().isInitialized) return;           // Already initialized — skip
+    if (_initializationPromise) return _initializationPromise; // In progress — wait
 
+    _initializationPromise = (async () => {
     // 로컬 개발 테스트 모드: 인증 우회
     if (BYPASS_AUTH) {
       set({
@@ -192,6 +198,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       userType: null,
       isInitialized: true,
     });
+    })().finally(() => { _initializationPromise = null; });
+
+    return _initializationPromise;
   },
 
   /**
