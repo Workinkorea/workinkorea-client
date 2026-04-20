@@ -6,8 +6,11 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const withPWA = withPWAInit({
   dest: 'public',
-  cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
+  // cacheOnFrontEndNav + aggressiveFrontEndNavCaching 비활성화
+  // 이유: 인증 상태 변경 후 SW가 캐시된 HTML을 제공하면
+  // React 하이드레이션 불일치 → 영구 skeleton 표시 버그 발생
+  cacheOnFrontEndNav: false,
+  aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
   disable: process.env.NODE_ENV === 'development',
   workboxOptions: {
@@ -67,7 +70,7 @@ const nextConfig: NextConfig = {
               // Service Worker 허용 (PWA)
               "worker-src 'self'",
 
-              `connect-src 'self' https://wik-dev.moon-core.com https://t1.daumcdn.net https://static.cloudflareinsights.com`,
+              `connect-src 'self' https://wik-dev.moon-core.com https://*.workinkorea.net https://t1.daumcdn.net https://static.cloudflareinsights.com`,
               // iframe 허용 안 함 (frame-ancestors와 함께 사용)
               "frame-src 'none'",
               // 객체 임베드 차단

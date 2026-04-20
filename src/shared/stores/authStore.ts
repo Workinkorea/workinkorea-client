@@ -22,6 +22,35 @@ interface AuthState {
   checkAuth: () => Promise<void>;
 }
 
+/**
+ * GET /api/me 로 세션 유효성 ���인
+ * HttpOnly access_token 쿠키가 살아있으면 200 반환 → userType 결정
+ */
+async function verifySessionWithProfile(): Promise<UserType | null> {
+  try {
+    const controller = new AbortController();
+    const tid = setTimeout(() => controller.abort(), 3000);
+
+    const res = await fetch('/api/me', {
+      credentials: 'include',
+      signal: controller.signal,
+    });
+    clearTimeout(tid);
+
+    if (res.ok) {
+      // /api/me 가 200이면 개인 회원으로 인증됨
+      // (기업 회원은 /api/company-profile 을 사용)
+      const cookieUserType = cookieManager.getUserType();
+      const userType = cookieUserType ?? 'user';
+      cookieManager.setUserType(userType);
+      return userType;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   // Initial state
   isAuthenticated: false,
@@ -42,9 +71,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       isInitialized: true,
     });
 
-    // non-HttpOnly 쿠키를 별도 설정 — initialize() 폴백에서 document.cookie로 읽기 위해 필요
+    // non-HttpOnly 쿠키를 별도 설정 -- initialize() 폴백에서 document.cookie로 읽기 위해 필요
     // 백엔드가 설정한 쿠키는 HttpOnly이므로 JS에서 읽을 수 없음
-    // (브라우저 DevTools에 2개로 표시되나 값은 동일하며 각각 역할이 다름)
     cookieManager.setUserType(userType);
   },
 
@@ -88,116 +116,134 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   /**
    * 앱 시작 시 인증 상태 초기화
    *
-   * refresh_token (HttpOnly Cookie)으로 access_token을 재발급받고
-   * JWT payload에서 userType을 추출하여 인증 상태 결정
+   * 전략 (우선순위 순):
+   * 1. POST /api/auth/refresh -> access_token 재발급 + userType 결정
+   * 2. refresh 실패 시 GET /api/me -> HttpOnly access_token 쿠키가 유효한지 확인
+   * 3. 위 모두 실패 시 userType 쿠키 폴백
    *
-   * 타임아웃 설정: 10초
-   * - 네트워크 지연 또는 서버 무응답 시 skeleton이 무한히 표시되는 것을 방지
-   * - 타임아웃 발생 시 쿠키 폴백으로 사용자 진행 가능
+   * 타임아웃: 5초 (skeleton 무한 표시 방지)
    */
   initialize: async () => {
     if (typeof window === 'undefined') return;
-    if (get().isInitialized) return;           // Already initialized — skip
-    if (_initializationPromise) return _initializationPromise; // In progress — wait
+    if (get().isInitialized) return;
+    if (_initializationPromise) return _initializationPromise;
 
     _initializationPromise = (async () => {
-    // 로컬 개발 테스트 모드: 인증 우회
-    if (BYPASS_AUTH) {
-      set({
-        isAuthenticated: true,
-        userType: BYPASS_AUTH_TYPE,
-        isInitialized: true,
-      });
-      return;
-    }
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-    try {
-      const response = await fetch('/api/auth/refresh', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (response.ok) {
-        const data = await response.json();
-        const token: string | undefined = data.access_token;
-        const userTypeFromBody: UserType | undefined = data.user_type;
-
-        if (token) {
-          // Legacy path: backend returns token in body
-          tokenStore.set(token);
-          const userType = decodeUserType(token);
-          set({
-            isAuthenticated: true,
-            userType,
-            isInitialized: true,
-          });
-          return;
-        }
-
-        if (userTypeFromBody) {
-          // Current path: backend sets token as cookie, returns user_type in body
-          // Ensure userType cookie is set (in case it expired or was deleted)
-          cookieManager.setUserType(userTypeFromBody);
-          set({
-            isAuthenticated: true,
-            userType: userTypeFromBody,
-            isInitialized: true,
-          });
-          return;
-        }
-
-        // Fallback: 서버가 200 OK를 반환했지만 body에 token/user_type이 없는 경우
-        // userType 쿠키를 확인해 인증 상태 복원 (로그인 시 서버가 설정한 쿠키)
-        const cookieUserType = cookieManager.getUserType();
-        if (cookieUserType) {
-          set({
-            isAuthenticated: true,
-            userType: cookieUserType,
-            isInitialized: true,
-          });
-          return;
-        }
-      } else {
-        // refresh non-200 (서버 오류, 토큰 만료 등) — 쿠키로 마지막 폴백
-        // access_token / userType 쿠키가 살아 있으면 인증 상태 유지
-        const cookieUserType = cookieManager.getUserType();
-        if (cookieUserType) {
-          set({
-            isAuthenticated: true,
-            userType: cookieUserType,
-            isInitialized: true,
-          });
-          return;
-        }
-      }
-    } catch (err) {
-      clearTimeout(timeoutId);
-
-      // 네트워크 오류 또는 타임아웃 — 쿠키로 마지막 폴백
-      const cookieUserType = cookieManager.getUserType();
-      if (cookieUserType) {
+      // 로컬 개발 테스트 모드: 인증 우회
+      if (BYPASS_AUTH) {
         set({
           isAuthenticated: true,
-          userType: cookieUserType,
+          userType: BYPASS_AUTH_TYPE,
           isInitialized: true,
         });
         return;
       }
-    }
 
-    tokenStore.clear();
-    set({
-      isAuthenticated: false,
-      userType: null,
-      isInitialized: true,
-    });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+      try {
+        const response = await fetch('/api/auth/refresh', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          const data = await response.json();
+          const token: string | undefined = data.access_token;
+          const userTypeFromBody: UserType | undefined = data.user_type;
+
+          if (token) {
+            tokenStore.set(token);
+            const userType = decodeUserType(token);
+            if (userType) cookieManager.setUserType(userType);
+            set({
+              isAuthenticated: true,
+              userType,
+              isInitialized: true,
+            });
+            return;
+          }
+
+          if (userTypeFromBody) {
+            cookieManager.setUserType(userTypeFromBody);
+            set({
+              isAuthenticated: true,
+              userType: userTypeFromBody,
+              isInitialized: true,
+            });
+            return;
+          }
+
+          // 서버가 200 OK지만 body에 token/user_type 없음
+          const cookieUserType = cookieManager.getUserType();
+          if (cookieUserType) {
+            set({
+              isAuthenticated: true,
+              userType: cookieUserType,
+              isInitialized: true,
+            });
+            return;
+          }
+        } else {
+          // refresh 실패 (401 등)
+          // HttpOnly access_token 쿠키가 살아있을 수 있으므로 GET /api/me 로 확인
+          const verified = await verifySessionWithProfile();
+          if (verified) {
+            set({
+              isAuthenticated: true,
+              userType: verified,
+              isInitialized: true,
+            });
+            return;
+          }
+
+          // /api/me 도 실패 -- userType 쿠키 폴백
+          const cookieUserType = cookieManager.getUserType();
+          if (cookieUserType) {
+            set({
+              isAuthenticated: true,
+              userType: cookieUserType,
+              isInitialized: true,
+            });
+            return;
+          }
+        }
+      } catch (err) {
+        clearTimeout(timeoutId);
+
+        // 네트워크 오류 또는 타임아웃 -- GET /api/me 폴백
+        const verified = await verifySessionWithProfile();
+        if (verified) {
+          set({
+            isAuthenticated: true,
+            userType: verified,
+            isInitialized: true,
+          });
+          return;
+        }
+
+        const cookieUserType = cookieManager.getUserType();
+        if (cookieUserType) {
+          set({
+            isAuthenticated: true,
+            userType: cookieUserType,
+            isInitialized: true,
+          });
+          return;
+        }
+      }
+
+      tokenStore.clear();
+      set({
+        isAuthenticated: false,
+        userType: null,
+        isInitialized: true,
+      });
     })().finally(() => { _initializationPromise = null; });
 
     return _initializationPromise;
