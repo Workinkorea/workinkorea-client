@@ -190,8 +190,12 @@ function MyProfileClient() {
 
         return resumes;
       } catch (err) {
-        // 에러 시 빈 배열 반환
-        return [];
+        // 404 = 이력서 없음 (에러 아님)
+        if (err instanceof FetchError && err.status === 404) {
+          return [];
+        }
+        // 기타 에러는 throw
+        throw err;
       }
     }
   });
