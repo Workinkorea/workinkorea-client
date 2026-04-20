@@ -196,14 +196,12 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
             <Divider label={t('divider')} className="py-2" />
 
             {/* 기업 로그인 */}
-            <motion.a
-              href={companyLoginHref}
-              className="block w-full py-3.5 px-5 text-center border-2 border-line-400 text-label-700 rounded-xl font-semibold text-body-1 hover:bg-label-50 hover:border-line-400 transition-all cursor-pointer"
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {t('companyLoginBtn')}
-            </motion.a>
+            <p className="text-center text-caption-1 text-slate-500 mt-4">
+              {t('companyLoginPrompt')}{' '}
+              <Link href={companyLoginHref} className="text-blue-600 font-semibold hover:underline">
+                {t('companyLoginBtn')} →
+              </Link>
+            </p>
           </motion.div>
 
           {/* 회원가입 */}

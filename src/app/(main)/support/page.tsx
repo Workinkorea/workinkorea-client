@@ -8,7 +8,7 @@ export const metadata: Metadata = createMetadata({
 
 export default function SupportPage() {
   return (
-    <main>
+    <main className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-title-3 font-bold text-label-900 mb-8">고객센터</h1>
       <div className="space-y-6 text-label-700">
         <section className="bg-white border border-line-200 rounded-xl p-6">

@@ -60,7 +60,7 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
   return (
     <div className="min-h-screen bg-white">
       <motion.div
-        className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24"
+        className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 md:pt-20 pb-16"
         variants={containerVariants}
         initial="hidden"
         animate="visible"

@@ -9,6 +9,7 @@ import JobCard from '@/features/jobs/components/JobCard';
 import JobsPaginationClient from '@/features/jobs/components/JobsPaginationClient';
 import { useCompanyPosts } from '@/features/jobs/hooks/useCompanyPosts';
 import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import type { CompanyPostsResponse } from '@/shared/types/api';
 import { useTranslations } from 'next-intl';
 
@@ -56,6 +57,15 @@ export default function JobsListView({
 
   const { data, isLoading, error } = useCompanyPosts(currentPage, limit, initialData);
   const { bookmarks, isBookmarked } = useBookmarks();
+  const { isAuthenticated } = useAuth();
+
+  const handleBookmarkToggle = useCallback(() => {
+    if (!isAuthenticated) {
+      router.push('/login-select?callbackUrl=/jobs');
+      return;
+    }
+    setShowBookmarksOnly(v => !v);
+  }, [isAuthenticated, router]);
 
   const posts = data?.company_posts || [];
   const total = data?.total || 0;
@@ -148,7 +158,7 @@ export default function JobsListView({
 
               {/* Desktop Bookmark Button */}
               <button
-                onClick={() => setShowBookmarksOnly(v => !v)}
+                onClick={handleBookmarkToggle}
                 className={`hidden sm:flex items-center gap-1.5 px-4 py-2.5 rounded-lg border text-body-3 font-semibold transition-all cursor-pointer shrink-0 ${
                   showBookmarksOnly
                     ? 'bg-primary-600 text-white border-primary-600 shadow-[0_4px_14px_rgba(66,90,213,0.25)]'
@@ -161,7 +171,7 @@ export default function JobsListView({
 
               {/* Mobile Bookmark Button */}
               <button
-                onClick={() => setShowBookmarksOnly(v => !v)}
+                onClick={handleBookmarkToggle}
                 className={`sm:hidden p-2.5 rounded-lg border transition-colors cursor-pointer ${
                   showBookmarksOnly
                     ? 'bg-primary-600 text-white border-primary-600'
@@ -283,7 +293,7 @@ export default function JobsListView({
                 {/* Bookmark Filter */}
                 <div className="pt-4 border-t border-line-200">
                   <button
-                    onClick={() => setShowBookmarksOnly(v => !v)}
+                    onClick={handleBookmarkToggle}
                     className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-lg border transition-all cursor-pointer text-body-3 font-semibold ${
                       showBookmarksOnly
                         ? 'bg-primary-50 text-primary-700 border-primary-200'
@@ -402,7 +412,7 @@ export default function JobsListView({
                         <Bookmark size={56} className="text-label-300" />
                       </div>
                       <h3 className="text-label-900 text-body-1 font-bold mb-2">{t('noSaved')}</h3>
-                      <p className="text-label-600 text-body-3 mb-6">{t('savedOnly')}</p>
+                      <p className="text-label-600 text-body-3 mb-6">{t('noSavedDesc')}</p>
                       <Link
                         href="/jobs"
                         onClick={() => setShowBookmarksOnly(false)}
@@ -417,7 +427,7 @@ export default function JobsListView({
                         <Search size={56} className="text-label-300" />
                       </div>
                       <h3 className="text-label-900 text-body-1 font-bold mb-2">{t('noResults')}</h3>
-                      <p className="text-label-600 text-body-3 mb-6">{t('resetFilter')}</p>
+                      <p className="text-label-600 text-body-3 mb-6">{t('noResultsSub')}</p>
                       <button
                         onClick={handleReset}
                         className="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white text-body-3 font-semibold rounded-lg hover:bg-primary-700 transition-colors cursor-pointer"

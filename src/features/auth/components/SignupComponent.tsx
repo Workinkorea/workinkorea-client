@@ -338,6 +338,13 @@ export default function SignupComponent({
                 <h3 className="text-body-2 font-bold text-label-900 mb-4">{t('basicInfo')}</h3>
               </div>
 
+              {/* ISSUE-17: Google OAuth 정책 배너 */}
+              <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 mb-4">
+                <p className="text-caption-1 text-blue-700">
+                  {t('oauthPolicyBanner')}
+                </p>
+              </div>
+
               <div className="mb-6">
                 <FormField
                   name="email"
