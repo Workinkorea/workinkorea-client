@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { createMetadata } from '@/shared/lib/metadata';
 import CompanyJobsClient from '@/features/jobs/pages/CompanyJobsClient';
@@ -8,5 +9,9 @@ export const metadata: Metadata = createMetadata({
 });
 
 export default function CompanyJobsPage() {
-  return <CompanyJobsClient />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 animate-pulse" />}>
+      <CompanyJobsClient />
+    </Suspense>
+  );
 }

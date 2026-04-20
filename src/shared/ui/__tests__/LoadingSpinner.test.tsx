@@ -51,7 +51,7 @@ describe('LoadingSpinner', () => {
   it('applies blue color classes by default', () => {
     const { container } = render(<LoadingSpinner />);
     const spinner = container.querySelector('.animate-spin') as HTMLElement;
-    expect(spinner.className).toContain('border-primary-200');
+    expect(spinner.className).toContain('border-blue-200');
     expect(spinner.className).toContain('border-t-primary-600');
   });
 
@@ -65,7 +65,7 @@ describe('LoadingSpinner', () => {
   it('applies slate color classes', () => {
     const { container } = render(<LoadingSpinner color="slate" />);
     const spinner = container.querySelector('.animate-spin') as HTMLElement;
-    expect(spinner.className).toContain('border-line-400');
+    expect(spinner.className).toContain('border-slate-200');
     expect(spinner.className).toContain('border-t-label-500');
   });
 

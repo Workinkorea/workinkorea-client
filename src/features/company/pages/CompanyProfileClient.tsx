@@ -104,9 +104,9 @@ const CompanyProfileClient = () => {
   if (isError && error instanceof FetchError && error.status === 403) {
     return (
       <Layout>
-        <div className="min-h-screen bg-label-100 flex items-center justify-center">
-          <div className="bg-white rounded-xl border border-line-400 p-8 text-center max-w-sm">
-            <p className="text-label-800 font-semibold mb-2">{t('accessDenied')}</p>
+        <div className="min-h-screen bg-slate-100 flex items-center justify-center">
+          <div className="bg-white rounded-xl border border-slate-200 p-8 text-center max-w-sm">
+            <p className="text-slate-800 font-semibold mb-2">{t('accessDenied')}</p>
             <p className="text-body-3 text-white0">{error.message}</p>
           </div>
         </div>
@@ -118,8 +118,8 @@ const CompanyProfileClient = () => {
   if (authLoading || profileLoading || !profile) {
     return (
       <Layout>
-        <div className="min-h-screen bg-label-100">
-          <div className="bg-white border-b border-line-200 px-6 py-5">
+        <div className="min-h-screen bg-slate-100">
+          <div className="bg-white border-b border-slate-100 px-6 py-5">
             <div className="max-w-[1100px] mx-auto flex items-center justify-between">
               <div className="space-y-2">
                 <div className="skeleton-shimmer h-3 w-20 rounded" />
@@ -151,20 +151,20 @@ const CompanyProfileClient = () => {
   // ── 메인 렌더링 ────────────────────────────────────────────────────────────
   return (
     <Layout>
-      <div className="min-h-screen bg-label-100">
+      <div className="min-h-screen bg-slate-100">
 
         {/* ── 대시보드 상단 바 ───────────────────────────────────────────────── */}
-        <div className="bg-white border-b border-line-200">
+        <div className="bg-white border-b border-slate-100">
           <div className="max-w-[1100px] mx-auto px-6 py-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
                 <Building2 size={18} className="text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-caption-3 font-semibold text-primary-600 uppercase tracking-widest leading-none mb-0.5">
+                <p className="text-caption-3 font-semibold text-blue-600 uppercase tracking-widest leading-none mb-0.5">
                   {t('dashboardLabel')}
                 </p>
-                <h1 className="text-body-2 font-extrabold text-label-900 truncate leading-tight">
+                <h1 className="text-body-2 font-extrabold text-slate-900 truncate leading-tight">
                   {t('companyId', { id: profile.company_id })}
                 </h1>
               </div>
@@ -175,8 +175,8 @@ const CompanyProfileClient = () => {
                 onClick={() => router.push('/company/jobs')}
                 className={cn(
                   'hidden sm:inline-flex items-center gap-1.5 px-4 py-2',
-                  'border border-line-400 rounded-lg text-caption-1 font-semibold text-label-600',
-                  'hover:bg-label-50 hover:border-line-400 transition-colors cursor-pointer',
+                  'border border-slate-200 rounded-lg text-caption-1 font-semibold text-slate-600',
+                  'hover:bg-slate-50 hover:border-slate-200 transition-colors cursor-pointer',
                 )}
               >
                 <Briefcase size={14} />
@@ -186,8 +186,8 @@ const CompanyProfileClient = () => {
                 onClick={() => router.push('/company/posts/create')}
                 className={cn(
                   'inline-flex items-center gap-1.5 px-4 py-2',
-                  'bg-primary-600 text-white text-caption-1 font-semibold rounded-lg',
-                  'hover:bg-primary-700 transition-colors cursor-pointer',
+                  'bg-blue-600 text-white text-caption-1 font-semibold rounded-lg',
+                  'hover:bg-blue-700 transition-colors cursor-pointer',
                   'shadow-[0_4px_14px_rgba(66,90,213,0.25)]',
                   'focus:outline-none',
                 )}
@@ -207,22 +207,22 @@ const CompanyProfileClient = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
             {[
               {
-                icon: <Briefcase size={18} className="text-primary-600" />,
-                bg: 'bg-primary-50',
+                icon: <Briefcase size={18} className="text-blue-600" />,
+                bg: 'bg-blue-50',
                 value: activePosts.length,
                 label: t('activePostsCount'),
                 action: () => router.push('/company/jobs'),
               },
               {
-                icon: <Users size={18} className="text-status-correct" />,
-                bg: 'bg-status-correct-bg',
+                icon: <Users size={18} className="text-emerald-500" />,
+                bg: 'bg-emerald-500-bg',
                 value: 0,
                 label: '전체 지원자',
                 action: undefined,
               },
               {
-                icon: <Bell size={18} className="text-status-caution" />,
-                bg: 'bg-status-caution-bg',
+                icon: <Bell size={18} className="text-amber-500" />,
+                bg: 'bg-amber-500-bg',
                 value: 0,
                 label: '미검토 지원',
                 action: undefined,
@@ -238,8 +238,8 @@ const CompanyProfileClient = () => {
               <motion.div
                 key={i}
                 className={cn(
-                  'bg-white border border-line-400 rounded-xl p-4',
-                  stat.action && 'cursor-pointer hover:border-primary-200 hover:shadow-sm transition-all',
+                  'bg-white border border-slate-200 rounded-xl p-4',
+                  stat.action && 'cursor-pointer hover:border-blue-200 hover:shadow-sm transition-all',
                 )}
                 onClick={stat.action}
                 whileHover={stat.action ? { y: -2 } : undefined}
@@ -249,10 +249,10 @@ const CompanyProfileClient = () => {
                   <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center', stat.bg)}>
                     {stat.icon}
                   </div>
-                  {stat.action && <ChevronRight size={14} className="text-label-300" />}
+                  {stat.action && <ChevronRight size={14} className="text-slate-300" />}
                 </div>
-                <p className="text-title-2 font-extrabold text-label-900 leading-none mb-1">{stat.value}</p>
-                <p className="text-caption-2 text-label-400">{stat.label}</p>
+                <p className="text-title-2 font-extrabold text-slate-900 leading-none mb-1">{stat.value}</p>
+                <p className="text-caption-2 text-slate-400">{stat.label}</p>
               </motion.div>
             ))}
           </div>
@@ -264,22 +264,22 @@ const CompanyProfileClient = () => {
             <div className="space-y-4 min-w-0">
 
               {/* 진행중 공고 섹션 */}
-              <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
-                <div className="flex items-center justify-between px-5 py-3.5 border-b border-line-200">
+              <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
                   <button
                     onClick={() => router.push('/company/jobs')}
-                    className="flex items-center gap-1.5 text-body-3 font-bold text-label-900 hover:text-primary-600 transition-colors group cursor-pointer"
+                    className="flex items-center gap-1.5 text-body-3 font-bold text-slate-900 hover:text-blue-600 transition-colors group cursor-pointer"
                   >
                     진행중인 채용 공고
-                    <span className="text-primary-600 font-extrabold ml-0.5">{activePosts.length}</span>
-                    <ChevronRight size={15} className="text-label-300 group-hover:text-primary-400 transition-colors" />
+                    <span className="text-blue-600 font-extrabold ml-0.5">{activePosts.length}</span>
+                    <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400 transition-colors" />
                   </button>
                   <button
                     onClick={() => router.push('/company/posts/create')}
                     className={cn(
                       'inline-flex items-center gap-1.5 px-3 py-1.5',
-                      'bg-primary-600 text-white text-caption-2 font-semibold rounded-lg',
-                      'hover:bg-primary-700 transition-colors cursor-pointer',
+                      'bg-blue-600 text-white text-caption-2 font-semibold rounded-lg',
+                      'hover:bg-blue-700 transition-colors cursor-pointer',
                     )}
                   >
                     <PenSquare size={12} />
@@ -287,7 +287,7 @@ const CompanyProfileClient = () => {
                   </button>
                 </div>
 
-                <div className="divide-y divide-label-50">
+                <div className="divide-y divide-slate-50">
                   {postsLoading ? (
                     <div className="p-4 space-y-3">
                       {[0,1,2].map(i => (
@@ -307,30 +307,30 @@ const CompanyProfileClient = () => {
                         <motion.button
                           key={post.id}
                           onClick={() => router.push(`/company/posts/edit/${post.id}`)}
-                          className="w-full flex items-center gap-2 sm:gap-4 px-3 sm:px-5 py-3.5 hover:bg-label-50 transition-colors group cursor-pointer text-left"
+                          className="w-full flex items-center gap-2 sm:gap-4 px-3 sm:px-5 py-3.5 hover:bg-slate-50 transition-colors group cursor-pointer text-left"
                           whileHover={{ x: 2 }}
                           transition={{ type: 'spring', stiffness: 500 }}
                         >
-                          <div className="w-8 h-8 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
-                            <FileText size={14} className="text-primary-500" />
+                          <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                            <FileText size={14} className="text-blue-500" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-caption-1 font-semibold text-label-800 truncate group-hover:text-primary-600 transition-colors">
+                            <p className="text-caption-1 font-semibold text-slate-800 truncate group-hover:text-blue-600 transition-colors">
                               {post.title}
                             </p>
-                            <p className="text-caption-3 text-label-400 mt-0.5">{post.employment_type}</p>
+                            <p className="text-caption-3 text-slate-400 mt-0.5">{post.employment_type}</p>
                           </div>
                           <div className="flex items-center gap-3 shrink-0">
                             <div className="hidden sm:block text-right">
-                              <p className="text-caption-3 font-semibold text-label-500">
-                                미검토 <span className="text-primary-600 font-bold">0</span>명
+                              <p className="text-caption-3 font-semibold text-slate-500">
+                                미검토 <span className="text-blue-600 font-bold">0</span>명
                               </p>
                             </div>
                             <span className={cn(
                               'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-caption-3 font-semibold',
                               daysLeft <= 3
-                                ? 'bg-status-error-bg text-status-error'
-                                : 'bg-status-correct-bg text-status-correct',
+                                ? 'bg-red-500-bg text-red-500'
+                                : 'bg-emerald-500-bg text-emerald-500',
                             )}>
                               <Clock size={10} />
                               D-{daysLeft}
@@ -341,16 +341,16 @@ const CompanyProfileClient = () => {
                     })
                   ) : (
                     <div className="flex flex-col items-center justify-center py-10 text-center">
-                      <div className="w-12 h-12 bg-label-100 rounded-full flex items-center justify-center mb-3">
-                        <FileText size={22} className="text-label-300" />
+                      <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
+                        <FileText size={22} className="text-slate-300" />
                       </div>
                       <p className="text-caption-1 text-white0 mb-4">{t('noActivePosts')}</p>
                       <button
                         onClick={() => router.push('/company/posts/create')}
                         className={cn(
                           'inline-flex items-center gap-1.5 px-4 py-2',
-                          'bg-primary-600 text-white text-caption-1 font-semibold rounded-lg',
-                          'hover:bg-primary-700 transition-colors cursor-pointer',
+                          'bg-blue-600 text-white text-caption-1 font-semibold rounded-lg',
+                          'hover:bg-blue-700 transition-colors cursor-pointer',
                         )}
                       >
                         <Plus size={14} />
@@ -361,10 +361,10 @@ const CompanyProfileClient = () => {
                 </div>
 
                 {activePosts.length > 5 && (
-                  <div className="border-t border-line-200 px-5 py-2.5">
+                  <div className="border-t border-slate-100 px-5 py-2.5">
                     <button
                       onClick={() => router.push('/company/jobs')}
-                      className="w-full text-caption-2 font-semibold text-label-400 hover:text-primary-600 transition-colors text-center cursor-pointer py-0.5"
+                      className="w-full text-caption-2 font-semibold text-slate-400 hover:text-blue-600 transition-colors text-center cursor-pointer py-0.5"
                     >
                       전체 {activePosts.length}개 보기 →
                     </button>
@@ -373,9 +373,9 @@ const CompanyProfileClient = () => {
               </div>
 
               {/* 지원 현황 섹션 */}
-              <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
-                <div className="px-5 py-3.5 border-b border-line-200">
-                  <span className="text-body-3 font-bold text-label-900">{t('myTasksTitle')}</span>
+              <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                <div className="px-5 py-3.5 border-b border-slate-100">
+                  <span className="text-body-3 font-bold text-slate-900">{t('myTasksTitle')}</span>
                 </div>
 
                 {/* 지원 단계 탭 */}
@@ -387,14 +387,14 @@ const CompanyProfileClient = () => {
                       className={cn(
                         'flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-caption-2 font-semibold border transition-colors cursor-pointer',
                         activeTodoTab === tab.key
-                          ? 'border-primary-500 bg-primary-50 text-primary-600'
-                          : 'border-line-400 bg-white text-white0 hover:border-line-400 hover:bg-label-50',
+                          ? 'border-blue-500 bg-blue-50 text-blue-600'
+                          : 'border-slate-200 bg-white text-white0 hover:border-slate-200 hover:bg-slate-50',
                       )}
                     >
                       {tab.label}
                       <span className={cn(
                         'inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-caption-3 font-bold',
-                        activeTodoTab === tab.key ? 'bg-primary-500 text-white' : 'bg-label-100 text-label-400',
+                        activeTodoTab === tab.key ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-400',
                       )}>
                         {tab.count}
                       </span>
@@ -403,13 +403,13 @@ const CompanyProfileClient = () => {
                 </div>
 
                 <div className="px-5 pb-5 pt-3">
-                  <div className="flex flex-col items-center justify-center py-8 text-center bg-label-50 rounded-xl">
-                    <Users size={28} className="text-label-300 mb-3" />
-                    <p className="text-caption-1 text-label-400 mb-4">{EMPTY_TODO[activeTodoTab]}</p>
+                  <div className="flex flex-col items-center justify-center py-8 text-center bg-slate-50 rounded-xl">
+                    <Users size={28} className="text-slate-300 mb-3" />
+                    <p className="text-caption-1 text-slate-400 mb-4">{EMPTY_TODO[activeTodoTab]}</p>
                     <button className={cn(
                       'inline-flex items-center gap-1.5 px-4 py-1.5',
-                      'border border-line-400 text-caption-2 font-semibold text-label-600 rounded-lg bg-white',
-                      'hover:bg-label-50 transition-colors cursor-pointer',
+                      'border border-slate-200 text-caption-2 font-semibold text-slate-600 rounded-lg bg-white',
+                      'hover:bg-slate-50 transition-colors cursor-pointer',
                     )}>
                       <Users size={13} />
                       {t('manageBtn')}
@@ -420,21 +420,21 @@ const CompanyProfileClient = () => {
 
               {/* 마감된 공고 (있을 때만) */}
               {expiredPosts.length > 0 && (
-                <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
-                  <div className="flex items-center justify-between px-5 py-3.5 border-b border-line-200">
-                    <div className="flex items-center gap-1.5 text-body-3 font-bold text-label-900">
+                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                  <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
+                    <div className="flex items-center gap-1.5 text-body-3 font-bold text-slate-900">
                       마감된 공고
-                      <span className="text-label-400 font-semibold ml-0.5">{expiredPosts.length}</span>
+                      <span className="text-slate-400 font-semibold ml-0.5">{expiredPosts.length}</span>
                     </div>
                   </div>
-                  <div className="divide-y divide-label-50">
+                  <div className="divide-y divide-slate-50">
                     {expiredPosts.slice(0, 3).map(post => (
                       <div key={post.id} className="flex items-center gap-4 px-5 py-3 opacity-60">
-                        <div className="w-7 h-7 bg-label-100 rounded-lg flex items-center justify-center shrink-0">
-                          <FileText size={13} className="text-label-400" />
+                        <div className="w-7 h-7 bg-slate-100 rounded-lg flex items-center justify-center shrink-0">
+                          <FileText size={13} className="text-slate-400" />
                         </div>
-                        <p className="text-caption-1 text-label-600 truncate flex-1">{post.title}</p>
-                        <span className="text-caption-3 text-label-400 shrink-0">마감</span>
+                        <p className="text-caption-1 text-slate-600 truncate flex-1">{post.title}</p>
+                        <span className="text-caption-3 text-slate-400 shrink-0">마감</span>
                       </div>
                     ))}
                   </div>
@@ -456,14 +456,14 @@ const CompanyProfileClient = () => {
                   <p className="text-body-3 font-extrabold text-white mb-1">
                     인재를 찾고 계신가요?
                   </p>
-                  <p className="text-caption-2 text-primary-200 mb-4 leading-relaxed">
+                  <p className="text-caption-2 text-blue-200 mb-4 leading-relaxed">
                     채용 공고를 등록하고<br />최적의 후보자를 만나보세요
                   </p>
                   <button
                     onClick={() => router.push('/company/posts/create')}
                     className={cn(
-                      'w-full py-2 bg-white text-primary-700 text-caption-1 font-bold rounded-lg',
-                      'hover:bg-primary-50 transition-colors cursor-pointer',
+                      'w-full py-2 bg-white text-blue-700 text-caption-1 font-bold rounded-lg',
+                      'hover:bg-blue-50 transition-colors cursor-pointer',
                     )}
                   >
                     + 채용 공고 등록
@@ -472,21 +472,21 @@ const CompanyProfileClient = () => {
               </div>
 
               {/* 인재풀 */}
-              <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
-                <div className="flex items-center justify-between px-4 py-3.5 border-b border-line-200">
-                  <div className="flex items-center gap-1.5 text-body-3 font-bold text-label-900">
+              <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-100">
+                  <div className="flex items-center gap-1.5 text-body-3 font-bold text-slate-900">
                     {t('talentPoolTitle')}
-                    <span className="text-primary-600 font-extrabold">0</span>
+                    <span className="text-blue-600 font-extrabold">0</span>
                   </div>
-                  <ChevronRight size={14} className="text-label-300" />
+                  <ChevronRight size={14} className="text-slate-300" />
                 </div>
                 <div className="p-4">
-                  <div className="bg-primary-50 rounded-lg flex flex-col items-center py-5 text-center">
-                    <Search size={20} className="text-primary-300 mb-2" />
+                  <div className="bg-blue-50 rounded-lg flex flex-col items-center py-5 text-center">
+                    <Search size={20} className="text-blue-300 mb-2" />
                     <p className="text-caption-2 text-white0 mb-3 leading-relaxed whitespace-pre-line">
                       {t('talentPoolCta')}
                     </p>
-                    <button className="inline-flex items-center gap-1 text-caption-2 font-semibold text-primary-600 hover:underline transition-colors cursor-pointer">
+                    <button className="inline-flex items-center gap-1 text-caption-2 font-semibold text-blue-600 hover:underline transition-colors cursor-pointer">
                       <Search size={12} />
                       {t('talentSearch')}
                     </button>
@@ -495,12 +495,12 @@ const CompanyProfileClient = () => {
               </div>
 
               {/* 기업 정보 카드 */}
-              <div className="bg-white border border-line-400 rounded-xl p-4">
+              <div className="bg-white border border-slate-200 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <p className="text-caption-1 font-bold text-label-900">기업 정보</p>
+                  <p className="text-caption-1 font-bold text-slate-900">기업 정보</p>
                   <button
                     onClick={() => router.push('/company/profile/edit')}
-                    className="text-caption-3 text-primary-600 hover:underline cursor-pointer"
+                    className="text-caption-3 text-blue-600 hover:underline cursor-pointer"
                   >
                     {t('editProfile')}
                   </button>
@@ -508,24 +508,24 @@ const CompanyProfileClient = () => {
                 <div className="space-y-2">
                   {profile.address && (
                     <div className="flex items-start gap-2 text-caption-2 text-white0">
-                      <MapPin size={13} className="text-label-300 mt-0.5 shrink-0" />
+                      <MapPin size={13} className="text-slate-300 mt-0.5 shrink-0" />
                       <span className="leading-relaxed line-clamp-2">{profile.address}</span>
                     </div>
                   )}
                   {profile.phone_number && (
                     <div className="flex items-center gap-2 text-caption-2 text-white0">
-                      <Phone size={13} className="text-label-300 shrink-0" />
+                      <Phone size={13} className="text-slate-300 shrink-0" />
                       <span>{profile.phone_number}</span>
                     </div>
                   )}
                   {profile.website_url && (
                     <div className="flex items-center gap-2 text-caption-2 text-white0">
-                      <Globe size={13} className="text-label-300 shrink-0" />
+                      <Globe size={13} className="text-slate-300 shrink-0" />
                       <a
                         href={profile.website_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary-600 hover:underline truncate"
+                        className="text-blue-600 hover:underline truncate"
                       >
                         {profile.website_url}
                       </a>
@@ -535,12 +535,12 @@ const CompanyProfileClient = () => {
               </div>
 
               {/* 서비스 이용 현황 */}
-              <div className="bg-white border border-line-400 rounded-xl overflow-hidden">
-                <div className="flex items-center justify-between px-4 py-3.5 border-b border-line-200">
-                  <span className="text-caption-1 font-bold text-label-900">{t('productsTitle')}</span>
-                  <ChevronRight size={14} className="text-label-300" />
+              <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-100">
+                  <span className="text-caption-1 font-bold text-slate-900">{t('productsTitle')}</span>
+                  <ChevronRight size={14} className="text-slate-300" />
                 </div>
-                <div className="divide-y divide-label-50">
+                <div className="divide-y divide-slate-50">
                   {[
                     { icon: <FileText size={13} />, label: t('recruitAd'),  status: '미이용' },
                     { icon: <Users    size={13} />, label: t('talentPool'), status: '미이용' },
@@ -548,13 +548,13 @@ const CompanyProfileClient = () => {
                   ].map(item => (
                     <div key={item.label} className="flex items-center justify-between px-4 py-3">
                       <div className="flex items-center gap-2 text-caption-2 text-white0">
-                        <span className="text-label-300">{item.icon}</span>
+                        <span className="text-slate-300">{item.icon}</span>
                         {item.label}
                       </div>
                       <button className={cn(
-                        'px-2.5 py-1 border border-line-400 rounded',
+                        'px-2.5 py-1 border border-slate-200 rounded',
                         'text-caption-3 font-semibold text-white0 bg-white',
-                        'hover:bg-label-50 transition-colors cursor-pointer',
+                        'hover:bg-slate-50 transition-colors cursor-pointer',
                       )}>
                         {t('buyBtn')}
                       </button>
@@ -564,10 +564,10 @@ const CompanyProfileClient = () => {
               </div>
 
               {/* 프로모 배너 */}
-              <div className="bg-primary-50 border border-primary-100 rounded-xl p-4">
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <CheckCircle2 size={15} className="text-primary-500 shrink-0" />
-                  <p className="text-caption-1 font-semibold text-label-700 leading-snug">
+                  <CheckCircle2 size={15} className="text-blue-500 shrink-0" />
+                  <p className="text-caption-1 font-semibold text-slate-700 leading-snug">
                     {t('promoTitle')}
                   </p>
                 </div>
@@ -575,8 +575,8 @@ const CompanyProfileClient = () => {
                   {t('promoSubtitle')}
                 </p>
                 <button className={cn(
-                  'w-full py-2 bg-primary-600 text-white text-caption-2 font-semibold rounded-lg',
-                  'hover:bg-primary-700 transition-colors cursor-pointer',
+                  'w-full py-2 bg-blue-600 text-white text-caption-2 font-semibold rounded-lg',
+                  'hover:bg-blue-700 transition-colors cursor-pointer',
                 )}>
                   {t('promoBtn')}
                 </button>

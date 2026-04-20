@@ -6,21 +6,21 @@ import { cn } from '@/shared/lib/utils/utils';
 type BadgeColor = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'neutral';
 
 const colorMap: Record<BadgeColor, string> = {
-  primary:   'bg-primary-50 text-primary-700 border-primary-200',
-  secondary: 'bg-label-100 text-label-600 border-line-400',
-  success:   'bg-status-correct-bg text-status-correct border-status-correct-bg',
-  warning:   'bg-status-caution-bg text-status-caution border-status-caution-bg',
-  danger:    'bg-status-error-bg text-status-error border-status-error-bg',
-  neutral:   'bg-label-100 text-label-500 border-line-400',
+  primary:   'bg-blue-50 text-blue-700 border-blue-200',
+  secondary: 'bg-slate-100 text-slate-600 border-slate-200',
+  success:   'bg-emerald-500-bg text-emerald-500 border-emerald-500-bg',
+  warning:   'bg-amber-500-bg text-amber-500 border-amber-500-bg',
+  danger:    'bg-red-500-bg text-red-500 border-red-500-bg',
+  neutral:   'bg-slate-100 text-slate-500 border-slate-200',
 };
 
 const dotColorMap: Record<BadgeColor, string> = {
-  primary:   'bg-primary-600',
-  secondary: 'bg-label-400',
-  success:   'bg-status-correct',
-  warning:   'bg-status-caution',
-  danger:    'bg-status-error',
-  neutral:   'bg-label-300',
+  primary:   'bg-blue-600',
+  secondary: 'bg-slate-400',
+  success:   'bg-emerald-500',
+  warning:   'bg-amber-500',
+  danger:    'bg-red-500',
+  neutral:   'bg-slate-300',
 };
 
 // ─── 1. Content Badge (텍스트 + 아이콘) ──────────────────────────
@@ -156,7 +156,7 @@ export function DotBadge({
         />
       </span>
       {label && (
-        <span className="text-caption-1 text-label-600 font-medium">{label}</span>
+        <span className="text-caption-1 text-slate-600 font-medium">{label}</span>
       )}
     </span>
   );

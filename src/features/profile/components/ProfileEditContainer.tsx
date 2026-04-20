@@ -429,8 +429,8 @@ function ProfileEditContainer() {
   if (isLoading) {
     return (
       <Layout>
-        <main className="flex-1 bg-label-100 flex items-center justify-center min-h-[60vh]">
-          <div className="animate-spin w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full" />
+        <main className="flex-1 bg-slate-100 flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full" />
         </main>
       </Layout>
     );
@@ -442,18 +442,18 @@ function ProfileEditContainer() {
   if (error || !profile) {
     return (
       <Layout>
-        <main className="flex-1 bg-label-100 flex items-center justify-center min-h-[60vh]">
+        <main className="flex-1 bg-slate-100 flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <AlertCircle size={48} className="text-status-error mx-auto mb-4" />
-            <h2 className="text-title-3 font-semibold text-label-900 mb-2">
+            <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
+            <h2 className="text-title-3 font-semibold text-slate-900 mb-2">
               프로필을 불러올 수 없습니다
             </h2>
-            <p className="text-body-3 text-label-500 mb-4">
+            <p className="text-body-3 text-slate-500 mb-4">
               잠시 후 다시 시도해주세요.
             </p>
             <button
               onClick={handleBack}
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors cursor-pointer"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
             >
               돌아가기
             </button>
@@ -468,7 +468,7 @@ function ProfileEditContainer() {
    */
   return (
     <Layout>
-      <main className="flex-1 bg-label-100">
+      <main className="flex-1 bg-slate-100">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Page Header */}
           <motion.div
@@ -477,8 +477,8 @@ function ProfileEditContainer() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-title-3 font-bold text-label-900">프로필 편집</h1>
-            <p className="text-body-3 text-label-500 mt-1">개인 정보를 수정하여 프로필을 최신 상태로 유지하세요.</p>
+            <h1 className="text-title-3 font-bold text-slate-900">프로필 편집</h1>
+            <p className="text-body-3 text-slate-500 mt-1">개인 정보를 수정하여 프로필을 최신 상태로 유지하세요.</p>
           </motion.div>
 
           {/* Mobile Tab Navigation */}
@@ -495,8 +495,8 @@ function ProfileEditContainer() {
                   className={cn(
                     'shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-body-3 font-medium transition-colors cursor-pointer',
                     activeSection === section.key
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-white border border-line-400 text-label-600 hover:border-line-400'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-200'
                   )}
                 >
                   <Icon size={16} />
@@ -601,7 +601,7 @@ function ProfileEditContainer() {
               </Button>
 
               {/* 섹션 네비게이션 */}
-              <div className="bg-white border border-line-400 rounded-xl p-6">
+              <div className="bg-white border border-slate-200 rounded-xl p-6">
                 <nav className="space-y-2">
                   {sections.map((section) => {
                     const Icon = section.icon;
@@ -612,14 +612,14 @@ function ProfileEditContainer() {
                         className={cn(
                           'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer text-body-3 font-medium',
                           activeSection === section.key
-                            ? 'bg-primary-50 text-primary-700 border border-primary-200'
-                            : 'text-label-700 hover:bg-label-100'
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                            : 'text-slate-700 hover:bg-slate-100'
                         )}
                       >
                         <Icon size={16} />
                         <span>{section.label}</span>
                         {updateProfileMutation.isSuccess && activeSection === section.key && (
-                          <CheckCircle size={16} className="text-status-correct ml-auto" />
+                          <CheckCircle size={16} className="text-emerald-500 ml-auto" />
                         )}
                       </button>
                     );
@@ -627,7 +627,7 @@ function ProfileEditContainer() {
                 </nav>
 
                 {hasUnsavedChanges && (
-                  <p className="mt-4 text-caption-3 text-status-caution flex items-center gap-1">
+                  <p className="mt-4 text-caption-3 text-amber-500 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
                     저장되지 않은 변경사항이 있습니다.
                   </p>

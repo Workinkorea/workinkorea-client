@@ -18,13 +18,13 @@ describe('Button', () => {
   it('renders with default primary variant', () => {
     const { container } = render(<Button>Primary</Button>);
     const button = container.querySelector('button');
-    expect(button?.className).toContain('bg-primary-600');
+    expect(button?.className).toContain('bg-blue-600');
   });
 
   it('renders with secondary variant', () => {
     const { container } = render(<Button variant="secondary">Secondary</Button>);
     const button = container.querySelector('button');
-    expect(button?.className).toContain('bg-primary-50');
+    expect(button?.className).toContain('bg-blue-50');
   });
 
   it('renders with outline variant', () => {
@@ -42,7 +42,7 @@ describe('Button', () => {
   it('renders with destructive variant', () => {
     const { container } = render(<Button variant="destructive">Delete</Button>);
     const button = container.querySelector('button');
-    expect(button?.className).toContain('bg-status-error');
+    expect(button?.className).toContain('bg-red-500');
   });
 
   it('renders with default md size', () => {
@@ -140,7 +140,7 @@ describe('Button', () => {
     const button = container.querySelector('button');
     expect(button?.className).toContain('focus:outline-none');
     expect(button?.className).toContain('focus:ring-2');
-    expect(button?.className).toContain('focus:ring-primary-500');
+    expect(button?.className).toContain('focus:ring-blue-500');
   });
 
   it('applies disabled state styles', () => {
@@ -203,7 +203,7 @@ describe('Button', () => {
       </Button>
     );
     const button = container.querySelector('button');
-    expect(button?.className).toContain('bg-primary-50');
+    expect(button?.className).toContain('bg-blue-50');
     expect(button?.className).toContain('px-7');
   });
 

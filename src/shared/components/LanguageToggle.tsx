@@ -23,14 +23,14 @@ export function LanguageToggle({ className, variant = 'light' }: LanguageToggleP
   };
 
   const containerCls = variant === 'dark'
-    ? 'border-label-600 bg-transparent'
-    : 'border-line-400 bg-white';
+    ? 'border-slate-600 bg-transparent'
+    : 'border-slate-200 bg-white';
 
-  const activeCls = 'bg-primary-600 text-white';
+  const activeCls = 'bg-blue-600 text-white';
 
   const inactiveCls = variant === 'dark'
-    ? 'text-label-400 hover:text-label-100'
-    : 'text-label-500 hover:text-label-700';
+    ? 'text-slate-400 hover:text-slate-100'
+    : 'text-slate-500 hover:text-slate-700';
 
   return (
     <div className={cn('flex items-center rounded-full border p-0.5 gap-0.5 overflow-hidden', containerCls, className)}>

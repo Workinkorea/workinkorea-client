@@ -111,23 +111,23 @@ export default function BusinessSignupStep1({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-title-2 sm:text-title-1 text-label-900 text-center mb-4 leading-tight">
+          <h1 className="text-title-2 sm:text-title-1 text-slate-900 text-center mb-4 leading-tight">
             <p>{t('step1Title')}</p>
           </h1>
           <div className="flex items-center justify-between text-body-3">
             <div />
-            <span className="text-primary-600">{progressPercentage}%</span>
+            <span className="text-blue-600">{progressPercentage}%</span>
           </div>
           <div className="mt-2">
-            <div className="w-full bg-label-100 rounded-full h-2">
-              <div className="bg-primary-600 h-2 rounded-full" style={{ width: `${progressPercentage}%` }} />
+            <div className="w-full bg-slate-100 rounded-full h-2">
+              <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${progressPercentage}%` }} />
             </div>
           </div>
         </motion.div>
 
         {/* 전체 동의 */}
         <motion.div
-          className="pb-4 border-b border-line-400"
+          className="pb-4 border-b border-slate-200"
           whileTap={{ scale: 0.98 }}
         >
           <Checkbox

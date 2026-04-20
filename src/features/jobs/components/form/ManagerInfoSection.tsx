@@ -41,21 +41,21 @@ export function ManagerInfoSection({
   const t = useTranslations('jobs.manager');
 
   return (
-    <div className="bg-white border border-line-400 rounded-xl p-5 md:p-6">
+    <div className="bg-white border border-slate-200 rounded-xl p-5 md:p-6">
       {/* 섹션 헤더 — 오른쪽에 "내 기업 정보와 동일" 버튼이 있어 SectionHeader 대신 커스텀 렌더 */}
-      <div className="flex items-start justify-between gap-3 mb-5 md:mb-6 pb-4 md:pb-5 border-b border-line-200">
+      <div className="flex items-start justify-between gap-3 mb-5 md:mb-6 pb-4 md:pb-5 border-b border-slate-100">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center text-primary-600 shrink-0 mt-0.5">
+          <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 shrink-0 mt-0.5">
             <User size={16} />
           </div>
           <div>
             <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-caption-3 font-bold text-primary-600 bg-primary-50 px-1.5 py-0.5 rounded tracking-wide">
+              <span className="text-caption-3 font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded tracking-wide">
                 STEP 4
               </span>
-              <h2 className="text-body-2 font-bold text-label-900">{t('title')}</h2>
+              <h2 className="text-body-2 font-bold text-slate-900">{t('title')}</h2>
             </div>
-            <p className="text-caption-2 text-label-400">{t('subtitle')}</p>
+            <p className="text-caption-2 text-slate-400">{t('subtitle')}</p>
           </div>
         </div>
 
@@ -67,9 +67,9 @@ export function ManagerInfoSection({
           className={cn(
             'inline-flex items-center gap-1.5 shrink-0',
             'px-3 py-1.5 text-caption-2 font-semibold rounded-lg transition-colors cursor-pointer',
-            'border border-primary-200 text-primary-600 bg-primary-50',
-            'hover:bg-primary-100 hover:border-primary-300',
-            'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+            'border border-blue-200 text-blue-600 bg-blue-50',
+            'hover:bg-blue-100 hover:border-blue-300',
+            'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
             'disabled:opacity-50 disabled:cursor-not-allowed',
           )}
         >
@@ -84,7 +84,7 @@ export function ManagerInfoSection({
         {/* 담당자 이름 */}
         <FormField label={t('nameLabel')}>
           <div className="relative">
-            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-label-400 pointer-events-none">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
               <User size={15} />
             </div>
             <input
@@ -102,7 +102,7 @@ export function ManagerInfoSection({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField label={t('phoneLabel')}>
             <div className="relative">
-              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-label-400 pointer-events-none">
+              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                 <Phone size={15} />
               </div>
               <input
@@ -118,7 +118,7 @@ export function ManagerInfoSection({
 
           <FormField label={t('emailLabel')}>
             <div className="relative">
-              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-label-400 pointer-events-none">
+              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                 <Mail size={15} />
               </div>
               <input

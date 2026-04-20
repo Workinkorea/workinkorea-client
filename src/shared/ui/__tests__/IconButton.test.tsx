@@ -75,14 +75,14 @@ describe('IconButton', () => {
   it('applies ghost variant by default', () => {
     const { container } = render(<IconButton icon={X} label="Ghost" />);
     const button = container.querySelector('button') as HTMLElement;
-    expect(button.className).toContain('text-label-600');
-    expect(button.className).toContain('hover:bg-label-100');
+    expect(button.className).toContain('text-slate-600');
+    expect(button.className).toContain('hover:bg-slate-100');
   });
 
   it('applies filled variant', () => {
     const { container } = render(<IconButton icon={Star} label="Filled" variant="filled" />);
     const button = container.querySelector('button') as HTMLElement;
-    expect(button.className).toContain('bg-primary-600');
+    expect(button.className).toContain('bg-blue-600');
     expect(button.className).toContain('text-white');
   });
 

@@ -2,7 +2,7 @@ import { Skeleton } from '@/shared/ui/Skeleton';
 
 function JobCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl p-5 sm:p-6 border border-line-400">
+    <div className="bg-white rounded-xl p-5 sm:p-6 border border-slate-200">
       <div className="flex items-start gap-4 mb-4">
         <Skeleton className="w-12 h-12 rounded-xl shrink-0" />
         <div className="flex-1 space-y-2">
@@ -29,7 +29,7 @@ export default function JobsLoading() {
   return (
     <div>
       {/* 페이지 헤더 + 검색바 */}
-      <div className="bg-white border-b border-line-200">
+      <div className="bg-white border-b border-slate-100">
         <div className="page-container py-6 sm:py-8">
           <div className="flex items-end justify-between gap-4 mb-6">
             <div className="space-y-2 flex-1">
@@ -43,7 +43,7 @@ export default function JobsLoading() {
       </div>
 
       {/* 메인 콘텐츠 */}
-      <div className="min-h-screen bg-label-50">
+      <div className="min-h-screen bg-slate-50">
         <div className="page-container py-6 sm:py-8">
 
           {/* 모바일: 필터 칩 */}
@@ -65,7 +65,7 @@ export default function JobsLoading() {
 
             {/* 사이드바 */}
             <div className="hidden lg:block">
-              <div className="bg-white rounded-xl border border-line-400 p-5 space-y-5">
+              <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-5">
                 <div className="space-y-3">
                   <Skeleton variant="text" className="h-4 w-20" />
                   <div className="space-y-2">
@@ -74,11 +74,11 @@ export default function JobsLoading() {
                     ))}
                   </div>
                 </div>
-                <div className="pt-4 border-t border-line-200 space-y-3">
+                <div className="pt-4 border-t border-slate-100 space-y-3">
                   <Skeleton variant="text" className="h-4 w-16" />
                   <Skeleton className="h-9 w-full rounded-lg" />
                 </div>
-                <div className="pt-4 border-t border-line-200">
+                <div className="pt-4 border-t border-slate-100">
                   <Skeleton className="h-10 w-full rounded-lg" />
                 </div>
               </div>

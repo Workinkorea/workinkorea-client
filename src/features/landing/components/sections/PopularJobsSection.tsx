@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { useTranslations } from 'next-intl';
+import { formatSalary } from '@/shared/lib/utils/formatSalary';
 
 export default function PopularJobsSection() {
   const t = useTranslations('landing.popularJobs');
@@ -113,10 +114,10 @@ export default function PopularJobsSection() {
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
         >
-          <h2 className="text-title-3 md:text-title-2 font-extrabold text-label-900 mb-3 md:mb-4">
+          <h2 className="text-title-3 md:text-title-2 font-extrabold text-slate-900 mb-3 md:mb-4">
             {t('title')}
           </h2>
-          <p className="text-caption-1 md:text-body-1 text-label-500">
+          <p className="text-caption-1 md:text-body-1 text-slate-500">
             {t('subtitle')}
           </p>
         </motion.div>
@@ -128,7 +129,7 @@ export default function PopularJobsSection() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-white border border-line-400 rounded-xl p-4 md:p-6 overflow-hidden"
+                className="bg-white border border-slate-200 rounded-xl p-4 md:p-6 overflow-hidden"
               >
                 <div className="flex items-start gap-3 mb-4">
                   <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg skeleton-shimmer shrink-0" />
@@ -168,7 +169,7 @@ export default function PopularJobsSection() {
                   <motion.div key={post.id} variants={cardVariants}>
                     <Link
                       href={`/jobs/${post.id}`}
-                      className="block bg-white border border-line-400 rounded-xl p-4 md:p-6 transition-all duration-200 cursor-pointer group hover:border-primary-200 hover:shadow-md"
+                      className="block bg-white border border-slate-200 rounded-xl p-4 md:p-6 transition-all duration-200 cursor-pointer group hover:border-blue-200 hover:shadow-md"
                     >
                       {/* 회사명과 시간 */}
                       <div className="flex items-start justify-between mb-3 md:mb-4">
@@ -177,11 +178,11 @@ export default function PopularJobsSection() {
                             {post.company_id}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-body-3 md:text-title-5 text-label-900 group-hover:text-primary-600 transition-colors">
+                            <h3 className="font-semibold text-body-3 md:text-title-5 text-slate-900 group-hover:text-blue-600 transition-colors">
                               회사 #{post.company_id}
                             </h3>
                             {isRecent && (
-                              <span className="inline-flex items-center gap-1 text-caption-2 md:text-body-3 text-primary-600">
+                              <span className="inline-flex items-center gap-1 text-caption-2 md:text-body-3 text-blue-600">
                                 <Clock className="w-3 h-3 md:w-4 md:h-4" />
                                 {tCommon('status.new')}
                               </span>
@@ -191,19 +192,19 @@ export default function PopularJobsSection() {
                       </div>
 
                       {/* 포지션 */}
-                      <h4 className="text-body-3 md:text-title-5 font-medium text-label-900 mb-2 md:mb-3 line-clamp-2">
+                      <h4 className="text-body-3 md:text-title-5 font-medium text-slate-900 mb-2 md:mb-3 line-clamp-2">
                         {post.title}
                       </h4>
 
                       {/* 위치와 급여 */}
                       <div className="space-y-1.5 md:space-y-2 mb-3 md:mb-4">
-                        <div className="flex items-center gap-1.5 md:gap-2 text-label-500">
+                        <div className="flex items-center gap-1.5 md:gap-2 text-slate-500">
                           <MapPin className="w-3 h-3 md:w-4 md:h-4 shrink-0" />
                           <span className="text-caption-2 md:text-body-3">{post.work_location}</span>
                           <span className="text-caption-2 md:text-body-3">• {post.employment_type}</span>
                         </div>
-                        <p className="text-primary-600 font-semibold text-caption-1 md:text-body-2">
-                          {post.salary ? `${post.salary.toLocaleString()}원` : tCommon('label.negotiable')}
+                        <p className="text-blue-600 font-semibold text-caption-1 md:text-body-2">
+                          {formatSalary(post.salary, tCommon('label.negotiable'))}
                         </p>
                       </div>
 
@@ -212,7 +213,7 @@ export default function PopularJobsSection() {
                         {language.slice(0, 3).map((lang, index) => (
                           <span
                             key={index}
-                            className="px-2.5 py-1 bg-label-100 text-label-600 text-caption-3 rounded-full"
+                            className="px-2.5 py-1 bg-slate-100 text-slate-600 text-caption-3 rounded-full"
                           >
                             {lang}
                           </span>
@@ -224,7 +225,7 @@ export default function PopularJobsSection() {
               })
             ) : (
               <div className="col-span-full text-center py-12">
-                <p className="text-label-500 text-body-3">{tCommon('label.noData')}</p>
+                <p className="text-slate-500 text-body-3">{tCommon('label.noData')}</p>
               </div>
             )}
           </motion.div>
@@ -244,7 +245,7 @@ export default function PopularJobsSection() {
           >
             <Link
               href="/jobs"
-              className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 md:px-8 py-2.5 rounded-lg font-semibold transition-colors text-body-3 md:text-body-1 cursor-pointer"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-2.5 rounded-lg font-semibold transition-colors text-body-3 md:text-body-1 cursor-pointer"
             >
               {t('viewMore')}
               <ChevronRight className="w-4 h-4" />

@@ -35,7 +35,7 @@ export function Divider({
         role="separator"
         aria-orientation="vertical"
         className={cn(
-          'inline-block self-stretch border-l border-line-400',
+          'inline-block self-stretch border-l border-slate-200',
           variantStyle[variant],
           className,
         )}
@@ -49,7 +49,7 @@ export function Divider({
       <hr
         role="separator"
         className={cn(
-          'w-full border-0 border-line-400',
+          'w-full border-0 border-slate-200',
           thicknessStyle[thickness],
           variantStyle[variant],
           className,
@@ -71,13 +71,13 @@ export function Divider({
       className={cn('flex items-center gap-3', labelAlignStyle[labelAlign], className)}
     >
       {labelAlign !== 'left' && (
-        <hr className={cn('flex-1 border-0 border-line-400', thicknessStyle[thickness], variantStyle[variant])} />
+        <hr className={cn('flex-1 border-0 border-slate-200', thicknessStyle[thickness], variantStyle[variant])} />
       )}
-      <span className="text-caption-1 text-label-400 whitespace-nowrap shrink-0 px-1">
+      <span className="text-caption-1 text-slate-400 whitespace-nowrap shrink-0 px-1">
         {label}
       </span>
       {labelAlign !== 'right' && (
-        <hr className={cn('flex-1 border-0 border-line-400', thicknessStyle[thickness], variantStyle[variant])} />
+        <hr className={cn('flex-1 border-0 border-slate-200', thicknessStyle[thickness], variantStyle[variant])} />
       )}
     </div>
   );

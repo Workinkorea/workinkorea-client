@@ -19,8 +19,8 @@ export default async function AdminPostsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-title-2 font-bold text-label-900">공고 관리</h2>
-        <div className="text-body-3 text-label-500">
+        <h2 className="text-title-2 font-bold text-slate-900">공고 관리</h2>
+        <div className="text-body-3 text-slate-500">
           공고는 기업 회원이 생성합니다. 관리자는 조회, 수정, 삭제만 가능합니다.
         </div>
       </div>

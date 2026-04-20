@@ -90,7 +90,7 @@ function LanguageSkillsInput({
     <div className="space-y-3">
       {/* Header with Add button */}
       <div className="flex items-center justify-between">
-        <label className="text-caption-1 font-semibold text-label-900">
+        <label className="text-caption-1 font-semibold text-slate-900">
           언어 스킬
         </label>
         <button
@@ -98,7 +98,7 @@ function LanguageSkillsInput({
           onClick={handleAddLanguage}
           className="
             flex items-center gap-1
-            text-primary-500 hover:text-primary-600
+            text-blue-500 hover:text-blue-600
             text-caption-3 cursor-pointer
             transition-colors
           "
@@ -110,7 +110,7 @@ function LanguageSkillsInput({
 
       {/* Empty state */}
       {fields.length === 0 && (
-        <p className="text-caption-3 text-label-400">
+        <p className="text-caption-3 text-slate-400">
           언어 스킬을 추가해주세요
         </p>
       )}
@@ -120,18 +120,18 @@ function LanguageSkillsInput({
         {fields.map((field, index) => (
           <div
             key={field.id}
-            className="border border-line-400 rounded-lg p-4 space-y-3"
+            className="border border-slate-200 rounded-lg p-4 space-y-3"
           >
             {/* Item header with remove button */}
             <div className="flex items-center justify-between mb-2">
-              <span className="text-caption-2 font-medium text-label-700">
+              <span className="text-caption-2 font-medium text-slate-700">
                 언어 {index + 1}
               </span>
               <button
                 type="button"
                 onClick={() => handleRemoveLanguage(index)}
                 className="
-                  text-status-error hover:text-status-error
+                  text-red-500 hover:text-red-600
                   cursor-pointer transition-colors
                 "
               >
@@ -151,8 +151,8 @@ function LanguageSkillsInput({
                   id={fieldId}
                   className={cn(
                     'w-full border rounded-lg px-3.5 py-2.5 text-body-3',
-                    'transition-colors focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
-                    'border-line-400',
+                    'transition-colors focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                    'border-slate-200',
                     errors?.language_skills?.[index]?.language_type &&
                       'border-red-500 focus:ring-red-100'
                   )}
@@ -179,8 +179,8 @@ function LanguageSkillsInput({
                   id={fieldId}
                   className={cn(
                     'w-full border rounded-lg px-3.5 py-2.5 text-body-3',
-                    'transition-colors focus:outline-none focus:border-primary-500 focus:ring-[3px] focus:ring-primary-100',
-                    'border-line-400',
+                    'transition-colors focus:outline-none focus:border-blue-500 focus:ring-[3px] focus:ring-blue-100',
+                    'border-slate-200',
                     errors?.language_skills?.[index]?.level &&
                       'border-red-500 focus:ring-red-100'
                   )}

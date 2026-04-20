@@ -12,7 +12,7 @@ export default function JobDetailActions() {
     <>
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-label-600 hover:text-label-900 mb-6 transition-colors cursor-pointer"
+        className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-6 transition-colors cursor-pointer"
       >
         <ArrowLeft size={20} />
         <span>{t('backToList')}</span>

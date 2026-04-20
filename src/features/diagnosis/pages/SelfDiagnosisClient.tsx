@@ -59,10 +59,10 @@ const SelfDiagnosisClient = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-title-4 md:text-title-2 font-bold text-label-900 mb-4">
+            <h1 className="text-title-4 md:text-title-2 font-bold text-slate-900 mb-4">
               {t('title')}
             </h1>
-            <p className="text-body-3 text-label-500 mb-8">
+            <p className="text-body-3 text-slate-500 mb-8">
               {t('subtitle')}
             </p>
           </motion.div>
@@ -88,9 +88,9 @@ const SelfDiagnosisClient = () => {
                         value="male"
                         checked={field.value === 'male'}
                         onChange={(e) => field.onChange(e.target.value)}
-                        className="w-4 h-4 text-primary-600 focus:ring-primary-500 cursor-pointer"
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       />
-                      <span className="text-body-3 text-label-700">{t('male')}</span>
+                      <span className="text-body-3 text-slate-700">{t('male')}</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -98,9 +98,9 @@ const SelfDiagnosisClient = () => {
                         value="female"
                         checked={field.value === 'female'}
                         onChange={(e) => field.onChange(e.target.value)}
-                        className="w-4 h-4 text-primary-600 focus:ring-primary-500 cursor-pointer"
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       />
-                      <span className="text-body-3 text-label-700">{t('female')}</span>
+                      <span className="text-body-3 text-slate-700">{t('female')}</span>
                     </label>
                   </div>
                 )}
@@ -122,8 +122,8 @@ const SelfDiagnosisClient = () => {
                           onClick={() => field.onChange(level.value)}
                           className={`px-6 py-3 rounded-lg font-medium text-body-3 transition-all border-2 cursor-pointer ${
                             field.value === level.value
-                              ? 'bg-primary-500 text-white border-primary-500 shadow-md'
-                              : 'bg-white text-label-700 border-line-400 hover:border-primary-300 hover:bg-primary-50'
+                              ? 'bg-blue-500 text-white border-blue-500 shadow-md'
+                              : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300 hover:bg-blue-50'
                           }`}
                         >
                           {level.description}
@@ -151,7 +151,7 @@ const SelfDiagnosisClient = () => {
                   }
                 }}
                 render={(field, fieldId) => (
-                  <div className="flex items-center border border-line-400 rounded-lg focus-within:ring-2 focus-within:ring-primary-500 bg-white">
+                  <div className="flex items-center border border-slate-200 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 bg-white">
                     <input
                       {...field}
                       id={fieldId}
@@ -164,7 +164,7 @@ const SelfDiagnosisClient = () => {
                       }}
                       className="flex-1 min-w-0 px-4 py-3 text-body-3 bg-transparent outline-none"
                     />
-                    <span className="pr-4 text-body-3 text-label-500 shrink-0">{t('salaryUnit')}</span>
+                    <span className="pr-4 text-body-3 text-slate-500 shrink-0">{t('salaryUnit')}</span>
                   </div>
                 )}
               />
@@ -175,8 +175,8 @@ const SelfDiagnosisClient = () => {
                 disabled={!isValid}
                 className={`w-full py-4 rounded-lg font-semibold text-body-1 transition-all ${
                   isValid
-                    ? 'bg-primary-600 hover:bg-primary-700 text-white cursor-pointer shadow-sm hover:shadow-md'
-                    : 'bg-label-100 text-label-400 cursor-not-allowed'
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer shadow-sm hover:shadow-md'
+                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                 }`}
                 whileTap={isValid ? { scale: 0.98 } : {}}
               >

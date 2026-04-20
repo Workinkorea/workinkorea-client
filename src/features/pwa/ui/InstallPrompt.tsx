@@ -1,7 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { Download, X } from 'lucide-react';
+
+// 작성/수정 페이지에서는 설치 프롬프트를 숨김 (ISSUE-58)
+const HIDDEN_PATH_PATTERNS = [/\/create$/, /\/edit\//, /\/setup$/];
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -9,8 +13,11 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function InstallPrompt() {
+  const pathname = usePathname();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+
+  const isHiddenPage = HIDDEN_PATH_PATTERNS.some((pattern) => pattern.test(pathname));
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -37,7 +44,7 @@ export function InstallPrompt() {
     setIsVisible(false);
   };
 
-  if (!isVisible) return null;
+  if (!isVisible || isHiddenPage) return null;
 
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm mx-4 px-4">

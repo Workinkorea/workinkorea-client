@@ -195,7 +195,9 @@
       "saved": "Saved",
       "resetFilter": "Reset Filters",
       "noResults": "No results found",
+      "noResultsSub": "Try searching with different criteria",
       "noSaved": "No saved jobs",
+      "noSavedDesc": "Save jobs you like and find them here",
       "browseJobs": "Browse Jobs",
       "comingSoon": "New job listings coming soon",
       "comingSoonSub": "Check back for exciting opportunities",
@@ -234,7 +236,12 @@
       "expiredBadge": "Closed",
       "bookmarkBtn": "Bookmark",
       "shareLabel": "Share Link",
-      "workingHoursUnit": "{hours}h"
+      "workingHoursUnit": "{hours}h",
+      "loadingText": "Loading job details...",
+      "serverErrorTitle": "Server Error",
+      "serverErrorDesc": "Unable to load the job posting due to a server error. Please try again shortly.",
+      "notFoundTitle": "Job Not Found",
+      "notFoundDesc": "This job posting has been removed or does not exist."
     },
     "manage": {
       "title": "Job Post Management",
@@ -568,6 +575,7 @@
       "oauthUnknown": "An error occurred during authentication. Please try again.",
       "googleStart": "Continue with Google",
       "loggingInGoogle": "Signing in...",
+      "companyLoginPrompt": "Are you a company member?",
       "companyLoginBtn": "Company Login",
       "divider": "or",
       "noAccountYet": "Don't have an account yet?",
@@ -631,12 +639,14 @@
       "toastSuccess": "Sign up complete. Please log in.",
       "toastError": "An error occurred during sign up.",
       "oauthSignupGuide": "Google account verified. Please fill in the details below to complete your registration.",
+      "oauthPolicyBanner": "Work In Korea uses Google accounts for login. The registration email is for verification only — please use your Google account for actual sign-in.",
+      "emailMatchHint": "For a smooth login experience, please use the same email as your Google account.",
       "alreadyAccount": "Already have an account?",
       "loginLink": "Sign In",
       "termLabels": {
         "termsOfService": "Terms of Service",
         "privacyPolicy": "Privacy Policy",
-        "privacyPolicyHold": "Privacy Policy (Hold)",
+        "privacyPolicyHold": "Consent to Personal Information Processing Entrustment",
         "copyrightPolicy": "Copyright Policy",
         "cookiePolicy": "Cookie Policy"
       }
@@ -1396,7 +1406,7 @@
       "uploadingText": "Uploading...",
       "uploadText": "Upload Image",
       "imageHint": "JPG, PNG, GIF files (max 5MB)",
-      "introFieldTitle": "Title",
+      "introFieldTitle": "Introduction Title",
       "introFieldContent": "Content",
       "companyNameLabel": "Company Name",
       "companyNameRequired": "Please enter company name",

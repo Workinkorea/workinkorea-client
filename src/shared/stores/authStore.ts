@@ -6,6 +6,9 @@ import { tokenStore, decodeUserType } from '@/shared/api/tokenStore';
 const BYPASS_AUTH = process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true';
 const BYPASS_AUTH_TYPE = (process.env.NEXT_PUBLIC_BYPASS_AUTH_TYPE ?? 'user') as UserType;
 
+// initialize() 중복 실행 방지 (페이지 이동마다 refresh 호출 방지)
+let _initializationPromise: Promise<void> | null = null;
+
 interface AuthState {
   // State
   isAuthenticated: boolean;
@@ -19,7 +22,7 @@ interface AuthState {
   checkAuth: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   // Initial state
   isAuthenticated: false,
   userType: null,
@@ -87,10 +90,17 @@ export const useAuthStore = create<AuthState>((set) => ({
    *
    * refresh_token (HttpOnly Cookie)으로 access_token을 재발급받고
    * JWT payload에서 userType을 추출하여 인증 상태 결정
+   *
+   * 타임아웃 설정: 10초
+   * - 네트워크 지연 또는 서버 무응답 시 skeleton이 무한히 표시되는 것을 방지
+   * - 타임아웃 발생 시 쿠키 폴백으로 사용자 진행 가능
    */
   initialize: async () => {
     if (typeof window === 'undefined') return;
+    if (get().isInitialized) return;           // Already initialized — skip
+    if (_initializationPromise) return _initializationPromise; // In progress — wait
 
+    _initializationPromise = (async () => {
     // 로컬 개발 테스트 모드: 인증 우회
     if (BYPASS_AUTH) {
       set({
@@ -101,12 +111,18 @@ export const useAuthStore = create<AuthState>((set) => ({
       return;
     }
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
     try {
       const response = await fetch('/api/auth/refresh', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const data = await response.json();
@@ -127,6 +143,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
         if (userTypeFromBody) {
           // Current path: backend sets token as cookie, returns user_type in body
+          // Ensure userType cookie is set (in case it expired or was deleted)
+          cookieManager.setUserType(userTypeFromBody);
           set({
             isAuthenticated: true,
             userType: userTypeFromBody,
@@ -159,8 +177,10 @@ export const useAuthStore = create<AuthState>((set) => ({
           return;
         }
       }
-    } catch {
-      // 네트워크 오류 — 쿠키로 마지막 폴백
+    } catch (err) {
+      clearTimeout(timeoutId);
+
+      // 네트워크 오류 또는 타임아웃 — 쿠키로 마지막 폴백
       const cookieUserType = cookieManager.getUserType();
       if (cookieUserType) {
         set({
@@ -178,6 +198,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       userType: null,
       isInitialized: true,
     });
+    })().finally(() => { _initializationPromise = null; });
+
+    return _initializationPromise;
   },
 
   /**

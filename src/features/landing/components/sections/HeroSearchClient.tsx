@@ -1,62 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, MapPin } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { AnimatePresence, motion } from 'framer-motion';
 
-const TYPE_SPEED = 80;
-const DELETE_SPEED = 40;
-const PAUSE_TYPED = 1800;
-const PAUSE_DELETED = 400;
-
-function useTypewriter(phrases: string[]) {
-  const [display, setDisplay] = useState('');
-  // ref로 mutable 상태 관리 → stale closure 없이 단일 루프 유지
-  const state = useRef({ phraseIdx: 0, charIdx: 0, isDeleting: false });
-
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-
-    const tick = () => {
-      const { phraseIdx, charIdx, isDeleting } = state.current;
-      const word = phrases[phraseIdx];
-
-      if (!isDeleting) {
-        const next = charIdx + 1;
-        setDisplay(word.slice(0, next));
-        state.current.charIdx = next;
-
-        if (next === word.length) {
-          // 완성 → PAUSE 후 삭제 시작
-          state.current.isDeleting = true;
-          timer = setTimeout(tick, PAUSE_TYPED);
-        } else {
-          timer = setTimeout(tick, TYPE_SPEED);
-        }
-      } else {
-        const next = charIdx - 1;
-        setDisplay(word.slice(0, next));
-        state.current.charIdx = next;
-
-        if (next === 0) {
-          // 전부 삭제 → 다음 단어로
-          state.current.isDeleting = false;
-          state.current.phraseIdx = (phraseIdx + 1) % phrases.length;
-          timer = setTimeout(tick, PAUSE_DELETED);
-        } else {
-          timer = setTimeout(tick, DELETE_SPEED);
-        }
-      }
-    };
-
-    timer = setTimeout(tick, TYPE_SPEED);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return display;
-}
+/** 각 phrase 표시 유지 시간 (ms) */
+const PHRASE_DURATION = 3000;
 
 export default function HeroSearchClient() {
   const t = useTranslations('landing.hero');
@@ -64,8 +15,16 @@ export default function HeroSearchClient() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [phraseIndex, setPhraseIndex] = useState(0);
   const router = useRouter();
-  const animatedText = useTypewriter(phrases);
+
+  /* 일정 간격으로 phrase 인덱스를 순환 — 항상 전체 단어 단위로 전환 */
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPhraseIndex((prev) => (prev + 1) % phrases.length);
+    }, PHRASE_DURATION);
+    return () => clearInterval(interval);
+  }, [phrases.length]);
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
@@ -81,20 +40,31 @@ export default function HeroSearchClient() {
   return (
     <form
       onSubmit={handleSearch}
-      className="flex items-center w-full border-2 border-line-400 rounded-full bg-white shadow-sm hover:shadow-md focus-within:border-primary-400 focus-within:shadow-md transition-all overflow-hidden"
+      className="flex items-center w-full border-2 border-slate-200 rounded-full bg-white shadow-sm hover:shadow-md focus-within:border-blue-400 focus-within:shadow-md transition-all overflow-hidden"
     >
       {/* 직무 검색 */}
       <div className="relative flex items-center flex-1 px-4 md:px-5 py-3 gap-2.5 min-w-0">
-        <Search className="w-4 h-4 md:w-5 md:h-5 text-label-400 shrink-0" />
+        <Search className="w-4 h-4 md:w-5 md:h-5 text-slate-400 shrink-0" />
 
-        {/* 타이핑 애니메이션 placeholder */}
+        {/* 롤링 애니메이션 placeholder — 전체 단어 단위 전환 */}
         {showAnimated && (
           <span
-            className="absolute left-[calc(1rem+1.5rem)] md:left-[calc(1.25rem+1.75rem)] text-body-3 md:text-body-1 text-label-400 pointer-events-none select-none whitespace-nowrap overflow-hidden"
+            className="absolute left-[calc(1rem+1.5rem)] md:left-[calc(1.25rem+1.75rem)] pointer-events-none select-none whitespace-nowrap"
             aria-hidden="true"
           >
-            {animatedText}
-            <span className="inline-block w-[2px] h-[1em] ml-[1px] bg-label-400 align-middle animate-[blink_0.8s_step-end_infinite]" />
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={phraseIndex}
+                className="inline-block text-body-2 md:text-body-1 text-slate-400"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
+              >
+                {phrases[phraseIndex]}
+              </motion.span>
+            </AnimatePresence>
+            <span className="inline-block w-[2px] h-[1em] ml-[1px] bg-slate-400 align-middle animate-[blink_0.8s_step-end_infinite]" />
           </span>
         )}
 
@@ -104,24 +74,24 @@ export default function HeroSearchClient() {
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className="flex-1 text-body-3 md:text-body-1 border-none outline-none text-label-800 bg-transparent min-w-0"
+          className="flex-1 text-body-2 md:text-body-1 border-none outline-none text-slate-800 bg-transparent min-w-0"
           aria-label={t('searchAriaLabel')}
         />
       </div>
 
       {/* 구분선 */}
-      <div className="w-px h-7 bg-label-100 shrink-0 hidden sm:block" />
+      <div className="w-px h-7 bg-slate-100 shrink-0 hidden sm:block" />
 
       {/* 지역 (고정) */}
       <div className="hidden sm:flex items-center px-4 md:px-5 py-3 gap-2 shrink-0">
-        <MapPin className="w-4 h-4 text-label-400 shrink-0" />
-        <span className="text-body-3 text-label-500 whitespace-nowrap">{t('searchLocation')}</span>
+        <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
+        <span className="text-body-2 text-slate-500 whitespace-nowrap">{t('searchLocation')}</span>
       </div>
 
       {/* 검색 버튼 */}
       <button
         type="submit"
-        className="bg-primary-600 hover:bg-primary-700 text-white rounded-r-full px-5 md:px-7 py-3 font-semibold text-body-3 transition-colors cursor-pointer whitespace-nowrap shrink-0"
+        className="bg-blue-600 hover:bg-blue-700 text-white rounded-r-full px-5 md:px-7 py-3 font-semibold text-label-1 transition-colors cursor-pointer whitespace-nowrap shrink-0"
       >
         {t('searchButton')}
       </button>
