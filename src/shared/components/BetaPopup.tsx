@@ -10,14 +10,25 @@ export function BetaPopup() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const seen = localStorage.getItem(BETA_POPUP_KEY);
-    if (!seen) {
+    // incognito 또는 cookie/storage 차단 환경에서 localStorage 접근이
+    // SecurityError 를 던질 수 있다. RootLayout 에서 항상 렌더되는 컴포넌트이므로
+    // 여기서 실패하면 전체 앱 마운트가 차단될 수 있다.
+    try {
+      const seen = localStorage.getItem(BETA_POPUP_KEY);
+      if (!seen) {
+        setVisible(true);
+      }
+    } catch {
       setVisible(true);
     }
   }, []);
 
   const dismiss = () => {
-    localStorage.setItem(BETA_POPUP_KEY, '1');
+    try {
+      localStorage.setItem(BETA_POPUP_KEY, '1');
+    } catch {
+      // storage 차단 환경에서는 무시 (세션 내에서는 닫힘 유지)
+    }
     setVisible(false);
   };
 

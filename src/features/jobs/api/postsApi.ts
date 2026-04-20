@@ -1,4 +1,4 @@
-import { fetchClient, fetchAPI } from '@/shared/api/fetchClient';
+import { fetchClient, fetchAPI, FetchError } from '@/shared/api/fetchClient';
 import {
   CompanyPostsResponse,
   CreateCompanyPostRequest,
@@ -78,8 +78,13 @@ export async function getCompanyPosts(
       limit,
       total_pages: isLastPage ? page : page + 1,
     };
-  } catch {
-    return { company_posts: [], total: 0, page: 1, limit, total_pages: 0 };
+  } catch (err) {
+    // 404는 "공개 목록 엔드포인트 미구현" 상태로 간주 → 빈 목록 반환
+    // (EmptyState UI 표시). 5xx 및 기타 오류는 상위로 전파하여 error.tsx 에서 처리.
+    if (err instanceof FetchError && err.status === 404) {
+      return { company_posts: [], total: 0, page: 1, limit, total_pages: 0 };
+    }
+    throw err;
   }
 }
 

@@ -21,7 +21,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <header className="bg-white shadow-sm">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex h-16 items-center justify-between">
-            <h1 className="text-title-3 font-bold text-slate-900">관리자 페이지</h1>
+            <p className="text-title-3 font-bold text-slate-900">관리자 페이지</p>
             <Link
               href="/"
               className="text-body-3 text-slate-600 hover:text-slate-900 transition-colors"

@@ -381,6 +381,31 @@ export interface DeleteCompanyPostResponse {
 }
 
 // Job Application API types
+//
+// NOTE (C5 - 미구현 엔드포인트 스키마 초안):
+// 아래 요청/응답 타입들은 FastAPI 백엔드 팀이 다음 엔드포인트를 구현할 때
+// 프런트와의 계약 초안으로 사용됩니다. 실제 구현 시 필드명을 서버와
+// 맞춰 갱신해야 합니다.
+//
+//   P0:
+//     POST /api/applications                         (채용 공고 지원)
+//     GET  /api/applications/me                      (내 지원 내역)
+//   P1:
+//     DELETE /api/applications/{id}                  (지원 취소)
+//     GET    /api/posts/company/{id}/applicants      (지원자 목록 — 기업 전용)
+//     GET    /api/company/{id}                       (공개 기업 정보)
+//   P2:
+//     POST   /api/bookmarks                          (북마크 추가)
+//     DELETE /api/bookmarks/{id}                     (북마크 삭제)
+//     GET    /api/bookmarks/me                       (내 북마크 목록)
+
+export type ApplicationStatus =
+  | 'pending'
+  | 'reviewing'
+  | 'accepted'
+  | 'rejected'
+  | 'withdrawn';
+
 export interface ApplyToJobRequest {
   company_post_id: number;
   resume_id?: number;
@@ -393,8 +418,98 @@ export interface ApplyToJobResponse {
   company_post_id: number;
   resume_id?: number;
   cover_letter?: string;
-  status: string;
+  status: ApplicationStatus;
   applied_at: string;
+}
+
+/** GET /api/applications/me — 내가 지원한 공고 목록 */
+export interface MyApplicationItem {
+  id: number;
+  company_post_id: number;
+  post_title: string;
+  company_id: number;
+  company_name?: string;
+  resume_id?: number;
+  status: ApplicationStatus;
+  applied_at: string;
+  updated_at?: string;
+}
+
+export interface MyApplicationsResponse {
+  applications: MyApplicationItem[];
+  pagination?: {
+    count: number;
+    skip: number;
+    limit: number;
+  };
+}
+
+/** DELETE /api/applications/{id} — 지원 취소 */
+export interface WithdrawApplicationResponse {
+  id: number;
+  status: ApplicationStatus;
+  message?: string;
+}
+
+/** GET /api/posts/company/{id}/applicants — 기업 전용 지원자 목록 */
+export interface PostApplicantItem {
+  application_id: number;
+  user_id: number;
+  user_name: string;
+  profile_image_url?: string;
+  resume_id?: number;
+  status: ApplicationStatus;
+  applied_at: string;
+  cover_letter?: string;
+}
+
+export interface PostApplicantsResponse {
+  company_post_id: number;
+  applicants: PostApplicantItem[];
+  pagination?: {
+    count: number;
+    skip: number;
+    limit: number;
+  };
+}
+
+/** GET /api/company/{id} — 공개 기업 정보 (기업 로그인 불필요) */
+export interface PublicCompanyResponse {
+  id: number;
+  company_name: string;
+  logo_url?: string;
+  description?: string;
+  homepage_url?: string;
+  industry?: string;
+  address?: string;
+  employee_count?: number;
+  established_year?: number;
+}
+
+// Bookmark API types
+export interface CreateBookmarkRequest {
+  company_post_id: number;
+}
+
+export interface BookmarkResponse {
+  id: number;
+  user_id: number;
+  company_post_id: number;
+  created_at: string;
+}
+
+export interface MyBookmarksResponse {
+  bookmarks: BookmarkResponse[];
+  pagination?: {
+    count: number;
+    skip: number;
+    limit: number;
+  };
+}
+
+export interface DeleteBookmarkResponse {
+  id: number;
+  message?: string;
 }
 
 // User Image Upload API types

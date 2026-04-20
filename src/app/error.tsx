@@ -21,7 +21,7 @@ export default function Error({
     <div className="min-h-screen flex items-center justify-center px-4 bg-slate-50">
       <motion.div
         className="text-center mx-auto max-w-sm"
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >

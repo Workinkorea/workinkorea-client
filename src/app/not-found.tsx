@@ -11,7 +11,7 @@ export default function NotFound() {
     <div className="min-h-screen flex items-center justify-center px-4 bg-slate-50">
       <motion.div
         className="text-center max-w-sm mx-auto"
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
