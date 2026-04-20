@@ -12,6 +12,7 @@ import { LanguageSkill } from '@/shared/types/common.types';
 
 export interface ProfileResponse {
   user_id: number;
+  email?: string;
   profile_image_url: string;
   location: string;
   introduction: string;

@@ -16,6 +16,7 @@ interface Session4Props {
   onNext: (data: Session4Data) => void;
   onBack: () => void;
   isSubmitting?: boolean;
+  prefillEmail?: string;
 }
 
 const CHALLENGES = [
@@ -27,11 +28,12 @@ const CHALLENGES = [
   { value: 'network', label: '아는 사람이 없어요', emoji: '👥' },
 ];
 
-export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = false }: Session4Props) => {
+export const Session4Matching = ({ initialData, onNext, onBack, isSubmitting = false, prefillEmail }: Session4Props) => {
   const { control, handleSubmit, watch, setValue } = useForm<Session4Data>({
     defaultValues: {
       ...initialData,
       challenges: initialData.challenges || [],
+      email: initialData.email || prefillEmail || '',
       receiveInfo: initialData.receiveInfo || false,
     },
     mode: 'onChange',

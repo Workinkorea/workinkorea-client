@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import { useDiagnosisStore } from '@/features/diagnosis/store/diagnosisStore';
 import { DiagnosisStepProgress } from '@/features/diagnosis/components/DiagnosisStepProgress';
 import { Session1BasicInfo } from '@/features/diagnosis/components/Session1BasicInfo';
@@ -16,14 +17,26 @@ import { DiagnosisAnswerRequest } from '@/shared/types/api';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { cn } from '@/shared/lib/utils/utils';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { profileApi } from '@/features/profile/api/profileApi';
 
 const TOTAL_STEPS = 4;
 
 const DiagnosisClient = () => {
   const router = useRouter();
   const t = useTranslations('diagnosis.client');
+  const { isAuthenticated, userType } = useAuth();
   const { currentStep, diagnosisData, setStep, updateData, setDiagnosisId, reset } = useDiagnosisStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Prefill email for Q13 from authenticated user profile
+  const { data: profile } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => profileApi.getProfile(),
+    enabled: isAuthenticated && userType === 'user',
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  });
 
   const handleSession1Next = (data: Partial<DiagnosisData>) => {
     updateData(data);
@@ -161,6 +174,7 @@ const DiagnosisClient = () => {
                   onNext={handleSession4Next}
                   onBack={handleBack}
                   isSubmitting={isSubmitting}
+                  prefillEmail={profile?.email}
                 />
               )}
             </AnimatePresence>
