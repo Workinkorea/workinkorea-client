@@ -6,6 +6,7 @@ import type { CompanyPost } from '@/shared/types/api';
 import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
 import { motion, useAnimation } from 'framer-motion';
 import { cn } from '@/shared/lib/utils/utils';
+import { formatSalary } from '@/shared/lib/utils/formatSalary';
 import { useTranslations } from 'next-intl';
 
 interface JobCardProps {
@@ -128,7 +129,7 @@ export default function JobCard({ post }: JobCardProps) {
 
           {/* Salary */}
           <p className="text-body-2 sm:text-body-1 font-extrabold text-primary-600 mb-4">
-            {post.salary ? `${post.salary.toLocaleString()}원` : tCommon('label.negotiable')}
+            {formatSalary(post.salary)}
           </p>
 
           {/* Bottom: Language Tags */}

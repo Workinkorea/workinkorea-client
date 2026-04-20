@@ -15,6 +15,7 @@ import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { resumeApi } from '@/features/resume/api/resumeApi';
 import type { CompanyPostDetailResponse } from '@/shared/types/api';
+import { formatSalary } from '@/shared/lib/utils/formatSalary';
 
 interface JobDetailViewProps {
   job: CompanyPostDetailResponse;
@@ -257,7 +258,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                     <div className="flex flex-col">
                       <p className="text-caption-3 font-semibold text-label-400 mb-1">{tCommon('label.salary')}</p>
                       <p className="text-body-3 font-extrabold text-primary-600">
-                        {job.salary ? `${job.salary.toLocaleString()}` : tCommon('label.negotiable')}
+                        {formatSalary(job.salary)}
                       </p>
                     </div>
                     <div className="flex flex-col">
@@ -356,7 +357,7 @@ export default function JobDetailView({ job }: JobDetailViewProps) {
                 <div className="space-y-1">
                   <p className="text-caption-3 font-semibold text-label-400">{tCommon('label.salary')}</p>
                   <p className="text-title-1 font-extrabold text-primary-600 leading-tight">
-                    {job.salary ? `${job.salary.toLocaleString()}` : tCommon('label.negotiable')}
+                    {formatSalary(job.salary)}
                   </p>
                 </div>
 
