@@ -1,8 +1,11 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { createMetadata } from '@/shared/lib/metadata';
 import HeroSection from '@/features/landing/components/sections/HeroSection';
+import { OnboardingSection } from '@/features/landing/components/sections/OnboardingSection';
 import Footer from '@/features/landing/components/sections/Footer';
 import { BetaPopup } from '@/shared/components/BetaPopup';
+import { HeroSectionSkeleton } from '@/shared/ui/SkeletonCards';
 
 export const metadata: Metadata = createMetadata({
   title: '글로벌 인재 매칭 플랫폼 | 검증된 외국인 채용',
@@ -13,7 +16,10 @@ export default function MainPage() {
   return (
     <>
       <BetaPopup />
-      <HeroSection />
+      <Suspense fallback={<HeroSectionSkeleton />}>
+        <HeroSection />
+      </Suspense>
+      <OnboardingSection />
       <Footer />
     </>
   );
