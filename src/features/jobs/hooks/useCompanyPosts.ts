@@ -32,11 +32,16 @@ export function useCompanyPosts(
   limit: number = 12,
   initialData?: CompanyPostsResponse
 ) {
+  // SSR fetch가 실패해 빈 데이터를 받았으면, 클라이언트에서 강제로 다시 요청
+  const isEmptyInitialData =
+    !initialData?.company_posts || initialData.company_posts.length === 0;
+  const effectiveInitialData = isEmptyInitialData ? undefined : initialData;
+
   return useQuery({
     queryKey: companyPostsKeys.list(page, limit),
     queryFn: () => postsApi.getPublicCompanyPosts({ page, limit }),
-    // Hydrate with SSR data on first render
-    initialData,
+    // Hydrate with SSR data on first render (skip if empty so client refetches)
+    initialData: effectiveInitialData,
     // Keep previous data while fetching next page (better UX)
     placeholderData: (previousData) => previousData,
     // Cache for 5 minutes

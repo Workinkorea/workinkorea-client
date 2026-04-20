@@ -352,6 +352,7 @@ export default function SignupComponent({
                         value={field.value || ''}
                         placeholder="example@email.com"
                         disabled={isEmailFromParam}
+                        maxLength={320}
                         onChange={(e) => {
                           field.onChange(e.target.value);
                           setFormState(prev => ({ ...prev, isEmailSent: false, isEmailVerified: false }));
