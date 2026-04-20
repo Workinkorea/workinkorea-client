@@ -49,7 +49,7 @@ export const FormField = <T extends FieldValues, N extends Path<T>>({
         render={({ field, fieldState }) => (
           <>
             {render(field as ControllerRenderProps<T, N>, fieldId)}
-            {fieldState.error && <ErrorMessage message={fieldState.error.message || ''} />}
+            {fieldState.error && <ErrorMessage message={fieldState.error.message || ''} variant={variant} />}
           </>
         )}
       />
