@@ -7,16 +7,11 @@ import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
 import { motion, useAnimation } from 'framer-motion';
 import { cn } from '@/shared/lib/utils/utils';
 import { formatSalary } from '@/shared/lib/utils/formatSalary';
+import { getDaysLeft, isPostExpired } from '@/shared/lib/utils/formatDate';
 import { useTranslations } from 'next-intl';
 
 interface JobCardProps {
   post: CompanyPost;
-}
-
-function getDaysLeft(endDate: string): number | null {
-  if (!endDate) return null;
-  const diff = new Date(endDate).getTime() - Date.now();
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
 
 export default function JobCard({ post }: JobCardProps) {
@@ -25,10 +20,12 @@ export default function JobCard({ post }: JobCardProps) {
   const tCard = useTranslations('jobs.card');
   const tCommon = useTranslations('common');
 
-  const isRecent = new Date(post.start_date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const startDateMs = post.start_date ? new Date(post.start_date).getTime() : NaN;
+  const isRecent = !isNaN(startDateMs) && startDateMs > Date.now() - 7 * 24 * 60 * 60 * 1000;
   const daysLeft = getDaysLeft(post.end_date);
   const isUrgent = daysLeft !== null && daysLeft >= 0 && daysLeft <= 3;
-  const isExpired = daysLeft !== null && daysLeft < 0;
+  // start == end 시드 데이터는 마감 처리하지 않음 (ISSUE-114)
+  const isExpired = isPostExpired(post.start_date, post.end_date);
   const language = post.language ? post.language.split(',').map(l => l.trim()) : [];
   const bookmarked = isBookmarked(post.id);
 

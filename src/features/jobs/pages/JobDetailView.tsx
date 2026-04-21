@@ -17,15 +17,11 @@ import { resumeApi } from '@/features/resume/api/resumeApi';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import type { CompanyPostDetailResponse } from '@/shared/types/api';
 import { formatSalary } from '@/shared/lib/utils/formatSalary';
+import { formatDateRange, formatDateShort, isPostExpired, getDaysLeft } from '@/shared/lib/utils/formatDate';
 
 interface JobDetailViewProps {
   job: CompanyPostDetailResponse | null;
   jobId: number;
-}
-
-function getDaysLeft(endDate: string): number | null {
-  if (!endDate) return null;
-  return Math.ceil((new Date(endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 }
 
 export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
@@ -61,7 +57,8 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
   const resumes = resumeData?.resume_list ?? [];
   const daysLeft = getDaysLeft(effectiveJob?.end_date ?? '');
   const isUrgent = daysLeft !== null && daysLeft >= 0 && daysLeft <= 3;
-  const isExpired = daysLeft !== null && daysLeft < 0;
+  // start_date == end_date 시드데이터는 마감으로 보지 않음 (ISSUE-114)
+  const isExpired = isPostExpired(effectiveJob?.start_date, effectiveJob?.end_date);
   const language = effectiveJob?.language ? effectiveJob.language.split(',').map(l => l.trim()) : [];
 
   const redirectToLogin = () => {
@@ -357,7 +354,7 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
                   <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-100 rounded-lg">
                     <Calendar className="text-amber-500 shrink-0" size={18} />
                     <p className="text-caption-1 text-slate-900">
-                      <span className="font-semibold">{t('recruitPeriod')}:</span> {effectiveJob.start_date} ~ {effectiveJob.end_date}
+                      <span className="font-semibold">{t('recruitPeriod')}:</span> {formatDateRange(effectiveJob.start_date, effectiveJob.end_date)}
                     </p>
                   </div>
                 </div>
@@ -484,8 +481,10 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
                 {/* Recruitment Info */}
                 <div className="p-4 bg-slate-50 rounded-lg border border-slate-100 space-y-2 mt-6 pt-6 border-t">
                   <p className="text-caption-3 font-semibold text-slate-400">{tCommon('label.period')}</p>
-                  <p className="text-caption-1 font-semibold text-slate-900">{effectiveJob.start_date}</p>
-                  <p className="text-caption-1 text-slate-600">~ {effectiveJob.end_date}</p>
+                  <p className="text-caption-1 font-semibold text-slate-900">{formatDateShort(effectiveJob.start_date)}</p>
+                  {effectiveJob.end_date && effectiveJob.start_date !== effectiveJob.end_date && (
+                    <p className="text-caption-1 text-slate-600">~ {formatDateShort(effectiveJob.end_date)}</p>
+                  )}
                 </div>
               </motion.div>
             </div>

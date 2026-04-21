@@ -12,6 +12,7 @@ import type { CompanyPost } from '@/shared/types/api';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/shared/lib/utils/utils';
 import { formatSalary } from '@/shared/lib/utils/formatSalary';
+import { formatDateRange, isPostExpired } from '@/shared/lib/utils/formatDate';
 
 function CompanyJobsClient() {
   const t = useTranslations('jobs.manage');
@@ -185,11 +186,11 @@ function CompanyJobsClient() {
                               {formatSalary(post.salary, t('negotiable'))}
                             </p>
                             <p className="text-caption-2 text-slate-400">
-                              {post.start_date} ~ {post.end_date}
+                              {formatDateRange(post.start_date, post.end_date)}
                             </p>
                           </div>
                           <div className="flex items-center gap-2">
-                            {new Date(post.end_date) > new Date() ? (
+                            {!isPostExpired(post.start_date, post.end_date) ? (
                               <span className={cn(
                                 'inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold',
                                 'bg-emerald-50 text-emerald-500 border border-emerald-100'

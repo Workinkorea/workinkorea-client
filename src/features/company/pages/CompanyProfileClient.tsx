@@ -33,6 +33,7 @@ import { postsApi } from '@/features/jobs/api/postsApi';
 import type { CompanyPost } from '@/shared/types/api';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { toast } from 'sonner';
+import { isPostExpired } from '@/shared/lib/utils/formatDate';
 
 type TodoTab = 'unread' | 'accepted' | 'interview' | 'evaluated';
 
@@ -106,9 +107,9 @@ const CompanyProfileClient = () => {
   }, [isError, error, router]);
 
   const posts: CompanyPost[] = postsData ?? [];
-  const now         = new Date();
-  const activePosts = posts.filter((p: CompanyPost) => new Date(p.end_date) > now);
-  const expiredPosts = posts.filter((p: CompanyPost) => new Date(p.end_date) <= now);
+  // start == end 시드 데이터는 마감으로 처리하지 않음 (ISSUE-114)
+  const activePosts = posts.filter((p: CompanyPost) => !isPostExpired(p.start_date, p.end_date));
+  const expiredPosts = posts.filter((p: CompanyPost) => isPostExpired(p.start_date, p.end_date));
 
   // ── 에러: 403 ─────────────────────────────────────────────────────────────
   if (isError && error instanceof FetchError && error.status === 403) {
@@ -315,7 +316,9 @@ const CompanyProfileClient = () => {
                     </div>
                   ) : activePosts.length > 0 ? (
                     activePosts.slice(0, 5).map(post => {
-                      const daysLeft = Math.ceil((new Date(post.end_date).getTime() - now.getTime()) / 86400000);
+                      const daysLeft = post.end_date
+                        ? Math.ceil((new Date(post.end_date).getTime() - Date.now()) / 86400000)
+                        : 0;
                       return (
                         <motion.button
                           key={post.id}
