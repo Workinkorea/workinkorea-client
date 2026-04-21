@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import HeroSearchClient from './HeroSearchClient';
 
 const container = {
@@ -22,6 +23,9 @@ const item = {
 
 export default function HeroSection() {
   const t = useTranslations('landing.hero');
+  const { isAuthenticated, userType, isLoading: authLoading } = useAuth();
+  const loggedIn = !authLoading && isAuthenticated;
+  const dashboardHref = userType === 'company' ? '/company' : userType === 'admin' ? '/admin' : '/user/profile';
 
   return (
     <section className="bg-white min-h-[calc(100vh-65px)] sm:min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
@@ -59,22 +63,22 @@ export default function HeroSection() {
           {t('tagline')}
         </motion.p>
 
-        {/* 설명 */}
+        {/* 설명 — 로그인 상태에 따라 CTA 문구 변경 (ISSUE-127) */}
         <motion.p
           variants={item}
           className="text-caption-1 sm:text-body-3 text-slate-500 mb-8"
         >
-          {t('loginPrompt')}
+          {loggedIn ? t('welcomeBack') : t('loginPrompt')}
         </motion.p>
 
-        {/* CTA 버튼 */}
+        {/* CTA 버튼 — 로그인 여부에 따라 분기 */}
         <motion.div variants={item} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
           <Link
-            href="/login-select"
+            href={loggedIn ? dashboardHref : '/login-select'}
             className="inline-flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-8 py-3.5 rounded-lg font-semibold text-body-2 transition-all shadow-md hover:shadow-lg"
             style={{ color: '#ffffff' }}
           >
-            {t('getStarted')}
+            {loggedIn ? t('goToDashboard') : t('getStarted')}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </motion.div>

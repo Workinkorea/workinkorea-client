@@ -43,7 +43,7 @@ const DiagnosisResultClient = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { diagnosisId } = useDiagnosisStore();
   const [result, setResult] = useState<MatchingResult | null>(null);
   const [diagnosisData, setDiagnosisData] = useState<Partial<DiagnosisData> | null>(null);
@@ -387,8 +387,9 @@ const DiagnosisResultClient = () => {
             <p className="text-caption-1 sm:text-body-3 opacity-90 mb-6">
               {t('ctaSubtitle')}
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              {!isAuthenticated ? (
+            {/* ISSUE-123: auth 초기화 이전에는 CTA 감추기 — 로그인 상태에서 회원가입 CTA 가 잠깐 보이는 현상 방지 */}
+            <div className="flex flex-col sm:flex-row gap-3 justify-center min-h-[46px]">
+              {authLoading ? null : !isAuthenticated ? (
                 <>
                   <motion.button
                     onClick={handleLogin}

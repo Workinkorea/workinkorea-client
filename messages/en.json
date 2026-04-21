@@ -117,7 +117,9 @@
       "stat3Label": "Successful Hires",
       "tagline": "Your Korean Career Starts Here",
       "loginPrompt": "Log in to see personalized job recommendations.",
-      "getStarted": "Get Started"
+      "welcomeBack": "Welcome back! Continue from your dashboard.",
+      "getStarted": "Get Started",
+      "goToDashboard": "Go to dashboard"
     },
     "services": {
       "overline": "Special Services",
