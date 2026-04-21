@@ -175,7 +175,7 @@ const CompanyProfileClient = () => {
                   {t('dashboardLabel')}
                 </p>
                 <h1 className="text-body-2 font-extrabold text-slate-900 truncate leading-tight">
-                  {t('companyId', { id: profile.company_id })}
+                  {profile.company_name || t('companyFallback')}
                 </h1>
               </div>
             </div>

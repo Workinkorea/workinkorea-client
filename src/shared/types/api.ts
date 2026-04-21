@@ -151,6 +151,8 @@ export interface AccountConfigUpdateRequest {
 
 export interface CompanyProfileResponse {
   company_id: number;
+  /** 서버가 아직 반환하지 않을 수 있음 (ISSUE-112) */
+  company_name?: string;
   industry_type: string;
   employee_count: number;
   establishment_date: string;

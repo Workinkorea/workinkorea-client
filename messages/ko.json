@@ -293,6 +293,7 @@
     "dashboard": {
       "dashboardLabel": "기업 대시보드",
       "companyId": "기업 #{id}",
+      "companyFallback": "내 회사",
       "createPostBtn": "새 채용 공고 등록",
       "tabPosts": "관리 중인 공고",
       "tabProfile": "기업 정보",
