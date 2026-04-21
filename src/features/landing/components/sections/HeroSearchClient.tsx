@@ -92,6 +92,7 @@ export default function HeroSearchClient() {
       <button
         type="submit"
         className="bg-blue-600 hover:bg-blue-700 text-white rounded-r-full px-5 md:px-7 py-3 font-semibold text-label-1 transition-colors cursor-pointer whitespace-nowrap shrink-0"
+        style={{ color: '#ffffff' }}
       >
         {t('searchButton')}
       </button>

@@ -95,6 +95,7 @@ export function ResumeSection({
           <button
             onClick={handleCreateResume}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-caption-1 font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+            style={{ color: '#ffffff' }}
           >
             <Plus size={16} />
             {t('createNew')}
@@ -185,6 +186,7 @@ export function ResumeSection({
                 <button
                   onClick={handleCreateResume}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg text-body-3 font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+                  style={{ color: '#ffffff' }}
                 >
                   {t('createFirst')}
                 </button>

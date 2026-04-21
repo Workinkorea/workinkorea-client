@@ -153,6 +153,7 @@ function TemplateSelector({
               ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
               : 'bg-slate-100 text-slate-400 cursor-not-allowed'
           }`}
+          style={{ color: selectedTemplate ? '#ffffff' : undefined }}
           whileHover={selectedTemplate ? { scale: 1.02 } : {}}
           whileTap={selectedTemplate ? { scale: 0.98 } : {}}
         >

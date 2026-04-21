@@ -352,6 +352,7 @@ function UserProfileClient() {
                 }
               }}
               className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer shadow-[0_4px_14px_rgba(66,90,213,0.25)] hover:shadow-[0_6px_20px_rgba(66,90,213,0.35)]"
+              style={{ color: '#ffffff' }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0, x: 20 }}
@@ -569,6 +570,7 @@ function UserProfileClient() {
                       onClick={handleUploadImage}
                       disabled={!selectedFile || uploadImageMutation.isPending}
                       className="px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap shadow-[0_4px_14px_rgba(66,90,213,0.25)]"
+                      style={{ color: '#ffffff' }}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -633,6 +635,7 @@ function UserProfileClient() {
                     <button
                       onClick={() => router.push('/user/resume/create')}
                       className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white text-caption-2 sm:text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shadow-[0_4px_14px_rgba(66,90,213,0.25)]"
+                      style={{ color: '#ffffff' }}
                     >
                       <FileText size={16} />
                       {t('writeResume')}

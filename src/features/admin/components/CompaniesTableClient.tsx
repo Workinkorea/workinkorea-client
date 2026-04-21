@@ -206,6 +206,7 @@ export default function CompaniesTableClient({ initialCompanies }: CompaniesTabl
                   type="submit"
                   disabled={updateMutation.isPending}
                   className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-body-3 font-medium text-white hover:bg-blue-700 cursor-pointer disabled:opacity-50"
+                  style={{ color: '#ffffff' }}
                 >
                   {updateMutation.isPending ? '처리 중...' : '수정'}
                 </button>

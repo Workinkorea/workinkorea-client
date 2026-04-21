@@ -84,6 +84,7 @@ export function AdminLoginClient() {
             type="submit"
             disabled={isLoading}
             className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 text-label-1"
+            style={{ color: '#ffffff' }}
           >
             {isLoading ? '로그인 중...' : '로그인'}
           </button>

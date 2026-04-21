@@ -9,7 +9,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', isLoading, children, disabled, ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', isLoading, children, disabled, style, ...props }, ref) => {
+    const inlineColor = variant === 'primary' || variant === 'destructive' ? '#ffffff' : undefined;
+    const mergedStyle = inlineColor ? { color: inlineColor, ...style } : style;
     return (
       <button
         ref={ref}
@@ -29,6 +31,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           size === 'xl' && 'px-9 py-4 text-body-1',
           className,
         )}
+        style={mergedStyle}
         {...props}
       >
         {isLoading ? (

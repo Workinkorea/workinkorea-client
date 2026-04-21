@@ -377,6 +377,7 @@ export default function BusinessLoginForm() {
                     ? 'bg-slate-100 cursor-not-allowed text-slate-400'
                     : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer shadow-[0_4px_14px_rgba(66,90,213,0.25)]'
                 }`}
+                style={{ color: !(isLoading || !isFormValid) ? '#ffffff' : undefined }}
                 whileTap={isFormValid && !isLoading ? { scale: 0.98 } : {}}
               >
                 {isLoading && <Loader2 size={15} className="animate-spin" />}
