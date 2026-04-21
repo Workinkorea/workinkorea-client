@@ -205,10 +205,23 @@ export const postsApi = {
    * 채용 공고에 지원하기 (일반 사용자, 인증 필요)
    * @param data - 지원 정보 (company_post_id, resume_id, cover_letter)
    *
-   * TODO: 백엔드에 POST /api/applications 엔드포인트 구현 필요.
-   * 현재 해당 라우터가 존재하지 않아 404 에러 발생.
+   * 서버 404 시 "기능 준비 중" 메시지로 치환해 사용자에게 명확히 안내한다.
    */
-  async applyToJob(_data: ApplyToJobRequest): Promise<ApplyToJobResponse> {
-    throw new Error('지원 기능은 현재 준비 중입니다. 백엔드에 POST /api/applications 엔드포인트 구현이 필요합니다.');
+  async applyToJob(data: ApplyToJobRequest): Promise<ApplyToJobResponse> {
+    try {
+      return await fetchClient.post<ApplyToJobResponse>('/api/applications', data);
+    } catch (err) {
+      if (err instanceof FetchError && err.status === 404) {
+        throw new FetchError('지원 기능은 현재 준비 중입니다. 잠시 후 다시 시도해주세요.', 404);
+      }
+      throw err;
+    }
+  },
+
+  /**
+   * 내 지원 목록 조회
+   */
+  async getMyApplications(): Promise<{ applications: Array<{ id: number; post_id: number; resume_id: number; status: string; applied_at: string }> }> {
+    return fetchClient.get('/api/applications/me');
   },
 };

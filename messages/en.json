@@ -229,6 +229,7 @@
       "expiredPost": "This position is closed",
       "expiredPostShort": "Position Closed",
       "applying": "Applying...",
+      "applied": "Applied",
       "bookmarkSaved": "Saved",
       "bookmarkSave": "Save Job",
       "modified": "Updated {date}",

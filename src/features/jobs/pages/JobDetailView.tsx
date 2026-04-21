@@ -35,7 +35,7 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
-  const { mutate: applyToJob, isPending } = useJobApplication();
+  const { mutate: applyToJob, isPending, isSuccess: hasJustApplied } = useJobApplication();
   const { toggle, isBookmarked } = useBookmarks();
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [selectedResumeId, setSelectedResumeId] = useState<number | null>(null);
@@ -243,10 +243,15 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
         <div className="fixed bottom-6 left-0 right-0 px-4 z-40 lg:hidden">
           <motion.button
             onClick={handleApply}
-            whileTap={{ scale: 0.97 }}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-body-2 shadow-[0_4px_14px_rgba(66,90,213,0.25)] transition-colors cursor-pointer"
+            disabled={hasJustApplied}
+            whileTap={{ scale: hasJustApplied ? 1 : 0.97 }}
+            className={
+              hasJustApplied
+                ? "w-full bg-slate-200 text-slate-500 py-3.5 rounded-xl font-bold text-body-2 cursor-not-allowed"
+                : "w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-body-2 shadow-[0_4px_14px_rgba(66,90,213,0.25)] transition-colors cursor-pointer"
+            }
           >
-            {tCommon('button.apply')}
+            {hasJustApplied ? t('applied') : tCommon('button.apply')}
           </motion.button>
         </div>
       )}
@@ -438,6 +443,13 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
                 {isExpired ? (
                   <button className="w-full py-4 bg-slate-100 text-slate-400 text-center rounded-lg font-bold text-body-2 cursor-not-allowed">
                     {t('expiredPostShort')}
+                  </button>
+                ) : hasJustApplied ? (
+                  <button
+                    disabled
+                    className="w-full py-4 bg-slate-200 text-slate-500 rounded-lg font-bold text-body-2 cursor-not-allowed"
+                  >
+                    {t('applied')}
                   </button>
                 ) : (
                   <motion.button
