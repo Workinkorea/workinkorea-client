@@ -211,7 +211,7 @@ export default function BusinessLoginForm() {
 
       {/* ── 좌측 그라데이션 패널 ──────────────────────────────────── */}
       <motion.div
-        className="hidden lg:flex flex-1 bg-linear-to-br from-primary-400 to-primary-600 flex-col justify-center p-16 relative overflow-hidden"
+        className="hidden lg:flex flex-1 bg-linear-to-br from-blue-400 to-blue-600 flex-col justify-center p-16 relative overflow-hidden"
         initial={{ opacity: 0, x: -24 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}
@@ -395,10 +395,10 @@ export default function BusinessLoginForm() {
                     loginError.type === 'network'
                       ? 'bg-slate-50 border border-slate-200 text-slate-600'
                       : loginError.type === 'server'
-                        ? 'bg-amber-500-bg border border-amber-200 text-amber-700'
+                        ? 'bg-amber-50 border border-amber-200 text-amber-700'
                         : loginError.type === 'rateLimit'
-                          ? 'bg-amber-500-bg border border-amber-200 text-amber-700'
-                          : 'bg-red-500-bg border border-red-500-bg text-red-500'
+                          ? 'bg-amber-50 border border-amber-200 text-amber-700'
+                          : 'bg-red-50 border border-red-200 text-red-500'
                   }`}
                   role="alert"
                   aria-live="polite"

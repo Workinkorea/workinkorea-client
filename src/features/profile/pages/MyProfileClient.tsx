@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Edit3 } from 'lucide-react';
+import { Edit3, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { useAuthStore } from '@/shared/stores/authStore';
 import Layout from '@/shared/components/layout/Layout';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
 import dynamic from 'next/dynamic';
@@ -31,64 +32,43 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ResumeListItem } from '@/shared/types/api';
 import { FetchError } from '@/shared/api/fetchClient';
 
-// Mock data for dashboard, skill management, and career management
-const mockMyProfile: UserProfile = {
+/**
+ * 비어있는 UserProfile 베이스.
+ * API 응답에 없는 필드(스킬/경력/자격증 등)는 빈 배열/0으로 두어
+ * 사용자가 하드코딩된 더미 데이터를 자신의 정보로 오인하지 않도록 한다. (ISSUE-111)
+ */
+const EMPTY_USER_PROFILE: Omit<UserProfile, 'createdAt' | 'updatedAt'> = {
   id: 'me',
-  name: '이지은',
-  email: 'jieun.lee@example.com',
+  name: '',
+  email: '',
   profileImage: undefined,
-  position: 'UX/UI 디자이너 & 프론트엔드 개발자',
-  location: '서울, 한국',
-  introduction: '사용자 경험에 중점을 둔 디자인과 개발을 동시에 하는 3년차 전문가입니다. 디자인과 코드 사이의 간극을 줄이는 것이 저의 목표입니다.',
-  experience: 3,
-  completedProjects: 8,
-  certifications: ['Adobe Certified Expert', 'Google UX Design'],
+  position: undefined,
+  location: undefined,
+  introduction: undefined,
+  experience: 0,
+  completedProjects: 0,
+  certifications: [],
   job_status: 'available',
-  skills: [
-    { id: '1', name: 'Figma', level: 95, average: 75, category: 'technical', description: 'UI/UX 디자인 툴의 고급 기능 활용' },
-    { id: '2', name: 'React', level: 75, average: 70, category: 'technical' },
-    { id: '3', name: 'CSS/SCSS', level: 90, average: 65, category: 'technical' },
-    { id: '4', name: 'JavaScript', level: 80, average: 70, category: 'technical' },
-    { id: '5', name: '사용자 연구', level: 85, average: 60, category: 'soft' },
-    { id: '6', name: '프로토타이핑', level: 90, average: 55, category: 'soft' },
-    { id: '7', name: '영어', level: 70, average: 55, category: 'language' },
-    { id: '8', name: '중국어', level: 50, average: 30, category: 'language' }
-  ],
-  education: [
-    {
-      id: '1',
-      institution: '홍익대학교',
-      degree: '학사',
-      field: '시각디자인학',
-      startDate: '2017-03',
-      endDate: '2021-02'
-    }
-  ],
-  languages: [
-    { name: '한국어', proficiency: 'native' },
-    { name: '영어', proficiency: 'intermediate' },
-    { name: '중국어', proficiency: 'beginner' }
-  ],
-  githubUrl: 'https://github.com/leejieun',
-  linkedinUrl: 'https://linkedin.com/in/leejieun',
-  portfolioUrl: 'https://leejieun.design',
-  preferredSalary: {
-    min: 4500,
-    max: 6000,
-    currency: '만원'
-  },
-  createdAt: '2023-06-15T00:00:00Z',
-  updatedAt: '2024-01-20T00:00:00Z'
+  skills: [],
+  education: [],
+  languages: [],
+  githubUrl: undefined,
+  linkedinUrl: undefined,
+  portfolioUrl: undefined,
+  preferredSalary: undefined,
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mockMySkillStats = {
-  totalSkills: 8,
-  aboveAverageSkills: 7,
-  topSkillCategory: 'technical',
-  overallScore: 78,
-  industryRanking: 88
-};
+/**
+ * 지정 시간(8s) 이후에도 loading 상태가 지속되면 onTimeout 트리거.
+ * skeleton 을 그대로 두지 않고 재시도 UI 로 전환해 무한 skeleton 을 방지한다.
+ */
+function LoadingTimeoutTrigger({ onTimeout }: { onTimeout: () => void }) {
+  useEffect(() => {
+    const id = setTimeout(onTimeout, 8000);
+    return () => clearTimeout(id);
+  }, [onTimeout]);
+  return null;
+}
 
 function MyProfileClient() {
   const t = useTranslations('user.profile');
@@ -97,6 +77,20 @@ function MyProfileClient() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [loadingTimedOut, setLoadingTimedOut] = useState(false);
+
+  // 모듈 로드 시점의 initialize() 가 백그라운드 탭에서 보류될 수 있어
+  // mount 시점에 한번 더 킥 (idempotent — 이미 초기화된 경우 no-op)
+  useEffect(() => {
+    useAuthStore.getState().initialize();
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && !useAuthStore.getState().isInitialized) {
+        useAuthStore.getState().initialize();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
 
   useEffect(() => {
     if (searchParams.get('redirected') === '1') {
@@ -106,45 +100,47 @@ function MyProfileClient() {
   }, [searchParams, router]);
 
   // 프로필 데이터 조회
+  // refetchOnWindowFocus 를 true 로 두면 백그라운드 탭에서 초기 fetch가 포커스 전까지 보류되어
+  // skeleton 이 계속 표시되는 이슈가 있어 false 로 고정. 초기 fetch 는 mount 시 항상 실행.
   const { data: profileData, isLoading: profileLoading, error: profileError } = useQuery({
     queryKey: ['profile'],
     queryFn: () => profileApi.getProfile(),
     enabled: isAuthenticated,
     refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 
-  // 연락처 데이터 조회
   const { data: contactData, isLoading: contactLoading } = useQuery({
     queryKey: ['contact'],
     queryFn: () => profileApi.getContact(),
     enabled: isAuthenticated,
     refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 
-  // 프로필과 연락처 데이터 병합 (API 데이터가 없으면 mock 데이터 사용)
+  // 프로필과 연락처 데이터 병합 — mock 데이터 미사용 (ISSUE-111).
+  // API에 없는 필드는 EMPTY_USER_PROFILE 의 빈 값을 유지.
   const profile: UserProfile | undefined = profileData ? {
-    ...mockMyProfile, // 기본값으로 mock 데이터 사용
+    ...EMPTY_USER_PROFILE,
     id: 'me',
-    name: profileData.name || mockMyProfile.name,
-    email: mockMyProfile.email, // 이메일은 별도 API나 auth에서 가져와야 함
+    name: profileData.name || '',
+    email: '', // ProfileResponse 에 email 이 없음 — 서버 측 필드 추가 필요
     profileImage: profileData.profile_image_url || undefined,
-    position: mockMyProfile.position, // position은 position_id를 매핑해야 함
-    location: profileData.location || mockMyProfile.location,
-    introduction: profileData.introduction || mockMyProfile.introduction,
+    position: undefined,
+    location: profileData.location || undefined,
+    introduction: profileData.introduction || undefined,
     job_status: (profileData.job_status as 'available' | 'busy' | 'not-looking') || 'available',
     languages: profileData.language_skills
       ?.filter(skill => skill.language_type && skill.level)
       .map(skill => ({
         name: skill.language_type || '',
         proficiency: (skill.level as 'native' | 'advanced' | 'intermediate' | 'beginner') || 'beginner'
-      })) || mockMyProfile.languages,
-    githubUrl: contactData?.github_url || mockMyProfile.githubUrl,
-    linkedinUrl: contactData?.linkedin_url || mockMyProfile.linkedinUrl,
-    portfolioUrl: contactData?.website_url || profileData.portfolio_url || mockMyProfile.portfolioUrl,
+      })) || [],
+    githubUrl: contactData?.github_url || undefined,
+    linkedinUrl: contactData?.linkedin_url || undefined,
+    portfolioUrl: contactData?.website_url || profileData.portfolio_url || undefined,
     createdAt: profileData.created_at || new Date().toISOString(),
-    updatedAt: profileData.created_at || new Date().toISOString()
+    updatedAt: profileData.created_at || new Date().toISOString(), // 서버에 updated_at 필드 추가 필요
   } : undefined;
 
   const isLoading = profileLoading || contactLoading;
@@ -233,6 +229,37 @@ function MyProfileClient() {
   };
 
   if (authLoading || isLoading) {
+    if (loadingTimedOut) {
+      return (
+        <Layout>
+          <div className="min-h-screen bg-white py-16 flex items-center justify-center px-4">
+            <div className="text-center max-w-md mx-auto">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-100 flex items-center justify-center">
+                <RefreshCw className="w-8 h-8 text-slate-500" />
+              </div>
+              <h2 className="text-title-4 font-bold text-slate-900 mb-2">
+                {t('loadingTimeout.title')}
+              </h2>
+              <p className="text-caption-1 text-slate-500 mb-6">
+                {t('loadingTimeout.subtitle')}
+              </p>
+              <button
+                onClick={() => {
+                  setLoadingTimedOut(false);
+                  queryClient.invalidateQueries({ queryKey: ['profile'] });
+                  queryClient.invalidateQueries({ queryKey: ['contact'] });
+                  useAuthStore.getState().initialize();
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+              >
+                {t('loadingTimeout.retry')}
+              </button>
+            </div>
+          </div>
+        </Layout>
+      );
+    }
+
     return (
       <Layout>
         <div className="min-h-screen bg-slate-100 py-8">
@@ -244,6 +271,7 @@ function MyProfileClient() {
                 <div className="bg-slate-100 rounded-xl h-96"></div>
               </div>
             </div>
+            <LoadingTimeoutTrigger onTimeout={() => setLoadingTimedOut(true)} />
           </div>
         </div>
       </Layout>

@@ -137,8 +137,8 @@ function AccountSettingsSection({ form }: AccountSettingsSectionProps) {
       </div>
 
       {/* Card: Account Management (Danger Zone) */}
-      <div className="bg-red-500-bg border border-red-500-bg rounded-xl overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-red-500-bg">
+      <div className="bg-red-50 border border-red-200 rounded-xl overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 sm:px-7 py-5 border-b border-red-200">
           <span className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
             <AlertTriangle size={16} className="text-red-500" />
           </span>

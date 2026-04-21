@@ -44,22 +44,22 @@ export function StatCard({
       border: 'border-slate-200'
     },
     success: {
-      bg: 'bg-emerald-500-bg',
+      bg: 'bg-emerald-50',
       icon: 'text-emerald-500',
       value: 'text-emerald-500',
-      border: 'border-emerald-500-bg'
+      border: 'border-emerald-100'
     },
     warning: {
-      bg: 'bg-amber-500-bg',
+      bg: 'bg-amber-50',
       icon: 'text-amber-500',
       value: 'text-amber-500',
-      border: 'border-amber-500-bg'
+      border: 'border-amber-200'
     },
     danger: {
-      bg: 'bg-red-500-bg',
+      bg: 'bg-red-50',
       icon: 'text-red-500',
       value: 'text-red-500',
-      border: 'border-red-500-bg'
+      border: 'border-red-200'
     },
     neutral: {
       bg: 'bg-slate-100',

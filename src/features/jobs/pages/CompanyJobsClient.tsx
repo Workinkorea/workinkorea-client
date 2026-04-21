@@ -12,6 +12,7 @@ import type { CompanyPost } from '@/shared/types/api';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/shared/lib/utils/utils';
 import { formatSalary } from '@/shared/lib/utils/formatSalary';
+import { formatDateRange, isPostExpired } from '@/shared/lib/utils/formatDate';
 
 function CompanyJobsClient() {
   const t = useTranslations('jobs.manage');
@@ -151,9 +152,19 @@ function CompanyJobsClient() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
+                      onClick={() => router.push(`/company/posts/edit/${post.id}`)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          router.push(`/company/posts/edit/${post.id}`);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
                       className={cn(
                         'bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm',
-                        'hover:border-blue-200 hover:shadow-md transition-all duration-200 cursor-pointer'
+                        'hover:border-blue-200 hover:shadow-md transition-all duration-200 cursor-pointer',
+                        'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
                       )}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -175,14 +186,14 @@ function CompanyJobsClient() {
                               {formatSalary(post.salary, t('negotiable'))}
                             </p>
                             <p className="text-caption-2 text-slate-400">
-                              {post.start_date} ~ {post.end_date}
+                              {formatDateRange(post.start_date, post.end_date)}
                             </p>
                           </div>
                           <div className="flex items-center gap-2">
-                            {new Date(post.end_date) > new Date() ? (
+                            {!isPostExpired(post.start_date, post.end_date) ? (
                               <span className={cn(
                                 'inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold',
-                                'bg-emerald-500-bg text-emerald-500 border border-emerald-100'
+                                'bg-emerald-50 text-emerald-500 border border-emerald-100'
                               )}>
                                 {t('statusActive')}
                               </span>
@@ -197,7 +208,11 @@ function CompanyJobsClient() {
                           </div>
                         </div>
                         <motion.button
-                          onClick={() => router.push(`/company/posts/edit/${post.id}`)}
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/company/posts/edit/${post.id}`);
+                          }}
                           className={cn(
                             'p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-150',
                             'rounded-lg shrink-0 focus:outline-none cursor-pointer'

@@ -26,13 +26,13 @@ function UserProfileHeader({
       switch (jobStatus) {
         case 'available':
           return {
-            bg: 'bg-emerald-500-bg0',
+            bg: 'bg-emerald-500',
             text: 'text-white',
             label: t('statusAvailable')
           };
         case 'busy':
           return {
-            bg: 'bg-amber-500-bg0',
+            bg: 'bg-amber-500',
             text: 'text-white',
             label: t('statusBusy')
           };

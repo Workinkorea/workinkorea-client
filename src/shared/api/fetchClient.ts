@@ -146,31 +146,71 @@ export async function fetchAPI<T>(
  * Token Refresh (HttpOnly Cookie 기반)
  * - 백엔드가 자동으로 새로운 Cookie를 Set-Cookie 헤더로 전송
  * - 브라우저가 자동으로 새 쿠키를 저장
+ *
+ * Single-flight: 동시에 여러 요청이 401을 받아도 refresh는 한 번만 실행됨
+ * Retry limit: 연속 3회 실패 시 더 이상 refresh 시도하지 않고 즉시 false 반환
  */
+const MAX_CONSECUTIVE_REFRESH_FAILURES = 3;
+const REFRESH_BACKOFF_MS = [0, 300, 900, 2700] as const;
+
+let refreshPromise: Promise<boolean> | null = null;
+let consecutiveRefreshFailures = 0;
+
 async function refreshToken(isServer: boolean): Promise<boolean> {
-  try {
-    const baseURL = isServer ? SERVER_API_URL : API_BASE_URL;
+  // 이미 진행 중인 refresh가 있으면 그 Promise를 공유 (single-flight)
+  if (refreshPromise) {
+    return refreshPromise;
+  }
 
-    const response = await fetch(`${baseURL}/api/auth/refresh`, {
-      method: 'POST',
-      credentials: 'include', // refreshToken 쿠키 자동 전송
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      if (!isServer && data.access_token) {
-        tokenStore.set(data.access_token);
-      }
-      return true;
-    }
-
-    return false;
-  } catch (error) {
+  // 연속 실패 한도 도달 → 즉시 실패 반환 (루프 차단)
+  if (consecutiveRefreshFailures >= MAX_CONSECUTIVE_REFRESH_FAILURES) {
     return false;
   }
+
+  refreshPromise = (async () => {
+    try {
+      const backoff = REFRESH_BACKOFF_MS[consecutiveRefreshFailures] ?? 2700;
+      if (backoff > 0) {
+        await new Promise((resolve) => setTimeout(resolve, backoff));
+      }
+
+      const baseURL = isServer ? SERVER_API_URL : API_BASE_URL;
+      const response = await fetch(`${baseURL}/api/auth/refresh`, {
+        method: 'POST',
+        credentials: 'include', // refreshToken 쿠키 자동 전송
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (!isServer && data.access_token) {
+          tokenStore.set(data.access_token);
+        }
+        consecutiveRefreshFailures = 0;
+        return true;
+      }
+
+      consecutiveRefreshFailures++;
+      return false;
+    } catch {
+      consecutiveRefreshFailures++;
+      return false;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
+/**
+ * refresh 상태 초기화 (테스트 전용)
+ */
+export function __resetRefreshState(): void {
+  refreshPromise = null;
+  consecutiveRefreshFailures = 0;
 }
 
 /**

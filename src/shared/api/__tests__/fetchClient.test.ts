@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { fetchAPI, fetchClient, FetchError, API_BASE_URL, SERVER_API_URL } from '../fetchClient';
+import { fetchAPI, fetchClient, FetchError, API_BASE_URL, SERVER_API_URL, __resetRefreshState } from '../fetchClient';
 import { tokenStore } from '../tokenStore';
 
 /**
@@ -20,6 +20,7 @@ describe('fetchAPI', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     tokenStore.clear();
+    __resetRefreshState();
     global.fetch = vi.fn();
   });
 
@@ -199,6 +200,63 @@ describe('fetchAPI', () => {
       // Should only call fetch once (no recursive refresh)
       expect(global.fetch).toHaveBeenCalledOnce();
     });
+
+    it('should share a single refresh request across concurrent 401s (single-flight)', async () => {
+      const refreshResponse = { access_token: 'new-token' };
+      const retryData = { ok: true };
+
+      // Two concurrent requests both 401, then share one refresh, then each retries
+      vi.mocked(global.fetch).mockImplementation((input: RequestInfo | URL) => {
+        const url = typeof input === 'string' ? input : (input as Request).url ?? String(input);
+        if (url.includes('/auth/refresh')) {
+          return Promise.resolve(mockFetchResponse(200, refreshResponse) as unknown as Response);
+        }
+        // alternating 401 → then retry 200. Use call count to determine phase.
+        const callCount = vi.mocked(global.fetch).mock.calls.length;
+        // first two calls are the initial 401s
+        if (callCount <= 2) {
+          return Promise.resolve(mockFetchResponse(401, { detail: 'Unauthorized' }) as unknown as Response);
+        }
+        return Promise.resolve(mockFetchResponse(200, retryData) as unknown as Response);
+      });
+
+      const [a, b] = await Promise.all([
+        fetchAPI<typeof retryData>('/api/a'),
+        fetchAPI<typeof retryData>('/api/b'),
+      ]);
+
+      expect(a).toEqual(retryData);
+      expect(b).toEqual(retryData);
+
+      // refresh should be called exactly once, not twice
+      const refreshCalls = vi.mocked(global.fetch).mock.calls.filter(([input]) => {
+        const url = typeof input === 'string' ? input : (input as Request).url ?? String(input);
+        return url.includes('/auth/refresh');
+      });
+      expect(refreshCalls.length).toBe(1);
+    });
+
+    it('should stop refreshing after 3 consecutive failures', async () => {
+      // Every fetch returns 401, every refresh returns 400
+      vi.mocked(global.fetch).mockImplementation((input: RequestInfo | URL) => {
+        const url = typeof input === 'string' ? input : (input as Request).url ?? String(input);
+        if (url.includes('/auth/refresh')) {
+          return Promise.resolve(mockFetchResponse(400, { detail: 'Refresh failed' }) as unknown as Response);
+        }
+        return Promise.resolve(mockFetchResponse(401, { detail: 'Unauthorized' }) as unknown as Response);
+      });
+
+      // Make 5 sequential requests; each should fail without exceeding 3 refresh attempts total
+      for (let i = 0; i < 5; i++) {
+        await expect(fetchAPI('/api/test')).rejects.toThrow(FetchError);
+      }
+
+      const refreshCalls = vi.mocked(global.fetch).mock.calls.filter(([input]) => {
+        const url = typeof input === 'string' ? input : (input as Request).url ?? String(input);
+        return url.includes('/auth/refresh');
+      });
+      expect(refreshCalls.length).toBeLessThanOrEqual(3);
+    }, 10_000);
 
     it('should throw FetchError when retry fails after successful refresh', async () => {
       const refreshResponse = { access_token: 'new-token' };
@@ -474,6 +532,7 @@ describe('fetchClient methods', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     tokenStore.clear();
+    __resetRefreshState();
     global.fetch = vi.fn();
   });
 

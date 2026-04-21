@@ -15,7 +15,7 @@ const variantStyles: Record<NonNullable<IconButtonProps['variant']>, string> = {
   ghost:       'text-slate-600 hover:bg-slate-100 hover:text-slate-800',
   outline:     'text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-200',
   filled:      'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800',
-  destructive: 'text-red-500 hover:bg-red-600-bg',
+  destructive: 'text-red-500 hover:bg-red-50',
 };
 
 const sizeStyles: Record<NonNullable<IconButtonProps['size']>, { btn: string; icon: number }> = {

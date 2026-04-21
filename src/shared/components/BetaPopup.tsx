@@ -57,7 +57,7 @@ export function BetaPopup() {
           >
             <div className="pointer-events-auto bg-white rounded-2xl shadow-xl max-w-sm w-full overflow-hidden">
               {/* header gradient bar */}
-              <div className="bg-gradient-to-r from-primary-600 to-primary-500 px-6 py-5 flex items-start justify-between">
+              <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-5 flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
                     <FlaskConical size={18} className="text-white" />

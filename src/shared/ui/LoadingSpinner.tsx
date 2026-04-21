@@ -14,7 +14,7 @@ const sizeMap = {
 };
 
 const colorMap = {
-  blue:  'border-blue-200 border-t-primary-600',
+  blue:  'border-blue-200 border-t-blue-600',
   white: 'border-white/30 border-t-white',
   slate: 'border-slate-200 border-t-label-500',
 };

@@ -200,7 +200,7 @@ export function CompanyPostForm({
       className={cn(
         'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-body-3',
         'border border-red-300 text-red-500',
-        'hover:bg-red-600-bg hover:border-red-400 transition-colors',
+        'hover:bg-red-50 hover:border-red-400 transition-colors',
         'disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer',
         'focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2',
       )}
@@ -334,7 +334,7 @@ export function CompanyPostForm({
               'inline-flex items-center gap-1.5 shrink-0',
               'px-4 py-2.5 rounded-lg font-semibold text-body-3',
               'border border-red-300 text-red-500',
-              'hover:bg-red-600-bg transition-colors',
+              'hover:bg-red-50 transition-colors',
               'disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer',
               'focus:outline-none',
             )}

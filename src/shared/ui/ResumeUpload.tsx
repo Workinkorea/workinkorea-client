@@ -131,7 +131,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({
       {/* 에러 메시지 */}
       {error && (
         <motion.div
-          className="flex items-center gap-2 p-3 bg-red-500-bg border border-red-500-bg rounded-lg"
+          className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}

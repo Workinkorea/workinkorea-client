@@ -33,7 +33,7 @@ function SkillBarChart({
       case 'soft':
         return 'text-blue-600 bg-blue-50 border-blue-200';
       case 'language':
-        return 'text-amber-500 bg-amber-500-bg border-amber-200';
+        return 'text-amber-500 bg-amber-50 border-amber-200';
       default:
         return 'text-slate-600 bg-slate-100 border-slate-200';
     }
@@ -116,9 +116,9 @@ function SkillBarChart({
                 <div className={cn(
                   'text-caption-3 px-2 py-0.5 rounded font-medium',
                   skill.level > skill.average
-                    ? 'text-emerald-500 bg-emerald-500-bg'
+                    ? 'text-emerald-500 bg-emerald-50'
                     : skill.level < skill.average
-                    ? 'text-amber-500 bg-amber-500-bg'
+                    ? 'text-amber-500 bg-amber-50'
                     : 'text-slate-500 bg-slate-100'
                 )}>
                   {skill.level > skill.average ? '+' : ''}

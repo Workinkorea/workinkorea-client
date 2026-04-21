@@ -47,7 +47,7 @@ export default function SignupSelectContent({ callbackUrl }: SignupSelectContent
   ] as const;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-label-50 to-primary-50/30">
+    <div className="min-h-screen bg-linear-to-br from-label-50 to-blue-50/30">
       <div className="flex items-center justify-center px-4 py-8 sm:py-12 lg:py-16">
         <motion.div
           className="w-full max-w-3xl"
@@ -79,7 +79,7 @@ export default function SignupSelectContent({ callbackUrl }: SignupSelectContent
                 <Link href={href} className="block h-full">
                   <motion.div
                     className={cn(
-                      'bg-white rounded-2xl border-t-4 border-t-primary-600 border border-slate-200',
+                      'bg-white rounded-2xl border-t-4 border-t-blue-600 border border-slate-200',
                       'p-6 lg:p-8 min-h-[340px] sm:min-h-[360px] flex flex-col cursor-pointer',
                       'hover:border-blue-200 hover:shadow-lg transition-all duration-200'
                     )}

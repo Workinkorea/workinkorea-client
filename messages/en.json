@@ -87,7 +87,9 @@
       "privacy": "Privacy Policy",
       "terms": "Terms of Service",
       "faq": "FAQ",
-      "contact": "Contact Us"
+      "contact": "Contact Us",
+      "jobsLink": "Browse Jobs",
+      "supportLink": "Support Center"
     }
   },
   "landing": {
@@ -117,7 +119,9 @@
       "stat3Label": "Successful Hires",
       "tagline": "Your Korean Career Starts Here",
       "loginPrompt": "Log in to see personalized job recommendations.",
-      "getStarted": "Get Started"
+      "welcomeBack": "Welcome back! Continue from your dashboard.",
+      "getStarted": "Get Started",
+      "goToDashboard": "Go to dashboard"
     },
     "services": {
       "overline": "Special Services",
@@ -229,6 +233,7 @@
       "expiredPost": "This position is closed",
       "expiredPostShort": "Position Closed",
       "applying": "Applying...",
+      "applied": "Applied",
       "bookmarkSaved": "Saved",
       "bookmarkSave": "Save Job",
       "modified": "Updated {date}",
@@ -292,6 +297,8 @@
     "dashboard": {
       "dashboardLabel": "Company Dashboard",
       "companyId": "Company #{id}",
+      "companyFallback": "My Company",
+      "noCompanyInfo": "Company information isn't set yet. Please update it from Edit Profile.",
       "createPostBtn": "Post New Job",
       "tabPosts": "Active Postings",
       "tabProfile": "Company Info",
@@ -715,6 +722,23 @@
     }
   },
   "user": {
+    "bookmarks": {
+      "title": "Saved Jobs",
+      "subtitle": "You have {count} saved job(s)",
+      "emptyTitle": "No saved jobs yet",
+      "emptySubtitle": "Bookmark jobs you're interested in.",
+      "browseJobs": "Browse jobs"
+    },
+    "applications": {
+      "title": "My Applications",
+      "subtitle": "Review the jobs you've applied to",
+      "emptyTitle": "No applications yet",
+      "emptySubtitle": "Apply to jobs you're interested in.",
+      "notImplementedTitle": "Applications are coming soon",
+      "notImplementedSubtitle": "This will be available once the server is ready.",
+      "browseJobs": "Browse jobs",
+      "appliedOn": "Applied on {date}"
+    },
     "profile": {
       "title": "My Profile",
       "editProfile": "Edit Profile",
@@ -738,6 +762,11 @@
       "subtitle": "Manage your profile and view skill analysis",
       "errorTitle": "Unable to load profile",
       "errorSubtitle": "Please try again later.",
+      "loadingTimeout": {
+        "title": "Loading is taking too long",
+        "subtitle": "This can happen due to a slow network or a background tab restriction.",
+        "retry": "Try again"
+      },
       "tabs": {
         "overview": "Dashboard",
         "resume": "Resume",
@@ -1376,6 +1405,7 @@
       "createError": "Failed to create resume.",
       "updateSuccess": "Resume updated successfully.",
       "updateError": "Failed to update resume.",
+      "validationError": "Please review your inputs. Some fields are invalid.",
       "imageTypeError": "Only image files can be uploaded.",
       "imageSizeError": "Image size must be 5MB or less.",
       "imageSuccess": "Image uploaded successfully.",

@@ -1,18 +1,22 @@
-import Link from 'next/link';
+'use client';
 
-const links = [
-  { name: '채용 공고 찾아보기', href: '/jobs' },
-  { name: '이용약관', href: '/terms' },
-  { name: '개인정보처리방침', href: '/privacy' },
-  { name: '고객센터', href: '/support' },
-  { name: '자주 묻는 질문', href: '/faq' },
-];
+import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function Footer() {
+  const t = useTranslations('common.footer');
+
+  const links = [
+    { name: t('jobsLink'), href: '/jobs' },
+    { name: t('terms'), href: '/terms' },
+    { name: t('privacy'), href: '/privacy' },
+    { name: t('supportLink'), href: '/support' },
+    { name: t('faq'), href: '/faq' },
+  ];
+
   return (
     <footer className="bg-white border-t border-slate-100 py-6">
       <div className="page-container flex flex-col items-center gap-3">
-        {/* 링크 */}
         <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2">
           {links.map((link) => (
             <Link
@@ -25,9 +29,8 @@ export default function Footer() {
           ))}
         </nav>
 
-        {/* 저작권 */}
         <p className="text-caption-2 text-slate-400">
-          © 2026 Work In Korea. All rights reserved.
+          {t('allRights', { year: new Date().getFullYear() })}
         </p>
       </div>
     </footer>
