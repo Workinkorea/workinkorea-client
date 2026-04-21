@@ -39,6 +39,7 @@ export default function Error({
           <motion.button
             onClick={reset}
             className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
+            style={{ color: '#ffffff' }}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >

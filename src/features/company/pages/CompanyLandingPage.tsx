@@ -183,8 +183,9 @@ export function CompanyLandingPage() {
               <div className="flex gap-2">
                 <Link
                   href="/company-login"
+                  style={{ color: '#ffffff' }}
                   className={cn(
-                    'flex-1 py-2.5 bg-blue-600 text-white text-caption-1 font-semibold rounded-lg text-center',
+                    'flex-1 py-2.5 bg-blue-600 text-white text-caption-1 font-bold rounded-lg text-center',
                     'hover:bg-blue-700 transition-colors cursor-pointer',
                   )}
                 >
@@ -248,9 +249,10 @@ export function CompanyLandingPage() {
               </ul>
               <Link
                 href="/company-signup"
+                style={{ color: '#ffffff' }}
                 className={cn(
                   'mt-4 flex items-center justify-center gap-1.5 w-full py-2',
-                  'bg-blue-600 text-white text-caption-2 font-semibold rounded-lg',
+                  'bg-blue-600 text-white text-caption-2 font-bold rounded-lg',
                   'hover:bg-blue-700 transition-colors cursor-pointer',
                 )}
               >

@@ -127,6 +127,7 @@ export default function SignupSelectContent({ callbackUrl }: SignupSelectContent
                           'text-body-3 font-semibold hover:bg-blue-700 transition-colors duration-150',
                           'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer'
                         )}
+                        style={{ color: '#ffffff' }}
                         whileHover={{ y: -2 }}
                         whileTap={{ scale: 0.98 }}
                       >

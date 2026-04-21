@@ -29,6 +29,7 @@ export default function JobsError({
         <button
           onClick={reset}
           className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
+          style={{ color: '#ffffff' }}
         >
           <RefreshCw size={16} />
           다시 시도

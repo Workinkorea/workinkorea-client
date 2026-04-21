@@ -492,6 +492,7 @@ export default function BusinessSignupComponent({ callbackUrl }: { callbackUrl?:
               <motion.button
                 type="submit" disabled={!isFormValid}
                 className={`w-full py-3 px-4 rounded-lg font-semibold text-body-3 transition-colors ${isFormValid ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}
+                style={{ color: isFormValid ? '#ffffff' : undefined }}
                 whileTap={isFormValid ? { scale: 0.98 } : {}}
               >
                 {t('signupButton')}

@@ -17,8 +17,8 @@ export default function MainError({
     <div className="min-h-screen flex items-center justify-center px-4 bg-slate-50">
       <div className="text-center mx-auto max-w-sm">
         <div className="mb-8">
-          <h1 className="text-6xl font-extrabold text-slate-200 mb-2 leading-none">오류</h1>
-          <h2 className="text-xl font-bold text-slate-900 mb-3">
+          <h1 className="text-display-1 font-extrabold text-slate-200 mb-2 leading-none">오류</h1>
+          <h2 className="text-title-3 font-bold text-slate-900 mb-3">
             페이지를 불러올 수 없습니다
           </h2>
           <p className="text-slate-500">
@@ -30,6 +30,7 @@ export default function MainError({
           <button
             onClick={reset}
             className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer"
+            style={{ color: '#ffffff' }}
           >
             다시 시도
           </button>

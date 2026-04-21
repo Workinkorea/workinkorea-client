@@ -182,6 +182,7 @@ function UserProfileHeader({
                     <button
                       onClick={onEditClick}
                       className="flex-1 md:flex-none px-4 py-2 bg-blue-600 text-white rounded-lg text-caption-1 font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+                      style={{ color: '#ffffff' }}
                     >
                       {t('editProfile')}
                     </button>
@@ -191,7 +192,7 @@ function UserProfileHeader({
 
               {!isOwnProfile && (
                 <>
-                  <button className="flex-1 md:flex-none px-4 py-2 bg-blue-600 text-white rounded-lg text-caption-1 font-medium hover:bg-blue-700 transition-colors cursor-pointer">
+                  <button className="flex-1 md:flex-none px-4 py-2 bg-blue-600 text-white rounded-lg text-caption-1 font-medium hover:bg-blue-700 transition-colors cursor-pointer" style={{ color: '#ffffff' }}>
                     {t('contact')}
                   </button>
                   <button className="flex-1 md:flex-none px-4 py-2 border border-blue-600 text-blue-600 rounded-lg text-caption-1 font-medium hover:bg-blue-50 transition-colors cursor-pointer">

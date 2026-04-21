@@ -72,6 +72,7 @@ export default function HeroSection() {
           <Link
             href="/login-select"
             className="inline-flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 px-8 py-3.5 rounded-lg font-semibold text-body-2 transition-all shadow-md hover:shadow-lg"
+            style={{ color: '#ffffff' }}
           >
             {t('getStarted')}
             <ArrowRight className="w-4 h-4" />

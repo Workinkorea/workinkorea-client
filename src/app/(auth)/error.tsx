@@ -28,6 +28,7 @@ export default function AuthError({
           <button
             onClick={reset}
             className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold text-body-2 hover:bg-blue-700 transition-colors cursor-pointer"
+            style={{ color: '#ffffff' }}
           >
             다시 시도
           </button>

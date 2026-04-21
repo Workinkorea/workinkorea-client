@@ -246,6 +246,7 @@ export default function PopularJobsSection() {
             <Link
               href="/jobs"
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-2.5 rounded-lg font-semibold transition-colors text-body-3 md:text-body-1 cursor-pointer"
+              style={{ color: '#ffffff' }}
             >
               {t('viewMore')}
               <ChevronRight className="w-4 h-4" />
