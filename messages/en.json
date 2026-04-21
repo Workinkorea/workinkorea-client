@@ -296,6 +296,7 @@
       "dashboardLabel": "Company Dashboard",
       "companyId": "Company #{id}",
       "companyFallback": "My Company",
+      "noCompanyInfo": "Company information isn't set yet. Please update it from Edit Profile.",
       "createPostBtn": "Post New Job",
       "tabPosts": "Active Postings",
       "tabProfile": "Company Info",

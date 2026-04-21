@@ -12,6 +12,14 @@ export type ValidationRule = (value: string | number, formData?: CompanyProfileR
 /**
  * Validation rules for company profile fields
  */
+/**
+ * ISSUE-113: 초기 시드/플레이스홀더 값 "string" 이 폼에 로드되었을 때 그대로 저장되는 것을 방지.
+ */
+function isPlaceholder(str: string): boolean {
+  const normalized = str.trim().toLowerCase();
+  return normalized === 'string' || normalized === 'null' || normalized === 'undefined';
+}
+
 export const companyProfileValidationRules: Record<string, ValidationRule> = {
   email: (value: string | number) => {
     const strValue = String(value);
@@ -46,18 +54,28 @@ export const companyProfileValidationRules: Record<string, ValidationRule> = {
   industry_type: (value: string | number) => {
     const strValue = String(value);
     if (!strValue || !strValue.trim()) return '업종을 입력해주세요.';
+    if (isPlaceholder(strValue)) return '업종을 정확히 입력해주세요.';
     return '';
   },
 
   company_type: (value: string | number) => {
     const strValue = String(value);
     if (!strValue || !strValue.trim()) return '기업 형태를 선택해주세요.';
+    if (isPlaceholder(strValue)) return '기업 형태를 정확히 선택해주세요.';
     return '';
   },
 
   address: (value: string | number) => {
     const strValue = String(value);
     if (!strValue || !strValue.trim()) return '주소를 입력해주세요.';
+    if (isPlaceholder(strValue)) return '주소를 정확히 입력해주세요.';
+    return '';
+  },
+
+  insurance: (value: string | number) => {
+    const strValue = String(value);
+    if (!strValue || !strValue.trim()) return '';
+    if (isPlaceholder(strValue)) return '보험 정보를 정확히 입력해주세요.';
     return '';
   },
 

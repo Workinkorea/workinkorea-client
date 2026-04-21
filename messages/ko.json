@@ -296,6 +296,7 @@
       "dashboardLabel": "기업 대시보드",
       "companyId": "기업 #{id}",
       "companyFallback": "내 회사",
+      "noCompanyInfo": "기업 정보가 아직 입력되지 않았어요. 프로필 편집에서 설정해 주세요.",
       "createPostBtn": "새 채용 공고 등록",
       "tabPosts": "관리 중인 공고",
       "tabProfile": "기업 정보",

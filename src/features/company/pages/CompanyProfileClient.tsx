@@ -35,6 +35,19 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { toast } from 'sonner';
 import { isPostExpired } from '@/shared/lib/utils/formatDate';
 
+/**
+ * ISSUE-113: 서버에 저장된 "string" literal placeholder 값이 UI에 노출되는 것을 방지.
+ * 실제 정보처럼 보이지 않도록 필드를 렌더하지 않는다.
+ */
+function cleanPlaceholder(value: string | null | undefined): string {
+  if (!value) return '';
+  const trimmed = String(value).trim();
+  if (!trimmed) return '';
+  if (trimmed.toLowerCase() === 'string') return '';
+  if (/^0{2,}-0{2,}-\d+$/.test(trimmed)) return ''; // 010-0101-0101 같은 패턴
+  return trimmed;
+}
+
 type TodoTab = 'unread' | 'accepted' | 'interview' | 'evaluated';
 
 const CompanyProfileClient = () => {
@@ -528,33 +541,45 @@ const CompanyProfileClient = () => {
                     {t('editProfile')}
                   </button>
                 </div>
-                <div className="space-y-2">
-                  {profile.address && (
-                    <div className="flex items-start gap-2 text-caption-2 text-slate-500">
-                      <MapPin size={13} className="text-slate-300 mt-0.5 shrink-0" />
-                      <span className="leading-relaxed line-clamp-2">{profile.address}</span>
+                {(() => {
+                  const cleanAddress = cleanPlaceholder(profile.address);
+                  const cleanPhone = cleanPlaceholder(profile.phone_number);
+                  const cleanWebsite = cleanPlaceholder(profile.website_url);
+                  const hasAny = cleanAddress || cleanPhone || cleanWebsite;
+                  return hasAny ? (
+                    <div className="space-y-2">
+                      {cleanAddress && (
+                        <div className="flex items-start gap-2 text-caption-2 text-slate-500">
+                          <MapPin size={13} className="text-slate-300 mt-0.5 shrink-0" />
+                          <span className="leading-relaxed line-clamp-2">{cleanAddress}</span>
+                        </div>
+                      )}
+                      {cleanPhone && (
+                        <div className="flex items-center gap-2 text-caption-2 text-slate-500">
+                          <Phone size={13} className="text-slate-300 shrink-0" />
+                          <span>{cleanPhone}</span>
+                        </div>
+                      )}
+                      {cleanWebsite && (
+                        <div className="flex items-center gap-2 text-caption-2 text-slate-500">
+                          <Globe size={13} className="text-slate-300 shrink-0" />
+                          <a
+                            href={cleanWebsite}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline truncate"
+                          >
+                            {cleanWebsite}
+                          </a>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {profile.phone_number && (
-                    <div className="flex items-center gap-2 text-caption-2 text-slate-500">
-                      <Phone size={13} className="text-slate-300 shrink-0" />
-                      <span>{profile.phone_number}</span>
-                    </div>
-                  )}
-                  {profile.website_url && (
-                    <div className="flex items-center gap-2 text-caption-2 text-slate-500">
-                      <Globe size={13} className="text-slate-300 shrink-0" />
-                      <a
-                        href={profile.website_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline truncate"
-                      >
-                        {profile.website_url}
-                      </a>
-                    </div>
-                  )}
-                </div>
+                  ) : (
+                    <p className="text-caption-2 text-slate-400">
+                      {t('noCompanyInfo')}
+                    </p>
+                  );
+                })()}
               </div>
 
               {/* 서비스 이용 현황 */}
