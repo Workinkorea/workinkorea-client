@@ -1382,6 +1382,7 @@
       "createError": "Failed to create resume.",
       "updateSuccess": "Resume updated successfully.",
       "updateError": "Failed to update resume.",
+      "validationError": "Please review your inputs. Some fields are invalid.",
       "imageTypeError": "Only image files can be uploaded.",
       "imageSizeError": "Image size must be 5MB or less.",
       "imageSuccess": "Image uploaded successfully.",
