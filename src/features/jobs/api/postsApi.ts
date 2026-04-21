@@ -1,5 +1,6 @@
 import { fetchClient, fetchAPI, FetchError } from '@/shared/api/fetchClient';
 import {
+  CompanyPost,
   CompanyPostsResponse,
   CreateCompanyPostRequest,
   CreateCompanyPostResponse,
@@ -44,6 +45,30 @@ interface RawCompanyPostsApiResponse {
  * - GET /api/posts/company/list?skip=&limit= 엔드포인트 서버에 없음
  * - 서버의 GET /api/posts/company/는 company auth 필요 (공개 아님)
  */
+/**
+ * CompanyPost 의 required string 필드가 null/undefined 로 내려오면 서버 컴포넌트 렌더에서
+ * `.split(',')`, `.toLowerCase()`, `new Date(null)` 파생값 등에서 예외가 발생한다.
+ * 타입 경계에서 안전한 기본값을 채워넣어 렌더 실패를 차단한다.
+ */
+function normalizeCompanyPost(raw: Partial<CompanyPost> & { id: number }): CompanyPost {
+  return {
+    id: raw.id,
+    company_id: raw.company_id ?? 0,
+    title: raw.title ?? '',
+    content: raw.content ?? '',
+    work_experience: raw.work_experience ?? '',
+    position_id: raw.position_id ?? 0,
+    education: raw.education ?? '',
+    language: raw.language ?? '',
+    employment_type: raw.employment_type ?? '',
+    work_location: raw.work_location ?? '',
+    working_hours: raw.working_hours ?? 0,
+    salary: raw.salary ?? 0,
+    start_date: raw.start_date ?? '',
+    end_date: raw.end_date ?? '',
+  };
+}
+
 export async function getCompanyPosts(
   page: number = DEFAULT_PAGE,
   limit: number = DEFAULT_LIMIT
@@ -63,7 +88,13 @@ export async function getCompanyPosts(
 
     // 래핑된 응답({ data: { company_posts } })과 일반 응답({ company_posts }) 모두 처리
     const inner = rawData.data ?? rawData;
-    const posts = inner.company_posts ?? [];
+    const rawPosts: unknown[] = Array.isArray(inner.company_posts) ? inner.company_posts : [];
+    // id 가 없는 row 는 key/라우팅에 쓸 수 없으므로 제외 + 나머지 필드는 안전한 기본값으로 정규화
+    const posts = rawPosts
+      .filter((p): p is Partial<CompanyPost> & { id: number } =>
+        !!p && typeof p === 'object' && typeof (p as { id?: unknown }).id === 'number'
+      )
+      .map(normalizeCompanyPost);
     const pagination = inner.pagination;
 
     // Pagination 계산
@@ -113,7 +144,12 @@ export const postsApi = {
 
     // 래핑된 응답({ data: { company_posts } })과 일반 응답({ company_posts }) 모두 처리
     const inner = rawData.data ?? rawData;
-    const posts = inner.company_posts ?? [];
+    const rawPosts: unknown[] = Array.isArray(inner.company_posts) ? inner.company_posts : [];
+    const posts = rawPosts
+      .filter((p): p is Partial<CompanyPost> & { id: number } =>
+        !!p && typeof p === 'object' && typeof (p as { id?: unknown }).id === 'number'
+      )
+      .map(normalizeCompanyPost);
     const pagination = inner.pagination;
 
     // Pagination 계산
@@ -205,10 +241,23 @@ export const postsApi = {
    * 채용 공고에 지원하기 (일반 사용자, 인증 필요)
    * @param data - 지원 정보 (company_post_id, resume_id, cover_letter)
    *
-   * TODO: 백엔드에 POST /api/applications 엔드포인트 구현 필요.
-   * 현재 해당 라우터가 존재하지 않아 404 에러 발생.
+   * 서버 404 시 "기능 준비 중" 메시지로 치환해 사용자에게 명확히 안내한다.
    */
-  async applyToJob(_data: ApplyToJobRequest): Promise<ApplyToJobResponse> {
-    throw new Error('지원 기능은 현재 준비 중입니다. 백엔드에 POST /api/applications 엔드포인트 구현이 필요합니다.');
+  async applyToJob(data: ApplyToJobRequest): Promise<ApplyToJobResponse> {
+    try {
+      return await fetchClient.post<ApplyToJobResponse>('/api/applications', data);
+    } catch (err) {
+      if (err instanceof FetchError && err.status === 404) {
+        throw new FetchError('지원 기능은 현재 준비 중입니다. 잠시 후 다시 시도해주세요.', 404);
+      }
+      throw err;
+    }
+  },
+
+  /**
+   * 내 지원 목록 조회
+   */
+  async getMyApplications(): Promise<{ applications: Array<{ id: number; post_id: number; resume_id: number; status: string; applied_at: string }> }> {
+    return fetchClient.get('/api/applications/me');
   },
 };

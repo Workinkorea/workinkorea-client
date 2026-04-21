@@ -25,21 +25,21 @@ describe('Badge', () => {
   it('applies success color classes', () => {
     const { container } = render(<Badge label="Success" color="success" />);
     const badge = container.firstChild as HTMLElement;
-    expect(badge.className).toContain('bg-emerald-500-bg');
+    expect(badge.className).toContain('bg-emerald-50');
     expect(badge.className).toContain('text-emerald-500');
   });
 
   it('applies warning color classes', () => {
     const { container } = render(<Badge label="Warning" color="warning" />);
     const badge = container.firstChild as HTMLElement;
-    expect(badge.className).toContain('bg-amber-500-bg');
+    expect(badge.className).toContain('bg-amber-50');
     expect(badge.className).toContain('text-amber-500');
   });
 
   it('applies danger color classes', () => {
     const { container } = render(<Badge label="Error" color="danger" />);
     const badge = container.firstChild as HTMLElement;
-    expect(badge.className).toContain('bg-red-500-bg');
+    expect(badge.className).toContain('bg-red-50');
     expect(badge.className).toContain('text-red-500');
   });
 

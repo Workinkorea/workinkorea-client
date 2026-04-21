@@ -94,7 +94,7 @@ export default function LoginSelectContent({ callbackUrl }: LoginSelectContentPr
                   transition={{ type: 'spring', stiffness: 300 }}
                 >
                   {/* 배경 그라데이션 (호버 시 표시) */}
-                  <div className="absolute inset-0 bg-linear-to-br from-primary-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-linear-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                   <div className="relative z-10 flex flex-col h-full">
                     {/* 아이콘 */}

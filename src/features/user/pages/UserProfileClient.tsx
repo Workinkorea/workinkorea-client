@@ -324,7 +324,7 @@ function UserProfileClient() {
           <button
             onClick={handleConfirmDelete}
             disabled={deleteResumeMutation.isPending}
-            className="px-4 py-2 bg-red-500-bg0 text-white rounded-lg text-body-3 font-medium hover:bg-red-600 transition-colors disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 bg-red-500 text-white rounded-lg text-body-3 font-medium hover:bg-red-600 transition-colors disabled:opacity-50 cursor-pointer"
           >
             {deleteResumeMutation.isPending ? t('deleting') : t('delete')}
           </button>
@@ -464,7 +464,7 @@ function UserProfileClient() {
                         <motion.div
                           className={cn(
                             'h-full rounded-full',
-                            pct >= 80 ? 'bg-blue-600' : pct >= 50 ? 'bg-amber-500-bg0' : 'bg-slate-300'
+                            pct >= 80 ? 'bg-blue-600' : pct >= 50 ? 'bg-amber-500' : 'bg-slate-300'
                           )}
                           initial={{ width: 0 }}
                           animate={{ width: `${pct}%` }}
@@ -537,7 +537,7 @@ function UserProfileClient() {
               <div className="space-y-5 sm:space-y-6">
                 {/* 파일 업로드 섹션 */}
                 <motion.div
-                  className="bg-linear-to-br from-primary-50 to-primary-100/50 rounded-xl p-4 sm:p-6 border border-blue-200 hover:border-blue-300 transition-colors"
+                  className="bg-linear-to-br from-blue-50 to-blue-100/50 rounded-xl p-4 sm:p-6 border border-blue-200 hover:border-blue-300 transition-colors"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
@@ -617,7 +617,7 @@ function UserProfileClient() {
                             handleDeleteResume(resume.id, resume.title || '이력서');
                           }}
                           disabled={deleteResumeMutation.isPending}
-                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-caption-3 sm:text-caption-2 font-semibold text-red-500 border border-red-500-bg rounded-lg hover:bg-red-600-bg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                          className="px-3 sm:px-4 py-2 sm:py-2.5 text-caption-3 sm:text-caption-2 font-semibold text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
@@ -714,7 +714,7 @@ function UserProfileClient() {
                     transition={{ duration: 0.4, delay: 0.1 }}
                   >
                     <div className="flex items-center gap-3 mb-4 sm:mb-5">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-500-bg flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                         <Award className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
                       </div>
                       <h3 className="text-body-3 sm:text-body-2 font-bold text-slate-900">{t('certTitle')}</h3>

@@ -14,7 +14,7 @@ export default function JobCategoriesSection() {
     { id: 'sales',     title: t('sales'),     icon: TrendingUp,    bgColor: 'bg-orange-50', iconColor: 'text-orange-600' },
     { id: 'finance',   title: t('finance'),   icon: Building,      bgColor: 'bg-yellow-50', iconColor: 'text-yellow-600' },
     { id: 'education', title: t('education'), icon: GraduationCap, bgColor: 'bg-indigo-50', iconColor: 'text-indigo-600' },
-    { id: 'food',      title: t('food'),      icon: ChefHat,       bgColor: 'bg-red-500-bg',    iconColor: 'text-red-500' },
+    { id: 'food',      title: t('food'),      icon: ChefHat,       bgColor: 'bg-red-50',    iconColor: 'text-red-500' },
     { id: 'startup',   title: t('startup'),   icon: Rocket,        bgColor: 'bg-teal-50',   iconColor: 'text-teal-600' },
   ];
 

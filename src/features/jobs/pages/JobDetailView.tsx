@@ -17,15 +17,11 @@ import { resumeApi } from '@/features/resume/api/resumeApi';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import type { CompanyPostDetailResponse } from '@/shared/types/api';
 import { formatSalary } from '@/shared/lib/utils/formatSalary';
+import { formatDateRange, formatDateShort, isPostExpired, getDaysLeft } from '@/shared/lib/utils/formatDate';
 
 interface JobDetailViewProps {
   job: CompanyPostDetailResponse | null;
   jobId: number;
-}
-
-function getDaysLeft(endDate: string): number | null {
-  if (!endDate) return null;
-  return Math.ceil((new Date(endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 }
 
 export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
@@ -35,7 +31,7 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
-  const { mutate: applyToJob, isPending } = useJobApplication();
+  const { mutate: applyToJob, isPending, isSuccess: hasJustApplied } = useJobApplication();
   const { toggle, isBookmarked } = useBookmarks();
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [selectedResumeId, setSelectedResumeId] = useState<number | null>(null);
@@ -61,7 +57,8 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
   const resumes = resumeData?.resume_list ?? [];
   const daysLeft = getDaysLeft(effectiveJob?.end_date ?? '');
   const isUrgent = daysLeft !== null && daysLeft >= 0 && daysLeft <= 3;
-  const isExpired = daysLeft !== null && daysLeft < 0;
+  // start_date == end_date 시드데이터는 마감으로 보지 않음 (ISSUE-114)
+  const isExpired = isPostExpired(effectiveJob?.start_date, effectiveJob?.end_date);
   const language = effectiveJob?.language ? effectiveJob.language.split(',').map(l => l.trim()) : [];
 
   const redirectToLogin = () => {
@@ -243,10 +240,15 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
         <div className="fixed bottom-6 left-0 right-0 px-4 z-40 lg:hidden">
           <motion.button
             onClick={handleApply}
-            whileTap={{ scale: 0.97 }}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-body-2 shadow-[0_4px_14px_rgba(66,90,213,0.25)] transition-colors cursor-pointer"
+            disabled={hasJustApplied}
+            whileTap={{ scale: hasJustApplied ? 1 : 0.97 }}
+            className={
+              hasJustApplied
+                ? "w-full bg-slate-200 text-slate-500 py-3.5 rounded-xl font-bold text-body-2 cursor-not-allowed"
+                : "w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-body-2 shadow-[0_4px_14px_rgba(66,90,213,0.25)] transition-colors cursor-pointer"
+            }
           >
-            {tCommon('button.apply')}
+            {hasJustApplied ? t('applied') : tCommon('button.apply')}
           </motion.button>
         </div>
       )}
@@ -273,7 +275,7 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
                   <div className="flex items-start gap-4 justify-between">
                     <div className="flex items-start gap-4 flex-1 min-w-0">
                       {/* Company Icon */}
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm">
                         <Building2 className="w-8 h-8 sm:w-10 sm:h-10" />
                       </div>
 
@@ -284,7 +286,7 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
                         <div className="flex items-center gap-2 mb-3 flex-wrap">
                           {isUrgent && (
                             <motion.span
-                              className="inline-flex items-center px-2 py-0.5 bg-red-500-bg0 text-white text-caption-3 font-bold rounded-md"
+                              className="inline-flex items-center px-2 py-0.5 bg-red-500 text-white text-caption-3 font-bold rounded-md"
                               animate={{ opacity: [1, 0.6, 1] }}
                               transition={{ duration: 1.5, repeat: Infinity }}
                             >
@@ -349,10 +351,10 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
                   </div>
 
                   {/* Recruitment Period */}
-                  <div className="flex items-center gap-3 p-4 bg-amber-500-bg border border-amber-100 rounded-lg">
+                  <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-100 rounded-lg">
                     <Calendar className="text-amber-500 shrink-0" size={18} />
                     <p className="text-caption-1 text-slate-900">
-                      <span className="font-semibold">{t('recruitPeriod')}:</span> {effectiveJob.start_date} ~ {effectiveJob.end_date}
+                      <span className="font-semibold">{t('recruitPeriod')}:</span> {formatDateRange(effectiveJob.start_date, effectiveJob.end_date)}
                     </p>
                   </div>
                 </div>
@@ -439,6 +441,13 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
                   <button className="w-full py-4 bg-slate-100 text-slate-400 text-center rounded-lg font-bold text-body-2 cursor-not-allowed">
                     {t('expiredPostShort')}
                   </button>
+                ) : hasJustApplied ? (
+                  <button
+                    disabled
+                    className="w-full py-4 bg-slate-200 text-slate-500 rounded-lg font-bold text-body-2 cursor-not-allowed"
+                  >
+                    {t('applied')}
+                  </button>
                 ) : (
                   <motion.button
                     onClick={handleApply}
@@ -472,8 +481,10 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
                 {/* Recruitment Info */}
                 <div className="p-4 bg-slate-50 rounded-lg border border-slate-100 space-y-2 mt-6 pt-6 border-t">
                   <p className="text-caption-3 font-semibold text-slate-400">{tCommon('label.period')}</p>
-                  <p className="text-caption-1 font-semibold text-slate-900">{effectiveJob.start_date}</p>
-                  <p className="text-caption-1 text-slate-600">~ {effectiveJob.end_date}</p>
+                  <p className="text-caption-1 font-semibold text-slate-900">{formatDateShort(effectiveJob.start_date)}</p>
+                  {effectiveJob.end_date && effectiveJob.start_date !== effectiveJob.end_date && (
+                    <p className="text-caption-1 text-slate-600">~ {formatDateShort(effectiveJob.end_date)}</p>
+                  )}
                 </div>
               </motion.div>
             </div>

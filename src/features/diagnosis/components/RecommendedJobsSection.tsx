@@ -7,6 +7,7 @@ import { Briefcase, ArrowRight } from 'lucide-react';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import JobCard from '@/features/jobs/components/JobCard';
 import { cn } from '@/shared/lib/utils/utils';
+import { isPostExpired } from '@/shared/lib/utils/formatDate';
 import type { DiagnosisData } from '@/features/diagnosis/store/diagnosisStore';
 import type { CompanyPost } from '@/shared/types/api';
 import { useTranslations } from 'next-intl';
@@ -25,9 +26,12 @@ export function RecommendedJobsSection({ diagnosisData }: RecommendedJobsSection
     retry: 1,
   });
 
-  // Filter by employmentType if available, then pick up to 4
+  // Filter: 활성 공고만 노출 (ISSUE-124 — 추천이 모두 마감으로 보이는 문제 방지)
+  // + employmentType 매칭 우선
   const jobs = (() => {
-    const posts = data?.company_posts ?? [];
+    const posts = (data?.company_posts ?? []).filter(
+      (p: CompanyPost) => !isPostExpired(p.start_date, p.end_date)
+    );
     if (!diagnosisData?.employmentType) return posts.slice(0, 4);
     const filtered = posts.filter(
       (p: CompanyPost) => p.employment_type === diagnosisData.employmentType

@@ -7,16 +7,11 @@ import { useBookmarks } from '@/features/jobs/hooks/useBookmarks';
 import { motion, useAnimation } from 'framer-motion';
 import { cn } from '@/shared/lib/utils/utils';
 import { formatSalary } from '@/shared/lib/utils/formatSalary';
+import { getDaysLeft, isPostExpired } from '@/shared/lib/utils/formatDate';
 import { useTranslations } from 'next-intl';
 
 interface JobCardProps {
   post: CompanyPost;
-}
-
-function getDaysLeft(endDate: string): number | null {
-  if (!endDate) return null;
-  const diff = new Date(endDate).getTime() - Date.now();
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
 
 export default function JobCard({ post }: JobCardProps) {
@@ -25,10 +20,12 @@ export default function JobCard({ post }: JobCardProps) {
   const tCard = useTranslations('jobs.card');
   const tCommon = useTranslations('common');
 
-  const isRecent = new Date(post.start_date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const startDateMs = post.start_date ? new Date(post.start_date).getTime() : NaN;
+  const isRecent = !isNaN(startDateMs) && startDateMs > Date.now() - 7 * 24 * 60 * 60 * 1000;
   const daysLeft = getDaysLeft(post.end_date);
   const isUrgent = daysLeft !== null && daysLeft >= 0 && daysLeft <= 3;
-  const isExpired = daysLeft !== null && daysLeft < 0;
+  // start == end 시드 데이터는 마감 처리하지 않음 (ISSUE-114)
+  const isExpired = isPostExpired(post.start_date, post.end_date);
   const language = post.language ? post.language.split(',').map(l => l.trim()) : [];
   const bookmarked = isBookmarked(post.id);
 
@@ -59,7 +56,7 @@ export default function JobCard({ post }: JobCardProps) {
           {/* Top Section: Icon + Type + Badges + Bookmark */}
           <div className="flex items-start gap-3 mb-4">
             {/* Company Icon */}
-            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white shrink-0 shadow-sm">
+            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shrink-0 shadow-sm">
               <Building2 className="w-6 h-6" />
             </div>
 
@@ -74,7 +71,7 @@ export default function JobCard({ post }: JobCardProps) {
                 )}
                 {isUrgent && (
                   <motion.span
-                    className="inline-flex items-center px-2 py-0.5 bg-red-500-bg0 text-white text-caption-3 font-bold rounded-md"
+                    className="inline-flex items-center px-2 py-0.5 bg-red-500 text-white text-caption-3 font-bold rounded-md"
                     animate={{ opacity: [1, 0.6, 1] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                   >

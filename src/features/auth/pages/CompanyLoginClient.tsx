@@ -7,7 +7,7 @@ function BusinessLoginSkeleton() {
   return (
     <div className="flex min-h-screen">
       {/* 좌측 패널 스켈레톤 */}
-      <div className="hidden lg:block flex-1 bg-linear-to-br from-primary-600 to-primary-900" />
+      <div className="hidden lg:block flex-1 bg-linear-to-br from-blue-600 to-blue-900" />
       {/* 우측 폼 스켈레톤 */}
       <div className="flex flex-1 flex-col justify-center px-8 sm:px-14 lg:px-20 py-12 bg-white">
         <div className="w-full max-w-[400px] mx-auto space-y-6">

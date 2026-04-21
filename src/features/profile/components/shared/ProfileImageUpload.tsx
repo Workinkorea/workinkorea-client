@@ -151,7 +151,7 @@ function ProfileImageUpload({
           ) : (
             // Fallback: Initials avatar
             <div
-              className="rounded-full bg-linear-to-br from-primary-100 to-primary-50 border-4 border-blue-100 flex items-center justify-center"
+              className="rounded-full bg-linear-to-br from-blue-100 to-blue-50 border-4 border-blue-100 flex items-center justify-center"
               style={{
                 width: `${size}px`,
                 height: `${size}px`,

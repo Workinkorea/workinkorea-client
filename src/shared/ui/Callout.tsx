@@ -37,7 +37,7 @@ const variantConfig: Record<
     DefaultIcon:  Info,
   },
   warning: {
-    container:    'bg-amber-500-bg border border-amber-500-bg',
+    container:    'bg-amber-50 border border-amber-200',
     iconColor:    'text-amber-500',
     titleColor:   'text-slate-800',
     bodyColor:    'text-slate-700',
@@ -45,7 +45,7 @@ const variantConfig: Record<
     DefaultIcon:  AlertTriangle,
   },
   error: {
-    container:    'bg-red-500-bg border border-red-500-bg',
+    container:    'bg-red-50 border border-red-200',
     iconColor:    'text-red-500',
     titleColor:   'text-slate-800',
     bodyColor:    'text-slate-700',
@@ -53,7 +53,7 @@ const variantConfig: Record<
     DefaultIcon:  XCircle,
   },
   success: {
-    container:    'bg-emerald-500-bg border border-emerald-500-bg',
+    container:    'bg-emerald-50 border border-emerald-100',
     iconColor:    'text-emerald-500',
     titleColor:   'text-slate-800',
     bodyColor:    'text-slate-700',

@@ -32,7 +32,7 @@ export default function CTASection() {
       className="relative py-16 sm:py-20 lg:py-28 overflow-hidden"
     >
       {/* 배경 그래디언트 */}
-      <div className="absolute inset-0 bg-linear-to-br from-primary-600 via-primary-700 to-primary-900" />
+      <div className="absolute inset-0 bg-linear-to-br from-blue-600 via-blue-700 to-blue-900" />
 
       {/* 장식 원 1 */}
       <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400/20 rounded-full -mr-36 sm:-mr-48 -mt-36 sm:-mt-48 blur-3xl" />

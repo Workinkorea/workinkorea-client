@@ -28,6 +28,7 @@ import { resumeApi } from '@/features/resume/api/resumeApi';
 import { profileApi } from '@/features/profile/api/profileApi';
 import { FormField } from '@/shared/ui/FormField';
 import DatePicker from '@/shared/ui/DatePicker';
+import { FetchError } from '@/shared/api/fetchClient';
 import type {
   CreateResumeRequest,
   UpdateResumeRequest
@@ -38,6 +39,66 @@ interface ResumeEditorProps {
   initialData?: Resume;
   isEditMode?: boolean;
   resumeId?: number | null;
+}
+
+/**
+ * initialData 로부터 폼 기본값을 계산.
+ * useForm 초기값과 async prefill 용 reset() 호출 양쪽에서 재사용한다.
+ */
+function buildFormDefaults(initialData?: Resume): ResumeFormData {
+  return {
+    title: initialData?.title || '',
+    profile_url: initialData?.content?.personalInfo?.profileImage || '',
+    language_skills: initialData?.content?.languages?.map(lang => ({
+      language_type: lang.name,
+      level: lang.proficiency,
+    })) || [{ language_type: '', level: '' }],
+    schools: initialData?.content?.education?.map(edu => ({
+      school_name: edu.institution,
+      major_name: edu.field,
+      start_date: edu.startDate,
+      end_date: edu.endDate,
+      is_graduated: edu.degree === '졸업',
+    })) || [{
+      school_name: '',
+      major_name: '',
+      start_date: '',
+      end_date: undefined,
+      is_graduated: false,
+    }],
+    career_history: initialData?.content?.workExperience?.map(work => ({
+      company_name: work.company,
+      start_date: work.startDate,
+      end_date: work.endDate,
+      is_working: work.current || false,
+      department: '',
+      position_title: work.position,
+      main_role: work.description || '',
+    })) || [{
+      company_name: '',
+      start_date: '',
+      end_date: undefined,
+      is_working: false,
+      department: '',
+      position_title: '',
+      main_role: '',
+    }],
+    introduction: initialData?.content?.objective ? [{
+      title: '',
+      content: initialData.content.objective,
+    }] : [{ title: '', content: '' }],
+    licenses: initialData?.licenses && initialData.licenses.length > 0
+      ? initialData.licenses.map(license => ({
+          license_name: license.license_name,
+          license_agency: license.license_agency,
+          license_date: license.license_date,
+        }))
+      : initialData?.content?.certifications?.map(cert => ({
+          license_name: cert,
+          license_agency: '',
+          license_date: '',
+        })) || [{ license_name: '', license_agency: '', license_date: '' }],
+  };
 }
 
 type ResumeFormData = {
@@ -109,61 +170,17 @@ function ResumeEditor({
     initialData?.content?.personalInfo?.profileImage || null
   );
 
-  const { control, handleSubmit, watch, setValue, formState: { isSubmitting } } = useForm<ResumeFormData>({
-    defaultValues: {
-      title: initialData?.title || '',
-      profile_url: initialData?.content?.personalInfo?.profileImage || '',
-      language_skills: initialData?.content?.languages?.map(lang => ({
-        language_type: lang.name,
-        level: lang.proficiency
-      })) || [{ language_type: '', level: '' }],
-      schools: initialData?.content?.education?.map(edu => ({
-        school_name: edu.institution,
-        major_name: edu.field,
-        start_date: edu.startDate,
-        end_date: edu.endDate,
-        is_graduated: edu.degree === '졸업'
-      })) || [{
-        school_name: '',
-        major_name: '',
-        start_date: '',
-        end_date: undefined,
-        is_graduated: false
-      }],
-      career_history: initialData?.content?.workExperience?.map(work => ({
-        company_name: work.company,
-        start_date: work.startDate,
-        end_date: work.endDate,
-        is_working: work.current || false,
-        department: '',
-        position_title: work.position,
-        main_role: work.description || ''
-      })) || [{
-        company_name: '',
-        start_date: '',
-        end_date: undefined,
-        is_working: false,
-        department: '',
-        position_title: '',
-        main_role: ''
-      }],
-      introduction: initialData?.content?.objective ? [{
-        title: '',
-        content: initialData.content.objective
-      }] : [{ title: '', content: '' }],
-      licenses: initialData?.licenses && initialData.licenses.length > 0
-        ? initialData.licenses.map(license => ({
-            license_name: license.license_name,
-            license_agency: license.license_agency,
-            license_date: license.license_date
-          }))
-        : initialData?.content?.certifications?.map(cert => ({
-            license_name: cert,
-            license_agency: '',
-            license_date: ''
-          })) || [{ license_name: '', license_agency: '', license_date: '' }]
-    }
+  const { control, handleSubmit, watch, setValue, reset, formState: { isSubmitting } } = useForm<ResumeFormData>({
+    defaultValues: buildFormDefaults(initialData),
   });
+
+  // ISSUE-105: initialData 가 비동기로 도착/변경되는 경우 reset 으로 폼을 재초기화.
+  // useForm defaultValues 는 첫 렌더에만 반영되므로 async fetch 후에는 reset 이 필요하다.
+  useEffect(() => {
+    if (isEditMode && initialData) {
+      reset(buildFormDefaults(initialData));
+    }
+  }, [isEditMode, initialData, reset]);
 
   // ISSUE-29: 프로필 데이터가 로드되면 이름으로 이력서 제목 프리필
   useEffect(() => {
@@ -198,6 +215,7 @@ function ResumeEditor({
   });
 
   // 이력서 생성 뮤테이션
+  // 422 는 onSubmit catch 에서 필드별 메시지로 처리하므로 여기서는 토스트 중복 방지.
   const createResumeMutation = useMutation({
     mutationFn: async (data: CreateResumeRequest) => {
       return resumeApi.createResume(data);
@@ -207,7 +225,8 @@ function ResumeEditor({
       toast.success(t('createSuccess'));
       router.push('/user');
     },
-    onError: () => {
+    onError: (error: Error) => {
+      if (error instanceof FetchError && error.status === 422) return;
       toast.error(t('createError'));
     }
   });
@@ -224,54 +243,91 @@ function ResumeEditor({
       toast.success(t('updateSuccess'));
       router.push('/user');
     },
-    onError: () => {
+    onError: (error: Error) => {
+      if (error instanceof FetchError && error.status === 422) return;
       toast.error(t('updateError'));
     }
   });
 
   const onSubmit = async (data: ResumeFormData) => {
+    // 학력사항: 기본 필드가 모두 비어있는 row 는 제외.
+    // 남은 row 도 end_date 미지정 시 키 자체를 제거하여 Pydantic validation 통과.
+    const filteredSchools = data.schools.filter(
+      (s) => s.school_name?.trim() || s.major_name?.trim() || s.start_date
+    );
+    const processedSchools = filteredSchools.length > 0
+      ? filteredSchools.map((school) => {
+          const { end_date, ...rest } = school;
+          return end_date ? { ...rest, end_date } : rest;
+        })
+      : undefined;
+
+    // 경력사항: 회사명/시작일 중 하나도 없는 row 제외.
+    const filteredCareer = data.career_history.filter(
+      (c) => c.company_name?.trim() || c.start_date
+    );
+    const processedCareerHistory = filteredCareer.length > 0
+      ? filteredCareer.map((career) => {
+          const { end_date, ...rest } = career;
+          // 재직중이면 end_date 제거, 종료일 미입력도 제거
+          if (end_date && !career.is_working) {
+            return { ...rest, end_date };
+          }
+          return rest;
+        })
+      : undefined;
+
+    // 언어: language_type + level 둘 다 있을 때만 포함
+    const filteredLanguages = data.language_skills.filter(
+      (l) => l.language_type?.trim() && l.level?.trim()
+    );
+
+    // 자기소개: title 또는 content 중 하나라도 있을 때만 포함
+    const filteredIntroduction = data.introduction.filter(
+      (i) => i.title?.trim() || i.content?.trim()
+    );
+
+    // 자격증: license_name 필수
+    const filteredLicenses = data.licenses.filter(
+      (l) => l.license_name?.trim()
+    );
+
+    const requestData: CreateResumeRequest | UpdateResumeRequest = {
+      title: data.title?.trim(),
+      profile_url: data.profile_url || undefined,
+      language_skills: filteredLanguages.length > 0 ? filteredLanguages : undefined,
+      schools: processedSchools,
+      career_history: processedCareerHistory,
+      introduction: filteredIntroduction.length > 0 ? filteredIntroduction : undefined,
+      licenses: filteredLicenses.length > 0 ? filteredLicenses : undefined,
+    };
+
     try {
-      // 재직중일 때 또는 선택 안 했을 때 end_date를 제거
-      const processedCareerHistory = data.career_history.length > 0
-        ? data.career_history.map(career => {
-            const { end_date, ...rest } = career;
-            // end_date가 있고 재직중이 아닐 때만 포함
-            if (end_date && !career.is_working) {
-              return { ...rest, end_date };
-            }
-            return rest;
-          })
-        : undefined;
-
-      // 학력사항의 end_date도 선택 안 했을 때 제거
-      const processedSchools = data.schools.length > 0
-        ? data.schools.map(school => {
-            const { end_date, ...rest } = school;
-            // end_date가 있을 때만 포함
-            if (end_date) {
-              return { ...rest, end_date };
-            }
-            return rest;
-          })
-        : undefined;
-
-      const requestData: CreateResumeRequest | UpdateResumeRequest = {
-        title: data.title,
-        profile_url: data.profile_url || undefined,
-        language_skills: data.language_skills.length > 0 ? data.language_skills : undefined,
-        schools: processedSchools,
-        career_history: processedCareerHistory,
-        introduction: data.introduction.length > 0 ? data.introduction : undefined,
-        licenses: data.licenses.length > 0 ? data.licenses : undefined,
-      };
-
       if (isEditMode && resumeId) {
         await updateResumeMutation.mutateAsync(requestData as UpdateResumeRequest);
       } else {
         await createResumeMutation.mutateAsync(requestData as CreateResumeRequest);
       }
     } catch (error) {
-      // mutation onError handles user-facing error
+      // 422: Pydantic validation 실패 → 필드별 에러 메시지 수집해 사용자에게 노출
+      if (error instanceof FetchError && error.status === 422) {
+        const detail = (error.data as { detail?: unknown })?.detail;
+        if (Array.isArray(detail)) {
+          const messages = detail
+            .slice(0, 3)
+            .map((d: { loc?: unknown[]; msg?: string }) => {
+              const field = Array.isArray(d.loc) ? d.loc.filter(x => x !== 'body').join('.') : '';
+              return field ? `${field}: ${d.msg ?? ''}` : d.msg ?? '';
+            })
+            .filter(Boolean);
+          if (messages.length > 0) {
+            toast.error(messages.join('\n'));
+            return;
+          }
+        }
+        toast.error(t('validationError'));
+      }
+      // 기타 에러는 mutation onError 에서 처리
     }
   };
 
@@ -397,7 +453,7 @@ function ResumeEditor({
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="absolute -top-2 -right-2 bg-red-500-bg0 text-white rounded-full p-1 hover:bg-red-600 transition-colors cursor-pointer"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors cursor-pointer"
                     >
                       <X size={14} />
                     </button>
@@ -490,7 +546,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeIntro(index)}
-                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -587,7 +643,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeCareer(index)}
-                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -758,7 +814,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeSchool(index)}
-                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -901,7 +957,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeLanguage(index)}
-                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -1021,7 +1077,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeLicense(index)}
-                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>

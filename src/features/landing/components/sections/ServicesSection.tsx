@@ -139,7 +139,7 @@ export default function ServicesSection() {
                   'absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300',
                   service.id === 'jobs'
                     ? 'bg-linear-to-br from-label-50 to-label-100/50'
-                    : 'bg-linear-to-br from-primary-50/50 to-primary-100/30'
+                    : 'bg-linear-to-br from-blue-50/50 to-blue-100/30'
                 )} />
 
                 {/* Content */}
