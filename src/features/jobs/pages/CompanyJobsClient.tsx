@@ -151,9 +151,19 @@ function CompanyJobsClient() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
+                      onClick={() => router.push(`/company/posts/edit/${post.id}`)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          router.push(`/company/posts/edit/${post.id}`);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
                       className={cn(
                         'bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm',
-                        'hover:border-blue-200 hover:shadow-md transition-all duration-200 cursor-pointer'
+                        'hover:border-blue-200 hover:shadow-md transition-all duration-200 cursor-pointer',
+                        'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
                       )}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -197,7 +207,11 @@ function CompanyJobsClient() {
                           </div>
                         </div>
                         <motion.button
-                          onClick={() => router.push(`/company/posts/edit/${post.id}`)}
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/company/posts/edit/${post.id}`);
+                          }}
                           className={cn(
                             'p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-150',
                             'rounded-lg shrink-0 focus:outline-none cursor-pointer'

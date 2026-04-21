@@ -443,13 +443,18 @@ const CompanyProfileClient = () => {
                   </div>
                   <div className="divide-y divide-slate-50">
                     {expiredPosts.slice(0, 3).map(post => (
-                      <div key={post.id} className="flex items-center gap-4 px-5 py-3 opacity-60">
+                      <button
+                        key={post.id}
+                        type="button"
+                        onClick={() => router.push(`/company/posts/edit/${post.id}`)}
+                        className="w-full flex items-center gap-4 px-5 py-3 opacity-60 hover:opacity-100 hover:bg-slate-50 transition text-left cursor-pointer"
+                      >
                         <div className="w-7 h-7 bg-slate-100 rounded-lg flex items-center justify-center shrink-0">
                           <FileText size={13} className="text-slate-400" />
                         </div>
                         <p className="text-caption-1 text-slate-600 truncate flex-1">{post.title}</p>
                         <span className="text-caption-3 text-slate-400 shrink-0">마감</span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
