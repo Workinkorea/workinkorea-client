@@ -71,7 +71,7 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
     <div className="flex min-h-[calc(100vh-4rem)] flex-1">
       {/* 좌측 패널 - 데스크탑만 표시 */}
       <motion.div
-        className="hidden lg:flex flex-1 bg-linear-to-br from-primary-400 to-primary-600 flex-col justify-center items-center relative px-12 overflow-hidden"
+        className="hidden lg:flex flex-1 bg-linear-to-br from-blue-400 to-blue-600 flex-col justify-center items-center relative px-12 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -168,7 +168,7 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
           {errorMessage && (
             <motion.div
               variants={itemVariants}
-              className="flex items-start gap-2.5 px-4 py-3 mb-6 rounded-lg bg-red-500-bg border border-red-500-bg text-caption-1 font-medium text-red-500"
+              className="flex items-start gap-2.5 px-4 py-3 mb-6 rounded-lg bg-red-50 border border-red-200 text-caption-1 font-medium text-red-500"
               role="alert"
               aria-live="polite"
             >

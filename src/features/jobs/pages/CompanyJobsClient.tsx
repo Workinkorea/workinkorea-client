@@ -192,7 +192,7 @@ function CompanyJobsClient() {
                             {new Date(post.end_date) > new Date() ? (
                               <span className={cn(
                                 'inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold',
-                                'bg-emerald-500-bg text-emerald-500 border border-emerald-100'
+                                'bg-emerald-50 text-emerald-500 border border-emerald-100'
                               )}>
                                 {t('statusActive')}
                               </span>

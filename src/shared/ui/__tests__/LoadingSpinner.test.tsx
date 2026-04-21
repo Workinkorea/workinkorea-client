@@ -52,7 +52,7 @@ describe('LoadingSpinner', () => {
     const { container } = render(<LoadingSpinner />);
     const spinner = container.querySelector('.animate-spin') as HTMLElement;
     expect(spinner.className).toContain('border-blue-200');
-    expect(spinner.className).toContain('border-t-primary-600');
+    expect(spinner.className).toContain('border-t-blue-600');
   });
 
   it('applies white color classes', () => {

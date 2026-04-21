@@ -16,8 +16,8 @@ function TypeBadge({ type }: { type: AdminEvent['type'] }) {
   const t = useTranslations('admin.events');
   const styles = {
     notice: 'bg-blue-100 text-blue-700',
-    event: 'bg-amber-500-bg text-amber-500',
-    promotion: 'bg-emerald-500-bg text-emerald-500',
+    event: 'bg-amber-50 text-amber-500',
+    promotion: 'bg-emerald-50 text-emerald-500',
   };
   const labels = {
     notice: t('typeBadgeNotice'),
@@ -34,7 +34,7 @@ function TypeBadge({ type }: { type: AdminEvent['type'] }) {
 function StatusBadge({ status }: { status: AdminEvent['status'] }) {
   const t = useTranslations('admin.events');
   return status === 'active' ? (
-    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-emerald-500-bg text-emerald-500">
+    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold bg-emerald-50 text-emerald-500">
       {t('statusActive')}
     </span>
   ) : (
@@ -396,7 +396,7 @@ export function EventsTableClient({ initialData }: EventsTableClientProps) {
                         disabled={deleteMutation.isPending}
                         className={cn(
                           'px-3 py-1.5 text-caption-2 font-semibold rounded-lg transition-colors cursor-pointer',
-                          'bg-red-500-bg text-red-500 hover:bg-red-100',
+                          'bg-red-50 text-red-500 hover:bg-red-100',
                           'focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed',
                         )}
                       >

@@ -107,7 +107,7 @@ export default function Loading() {
       </section>
 
       {/* CTA Section 스켈레톤 */}
-      <section className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 py-16 sm:py-20 lg:py-28">
+      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 py-16 sm:py-20 lg:py-28">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 sm:space-y-5">
           <Skeleton className="h-10 sm:h-12 lg:h-14 w-40 sm:w-52 mx-auto bg-white/20" />
           <Skeleton variant="text" className="h-4 sm:h-5 w-56 sm:w-80 mx-auto bg-white/20" />

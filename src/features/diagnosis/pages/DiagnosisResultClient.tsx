@@ -171,7 +171,7 @@ const DiagnosisResultClient = () => {
       <Layout>
         <div className="min-h-screen bg-white flex items-center justify-center px-4 py-8">
           <div className="text-center max-w-md">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-500-bg rounded-full mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-50 rounded-full mb-4">
               <AlertCircle className="text-red-500 w-8 h-8" />
             </div>
             <p className="text-body-1 text-slate-700 mb-2">{error}</p>
@@ -291,7 +291,7 @@ const DiagnosisResultClient = () => {
               )}
             >
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="inline-flex items-center justify-center w-8 h-8 bg-emerald-500-bg rounded-lg">
+                <div className="inline-flex items-center justify-center w-8 h-8 bg-emerald-50 rounded-lg">
                   <CheckCircle className="text-emerald-500" size={20} />
                 </div>
                 <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">{t('strengthsTitle')}</h2>
@@ -316,7 +316,7 @@ const DiagnosisResultClient = () => {
               )}
             >
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="inline-flex items-center justify-center w-8 h-8 bg-amber-500-bg rounded-lg">
+                <div className="inline-flex items-center justify-center w-8 h-8 bg-amber-50 rounded-lg">
                   <AlertCircle className="text-amber-500" size={20} />
                 </div>
                 <h2 className="text-body-1 sm:text-title-5 font-bold text-slate-900">{t('improvementsTitle')}</h2>
@@ -376,7 +376,7 @@ const DiagnosisResultClient = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
             className={cn(
-              'bg-linear-to-br from-primary-600 to-primary-800 rounded-2xl shadow-lg p-6 sm:p-8 lg:p-10',
+              'bg-linear-to-br from-blue-600 to-blue-800 rounded-2xl shadow-lg p-6 sm:p-8 lg:p-10',
               'text-center text-white mb-6'
             )}
           >

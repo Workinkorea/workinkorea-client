@@ -453,7 +453,7 @@ function ResumeEditor({
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="absolute -top-2 -right-2 bg-red-500-bg0 text-white rounded-full p-1 hover:bg-red-600 transition-colors cursor-pointer"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors cursor-pointer"
                     >
                       <X size={14} />
                     </button>
@@ -546,7 +546,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeIntro(index)}
-                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -643,7 +643,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeCareer(index)}
-                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -814,7 +814,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeSchool(index)}
-                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -957,7 +957,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeLanguage(index)}
-                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -1077,7 +1077,7 @@ function ResumeEditor({
                   <button
                     type="button"
                     onClick={() => removeLicense(index)}
-                    className="text-red-500 hover:bg-red-600-bg p-1 rounded cursor-pointer"
+                    className="text-red-500 hover:bg-red-50 p-1 rounded cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>

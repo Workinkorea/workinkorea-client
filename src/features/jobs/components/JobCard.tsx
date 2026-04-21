@@ -59,7 +59,7 @@ export default function JobCard({ post }: JobCardProps) {
           {/* Top Section: Icon + Type + Badges + Bookmark */}
           <div className="flex items-start gap-3 mb-4">
             {/* Company Icon */}
-            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white shrink-0 shadow-sm">
+            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shrink-0 shadow-sm">
               <Building2 className="w-6 h-6" />
             </div>
 
@@ -74,7 +74,7 @@ export default function JobCard({ post }: JobCardProps) {
                 )}
                 {isUrgent && (
                   <motion.span
-                    className="inline-flex items-center px-2 py-0.5 bg-red-500-bg0 text-white text-caption-3 font-bold rounded-md"
+                    className="inline-flex items-center px-2 py-0.5 bg-red-500 text-white text-caption-3 font-bold rounded-md"
                     animate={{ opacity: [1, 0.6, 1] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                   >

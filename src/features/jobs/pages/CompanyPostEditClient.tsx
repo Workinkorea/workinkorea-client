@@ -228,7 +228,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
               <Button
                 type="button"
                 size="lg"
-                className="w-full border border-red-500-bg text-red-500 hover:bg-red-600-bg bg-white"
+                className="w-full border border-red-200 text-red-500 hover:bg-red-50 bg-white"
                 onClick={handleDelete}
                 disabled={deletePostMutation.isPending}
               >

@@ -117,7 +117,7 @@ const CompanyProfileClient = () => {
         <div className="min-h-screen bg-slate-100 flex items-center justify-center">
           <div className="bg-white rounded-xl border border-slate-200 p-8 text-center max-w-sm">
             <p className="text-slate-800 font-semibold mb-2">{t('accessDenied')}</p>
-            <p className="text-body-3 text-white0">{error.message}</p>
+            <p className="text-body-3 text-slate-500">{error.message}</p>
           </div>
         </div>
       </Layout>
@@ -227,14 +227,14 @@ const CompanyProfileClient = () => {
               },
               {
                 icon: <Users size={18} className="text-emerald-500" />,
-                bg: 'bg-emerald-500-bg',
+                bg: 'bg-emerald-50',
                 value: 0,
                 label: '전체 지원자',
                 action: undefined,
               },
               {
                 icon: <Bell size={18} className="text-amber-500" />,
-                bg: 'bg-amber-500-bg',
+                bg: 'bg-amber-50',
                 value: 0,
                 label: '미검토 지원',
                 action: undefined,
@@ -342,8 +342,8 @@ const CompanyProfileClient = () => {
                             <span className={cn(
                               'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-caption-3 font-semibold',
                               daysLeft <= 3
-                                ? 'bg-red-500-bg text-red-500'
-                                : 'bg-emerald-500-bg text-emerald-500',
+                                ? 'bg-red-50 text-red-500'
+                                : 'bg-emerald-50 text-emerald-500',
                             )}>
                               <Clock size={10} />
                               D-{daysLeft}
@@ -357,7 +357,7 @@ const CompanyProfileClient = () => {
                       <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
                         <FileText size={22} className="text-slate-300" />
                       </div>
-                      <p className="text-caption-1 text-white0 mb-4">{t('noActivePosts')}</p>
+                      <p className="text-caption-1 text-slate-500 mb-4">{t('noActivePosts')}</p>
                       <button
                         type="button"
                         onClick={handleCreateJob}
@@ -402,7 +402,7 @@ const CompanyProfileClient = () => {
                         'flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-caption-2 font-semibold border transition-colors cursor-pointer',
                         activeTodoTab === tab.key
                           ? 'border-blue-500 bg-blue-50 text-blue-600'
-                          : 'border-slate-200 bg-white text-white0 hover:border-slate-200 hover:bg-slate-50',
+                          : 'border-slate-200 bg-white text-slate-500 hover:border-slate-200 hover:bg-slate-50',
                       )}
                     >
                       {tab.label}
@@ -465,7 +465,7 @@ const CompanyProfileClient = () => {
             <div className="space-y-4">
 
               {/* 채용공고 등록 CTA */}
-              <div className="bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl p-5 relative overflow-hidden">
+              <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-5 relative overflow-hidden">
                 <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white/10" />
                 <div className="absolute bottom-2 -right-2 w-12 h-12 rounded-full bg-white/5" />
                 <div className="relative">
@@ -503,7 +503,7 @@ const CompanyProfileClient = () => {
                 <div className="p-4">
                   <div className="bg-blue-50 rounded-lg flex flex-col items-center py-5 text-center">
                     <Search size={20} className="text-blue-300 mb-2" />
-                    <p className="text-caption-2 text-white0 mb-3 leading-relaxed whitespace-pre-line">
+                    <p className="text-caption-2 text-slate-500 mb-3 leading-relaxed whitespace-pre-line">
                       {t('talentPoolCta')}
                     </p>
                     <button className="inline-flex items-center gap-1 text-caption-2 font-semibold text-blue-600 hover:underline transition-colors cursor-pointer">
@@ -527,19 +527,19 @@ const CompanyProfileClient = () => {
                 </div>
                 <div className="space-y-2">
                   {profile.address && (
-                    <div className="flex items-start gap-2 text-caption-2 text-white0">
+                    <div className="flex items-start gap-2 text-caption-2 text-slate-500">
                       <MapPin size={13} className="text-slate-300 mt-0.5 shrink-0" />
                       <span className="leading-relaxed line-clamp-2">{profile.address}</span>
                     </div>
                   )}
                   {profile.phone_number && (
-                    <div className="flex items-center gap-2 text-caption-2 text-white0">
+                    <div className="flex items-center gap-2 text-caption-2 text-slate-500">
                       <Phone size={13} className="text-slate-300 shrink-0" />
                       <span>{profile.phone_number}</span>
                     </div>
                   )}
                   {profile.website_url && (
-                    <div className="flex items-center gap-2 text-caption-2 text-white0">
+                    <div className="flex items-center gap-2 text-caption-2 text-slate-500">
                       <Globe size={13} className="text-slate-300 shrink-0" />
                       <a
                         href={profile.website_url}
@@ -567,13 +567,13 @@ const CompanyProfileClient = () => {
                     { icon: <Package  size={13} />, label: t('aptitude'),   status: '미이용' },
                   ].map(item => (
                     <div key={item.label} className="flex items-center justify-between px-4 py-3">
-                      <div className="flex items-center gap-2 text-caption-2 text-white0">
+                      <div className="flex items-center gap-2 text-caption-2 text-slate-500">
                         <span className="text-slate-300">{item.icon}</span>
                         {item.label}
                       </div>
                       <button className={cn(
                         'px-2.5 py-1 border border-slate-200 rounded',
-                        'text-caption-3 font-semibold text-white0 bg-white',
+                        'text-caption-3 font-semibold text-slate-500 bg-white',
                         'hover:bg-slate-50 transition-colors cursor-pointer',
                       )}>
                         {t('buyBtn')}
@@ -591,7 +591,7 @@ const CompanyProfileClient = () => {
                     {t('promoTitle')}
                   </p>
                 </div>
-                <p className="text-caption-2 text-white0 mb-3 leading-relaxed whitespace-pre-line">
+                <p className="text-caption-2 text-slate-500 mb-3 leading-relaxed whitespace-pre-line">
                   {t('promoSubtitle')}
                 </p>
                 <button className={cn(

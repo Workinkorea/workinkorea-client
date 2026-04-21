@@ -278,7 +278,7 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
                   <div className="flex items-start gap-4 justify-between">
                     <div className="flex items-start gap-4 flex-1 min-w-0">
                       {/* Company Icon */}
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm">
                         <Building2 className="w-8 h-8 sm:w-10 sm:h-10" />
                       </div>
 
@@ -289,7 +289,7 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
                         <div className="flex items-center gap-2 mb-3 flex-wrap">
                           {isUrgent && (
                             <motion.span
-                              className="inline-flex items-center px-2 py-0.5 bg-red-500-bg0 text-white text-caption-3 font-bold rounded-md"
+                              className="inline-flex items-center px-2 py-0.5 bg-red-500 text-white text-caption-3 font-bold rounded-md"
                               animate={{ opacity: [1, 0.6, 1] }}
                               transition={{ duration: 1.5, repeat: Infinity }}
                             >
@@ -354,7 +354,7 @@ export default function JobDetailView({ job, jobId }: JobDetailViewProps) {
                   </div>
 
                   {/* Recruitment Period */}
-                  <div className="flex items-center gap-3 p-4 bg-amber-500-bg border border-amber-100 rounded-lg">
+                  <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-100 rounded-lg">
                     <Calendar className="text-amber-500 shrink-0" size={18} />
                     <p className="text-caption-1 text-slate-900">
                       <span className="font-semibold">{t('recruitPeriod')}:</span> {effectiveJob.start_date} ~ {effectiveJob.end_date}

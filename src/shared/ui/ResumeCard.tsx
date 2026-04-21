@@ -34,9 +34,9 @@ export function ResumeCard({
   const getStatusColor = (status: Resume['status']) => {
     switch (status) {
       case 'draft':
-        return 'bg-amber-500-bg text-amber-500 border-amber-500-bg';
+        return 'bg-amber-50 text-amber-500 border-amber-200';
       case 'completed':
-        return 'bg-emerald-500-bg text-emerald-500 border-emerald-500-bg';
+        return 'bg-emerald-50 text-emerald-500 border-emerald-100';
       case 'published':
         return 'bg-blue-50 text-blue-700 border-blue-200';
       default:
@@ -168,7 +168,7 @@ export function ResumeCard({
           </button>
           <button
             onClick={onDelete}
-            className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-600-bg rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
             title="삭제"
           >
             <Trash2 size={14} />

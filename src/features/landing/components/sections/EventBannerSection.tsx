@@ -8,8 +8,8 @@ import { getTranslations } from 'next-intl/server';
 function EventTypeBadge({ type, labels }: { type: EventType; labels: Record<EventType, string> }) {
   const styles: Record<EventType, string> = {
     notice: 'bg-blue-100 text-blue-700',
-    event: 'bg-amber-500-bg text-amber-500',
-    promotion: 'bg-emerald-500-bg text-emerald-500',
+    event: 'bg-amber-50 text-amber-500',
+    promotion: 'bg-emerald-50 text-emerald-500',
   };
   return (
     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-caption-3 font-semibold ${styles[type]}`}>
@@ -34,7 +34,7 @@ function EventCard({ event, labels }: { event: Event; labels: Record<EventType, 
           />
         </div>
       ) : (
-        <div className="h-40 bg-linear-to-br from-primary-50 to-primary-100 flex items-center justify-center">
+        <div className="h-40 bg-linear-to-br from-blue-50 to-blue-100 flex items-center justify-center">
           <span className="text-title-1 select-none">
             {event.type === 'notice' ? '📢' : event.type === 'event' ? '🎉' : '🎁'}
           </span>
