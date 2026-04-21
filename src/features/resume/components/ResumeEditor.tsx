@@ -40,6 +40,66 @@ interface ResumeEditorProps {
   resumeId?: number | null;
 }
 
+/**
+ * initialData 로부터 폼 기본값을 계산.
+ * useForm 초기값과 async prefill 용 reset() 호출 양쪽에서 재사용한다.
+ */
+function buildFormDefaults(initialData?: Resume): ResumeFormData {
+  return {
+    title: initialData?.title || '',
+    profile_url: initialData?.content?.personalInfo?.profileImage || '',
+    language_skills: initialData?.content?.languages?.map(lang => ({
+      language_type: lang.name,
+      level: lang.proficiency,
+    })) || [{ language_type: '', level: '' }],
+    schools: initialData?.content?.education?.map(edu => ({
+      school_name: edu.institution,
+      major_name: edu.field,
+      start_date: edu.startDate,
+      end_date: edu.endDate,
+      is_graduated: edu.degree === '졸업',
+    })) || [{
+      school_name: '',
+      major_name: '',
+      start_date: '',
+      end_date: undefined,
+      is_graduated: false,
+    }],
+    career_history: initialData?.content?.workExperience?.map(work => ({
+      company_name: work.company,
+      start_date: work.startDate,
+      end_date: work.endDate,
+      is_working: work.current || false,
+      department: '',
+      position_title: work.position,
+      main_role: work.description || '',
+    })) || [{
+      company_name: '',
+      start_date: '',
+      end_date: undefined,
+      is_working: false,
+      department: '',
+      position_title: '',
+      main_role: '',
+    }],
+    introduction: initialData?.content?.objective ? [{
+      title: '',
+      content: initialData.content.objective,
+    }] : [{ title: '', content: '' }],
+    licenses: initialData?.licenses && initialData.licenses.length > 0
+      ? initialData.licenses.map(license => ({
+          license_name: license.license_name,
+          license_agency: license.license_agency,
+          license_date: license.license_date,
+        }))
+      : initialData?.content?.certifications?.map(cert => ({
+          license_name: cert,
+          license_agency: '',
+          license_date: '',
+        })) || [{ license_name: '', license_agency: '', license_date: '' }],
+  };
+}
+
 type ResumeFormData = {
   title: string;
   profile_url?: string;
@@ -109,61 +169,17 @@ function ResumeEditor({
     initialData?.content?.personalInfo?.profileImage || null
   );
 
-  const { control, handleSubmit, watch, setValue, formState: { isSubmitting } } = useForm<ResumeFormData>({
-    defaultValues: {
-      title: initialData?.title || '',
-      profile_url: initialData?.content?.personalInfo?.profileImage || '',
-      language_skills: initialData?.content?.languages?.map(lang => ({
-        language_type: lang.name,
-        level: lang.proficiency
-      })) || [{ language_type: '', level: '' }],
-      schools: initialData?.content?.education?.map(edu => ({
-        school_name: edu.institution,
-        major_name: edu.field,
-        start_date: edu.startDate,
-        end_date: edu.endDate,
-        is_graduated: edu.degree === '졸업'
-      })) || [{
-        school_name: '',
-        major_name: '',
-        start_date: '',
-        end_date: undefined,
-        is_graduated: false
-      }],
-      career_history: initialData?.content?.workExperience?.map(work => ({
-        company_name: work.company,
-        start_date: work.startDate,
-        end_date: work.endDate,
-        is_working: work.current || false,
-        department: '',
-        position_title: work.position,
-        main_role: work.description || ''
-      })) || [{
-        company_name: '',
-        start_date: '',
-        end_date: undefined,
-        is_working: false,
-        department: '',
-        position_title: '',
-        main_role: ''
-      }],
-      introduction: initialData?.content?.objective ? [{
-        title: '',
-        content: initialData.content.objective
-      }] : [{ title: '', content: '' }],
-      licenses: initialData?.licenses && initialData.licenses.length > 0
-        ? initialData.licenses.map(license => ({
-            license_name: license.license_name,
-            license_agency: license.license_agency,
-            license_date: license.license_date
-          }))
-        : initialData?.content?.certifications?.map(cert => ({
-            license_name: cert,
-            license_agency: '',
-            license_date: ''
-          })) || [{ license_name: '', license_agency: '', license_date: '' }]
-    }
+  const { control, handleSubmit, watch, setValue, reset, formState: { isSubmitting } } = useForm<ResumeFormData>({
+    defaultValues: buildFormDefaults(initialData),
   });
+
+  // ISSUE-105: initialData 가 비동기로 도착/변경되는 경우 reset 으로 폼을 재초기화.
+  // useForm defaultValues 는 첫 렌더에만 반영되므로 async fetch 후에는 reset 이 필요하다.
+  useEffect(() => {
+    if (isEditMode && initialData) {
+      reset(buildFormDefaults(initialData));
+    }
+  }, [isEditMode, initialData, reset]);
 
   // ISSUE-29: 프로필 데이터가 로드되면 이름으로 이력서 제목 프리필
   useEffect(() => {
