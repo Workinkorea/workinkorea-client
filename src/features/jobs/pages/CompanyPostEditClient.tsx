@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl';
 import Layout from '@/shared/components/layout/Layout';
 import { Button } from '@/shared/ui/Button';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { cookieManager } from '@/shared/lib/utils/cookieManager';
 import { postsApi } from '@/features/jobs/api/postsApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UpdateCompanyPostRequest } from '@/shared/types/api';
@@ -26,18 +27,27 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
   const queryClient = useQueryClient();
   const { isAuthenticated, isLoading: authLoading, userType } = useAuth();
 
-  // 인증 완료 후 권한 체크 — 비인증 또는 기업 회원이 아닌 경우 로그인 페이지로 리다이렉트
+  // 인증 완료 후 권한 체크 — 비인증 또는 기업 회원이 아닌 경우 로그인 페이지로 리다이렉트.
+  // ISSUE-117: authStore 초기화가 실패(refresh 401 등)해도 userType 쿠키가 'company' 면
+  // 미들웨어는 통과시켜 주는데 client 측에서 /company 로 리턴해버리던 문제 수정.
+  // 쿠키 fallback 으로 실제 userType 을 확인하여 불필요한 redirect 를 방지.
   useEffect(() => {
-    if (!authLoading && (!isAuthenticated || userType !== 'company')) {
+    if (authLoading) return;
+    const effectiveUserType = userType ?? cookieManager.getUserType();
+    if (!effectiveUserType) {
+      router.replace('/company-login');
+      return;
+    }
+    if (effectiveUserType !== 'company') {
       router.replace('/company-login');
     }
   }, [authLoading, isAuthenticated, userType, router]);
 
-  // 공고 데이터 로드
+  // 공고 데이터 로드 — userType 쿠키 fallback 허용
   const { data: post, isLoading: postLoading } = useQuery({
     queryKey: ['companyPost', postId],
     queryFn: () => postsApi.getCompanyPostById(Number(postId)),
-    enabled: !!postId && isAuthenticated && userType === 'company',
+    enabled: !!postId && !authLoading && (userType === 'company' || cookieManager.getUserType() === 'company'),
     retry: false,
   });
 

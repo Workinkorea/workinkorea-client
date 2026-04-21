@@ -717,6 +717,23 @@
     }
   },
   "user": {
+    "bookmarks": {
+      "title": "북마크한 채용공고",
+      "subtitle": "{count}개의 공고를 저장했어요",
+      "emptyTitle": "저장된 공고가 없어요",
+      "emptySubtitle": "마음에 드는 공고에 북마크를 추가해 보세요.",
+      "browseJobs": "공고 둘러보기"
+    },
+    "applications": {
+      "title": "지원 내역",
+      "subtitle": "내가 지원한 공고를 확인해보세요",
+      "emptyTitle": "지원 내역이 없어요",
+      "emptySubtitle": "관심 있는 공고에 지원해 보세요.",
+      "notImplementedTitle": "지원 내역 기능 준비 중",
+      "notImplementedSubtitle": "서버 구현이 완료되는 대로 제공됩니다.",
+      "browseJobs": "공고 둘러보기",
+      "appliedOn": "{date} 지원"
+    },
     "profile": {
       "title": "내 프로필",
       "editProfile": "프로필 수정",

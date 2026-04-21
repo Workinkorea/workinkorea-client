@@ -717,6 +717,23 @@
     }
   },
   "user": {
+    "bookmarks": {
+      "title": "Saved Jobs",
+      "subtitle": "You have {count} saved job(s)",
+      "emptyTitle": "No saved jobs yet",
+      "emptySubtitle": "Bookmark jobs you're interested in.",
+      "browseJobs": "Browse jobs"
+    },
+    "applications": {
+      "title": "My Applications",
+      "subtitle": "Review the jobs you've applied to",
+      "emptyTitle": "No applications yet",
+      "emptySubtitle": "Apply to jobs you're interested in.",
+      "notImplementedTitle": "Applications are coming soon",
+      "notImplementedSubtitle": "This will be available once the server is ready.",
+      "browseJobs": "Browse jobs",
+      "appliedOn": "Applied on {date}"
+    },
     "profile": {
       "title": "My Profile",
       "editProfile": "Edit Profile",
