@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -47,6 +47,16 @@ const CompanyProfileClient = () => {
       router.replace('/company', { scroll: false });
     }
   }, [searchParams, router]);
+
+  // 대시보드 내 모든 "공고 등록" CTA가 동일한 handler 를 사용하도록 통일.
+  // 이전에 일부 CTA 가 네비게이션을 트리거하지 못하던 이슈(ISSUE-101) 회귀 방지.
+  const handleCreateJob = useCallback(() => {
+    router.push('/company/posts/create');
+  }, [router]);
+
+  const handleManageJobs = useCallback(() => {
+    router.push('/company/jobs');
+  }, [router]);
 
   const [activeTodoTab, setActiveTodoTab] = useState<TodoTab>('unread');
 
@@ -172,7 +182,8 @@ const CompanyProfileClient = () => {
 
             <div className="flex items-center gap-2">
               <button
-                onClick={() => router.push('/company/jobs')}
+                type="button"
+                onClick={handleManageJobs}
                 className={cn(
                   'hidden sm:inline-flex items-center gap-1.5 px-4 py-2',
                   'border border-slate-200 rounded-lg text-caption-1 font-semibold text-slate-600',
@@ -183,7 +194,8 @@ const CompanyProfileClient = () => {
                 {t('manageJobs')}
               </button>
               <motion.button
-                onClick={() => router.push('/company/posts/create')}
+                type="button"
+                onClick={handleCreateJob}
                 className={cn(
                   'inline-flex items-center gap-1.5 px-4 py-2',
                   'bg-blue-600 text-white text-caption-1 font-semibold rounded-lg',
@@ -275,7 +287,8 @@ const CompanyProfileClient = () => {
                     <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400 transition-colors" />
                   </button>
                   <button
-                    onClick={() => router.push('/company/posts/create')}
+                    type="button"
+                    onClick={handleCreateJob}
                     className={cn(
                       'inline-flex items-center gap-1.5 px-3 py-1.5',
                       'bg-blue-600 text-white text-caption-2 font-semibold rounded-lg',
@@ -346,7 +359,8 @@ const CompanyProfileClient = () => {
                       </div>
                       <p className="text-caption-1 text-white0 mb-4">{t('noActivePosts')}</p>
                       <button
-                        onClick={() => router.push('/company/posts/create')}
+                        type="button"
+                        onClick={handleCreateJob}
                         className={cn(
                           'inline-flex items-center gap-1.5 px-4 py-2',
                           'bg-blue-600 text-white text-caption-1 font-semibold rounded-lg',
@@ -460,7 +474,8 @@ const CompanyProfileClient = () => {
                     채용 공고를 등록하고<br />최적의 후보자를 만나보세요
                   </p>
                   <button
-                    onClick={() => router.push('/company/posts/create')}
+                    type="button"
+                    onClick={handleCreateJob}
                     className={cn(
                       'w-full py-2 bg-white text-blue-700 text-caption-1 font-bold rounded-lg',
                       'hover:bg-blue-50 transition-colors cursor-pointer',
