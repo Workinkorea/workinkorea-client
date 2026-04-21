@@ -1,5 +1,6 @@
 import { fetchClient, fetchAPI, FetchError } from '@/shared/api/fetchClient';
 import {
+  CompanyPost,
   CompanyPostsResponse,
   CreateCompanyPostRequest,
   CreateCompanyPostResponse,
@@ -44,6 +45,30 @@ interface RawCompanyPostsApiResponse {
  * - GET /api/posts/company/list?skip=&limit= 엔드포인트 서버에 없음
  * - 서버의 GET /api/posts/company/는 company auth 필요 (공개 아님)
  */
+/**
+ * CompanyPost 의 required string 필드가 null/undefined 로 내려오면 서버 컴포넌트 렌더에서
+ * `.split(',')`, `.toLowerCase()`, `new Date(null)` 파생값 등에서 예외가 발생한다.
+ * 타입 경계에서 안전한 기본값을 채워넣어 렌더 실패를 차단한다.
+ */
+function normalizeCompanyPost(raw: Partial<CompanyPost> & { id: number }): CompanyPost {
+  return {
+    id: raw.id,
+    company_id: raw.company_id ?? 0,
+    title: raw.title ?? '',
+    content: raw.content ?? '',
+    work_experience: raw.work_experience ?? '',
+    position_id: raw.position_id ?? 0,
+    education: raw.education ?? '',
+    language: raw.language ?? '',
+    employment_type: raw.employment_type ?? '',
+    work_location: raw.work_location ?? '',
+    working_hours: raw.working_hours ?? 0,
+    salary: raw.salary ?? 0,
+    start_date: raw.start_date ?? '',
+    end_date: raw.end_date ?? '',
+  };
+}
+
 export async function getCompanyPosts(
   page: number = DEFAULT_PAGE,
   limit: number = DEFAULT_LIMIT
@@ -63,7 +88,13 @@ export async function getCompanyPosts(
 
     // 래핑된 응답({ data: { company_posts } })과 일반 응답({ company_posts }) 모두 처리
     const inner = rawData.data ?? rawData;
-    const posts = inner.company_posts ?? [];
+    const rawPosts: unknown[] = Array.isArray(inner.company_posts) ? inner.company_posts : [];
+    // id 가 없는 row 는 key/라우팅에 쓸 수 없으므로 제외 + 나머지 필드는 안전한 기본값으로 정규화
+    const posts = rawPosts
+      .filter((p): p is Partial<CompanyPost> & { id: number } =>
+        !!p && typeof p === 'object' && typeof (p as { id?: unknown }).id === 'number'
+      )
+      .map(normalizeCompanyPost);
     const pagination = inner.pagination;
 
     // Pagination 계산
@@ -113,7 +144,12 @@ export const postsApi = {
 
     // 래핑된 응답({ data: { company_posts } })과 일반 응답({ company_posts }) 모두 처리
     const inner = rawData.data ?? rawData;
-    const posts = inner.company_posts ?? [];
+    const rawPosts: unknown[] = Array.isArray(inner.company_posts) ? inner.company_posts : [];
+    const posts = rawPosts
+      .filter((p): p is Partial<CompanyPost> & { id: number } =>
+        !!p && typeof p === 'object' && typeof (p as { id?: unknown }).id === 'number'
+      )
+      .map(normalizeCompanyPost);
     const pagination = inner.pagination;
 
     // Pagination 계산
