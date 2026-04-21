@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Edit3 } from 'lucide-react';
+import { Edit3, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { useAuthStore } from '@/shared/stores/authStore';
 import Layout from '@/shared/components/layout/Layout';
 import UserProfileHeader from '@/features/user/components/UserProfileHeader';
 import dynamic from 'next/dynamic';
@@ -90,6 +91,18 @@ const mockMySkillStats = {
   industryRanking: 88
 };
 
+/**
+ * 지정 시간(8s) 이후에도 loading 상태가 지속되면 onTimeout 트리거.
+ * skeleton 을 그대로 두지 않고 재시도 UI 로 전환해 무한 skeleton 을 방지한다.
+ */
+function LoadingTimeoutTrigger({ onTimeout }: { onTimeout: () => void }) {
+  useEffect(() => {
+    const id = setTimeout(onTimeout, 8000);
+    return () => clearTimeout(id);
+  }, [onTimeout]);
+  return null;
+}
+
 function MyProfileClient() {
   const t = useTranslations('user.profile');
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'experience' | 'resume'>('overview');
@@ -97,6 +110,20 @@ function MyProfileClient() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [loadingTimedOut, setLoadingTimedOut] = useState(false);
+
+  // 모듈 로드 시점의 initialize() 가 백그라운드 탭에서 보류될 수 있어
+  // mount 시점에 한번 더 킥 (idempotent — 이미 초기화된 경우 no-op)
+  useEffect(() => {
+    useAuthStore.getState().initialize();
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && !useAuthStore.getState().isInitialized) {
+        useAuthStore.getState().initialize();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
 
   useEffect(() => {
     if (searchParams.get('redirected') === '1') {
@@ -106,21 +133,22 @@ function MyProfileClient() {
   }, [searchParams, router]);
 
   // 프로필 데이터 조회
+  // refetchOnWindowFocus 를 true 로 두면 백그라운드 탭에서 초기 fetch가 포커스 전까지 보류되어
+  // skeleton 이 계속 표시되는 이슈가 있어 false 로 고정. 초기 fetch 는 mount 시 항상 실행.
   const { data: profileData, isLoading: profileLoading, error: profileError } = useQuery({
     queryKey: ['profile'],
     queryFn: () => profileApi.getProfile(),
     enabled: isAuthenticated,
     refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 
-  // 연락처 데이터 조회
   const { data: contactData, isLoading: contactLoading } = useQuery({
     queryKey: ['contact'],
     queryFn: () => profileApi.getContact(),
     enabled: isAuthenticated,
     refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 
   // 프로필과 연락처 데이터 병합 (API 데이터가 없으면 mock 데이터 사용)
@@ -233,6 +261,37 @@ function MyProfileClient() {
   };
 
   if (authLoading || isLoading) {
+    if (loadingTimedOut) {
+      return (
+        <Layout>
+          <div className="min-h-screen bg-white py-16 flex items-center justify-center px-4">
+            <div className="text-center max-w-md mx-auto">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-100 flex items-center justify-center">
+                <RefreshCw className="w-8 h-8 text-slate-500" />
+              </div>
+              <h2 className="text-title-4 font-bold text-slate-900 mb-2">
+                {t('loadingTimeout.title')}
+              </h2>
+              <p className="text-caption-1 text-slate-500 mb-6">
+                {t('loadingTimeout.subtitle')}
+              </p>
+              <button
+                onClick={() => {
+                  setLoadingTimedOut(false);
+                  queryClient.invalidateQueries({ queryKey: ['profile'] });
+                  queryClient.invalidateQueries({ queryKey: ['contact'] });
+                  useAuthStore.getState().initialize();
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white text-caption-1 font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+              >
+                {t('loadingTimeout.retry')}
+              </button>
+            </div>
+          </div>
+        </Layout>
+      );
+    }
+
     return (
       <Layout>
         <div className="min-h-screen bg-slate-100 py-8">
@@ -244,6 +303,7 @@ function MyProfileClient() {
                 <div className="bg-slate-100 rounded-xl h-96"></div>
               </div>
             </div>
+            <LoadingTimeoutTrigger onTimeout={() => setLoadingTimedOut(true)} />
           </div>
         </div>
       </Layout>

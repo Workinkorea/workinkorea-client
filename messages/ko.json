@@ -738,6 +738,11 @@
       "subtitle": "프로필을 관리하고 스킬 분석을 확인하세요",
       "errorTitle": "프로필을 불러올 수 없습니다",
       "errorSubtitle": "잠시 후 다시 시도해주세요.",
+      "loadingTimeout": {
+        "title": "로딩이 지연되고 있어요",
+        "subtitle": "네트워크 상태 또는 백그라운드 탭 제약으로 응답이 지연될 수 있습니다.",
+        "retry": "다시 시도"
+      },
       "tabs": {
         "overview": "대시보드",
         "resume": "이력서",

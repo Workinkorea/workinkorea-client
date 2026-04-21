@@ -738,6 +738,11 @@
       "subtitle": "Manage your profile and view skill analysis",
       "errorTitle": "Unable to load profile",
       "errorSubtitle": "Please try again later.",
+      "loadingTimeout": {
+        "title": "Loading is taking too long",
+        "subtitle": "This can happen due to a slow network or a background tab restriction.",
+        "retry": "Try again"
+      },
       "tabs": {
         "overview": "Dashboard",
         "resume": "Resume",
