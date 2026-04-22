@@ -30,7 +30,8 @@
       "recruitManage": "Recruitment",
       "my": "MY",
       "companyPage": "For Employers",
-      "loginSignup": "Log In / Sign Up"
+      "loginSignup": "Log In / Sign Up",
+      "toggleDisabledHint": "Follows the logged-in account type"
     },
     "button": {
       "apply": "Apply Now",
@@ -1518,7 +1519,13 @@
       "tipsTitle": "Resume Writing Tips",
       "tip1": "Describe specific work experiences",
       "tip2": "Include achievement-oriented content",
-      "tip3": "Keep your information up to date"
+      "tip3": "Keep your information up to date",
+      "loadingText": "Loading resume...",
+      "loadError": "Unable to load resume",
+      "loadErrorDesc": "Please try again later.",
+      "backToList": "Back to list",
+      "unsavedWarning": "You have unsaved changes. Are you sure you want to leave?",
+      "noChanges": "No changes to save."
     },
     "template": {
       "title": "Choose Resume Template",
@@ -1582,6 +1589,50 @@
     "q5": {
       "question": "What should I do if I encounter a problem?",
       "answer": "Please contact our support team at support@workinkorea.com and we will help you promptly."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account settings and preferences",
+    "profileEdit": "Edit Profile",
+    "profileEditDesc": "Update your name, contact info, and career details",
+    "language": "Language",
+    "languageDesc": "Change the display language",
+    "logout": "Log Out",
+    "logoutDesc": "Sign out of your account"
+  },
+  "meta": {
+    "home": {
+      "title": "Global Talent Matching Platform",
+      "description": "Connecting verified international job seekers with Korean companies — WorkinKorea"
+    },
+    "jobs": {
+      "title": "Job Listings",
+      "description": "Browse job openings in Korea for international job seekers"
+    },
+    "diagnosis": {
+      "title": "Self-Diagnosis",
+      "description": "Check your suitability for working in Korea with a self-diagnosis test"
+    },
+    "faq": {
+      "title": "FAQ",
+      "description": "Frequently asked questions about WorkinKorea services"
+    },
+    "support": {
+      "title": "Support",
+      "description": "WorkinKorea support center — service inquiries and assistance"
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "WorkinKorea privacy policy"
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "description": "WorkinKorea terms of service"
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Account settings and preferences"
     }
   }
 }
