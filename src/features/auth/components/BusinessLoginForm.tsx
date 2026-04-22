@@ -13,6 +13,14 @@ import { FetchError } from '@/shared/api/fetchClient';
 import { Building2, CheckCircle2, Users, FileText, Loader2, AlertCircle, WifiOff } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
+function isValidCallbackUrl(url: string): boolean {
+  // Only allow relative paths starting with /
+  // Reject: http://, https://, //, javascript:, data:, etc.
+  if (!url.startsWith('/')) return false;
+  if (url.startsWith('//')) return false;
+  return true;
+}
+
 interface BusinessLoginFormData {
   email: string;
   password: string;
@@ -140,7 +148,8 @@ export default function BusinessLoginForm() {
         } else {
           localStorage.removeItem(SAVED_EMAIL_KEY);
         }
-        window.location.href = responseUrl;
+        const safeUrl = isValidCallbackUrl(responseUrl) ? responseUrl : '/';
+        window.location.href = safeUrl;
       } else {
         throw new Error('Invalid response from server');
       }
