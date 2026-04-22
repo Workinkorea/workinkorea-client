@@ -23,121 +23,31 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { Button } from '@/shared/ui/Button';
-import { Resume, ResumeTemplate } from '@/features/user/types/user';
+import { ResumeTemplate } from '@/features/user/types/user';
 import { resumeApi } from '@/features/resume/api/resumeApi';
 import { profileApi } from '@/features/profile/api/profileApi';
 import { FormField } from '@/shared/ui/FormField';
 import DatePicker from '@/shared/ui/DatePicker';
 import { FetchError } from '@/shared/api/fetchClient';
-import type {
-  CreateResumeRequest,
-  UpdateResumeRequest
-} from '@/shared/types/api';
+import {
+  type ResumeFormData,
+  emptyFormDefaults,
+  mapFormToRequest,
+} from '@/features/resume/lib/mapResumeForm';
+import { focusFirstError, useUnsavedChangesWarning } from '@/shared/lib/form';
+import type { CreateResumeRequest, UpdateResumeRequest } from '@/shared/types/api';
 
 interface ResumeEditorProps {
   templateType: ResumeTemplate;
-  initialData?: Resume;
+  /** Pre-mapped form defaults for edit mode (from mapResumeResponseToForm) */
+  formDefaults?: ResumeFormData;
   isEditMode?: boolean;
   resumeId?: number | null;
 }
 
-/**
- * initialData 로부터 폼 기본값을 계산.
- * useForm 초기값과 async prefill 용 reset() 호출 양쪽에서 재사용한다.
- */
-function buildFormDefaults(initialData?: Resume): ResumeFormData {
-  return {
-    title: initialData?.title || '',
-    profile_url: initialData?.content?.personalInfo?.profileImage || '',
-    language_skills: initialData?.content?.languages?.map(lang => ({
-      language_type: lang.name,
-      level: lang.proficiency,
-    })) || [{ language_type: '', level: '' }],
-    schools: initialData?.content?.education?.map(edu => ({
-      school_name: edu.institution,
-      major_name: edu.field,
-      start_date: edu.startDate,
-      end_date: edu.endDate,
-      is_graduated: edu.degree === '졸업',
-    })) || [{
-      school_name: '',
-      major_name: '',
-      start_date: '',
-      end_date: undefined,
-      is_graduated: false,
-    }],
-    career_history: initialData?.content?.workExperience?.map(work => ({
-      company_name: work.company,
-      start_date: work.startDate,
-      end_date: work.endDate,
-      is_working: work.current || false,
-      department: '',
-      position_title: work.position,
-      main_role: work.description || '',
-    })) || [{
-      company_name: '',
-      start_date: '',
-      end_date: undefined,
-      is_working: false,
-      department: '',
-      position_title: '',
-      main_role: '',
-    }],
-    introduction: initialData?.content?.objective ? [{
-      title: '',
-      content: initialData.content.objective,
-    }] : [{ title: '', content: '' }],
-    licenses: initialData?.licenses && initialData.licenses.length > 0
-      ? initialData.licenses.map(license => ({
-          license_name: license.license_name,
-          license_agency: license.license_agency,
-          license_date: license.license_date,
-        }))
-      : initialData?.content?.certifications?.map(cert => ({
-          license_name: cert,
-          license_agency: '',
-          license_date: '',
-        })) || [{ license_name: '', license_agency: '', license_date: '' }],
-  };
-}
-
-type ResumeFormData = {
-  title: string;
-  profile_url?: string;
-  language_skills: Array<{
-    language_type: string;
-    level: string;
-  }>;
-  schools: Array<{
-    school_name: string;
-    major_name: string;
-    start_date: string;
-    end_date?: string;
-    is_graduated: boolean;
-  }>;
-  career_history: Array<{
-    company_name: string;
-    start_date: string;
-    end_date?: string;
-    is_working: boolean;
-    department: string;
-    position_title: string;
-    main_role: string;
-  }>;
-  introduction: Array<{
-    title: string;
-    content: string;
-  }>;
-  licenses: Array<{
-    license_name: string;
-    license_agency: string;
-    license_date: string;
-  }>;
-};
-
 function ResumeEditor({
   templateType,
-  initialData,
+  formDefaults,
   isEditMode = false,
   resumeId
 }: ResumeEditorProps) {
@@ -167,20 +77,29 @@ function ResumeEditor({
   };
 
   const [previewImage, setPreviewImage] = useState<string | null>(
-    initialData?.content?.personalInfo?.profileImage || null
+    formDefaults?.profile_url || null
   );
 
-  const { control, handleSubmit, watch, setValue, reset, formState: { isSubmitting } } = useForm<ResumeFormData>({
-    defaultValues: buildFormDefaults(initialData),
+  // formDefaults 가 있으면(edit) 그대로 사용, 없으면(create) 빈 기본값
+  const resolvedDefaults = formDefaults ?? emptyFormDefaults();
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { isSubmitting, isDirty },
+  } = useForm<ResumeFormData>({
+    defaultValues: resolvedDefaults,
   });
 
-  // ISSUE-105: initialData 가 비동기로 도착/변경되는 경우 reset 으로 폼을 재초기화.
-  // useForm defaultValues 는 첫 렌더에만 반영되므로 async fetch 후에는 reset 이 필요하다.
+  // edit 모드: formDefaults 가 비동기로 변경될 경우(상위에서 re-render) reset
   useEffect(() => {
-    if (isEditMode && initialData) {
-      reset(buildFormDefaults(initialData));
+    if (isEditMode && formDefaults) {
+      reset(formDefaults);
     }
-  }, [isEditMode, initialData, reset]);
+  }, [isEditMode, formDefaults, reset]);
 
   // ISSUE-29: 프로필 데이터가 로드되면 이름으로 이력서 제목 프리필
   useEffect(() => {
@@ -188,6 +107,8 @@ function ResumeEditor({
       setValue('title', `${profileData.name}의 이력서`);
     }
   }, [profileData, isEditMode, setValue, watch]);
+
+  useUnsavedChangesWarning({ isDirty, isSubmitSuccessful: false });
 
   const { fields: languageFields, append: appendLanguage, remove: removeLanguage } = useFieldArray({
     control,
@@ -250,57 +171,13 @@ function ResumeEditor({
   });
 
   const onSubmit = async (data: ResumeFormData) => {
-    // 학력사항: 기본 필드가 모두 비어있는 row 는 제외.
-    // 남은 row 도 end_date 미지정 시 키 자체를 제거하여 Pydantic validation 통과.
-    const filteredSchools = data.schools.filter(
-      (s) => s.school_name?.trim() || s.major_name?.trim() || s.start_date
-    );
-    const processedSchools = filteredSchools.length > 0
-      ? filteredSchools.map((school) => {
-          const { end_date, ...rest } = school;
-          return end_date ? { ...rest, end_date } : rest;
-        })
-      : undefined;
+    // 수정 모드에서 변경 없으면 불필요한 요청 방지
+    if (isEditMode && !isDirty) {
+      toast.info(t('noChanges'));
+      return;
+    }
 
-    // 경력사항: 회사명/시작일 중 하나도 없는 row 제외.
-    const filteredCareer = data.career_history.filter(
-      (c) => c.company_name?.trim() || c.start_date
-    );
-    const processedCareerHistory = filteredCareer.length > 0
-      ? filteredCareer.map((career) => {
-          const { end_date, ...rest } = career;
-          // 재직중이면 end_date 제거, 종료일 미입력도 제거
-          if (end_date && !career.is_working) {
-            return { ...rest, end_date };
-          }
-          return rest;
-        })
-      : undefined;
-
-    // 언어: language_type + level 둘 다 있을 때만 포함
-    const filteredLanguages = data.language_skills.filter(
-      (l) => l.language_type?.trim() && l.level?.trim()
-    );
-
-    // 자기소개: title 또는 content 중 하나라도 있을 때만 포함
-    const filteredIntroduction = data.introduction.filter(
-      (i) => i.title?.trim() || i.content?.trim()
-    );
-
-    // 자격증: license_name 필수
-    const filteredLicenses = data.licenses.filter(
-      (l) => l.license_name?.trim()
-    );
-
-    const requestData: CreateResumeRequest | UpdateResumeRequest = {
-      title: data.title?.trim(),
-      profile_url: data.profile_url || undefined,
-      language_skills: filteredLanguages.length > 0 ? filteredLanguages : undefined,
-      schools: processedSchools,
-      career_history: processedCareerHistory,
-      introduction: filteredIntroduction.length > 0 ? filteredIntroduction : undefined,
-      licenses: filteredLicenses.length > 0 ? filteredLicenses : undefined,
-    };
+    const requestData = mapFormToRequest(data);
 
     try {
       if (isEditMode && resumeId) {
@@ -374,9 +251,12 @@ function ResumeEditor({
     setValue('profile_url', '');
   };
 
+  // submit 버튼 비활성화: 제출 중이거나, edit 모드에서 formDefaults 미도착 시
+  const isSubmitDisabled = isSubmitting || (isEditMode && !formDefaults);
+
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)} id="resume-form" className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit, focusFirstError)} id="resume-form" className="space-y-6">
         {/* 헤더 */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
@@ -1140,7 +1020,7 @@ function ResumeEditor({
                 form="resume-form"
                 variant="primary"
                 size="lg"
-                disabled={isSubmitting}
+                disabled={isSubmitDisabled}
                 className="w-full"
               >
                 {isSubmitting ? t('savingText') : isEditMode ? t('updateBtn') : t('saveBtn')}
@@ -1185,6 +1065,6 @@ function ResumeEditor({
       </form>
     </div>
   );
-};
+}
 
 export default ResumeEditor;
