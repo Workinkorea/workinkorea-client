@@ -10,10 +10,11 @@ export type ViewType = 'personal' | 'company';
 interface UserTypeToggleProps {
   value: ViewType;
   onChange: (value: ViewType) => void;
+  disabled?: boolean;
   className?: string;
 }
 
-export function UserTypeToggle({ value, onChange, className }: UserTypeToggleProps) {
+export function UserTypeToggle({ value, onChange, disabled, className }: UserTypeToggleProps) {
   const t = useTranslations('common.nav');
 
   const options = [
@@ -25,15 +26,18 @@ export function UserTypeToggle({ value, onChange, className }: UserTypeTogglePro
     <div
       className={cn(
         'relative flex items-center border border-slate-200 rounded-full bg-white p-0.5 gap-0.5',
+        disabled && 'opacity-50 cursor-not-allowed',
         className
       )}
+      title={disabled ? t('toggleDisabledHint') : undefined}
     >
       {options.map(({ value: optValue, label, Icon }) => {
         const isActive = value === optValue;
         return (
           <button
             key={optValue}
-            onClick={() => onChange(optValue)}
+            onClick={() => !disabled && onChange(optValue)}
+            disabled={disabled}
             className={cn(
               'relative flex items-center gap-1 px-2.5 py-0.5 rounded-full text-caption-2 font-semibold transition-colors duration-200 cursor-pointer select-none z-10',
               isActive ? 'text-white' : 'text-slate-500 hover:text-slate-700'

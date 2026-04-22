@@ -10,13 +10,14 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { profileApi } from '../api/profileCompany';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CompanyProfileRequest } from '@/shared/types/api';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { formatPhoneByType } from '@/shared/lib/utils/phoneUtils';
 import { extractErrorMessage, logError } from '@/shared/lib/utils/errorHandler';
 import { validateCompanyProfileField, validateCompanyProfileForm } from '../validations/companyProfileValidation';
 import { CompanyInfoSection } from '@/features/company/components/CompanyInfoSection';
 import { ContactPersonSection } from '@/features/company/components/ContactPersonSection';
 import { cn } from '@/shared/lib/utils/utils';
+import { useUnsavedChangesWarning } from '@/shared/lib/form';
 
 const CompanyProfileEditClient = () => {
   const t = useTranslations('company.profile.edit');
@@ -96,7 +97,7 @@ const CompanyProfileEditClient = () => {
   const infoFields  = REQUIRED_FIELDS.filter((f) => f.section === 'info');
   const contactFields = REQUIRED_FIELDS.filter((f) => f.section === 'contact');
 
-  const updateProfileMutation = useMutation({
+  const updateProfileMutation = useMutation<unknown, unknown, CompanyProfileRequest>({
     mutationFn: (data: CompanyProfileRequest) =>
       profile ? profileApi.updateProfileCompany(data) : profileApi.createProfileCompany(data),
     onSuccess: () => {
@@ -108,6 +109,11 @@ const CompanyProfileEditClient = () => {
       logError(error, 'CompanyProfileEditClient.updateProfile');
       toast.error(extractErrorMessage(error, t('updateError')));
     },
+  });
+
+  useUnsavedChangesWarning({
+    isDirty: hasChanges,
+    isSubmitSuccessful: updateProfileMutation.isSuccess,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -153,6 +159,15 @@ const CompanyProfileEditClient = () => {
 
     if (Object.keys(newErrors).length > 0) {
       toast.error(t('validationError'));
+      // 첫 에러 필드로 포커스+스크롤
+      const firstKey = Object.keys(newErrors)[0];
+      if (firstKey) {
+        const el = document.querySelector<HTMLElement>(`[name="${firstKey}"]`);
+        if (el) {
+          el.focus({ preventScroll: true });
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
       return;
     }
     if (!hasChanges) {

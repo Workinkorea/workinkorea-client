@@ -59,8 +59,9 @@ export function WorkConditionsSection({
       <div className="space-y-4 md:space-y-5">
         {/* 고용 형태 + 주당 근무 시간: 태블릿 이상 2단 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="고용 형태">
+          <FormField label="고용 형태" htmlFor="employment_type">
             <select
+              id="employment_type"
               name="employment_type"
               value={formData.employment_type}
               onChange={onChange}
@@ -76,11 +77,13 @@ export function WorkConditionsSection({
 
           <FormField
             label="주당 근무 시간"
+            htmlFor="working_hours"
             hint="법정 기준: 주 40시간"
           >
             <div className="flex items-center gap-2">
               <input
                 type="number"
+                id="working_hours"
                 name="working_hours"
                 value={formData.working_hours}
                 onChange={onChange}
@@ -96,7 +99,7 @@ export function WorkConditionsSection({
 
         {/* 연봉 — 급여 협의 체크박스 포함
             UX: 체크 즉시 입력 필드 비활성화 + 시각적 변화로 상태 명시 */}
-        <FormField label="연봉" error={errors.salary}>
+        <FormField label="연봉" htmlFor="salary" error={errors.salary}>
           <div className="space-y-2.5">
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
@@ -106,6 +109,7 @@ export function WorkConditionsSection({
                 </div>
                 <input
                   type="number"
+                  id="salary"
                   name="salary"
                   value={formData.salary}
                   onChange={onChange}
@@ -142,7 +146,7 @@ export function WorkConditionsSection({
         </FormField>
 
         {/* 근무 위치 — Daum 주소 검색 + 상세주소 */}
-        <FormField label="근무 위치" required error={errors.work_location}>
+        <FormField label="근무 위치" htmlFor="work_location" required error={errors.work_location}>
           <div className="space-y-2">
             {/* DaumPostcodeSearch: 기본 주소 검색 (input + 검색 버튼 내장) */}
             <DaumPostcodeSearch

@@ -82,13 +82,14 @@ export function ManagerInfoSection({
 
       <div className="space-y-4 md:space-y-5">
         {/* 담당자 이름 */}
-        <FormField label={t('nameLabel')}>
+        <FormField label={t('nameLabel')} htmlFor="manager_name">
           <div className="relative">
             <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
               <User size={15} />
             </div>
             <input
               type="text"
+              id="manager_name"
               value={managerInfo.manager_name}
               onChange={e => onManagerInfoChange('manager_name', e.target.value)}
               disabled={isSubmitting}
@@ -100,13 +101,14 @@ export function ManagerInfoSection({
 
         {/* 연락처 + 이메일: 태블릿 이상 2단 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label={t('phoneLabel')}>
+          <FormField label={t('phoneLabel')} htmlFor="manager_phone">
             <div className="relative">
               <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                 <Phone size={15} />
               </div>
               <input
                 type="tel"
+                id="manager_phone"
                 value={managerInfo.manager_phone}
                 onChange={e => onManagerInfoChange('manager_phone', e.target.value)}
                 disabled={isSubmitting}
@@ -116,13 +118,14 @@ export function ManagerInfoSection({
             </div>
           </FormField>
 
-          <FormField label={t('emailLabel')}>
+          <FormField label={t('emailLabel')} htmlFor="manager_email">
             <div className="relative">
               <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                 <Mail size={15} />
               </div>
               <input
                 type="email"
+                id="manager_email"
                 value={managerInfo.manager_email}
                 onChange={e => onManagerInfoChange('manager_email', e.target.value)}
                 disabled={isSubmitting}

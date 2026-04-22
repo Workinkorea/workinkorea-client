@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Header } from './Header';
+import { cookieManager } from '@/shared/lib/utils/cookieManager';
 import type { ViewType } from '@/shared/components/UserTypeToggle';
 
 // 개인 뷰에서 접근 가능한 공개 경로 — 뷰 전환 시 현재 페이지 유지
@@ -32,7 +33,14 @@ export function HeaderClient({ type }: HeaderClientProps = {}) {
   }, [isLoading, userType, type]);
 
   function handleViewTypeChange(next: ViewType) {
+    // 로그인 상태에서는 토글 변경 무시 (실제 계정 타입을 따름)
+    if (isAuthenticated) return;
+
     setViewType(next);
+
+    // 비로그인 시 userTypeClient bridge 쿠키 갱신 → 페이지 전환 후 UI 반영
+    cookieManager.setUserType(next === 'company' ? 'company' : 'user');
+
     if (next === 'company') {
       router.push('/company');
     } else {
@@ -52,6 +60,7 @@ export function HeaderClient({ type }: HeaderClientProps = {}) {
       isAuthenticated={isAuthenticated}
       isLoading={isLoading}
       onLogout={logout}
+      isToggleDisabled={isAuthenticated}
     />
   );
 }

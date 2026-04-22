@@ -46,6 +46,8 @@ interface CompanyPostFormProps {
   onSubmit: (data: CreateCompanyPostRequest | UpdateCompanyPostRequest) => void;
   onDelete?: () => void;
   isSubmitting?: boolean;
+  /** 폼 dirty 상태 변경 시 콜백 (부모에서 unsaved warning 등에 활용) */
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
 // ── 메인 컴포넌트 ─────────────────────────────────────────────────────────────
@@ -56,6 +58,7 @@ export function CompanyPostForm({
   onSubmit,
   onDelete,
   isSubmitting = false,
+  onDirtyChange,
 }: CompanyPostFormProps) {
 
   // ── 폼 상태 ────────────────────────────────────────────────────────────────
@@ -97,6 +100,13 @@ export function CompanyPostForm({
     }
     if (initialData?.salary === 0) setIsNegotiableSalary(true);
   }, [initialData]);
+
+  // dirty 상태 추적 → 부모에 전달
+  useEffect(() => {
+    onDirtyChange?.(true);
+    // 첫 렌더 직후는 false, 이후 모든 formData 변경은 dirty
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData]);
 
   // ── 핸들러 ─────────────────────────────────────────────────────────────────
 
@@ -162,11 +172,14 @@ export function CompanyPostForm({
 
     setErrors(newErrors);
 
-    // 첫 번째 에러 필드로 자동 스크롤
+    // 첫 번째 에러 필드로 자동 포커스 + 스크롤
     const firstKey = Object.keys(newErrors)[0];
     if (firstKey) {
       const el = document.querySelector<HTMLElement>(`[name="${firstKey}"]`);
-      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (el) {
+        el.focus({ preventScroll: true });
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     }
 
     return Object.keys(newErrors).length === 0;

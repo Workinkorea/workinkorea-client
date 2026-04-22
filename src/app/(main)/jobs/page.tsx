@@ -1,12 +1,10 @@
-import { Metadata } from 'next';
-import { createMetadata } from '@/shared/lib/metadata';
 import JobsListView from '@/features/jobs/pages/JobsListView';
 import { getCompanyPosts } from '@/features/jobs/api/postsApi';
+import { getPageMetadata } from '@/shared/lib/i18n/getPageMetadata';
 
-export const metadata: Metadata = createMetadata({
-  title: '채용 공고 - WorkInKorea',
-  description: '한국에서 외국인을 위한 다양한 채용 기회를 찾아보세요',
-});
+export async function generateMetadata() {
+  return getPageMetadata('jobs');
+}
 
 export default async function JobsPage({
   searchParams,
