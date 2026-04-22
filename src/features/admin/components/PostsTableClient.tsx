@@ -127,7 +127,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                 <p className="text-caption-2 text-slate-500 mt-0.5">회사 ID: {post.company_id} · {post.work_location}</p>
               </div>
               <div className="flex gap-3 shrink-0">
-                <button onClick={() => openEditModal(post)} className="text-purple-600 hover:text-purple-900 text-caption-1 font-medium cursor-pointer">수정</button>
+                <button onClick={() => openEditModal(post)} className="text-blue-600 hover:text-blue-900 text-caption-1 font-medium cursor-pointer">수정</button>
                 <button onClick={() => handleDelete(post.id)} className="text-red-500 hover:text-red-900 text-caption-1 font-medium cursor-pointer">삭제</button>
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                 <td className="px-6 py-4 whitespace-nowrap text-right text-body-3 font-medium">
                   <button
                     onClick={() => openEditModal(post)}
-                    className="text-purple-600 hover:text-purple-900 mr-4 cursor-pointer"
+                    className="text-blue-600 hover:text-blue-900 mr-4 cursor-pointer"
                   >
                     수정
                   </button>
@@ -396,7 +396,7 @@ export default function PostsTableClient({ initialPosts }: PostsTableClientProps
                 <button
                   type="submit"
                   disabled={updateMutation.isPending}
-                  className="flex-1 rounded-md bg-purple-600 px-4 py-2 text-body-3 font-medium text-white hover:bg-purple-500 cursor-pointer disabled:opacity-50"
+                  className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-body-3 font-medium text-white hover:bg-blue-700 cursor-pointer disabled:opacity-50"
                 >
                   {updateMutation.isPending ? '처리 중...' : '수정'}
                 </button>
