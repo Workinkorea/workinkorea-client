@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { SearchIcon } from '@/shared/ui/AccessibleIcon';
@@ -38,11 +39,24 @@ export function Header({ type, viewType, onViewTypeChange, isAuthenticated, onLo
       <div className="page-container">
         <div className="flex items-center h-16 gap-4">
 
-          {/* 로고 */}
+          {/* 로고: 모바일 = W 아이콘(app_logo), 데스크톱 = W + 텍스트(logo) */}
           <Link href="/" className="flex items-center shrink-0">
-            <span className="font-['Plus_Jakarta_Sans'] text-title-4 font-extrabold text-blue-600 tracking-tight">
-              WorkInKorea
-            </span>
+            <Image
+              src="/images/workinkorea_app_logo.png"
+              alt="WorkInKorea"
+              width={32}
+              height={32}
+              className="block lg:hidden"
+              priority
+            />
+            <Image
+              src="/images/workinkorea_logo.png"
+              alt="WorkInKorea"
+              width={160}
+              height={32}
+              className="hidden lg:block"
+              priority
+            />
           </Link>
 
           {/* 개인/기업 토글 — sm 이상에서만 표시 */}
