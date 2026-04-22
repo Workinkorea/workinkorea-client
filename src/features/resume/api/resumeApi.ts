@@ -76,7 +76,7 @@ export const resumeApi = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ file_name: file.name }),
-      credentials: 'include', // HttpOnly Cookie 자동 전송
+      credentials: 'same-origin', // HttpOnly Cookie 자동 전송 (ISSUE-107)
     });
 
     if (!presignedResponse.ok) {
@@ -128,7 +128,7 @@ export const resumeApi = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ file_name: file.name }),
-      credentials: 'include', // HttpOnly Cookie 자동 전송
+      credentials: 'same-origin', // HttpOnly Cookie 자동 전송 (ISSUE-107)
     });
 
     if (!presignedResponse.ok) {
@@ -178,7 +178,7 @@ export const resumeApi = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ file_name: file.name }),
-      credentials: 'include', // HttpOnly Cookie 자동 전송
+      credentials: 'same-origin', // HttpOnly Cookie 자동 전송 (ISSUE-107)
     });
 
     if (!presignedResponse.ok) {

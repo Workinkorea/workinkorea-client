@@ -2,7 +2,7 @@
  * Next.js 16 App Router 최적화 Fetch Client
  *
  * 주요 특징:
- * 1. HttpOnly Cookie 자동 전송 (credentials: 'include')
+ * 1. HttpOnly Cookie 자동 전송 (credentials: 'same-origin')
  * 2. Next.js 캐싱 통합 (revalidate, cache, tags)
  * 3. 401 에러 시 자동 Token Refresh
  * 4. Server/Client Components 모두 지원
@@ -54,8 +54,8 @@ export async function fetchAPI<T>(
   const authHeader: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
 
   const config: RequestInit = {
+    credentials: 'same-origin', // 기본값: 동일 origin 쿠키 자동 전송 (ISSUE-107)
     ...fetchOptions,
-    credentials: 'include', // HttpOnly Cookie 자동 전송
     headers: {
       'Content-Type': 'application/json',
       ...authHeader,
@@ -177,7 +177,7 @@ async function refreshToken(isServer: boolean): Promise<boolean> {
       const baseURL = isServer ? SERVER_API_URL : API_BASE_URL;
       const response = await fetch(`${baseURL}/api/auth/refresh`, {
         method: 'POST',
-        credentials: 'include', // refreshToken 쿠키 자동 전송
+        credentials: 'same-origin', // refreshToken 쿠키 자동 전송 (ISSUE-107)
         headers: {
           'Content-Type': 'application/json',
         },

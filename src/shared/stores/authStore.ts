@@ -32,7 +32,7 @@ async function verifySessionWithProfile(): Promise<UserType | null> {
     const tid = setTimeout(() => controller.abort(), 3000);
 
     const res = await fetch('/api/me', {
-      credentials: 'include',
+      credentials: 'same-origin',
       signal: controller.signal,
     });
     clearTimeout(tid);
@@ -145,7 +145,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       try {
         const response = await fetch('/api/auth/refresh', {
           method: 'POST',
-          credentials: 'include',
+          credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
           signal: controller.signal,
         });
