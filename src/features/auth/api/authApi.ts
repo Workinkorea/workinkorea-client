@@ -20,7 +20,7 @@ import { UserInfo } from '@/shared/types/common.types';
  * 주요 변경사항:
  * - axios → fetch API로 전환
  * - localStorage 토큰 관리 제거
- * - HttpOnly Cookie 자동 전송 (credentials: 'include')
+ * - HttpOnly Cookie 자동 전송 (credentials: 'same-origin')
  * - 백엔드가 Set-Cookie 헤더로 토큰 관리
  */
 export const authApi = {
@@ -115,7 +115,7 @@ export const authApi = {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),
-      credentials: 'include',
+      credentials: 'same-origin',
     });
 
     const responseData = await response.json().catch(() => ({})) as CompanyLoginResponse;
