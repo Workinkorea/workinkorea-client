@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { fetchClient, FetchError } from '@/shared/api/fetchClient';
 import { tokenStore } from '@/shared/api/tokenStore';
@@ -10,6 +11,7 @@ import { toast } from 'sonner';
 export function AdminLoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations('admin.login');
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,9 +35,9 @@ export function AdminLoginClient() {
     } catch (err) {
       if (err instanceof FetchError) {
         const detail = (err.data as { detail?: string } | undefined)?.detail;
-        toast.error(detail ?? '로그인에 실패했습니다.');
+        toast.error(detail ?? t('errorLogin'));
       } else {
-        toast.error('네트워크 오류가 발생했습니다.');
+        toast.error(t('errorNetwork'));
       }
     } finally {
       setIsLoading(false);
@@ -46,14 +48,14 @@ export function AdminLoginClient() {
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
       <div className="w-full max-w-sm bg-white rounded-xl border border-slate-200 shadow-md p-8">
         <div className="mb-6 text-center">
-          <h1 className="text-title-2 font-bold text-slate-900">관리자 로그인</h1>
-          <p className="text-caption-1 text-slate-500 mt-1">WorkInKorea 관리자 전용</p>
+          <h1 className="text-title-2 font-bold text-slate-900">{t('title')}</h1>
+          <p className="text-caption-1 text-slate-500 mt-1">{t('subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="text-label-1 font-medium text-slate-700 block mb-1">
-              이메일
+              {t('emailLabel')}
             </label>
             <input
               id="email"
@@ -68,7 +70,7 @@ export function AdminLoginClient() {
 
           <div>
             <label htmlFor="password" className="text-label-1 font-medium text-slate-700 block mb-1">
-              비밀번호
+              {t('passwordLabel')}
             </label>
             <input
               id="password"
@@ -86,7 +88,7 @@ export function AdminLoginClient() {
             className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 text-label-1"
             style={{ color: '#ffffff' }}
           >
-            {isLoading ? '로그인 중...' : '로그인'}
+            {isLoading ? t('loggingIn') : t('loginButton')}
           </button>
         </form>
       </div>

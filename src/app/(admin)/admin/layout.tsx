@@ -3,17 +3,21 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
-const navItems = [
-  { name: '대시보드', path: '/admin' },
-  { name: '일반 회원 관리', path: '/admin/users' },
-  { name: '기업 회원 관리', path: '/admin/companies' },
-  { name: '공고 관리', path: '/admin/posts' },
-  { name: '이벤트 관리', path: '/admin/events' },
+type NavKey = 'dashboard' | 'users' | 'companies' | 'posts' | 'events';
+
+const navItems: { key: NavKey; path: string }[] = [
+  { key: 'dashboard', path: '/admin' },
+  { key: 'users', path: '/admin/users' },
+  { key: 'companies', path: '/admin/companies' },
+  { key: 'posts', path: '/admin/posts' },
+  { key: 'events', path: '/admin/events' },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const t = useTranslations('admin.layout');
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -21,12 +25,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <header className="bg-white shadow-sm">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8">
           <div className="flex h-16 items-center justify-between">
-            <p className="text-title-3 font-bold text-slate-900">관리자 페이지</p>
+            <p className="text-title-3 font-bold text-slate-900">{t('title')}</p>
             <Link
               href="/"
               className="text-body-3 text-slate-600 hover:text-slate-900 transition-colors"
             >
-              메인으로 돌아가기
+              {t('backToMain')}
             </Link>
           </div>
         </div>
@@ -49,7 +53,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                         : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                     }`}
                   >
-                    {item.name}
+                    {t(`nav.${item.key}`)}
                   </Link>
                 );
               })}
