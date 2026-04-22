@@ -18,27 +18,35 @@ interface CompanyInfoSectionProps {
 // 폼 행 레이아웃 헬퍼
 const FieldRow = ({
   label,
+  htmlFor,
   required,
   optional,
   optionalLabel = 'Optional',
   children,
 }: {
   label: string;
+  /** 연결할 input id — <label htmlFor> 로 시맨틱 연결 */
+  htmlFor?: string;
   required?: boolean;
   optional?: boolean;
   optionalLabel?: string;
   children: ReactNode;
 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0 items-start">
-    <span className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
+    <label htmlFor={htmlFor} className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1.5 flex-wrap">
       {label}
-      {required && <span className="text-red-500">*</span>}
+      {required && (
+        <>
+          <span aria-hidden="true" className="text-red-500">*</span>
+          <span className="sr-only">(필수)</span>
+        </>
+      )}
       {optional && (
         <span className="text-caption-3 font-medium px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">
           {optionalLabel}
         </span>
       )}
-    </span>
+    </label>
     <div>{children}</div>
   </div>
 );
@@ -66,7 +74,7 @@ const FieldHint = ({
   hint?: string;
   inputComplete: string;
 }) => {
-  if (error) return <p className="mt-1.5 text-caption-3 text-red-500">{error}</p>;
+  if (error) return <p role="alert" className="mt-1.5 text-caption-3 text-red-500">{error}</p>;
   if (touched && hasValue)
     return (
       <p className="mt-1.5 text-caption-3 text-emerald-500 flex items-center gap-1">
@@ -90,7 +98,7 @@ export const CompanyInfoSection = ({
   return (
     <div>
       {/* 업종 */}
-      <FieldRow label={t('fields.industryType')} required>
+      <FieldRow label={t('fields.industryType')} htmlFor="industry_type" required>
         <Input
           id="industry_type"
           name="industry_type"
@@ -110,7 +118,7 @@ export const CompanyInfoSection = ({
       </FieldRow>
 
       {/* 기업 형태 */}
-      <FieldRow label={t('fields.companyType')} required>
+      <FieldRow label={t('fields.companyType')} htmlFor="company_type" required>
         <select
           id="company_type"
           name="company_type"
@@ -138,7 +146,7 @@ export const CompanyInfoSection = ({
       </FieldRow>
 
       {/* 직원 수 & 설립일 */}
-      <FieldRow label={t('fields.employeeAndDate')} required>
+      <FieldRow label={t('fields.employeeAndDate')} htmlFor="employee_count" required>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <select
@@ -195,7 +203,7 @@ export const CompanyInfoSection = ({
       </FieldRow>
 
       {/* 보험 */}
-      <FieldRow label={t('fields.insurance')} optional optionalLabel={t('optionalLabel')}>
+      <FieldRow label={t('fields.insurance')} htmlFor="insurance" optional optionalLabel={t('optionalLabel')}>
         <Input
           id="insurance"
           name="insurance"
@@ -210,7 +218,7 @@ export const CompanyInfoSection = ({
       </FieldRow>
 
       {/* 주소 */}
-      <FieldRow label={t('fields.address')} required>
+      <FieldRow label={t('fields.address')} htmlFor="address" required>
         <Input
           id="address"
           name="address"
@@ -231,7 +239,7 @@ export const CompanyInfoSection = ({
       </FieldRow>
 
       {/* 웹사이트 */}
-      <FieldRow label={t('fields.website')} optional optionalLabel={t('optionalLabel')}>
+      <FieldRow label={t('fields.website')} htmlFor="website_url" optional optionalLabel={t('optionalLabel')}>
         <Input
           type="url"
           id="website_url"

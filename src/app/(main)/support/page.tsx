@@ -1,10 +1,8 @@
-import { Metadata } from 'next';
-import { createMetadata } from '@/shared/lib/metadata';
+import { getPageMetadata } from '@/shared/lib/i18n/getPageMetadata';
 
-export const metadata: Metadata = createMetadata({
-  title: '고객센터',
-  description: '워크인코리아 고객센터입니다. 서비스 이용 문의, 불편사항 신고 및 제휴 문의를 접수하세요.',
-});
+export async function generateMetadata() {
+  return getPageMetadata('support');
+}
 
 export default function SupportPage() {
   return (
@@ -16,7 +14,12 @@ export default function SupportPage() {
           <p className="text-body-3 text-slate-600">
             문의사항은 아래 이메일로 보내주시면 빠르게 답변드리겠습니다.
           </p>
-          <p className="mt-2 text-blue-600 font-medium">support@workinkorea.com</p>
+          <a
+            href="mailto:support@workinkorea.com"
+            className="mt-2 inline-block text-blue-600 font-medium underline underline-offset-4 hover:text-blue-700 transition-colors"
+          >
+            support@workinkorea.com
+          </a>
         </section>
         <section className="bg-white border border-slate-100 rounded-xl p-6">
           <h2 className="text-title-5 font-semibold text-slate-800 mb-3">운영 시간</h2>

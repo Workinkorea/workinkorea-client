@@ -25,6 +25,7 @@ import { postsApi } from '@/features/jobs/api/postsApi';
 import { CreateCompanyPostRequest, UpdateCompanyPostRequest } from '@/shared/types/api';
 import { CompanyPostForm } from '@/features/jobs/components/CompanyPostForm';
 import { extractErrorMessage, logError } from '@/shared/lib/utils/errorHandler';
+import { useUnsavedChangesWarning } from '@/shared/lib/form';
 
 function CompanyPostCreateClient() {
   const router       = useRouter();
@@ -32,14 +33,13 @@ function CompanyPostCreateClient() {
   const { isAuthenticated, isLoading: authLoading, userType } = useAuth();
   const t = useTranslations('jobs.postCreate');
   const [loadTimeout, setLoadTimeout] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
   const createPostMutation = useMutation({
     mutationFn: (data: CreateCompanyPostRequest) => postsApi.createCompanyPost(data),
     onSuccess: () => {
-      // 대시보드의 공고 목록 캐시를 무효화해 즉시 최신 목록이 표시되도록 합니다.
       queryClient.invalidateQueries({ queryKey: ['myCompanyPosts'] });
       toast.success(t('successToast'));
-      // 등록 완료 후 대시보드의 '관리 중인 공고' 탭으로 바로 이동
       router.push('/company?tab=posts');
     },
     onError: (error) => {
@@ -47,6 +47,11 @@ function CompanyPostCreateClient() {
       const message = extractErrorMessage(error, t('errorToast'));
       toast.error(message);
     },
+  });
+
+  useUnsavedChangesWarning({
+    isDirty,
+    isSubmitSuccessful: createPostMutation.isSuccess,
   });
 
   const handleSubmit = (data: CreateCompanyPostRequest | UpdateCompanyPostRequest) => {
@@ -201,33 +206,12 @@ function CompanyPostCreateClient() {
                 mode="create"
                 onSubmit={handleSubmit}
                 isSubmitting={createPostMutation.isPending}
+                onDirtyChange={setIsDirty}
               />
             </motion.div>
 
             {/* ── 우측: 사이드바 (sticky) ── */}
             <aside className="hidden lg:flex flex-col gap-4 sticky top-6">
-
-              {/* 등록 버튼 */}
-              <Button
-                type="submit"
-                size="lg"
-                form="company-post-form"
-                isLoading={createPostMutation.isPending}
-                className="w-full shadow-[0_4px_14px_rgba(66,90,213,0.25)] hover:shadow-[0_6px_20px_rgba(66,90,213,0.35)]"
-              >
-                공고 등록하기
-              </Button>
-
-              {/* 취소 버튼 */}
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                className="w-full"
-                onClick={handleCancel}
-              >
-                취소
-              </Button>
 
               {/* 작성 팁 카드 */}
               <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">

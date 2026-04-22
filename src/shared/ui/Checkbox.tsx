@@ -53,6 +53,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             checked={checked}
             disabled={disabled}
             aria-checked={indeterminate ? 'mixed' : checked}
+            aria-invalid={error ? true : undefined}
             className="sr-only"
             {...rest}
           />
@@ -96,7 +97,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         </label>
 
         {error && (
-          <p className="text-caption-2 text-red-500 pl-7">{error}</p>
+          <p role="alert" className="text-caption-2 text-red-500 pl-7">{error}</p>
         )}
       </div>
     );

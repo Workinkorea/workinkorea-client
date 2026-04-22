@@ -13,6 +13,7 @@ import { z } from 'zod';
 import Layout from '@/shared/components/layout/Layout';
 import { Input } from '@/shared/ui/Input';
 import { profileApi } from '../api/profileApi';
+import { focusFirstError, useUnsavedChangesWarning } from '@/shared/lib/form';
 import { COUNTRIES_FULL } from '@/shared/constants/countries';
 import type { CreateProfileRequest } from '../types/profile.types';
 
@@ -35,7 +36,7 @@ export function ProfileSetupClient() {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty, isSubmitSuccessful },
   } = useForm<CreateProfileForm>({
     resolver: zodResolver(createProfileSchema),
     defaultValues: {
@@ -44,6 +45,8 @@ export function ProfileSetupClient() {
       country_id: 0,
     },
   });
+
+  useUnsavedChangesWarning({ isDirty, isSubmitSuccessful });
 
   const selectedCountryId = watch('country_id');
 
@@ -98,51 +101,57 @@ export function ProfileSetupClient() {
 
           {/* Form Card */}
           <div className="bg-white rounded-2xl shadow-md border border-slate-200 p-6 sm:p-8">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit, focusFirstError)} className="space-y-6">
               {/* Name */}
               <div className="flex flex-col gap-2">
-                <label className="text-slate-700 text-caption-1 font-semibold flex items-center gap-1.5">
+                <label htmlFor="name" className="text-slate-700 text-caption-1 font-semibold flex items-center gap-1.5">
                   <User className="w-3.5 h-3.5" />
                   이름
-                  <span className="text-red-500">*</span>
+                  <span aria-hidden="true" className="text-red-500">*</span>
+                  <span className="sr-only">(필수)</span>
                 </label>
                 <Input
+                  id="name"
                   {...register('name')}
                   placeholder="홍길동"
                   error={!!errors.name}
                 />
                 {errors.name && (
-                  <p className="text-caption-2 text-red-500">{errors.name.message}</p>
+                  <p role="alert" className="text-caption-2 text-red-500">{errors.name.message}</p>
                 )}
               </div>
 
               {/* Birth Date */}
               <div className="flex flex-col gap-2">
-                <label className="text-slate-700 text-caption-1 font-semibold flex items-center gap-1.5">
+                <label htmlFor="birth_date" className="text-slate-700 text-caption-1 font-semibold flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5" />
                   생년월일
-                  <span className="text-red-500">*</span>
+                  <span aria-hidden="true" className="text-red-500">*</span>
+                  <span className="sr-only">(필수)</span>
                 </label>
                 <Input
+                  id="birth_date"
                   type="date"
                   {...register('birth_date')}
                   error={!!errors.birth_date}
                 />
                 {errors.birth_date && (
-                  <p className="text-caption-2 text-red-500">{errors.birth_date.message}</p>
+                  <p role="alert" className="text-caption-2 text-red-500">{errors.birth_date.message}</p>
                 )}
               </div>
 
               {/* Country */}
               <div className="flex flex-col gap-2">
-                <label className="text-slate-700 text-caption-1 font-semibold flex items-center gap-1.5">
+                <label htmlFor="country_search" className="text-slate-700 text-caption-1 font-semibold flex items-center gap-1.5">
                   <Globe className="w-3.5 h-3.5" />
                   국적
-                  <span className="text-red-500">*</span>
+                  <span aria-hidden="true" className="text-red-500">*</span>
+                  <span className="sr-only">(필수)</span>
                 </label>
                 <div className="relative">
                   <input
                     type="text"
+                    id="country_search"
                     value={
                       showCountryDropdown
                         ? countrySearch
@@ -204,7 +213,7 @@ export function ProfileSetupClient() {
                 )}
 
                 {errors.country_id && (
-                  <p className="text-caption-2 text-red-500">{errors.country_id.message}</p>
+                  <p role="alert" className="text-caption-2 text-red-500">{errors.country_id.message}</p>
                 )}
               </div>
 

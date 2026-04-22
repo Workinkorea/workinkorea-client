@@ -50,9 +50,10 @@ export function BasicInfoSection({
 
       <div className="space-y-4 md:space-y-5">
         {/* 공고 제목 */}
-        <FormField label="공고 제목" required error={errors.title}>
+        <FormField label="공고 제목" htmlFor="title" required error={errors.title}>
           <input
             type="text"
+            id="title"
             name="title"
             value={formData.title}
             onChange={onChange}
@@ -64,8 +65,9 @@ export function BasicInfoSection({
 
         {/* 직무 + 경력 요건: 태블릿 이상 2단 배치 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="직무" required>
+          <FormField label="직무" htmlFor="position_id" required>
             <select
+              id="position_id"
               name="position_id"
               value={String(formData.position_id)}
               onChange={onChange}
@@ -78,8 +80,9 @@ export function BasicInfoSection({
             </select>
           </FormField>
 
-          <FormField label="경력 요건">
+          <FormField label="경력 요건" htmlFor="work_experience">
             <select
+              id="work_experience"
               name="work_experience"
               value={formData.work_experience}
               onChange={onChange}
@@ -95,8 +98,9 @@ export function BasicInfoSection({
 
         {/* 학력 요건 + 언어 요건: 태블릿 이상 2단 배치 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="학력 요건">
+          <FormField label="학력 요건" htmlFor="education">
             <select
+              id="education"
               name="education"
               value={formData.education}
               onChange={onChange}
@@ -109,12 +113,13 @@ export function BasicInfoSection({
             </select>
           </FormField>
 
-          <FormField label="언어 요건">
+          <FormField label="언어 요건" htmlFor="language">
             <div className="relative">
               <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
                 <Languages size={15} />
               </div>
               <select
+                id="language"
                 name="language"
                 value={formData.language}
                 onChange={onChange}
@@ -130,8 +135,9 @@ export function BasicInfoSection({
         </div>
 
         {/* 상세 설명 — 모바일에서도 충분한 높이 확보 */}
-        <FormField label="상세 설명" required error={errors.content}>
+        <FormField label="상세 설명" htmlFor="content" required error={errors.content}>
           <textarea
+            id="content"
             name="content"
             value={formData.content}
             onChange={onChange}

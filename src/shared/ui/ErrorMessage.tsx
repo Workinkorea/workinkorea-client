@@ -5,14 +5,21 @@ interface ErrorMessageProps {
   message: string;
   className?: string;
   variant?: 'default' | 'diagnosis';
+  /** DOM id — FormField 가 aria-describedby 연결에 사용 */
+  id?: string;
 }
 
-export const ErrorMessage = ({ message, className = '', variant = 'default' }: ErrorMessageProps) => {
+export const ErrorMessage = ({ message, className = '', variant = 'default', id }: ErrorMessageProps) => {
+  if (!message) return null;
+
   const isDiagnosis = variant === 'diagnosis';
 
   return (
     <AnimatePresence>
       <motion.div
+        id={id}
+        role="alert"
+        aria-live="polite"
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -5 }}

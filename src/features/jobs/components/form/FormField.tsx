@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface FormFieldProps {
   label: string;
+  /** 연결할 input id — <label htmlFor> 로 시맨틱 연결 */
+  htmlFor?: string;
   required?: boolean;
   error?: string;
   hint?: string;
@@ -19,6 +21,7 @@ interface FormFieldProps {
  */
 export function FormField({
   label,
+  htmlFor,
   required = false,
   error,
   hint,
@@ -33,9 +36,14 @@ export function FormField({
       transition={{ duration: 0.35 }}
     >
       {/* 레이블: text-slate-700 = #334155(slate-700), 13px semibold */}
-      <label className="block text-caption-1 font-semibold text-slate-700 mb-1.5">
+      <label htmlFor={htmlFor} className="block text-caption-1 font-semibold text-slate-700 mb-1.5">
         {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+        {required && (
+          <>
+            <span aria-hidden="true" className="text-red-500 ml-0.5">*</span>
+            <span className="sr-only">(필수)</span>
+          </>
+        )}
       </label>
 
       {children}
@@ -49,6 +57,7 @@ export function FormField({
       <AnimatePresence>
         {error && (
           <motion.p
+            role="alert"
             className="mt-1 text-caption-3 text-red-500"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}

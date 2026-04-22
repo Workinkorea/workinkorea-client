@@ -17,9 +17,10 @@ interface HeaderProps {
   isAuthenticated?: boolean;
   isLoading?: boolean;
   onLogout?: () => void;
+  isToggleDisabled?: boolean;
 }
 
-export function Header({ type, viewType, onViewTypeChange, isAuthenticated, onLogout }: HeaderProps) {
+export function Header({ type, viewType, onViewTypeChange, isAuthenticated, onLogout, isToggleDisabled }: HeaderProps) {
   const t = useTranslations('common.nav');
 
   const navigationItems =
@@ -64,6 +65,7 @@ export function Header({ type, viewType, onViewTypeChange, isAuthenticated, onLo
             <UserTypeToggle
               value={viewType}
               onChange={onViewTypeChange}
+              disabled={isToggleDisabled}
               className="ml-2 hidden sm:flex"
             />
           )}

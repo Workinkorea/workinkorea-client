@@ -39,9 +39,10 @@ export function RecruitmentPeriodSection({
 
       {/* 태블릿 이상에서 2단: 시작일 | 종료일 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField label="게시 시작일">
+        <FormField label="게시 시작일" htmlFor="start_date">
           <input
             type="date"
+            id="start_date"
             name="start_date"
             value={formData.start_date}
             onChange={onChange}
@@ -50,9 +51,10 @@ export function RecruitmentPeriodSection({
           />
         </FormField>
 
-        <FormField label="게시 종료일">
+        <FormField label="게시 종료일" htmlFor="end_date">
           <input
             type="date"
+            id="end_date"
             name="end_date"
             value={formData.end_date}
             onChange={onChange}

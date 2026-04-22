@@ -30,7 +30,8 @@
       "recruitManage": "채용 관리",
       "my": "MY",
       "companyPage": "기업페이지",
-      "loginSignup": "로그인/회원가입"
+      "loginSignup": "로그인/회원가입",
+      "toggleDisabledHint": "로그인된 계정 유형을 따릅니다"
     },
     "button": {
       "apply": "지원하기",
@@ -1518,7 +1519,13 @@
       "tipsTitle": "이력서 작성 팁",
       "tip1": "구체적인 업무 경험을 작성하세요",
       "tip2": "성과 위주의 내용을 포함하세요",
-      "tip3": "최신 정보를 유지하세요"
+      "tip3": "최신 정보를 유지하세요",
+      "loadingText": "이력서를 불러오는 중...",
+      "loadError": "이력서를 불러올 수 없습니다",
+      "loadErrorDesc": "잠시 후 다시 시도해주세요.",
+      "backToList": "목록으로",
+      "unsavedWarning": "저장하지 않은 변경사항이 있습니다. 페이지를 떠나시겠습니까?",
+      "noChanges": "변경된 내용이 없습니다."
     },
     "template": {
       "title": "이력서 템플릿 선택",
@@ -1582,6 +1589,50 @@
     "q5": {
       "question": "서비스 이용 중 문제가 발생하면 어떻게 하나요?",
       "answer": "고객센터(support@workinkorea.com)로 문의해주시면 빠르게 도와드리겠습니다."
+    }
+  },
+  "settings": {
+    "title": "설정",
+    "subtitle": "계정 설정 및 환경을 관리합니다",
+    "profileEdit": "프로필 편집",
+    "profileEditDesc": "이름, 연락처, 경력 등 프로필 정보를 수정합니다",
+    "language": "언어 설정",
+    "languageDesc": "서비스 표시 언어를 변경합니다",
+    "logout": "로그아웃",
+    "logoutDesc": "현재 계정에서 로그아웃합니다"
+  },
+  "meta": {
+    "home": {
+      "title": "글로벌 인재 매칭 플랫폼",
+      "description": "검증된 외국인 구직자와 한국 기업의 완벽한 연결, 워크인코리아"
+    },
+    "jobs": {
+      "title": "채용 공고",
+      "description": "외국인 구직자를 위한 한국 채용 공고를 확인하세요"
+    },
+    "diagnosis": {
+      "title": "자가진단",
+      "description": "한국 취업 적합도를 자가진단으로 확인해보세요"
+    },
+    "faq": {
+      "title": "자주 묻는 질문",
+      "description": "워크인코리아 서비스 이용에 대한 자주 묻는 질문과 답변"
+    },
+    "support": {
+      "title": "고객센터",
+      "description": "워크인코리아 고객센터 — 서비스 이용 문의 및 지원"
+    },
+    "privacy": {
+      "title": "개인정보처리방침",
+      "description": "워크인코리아 개인정보처리방침"
+    },
+    "terms": {
+      "title": "이용약관",
+      "description": "워크인코리아 서비스 이용약관"
+    },
+    "settings": {
+      "title": "설정",
+      "description": "계정 설정 및 환경 구성"
     }
   }
 }
