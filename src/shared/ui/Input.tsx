@@ -64,6 +64,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           className={inputClasses}
           ref={ref}
           value={safeValue}
+          aria-invalid={error || undefined}
           {...props}
         />
 

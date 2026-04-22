@@ -37,6 +37,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
             type="radio"
             checked={checked}
             disabled={disabled}
+            aria-invalid={error ? true : undefined}
             className="sr-only"
             {...rest}
           />
@@ -81,7 +82,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
         </label>
 
         {error && (
-          <p className="text-caption-2 text-red-500 pl-7">{error}</p>
+          <p role="alert" className="text-caption-2 text-red-500 pl-7">{error}</p>
         )}
       </div>
     );
@@ -141,7 +142,7 @@ export function RadioGroup({
         />
       ))}
       {error && (
-        <p className="text-caption-2 text-red-500">{error}</p>
+        <p role="alert" className="text-caption-2 text-red-500">{error}</p>
       )}
     </div>
   );

@@ -1,8 +1,10 @@
-import { redirect } from 'next/navigation';
+import { getPageMetadata } from '@/shared/lib/i18n/getPageMetadata';
+import { UserSettingsClient } from '@/features/profile/pages/UserSettingsClient';
 
-/**
- * ISSUE-110: /user/settings 는 프로필 편집 페이지(설정 섹션 포함)로 리다이렉트.
- */
+export async function generateMetadata() {
+  return getPageMetadata('settings');
+}
+
 export default function UserSettingsPage() {
-  redirect('/user/profile/edit');
+  return <UserSettingsClient />;
 }

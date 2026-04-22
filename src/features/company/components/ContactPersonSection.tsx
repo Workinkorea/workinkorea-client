@@ -15,18 +15,25 @@ interface ContactPersonSectionProps {
 
 const FieldRow = ({
   label,
+  htmlFor,
   required,
   children,
 }: {
   label: string;
+  htmlFor?: string;
   required?: boolean;
   children: ReactNode;
 }) => (
   <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-2 sm:gap-4 px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 last:border-0 items-start">
-    <span className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1">
+    <label htmlFor={htmlFor} className="text-caption-1 font-semibold text-slate-700 sm:pt-2.5 flex items-center gap-1">
       {label}
-      {required && <span className="text-red-500">*</span>}
-    </span>
+      {required && (
+        <>
+          <span aria-hidden="true" className="text-red-500">*</span>
+          <span className="sr-only">(필수)</span>
+        </>
+      )}
+    </label>
     <div>{children}</div>
   </div>
 );
@@ -44,7 +51,7 @@ const FieldHint = ({
   hint?: string;
   inputComplete: string;
 }) => {
-  if (error) return <p className="mt-1.5 text-caption-3 text-red-500">{error}</p>;
+  if (error) return <p role="alert" className="mt-1.5 text-caption-3 text-red-500">{error}</p>;
   if (touched && hasValue)
     return (
       <p className="mt-1.5 text-caption-3 text-emerald-500 flex items-center gap-1">
@@ -67,7 +74,7 @@ export const ContactPersonSection = ({
   return (
     <div>
       {/* 이메일 */}
-      <FieldRow label={t('fields.email')} required>
+      <FieldRow label={t('fields.email')} htmlFor="email" required>
         <Input
           type="email"
           id="email"
@@ -89,7 +96,7 @@ export const ContactPersonSection = ({
       </FieldRow>
 
       {/* 휴대전화 */}
-      <FieldRow label={t('fields.phone')} required>
+      <FieldRow label={t('fields.phone')} htmlFor="phone_number" required>
         <Input
           id="phone_number"
           name="phone_number"

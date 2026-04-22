@@ -2,11 +2,10 @@
 
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FileText } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Layout from '@/shared/components/layout/Layout';
-import { Button } from '@/shared/ui/Button';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cookieManager } from '@/shared/lib/utils/cookieManager';
 import { postsApi } from '@/features/jobs/api/postsApi';
@@ -15,6 +14,7 @@ import { UpdateCompanyPostRequest } from '@/shared/types/api';
 import { CompanyPostForm } from '@/features/jobs/components/CompanyPostForm';
 import { toast } from 'sonner';
 import { extractErrorMessage, logError } from '@/shared/lib/utils/errorHandler';
+import { useUnsavedChangesWarning } from '@/shared/lib/form';
 
 interface CompanyPostEditClientProps {
   postId: string;
@@ -26,6 +26,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { isAuthenticated, isLoading: authLoading, userType } = useAuth();
+  const [isDirty, setIsDirty] = useState(false);
 
   // 인증 완료 후 권한 체크 — 비인증 또는 기업 회원이 아닌 경우 로그인 페이지로 리다이렉트.
   // ISSUE-117: authStore 초기화가 실패(refresh 401 등)해도 userType 쿠키가 'company' 면
@@ -81,6 +82,11 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
       const isServerInternalError = rawMessage.includes('is not mapped') || rawMessage.includes('Internal');
       toast.error(isServerInternalError ? t('deleteError') : rawMessage || t('deleteError'));
     },
+  });
+
+  useUnsavedChangesWarning({
+    isDirty,
+    isSubmitSuccessful: updatePostMutation.isSuccess,
   });
 
   const handleSubmit = (data: UpdateCompanyPostRequest) => {
@@ -206,46 +212,12 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
                 onSubmit={handleSubmit}
                 onDelete={handleDelete}
                 isSubmitting={updatePostMutation.isPending}
+                onDirtyChange={setIsDirty}
               />
             </motion.div>
 
             {/* ── 우측: 사이드바 (sticky) ── */}
-            <aside className="hidden lg:flex flex-col gap-4 sticky top-6">
-
-              {/* 수정 버튼 */}
-              <Button
-                type="submit"
-                size="lg"
-                form="company-post-form"
-                isLoading={updatePostMutation.isPending}
-                className="w-full shadow-[0_4px_14px_rgba(66,90,213,0.25)] hover:shadow-[0_6px_20px_rgba(66,90,213,0.35)]"
-              >
-                {t('updateBtn')}
-              </Button>
-
-              {/* 취소 버튼 */}
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                className="w-full"
-                onClick={handleCancel}
-              >
-                {tCommon('button.cancel')}
-              </Button>
-
-              {/* 삭제 버튼 */}
-              <Button
-                type="button"
-                size="lg"
-                className="w-full border border-red-200 text-red-500 hover:bg-red-50 bg-white"
-                onClick={handleDelete}
-                disabled={deletePostMutation.isPending}
-              >
-                {t('deleteBtn')}
-              </Button>
-
-            </aside>
+            {/* 사이드바는 폼 내부 버튼으로 통합 (중복 submit 방지) */}
 
           </div>
 
