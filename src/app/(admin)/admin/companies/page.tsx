@@ -7,8 +7,7 @@ export const dynamic = 'force-dynamic';
 async function getCompanies(): Promise<AdminCompany[]> {
   try {
     return await fetchAPI<AdminCompany[]>('/api/admin/companies/?skip=0&limit=10');
-  } catch (error) {
-    console.error('Failed to fetch companies:', error);
+  } catch {
     return [];
   }
 }

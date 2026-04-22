@@ -99,7 +99,7 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
               <p className="text-body-3 font-medium text-slate-900 truncate">{user.email}</p>
               <span
                 className={`inline-flex mt-1 px-2 py-0.5 text-caption-2 font-semibold rounded-full ${
-                  user.passport_certi ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  user.passport_certi ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
                 }`}
               >
                 {user.passport_certi ? '인증됨' : '미인증'}
@@ -155,7 +155,7 @@ export default function UsersTableClient({ initialUsers }: UsersTableClientProps
                   <span
                     className={`inline-flex px-2 py-1 text-caption-2 font-semibold rounded-full ${
                       user.passport_certi
-                        ? 'bg-green-100 text-green-800'
+                        ? 'bg-emerald-100 text-emerald-800'
                         : 'bg-red-100 text-red-800'
                     }`}
                   >

@@ -8,6 +8,14 @@ import { tokenStore } from '@/shared/api/tokenStore';
 import { profileApi } from '@/features/profile/api/profileApi';
 import { cookieManager } from '@/shared/lib/utils/cookieManager';
 
+function isValidCallbackUrl(url: string): boolean {
+  // Only allow relative paths starting with /
+  // Reject: http://, https://, //, javascript:, data:, etc.
+  if (!url.startsWith('/')) return false;
+  if (url.startsWith('//')) return false;
+  return true;
+}
+
 function CallbackContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -47,7 +55,8 @@ function CallbackContent() {
           await profileApi.getProfile();
           // 프로필 존재 → 기존 페이지로 복귀
           const callbackUrl = consumeCallbackUrl();
-          window.location.href = callbackUrl ?? '/';
+          const safeUrl = callbackUrl && isValidCallbackUrl(callbackUrl) ? callbackUrl : '/';
+          window.location.href = safeUrl;
         } catch {
           // 404 = 프로필 미생성 → 프로필 생성 페이지로
           consumeCallbackUrl(); // 콜백 URL 소비 (나중에 사용 안 함)

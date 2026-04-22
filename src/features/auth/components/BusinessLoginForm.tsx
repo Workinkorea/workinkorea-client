@@ -5,13 +5,22 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/shared/ui/FormField';
 import { Input } from '@/shared/ui/Input';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { validatePassword } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { FetchError } from '@/shared/api/fetchClient';
-import { Building2, CheckCircle2, Users, FileText, Loader2, AlertCircle, WifiOff } from 'lucide-react';
+import { CheckCircle2, Users, FileText, Loader2, AlertCircle, WifiOff } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+
+function isValidCallbackUrl(url: string): boolean {
+  // Only allow relative paths starting with /
+  // Reject: http://, https://, //, javascript:, data:, etc.
+  if (!url.startsWith('/')) return false;
+  if (url.startsWith('//')) return false;
+  return true;
+}
 
 interface BusinessLoginFormData {
   email: string;
@@ -140,7 +149,8 @@ export default function BusinessLoginForm() {
         } else {
           localStorage.removeItem(SAVED_EMAIL_KEY);
         }
-        window.location.href = responseUrl;
+        const safeUrl = isValidCallbackUrl(responseUrl) ? responseUrl : '/';
+        window.location.href = safeUrl;
       } else {
         throw new Error('Invalid response from server');
       }
@@ -222,9 +232,13 @@ export default function BusinessLoginForm() {
 
         {/* 로고 */}
         <div className="flex items-center gap-3 mb-12">
-          <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center">
-            <Building2 size={20} className="text-white" />
-          </div>
+          <Image
+            src="/images/workinkorea_app_logo.png"
+            alt="WorkInKorea"
+            width={40}
+            height={40}
+            className="brightness-0 invert"
+          />
           <span className="text-white font-['Plus_Jakarta_Sans'] text-title-4 font-extrabold tracking-[-0.5px]">
             WorkInKorea
           </span>

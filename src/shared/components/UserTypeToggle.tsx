@@ -35,7 +35,7 @@ export function UserTypeToggle({ value, onChange, className }: UserTypeTogglePro
             key={optValue}
             onClick={() => onChange(optValue)}
             className={cn(
-              'relative flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition-colors duration-200 cursor-pointer select-none z-10',
+              'relative flex items-center gap-1 px-2.5 py-0.5 rounded-full text-caption-2 font-semibold transition-colors duration-200 cursor-pointer select-none z-10',
               isActive ? 'text-white' : 'text-slate-500 hover:text-slate-700'
             )}
             aria-label={`${label} 모드로 전환`}
