@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { cookieManager, UserType } from '@/shared/lib/utils/cookieManager';
 import { tokenStore, decodeUserType } from '@/shared/api/tokenStore';
 
-// 로컬 개발 테스트용 인증 우회
-const BYPASS_AUTH = process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true';
+// 로컬 개발 테스트용 인증 우회 (production에서는 절대 활성화되지 않음)
+const BYPASS_AUTH = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true';
 const BYPASS_AUTH_TYPE = (process.env.NEXT_PUBLIC_BYPASS_AUTH_TYPE ?? 'user') as UserType;
 
 // initialize() 중복 실행 방지 (페이지 이동마다 refresh 호출 방지)
@@ -23,8 +23,11 @@ interface AuthState {
 }
 
 /**
- * GET /api/me 로 세션 유효성 확인
- * HttpOnly access_token 쿠키가 살아있으면 200 반환 → userType 결정
+ * 세션 유효성 확인 (ISSUE-107 개선)
+ *
+ * 1. GET /api/me → 200이면 개인 회원 확정
+ * 2. /api/me 실패(401) → bridge 쿠키(userTypeClient)로 기업/관리자 판별
+ *    (기업 토큰은 /api/me의 get_current_user 의존성 통과 못함)
  */
 async function verifySessionWithProfile(): Promise<UserType | null> {
   try {
@@ -38,16 +41,23 @@ async function verifySessionWithProfile(): Promise<UserType | null> {
     clearTimeout(tid);
 
     if (res.ok) {
-      // /api/me 가 200이면 개인 회원으로 인증됨
-      // (기업 회원은 /api/company-profile 을 사용)
-      const cookieUserType = cookieManager.getUserType();
-      const userType = cookieUserType ?? 'user';
-      cookieManager.setUserType(userType);
-      return userType;
+      // /api/me 200 → 개인 회원
+      cookieManager.setUserType('user');
+      return 'user';
     }
+
+    // /api/me 실패 (401 등) → bridge 쿠키로 기업/관리자 판별
+    // 미들웨어가 HttpOnly userType을 userTypeClient로 복사해둠
+    const bridgeType = cookieManager.getUserType();
+    if (bridgeType) {
+      cookieManager.setUserType(bridgeType);
+      return bridgeType;
+    }
+
     return null;
   } catch {
-    return null;
+    // 네트워크 오류 → bridge 쿠키 폴백
+    return cookieManager.getUserType();
   }
 }
 
@@ -97,7 +107,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { fetchClient } = await import('@/shared/api/fetchClient');
       await fetchClient.delete('/api/auth/logout');
     } catch (err) {
-      console.error('[AuthStore] Logout API failed:', err);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[AuthStore] Logout API failed:', err);
+      }
     } finally {
       // 성공/실패 무관하게 클라이언트 쿠키 항상 정리
       // (백엔드가 삭제 안 하거나 domain 불일치 대비)

@@ -41,7 +41,7 @@ export function LanguageToggle({ className, variant = 'light' }: LanguageToggleP
           disabled={isPending}
           aria-label={lang === 'ko' ? '한국어로 변경' : 'Switch to English'}
           className={cn(
-            'px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition-colors cursor-pointer select-none uppercase',
+            'px-2.5 py-0.5 rounded-full text-caption-2 font-semibold transition-colors cursor-pointer select-none uppercase',
             locale === lang ? activeCls : inactiveCls,
           )}
         >

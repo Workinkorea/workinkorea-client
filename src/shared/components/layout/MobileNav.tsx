@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Menu, X, Home, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
@@ -273,9 +274,13 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout,
 
               {/* 하단 브랜드 */}
               <div className="px-5 py-4 border-t border-slate-100 flex-shrink-0">
-                <span className="text-caption-3 font-semibold text-slate-300 tracking-wide uppercase">
-                  WorkInKorea
-                </span>
+                <Image
+                  src="/images/workinkorea_logo.png"
+                  alt="WorkInKorea"
+                  width={120}
+                  height={24}
+                  className="opacity-30"
+                />
               </div>
 
             </motion.div>

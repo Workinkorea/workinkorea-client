@@ -1055,6 +1055,27 @@
     }
   },
   "admin": {
+    "login": {
+      "title": "Admin Login",
+      "subtitle": "WorkInKorea Admin Only",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "loginButton": "Log In",
+      "loggingIn": "Logging in...",
+      "errorLogin": "Login failed.",
+      "errorNetwork": "A network error occurred."
+    },
+    "layout": {
+      "title": "Admin Panel",
+      "backToMain": "Back to Main",
+      "nav": {
+        "dashboard": "Dashboard",
+        "users": "User Management",
+        "companies": "Company Management",
+        "posts": "Post Management",
+        "events": "Event Management"
+      }
+    },
     "events": {
       "pageTitle": "Event Management",
       "createButton": "+ Create Event",
@@ -1530,6 +1551,37 @@
       "professionalF1": "Formal format",
       "professionalF2": "Business-appropriate",
       "professionalF3": "Professional emphasis"
+    }
+  },
+  "pwa": {
+    "install": {
+      "title": "Install App",
+      "description": "Add to home screen for faster access",
+      "installButton": "Install",
+      "dismiss": "Close"
+    }
+  },
+  "faq": {
+    "pageTitle": "Frequently Asked Questions",
+    "q1": {
+      "question": "What is Work in Korea?",
+      "answer": "Work in Korea is a job platform for foreign workers in Korea. It offers features like job search, resume building, and self-assessment."
+    },
+    "q2": {
+      "question": "How do I sign up?",
+      "answer": "Click the icon at the top to select your member type (Individual/Company) and sign up with your email."
+    },
+    "q3": {
+      "question": "How do I apply for a job posting?",
+      "answer": "After logging in, you can select a resume and apply on the job posting detail page."
+    },
+    "q4": {
+      "question": "How do I post a job as a company member?",
+      "answer": "After signing up as a company member, you can post jobs from the company dashboard."
+    },
+    "q5": {
+      "question": "What should I do if I encounter a problem?",
+      "answer": "Please contact our support team at support@workinkorea.com and we will help you promptly."
     }
   }
 }

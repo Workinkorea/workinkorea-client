@@ -16,6 +16,41 @@ type UserType = 'user' | 'admin' | 'company' | null;
  * - access_token(HttpOnly)이 진짜 인증 토큰
  */
 export function middleware(request: NextRequest) {
+  const response = routeGuard(request);
+  return bridgeUserTypeCookie(response, request);
+}
+
+/**
+ * HttpOnly userType 쿠키 → JS-readable userTypeClient 쿠키 동기화
+ *
+ * 문제: 백엔드가 userType을 HttpOnly로 설정 → document.cookie로 읽기 불가
+ *       → authStore.initialize()가 유저 타입을 판별하지 못해 비로그인 표시
+ *
+ * 해결: 미들웨어(서버사이드)에서 HttpOnly userType을 읽어
+ *       non-HttpOnly userTypeClient 쿠키로 복사 (ISSUE-107/126)
+ */
+function bridgeUserTypeCookie(response: NextResponse, request: NextRequest): NextResponse {
+  const userType = request.cookies.get('userType')?.value;
+
+  if (userType && ['user', 'company', 'admin'].includes(userType)) {
+    response.cookies.set('userTypeClient', userType, {
+      httpOnly: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 604800, // 7일
+    });
+  } else {
+    // userType 없으면 bridge 쿠키도 정리
+    response.cookies.delete('userTypeClient');
+  }
+
+  return response;
+}
+
+/**
+ * Route Guard — 라우트 보호 로직
+ */
+function routeGuard(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
   const userType = request.cookies.get('userType')?.value as UserType | undefined;
 

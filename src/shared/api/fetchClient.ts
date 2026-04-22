@@ -223,13 +223,17 @@ function handleAuthFailure(): void {
 
   const userType = getUserTypeFromCookie();
 
-  // userType 쿠키 삭제 (미들웨어가 보호 라우트 → 로그인 리다이렉트 루프 방지)
-  document.cookie = 'userType=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
+  // userType + userTypeClient(bridge) 쿠키 삭제 (미들웨어 리다이렉트 루프 방지)
+  const expired = 'expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
+  document.cookie = `userType=; ${expired}`;
+  document.cookie = `userTypeClient=; ${expired}`;
   const hostname = window.location.hostname;
   if (hostname.includes('workinkorea.net')) {
-    document.cookie = 'userType=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.workinkorea.net; SameSite=Lax';
+    document.cookie = `userType=; ${expired}; domain=.workinkorea.net`;
+    document.cookie = `userTypeClient=; ${expired}; domain=.workinkorea.net`;
   } else if (hostname.includes('moon-core.com')) {
-    document.cookie = 'userType=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.moon-core.com; SameSite=Lax';
+    document.cookie = `userType=; ${expired}; domain=.moon-core.com`;
+    document.cookie = `userTypeClient=; ${expired}; domain=.moon-core.com`;
   }
 
   const loginPath =
@@ -247,7 +251,10 @@ function getUserTypeFromCookie(): 'user' | 'company' | 'admin' | null {
   if (typeof window === 'undefined') return null;
 
   const cookies = document.cookie.split(';');
-  const userTypeCookie = cookies.find(c => c.trim().startsWith('userType='));
+  // userType (non-HttpOnly) 또는 userTypeClient (bridge) 둘 다 시도
+  const userTypeCookie =
+    cookies.find(c => c.trim().startsWith('userType=')) ||
+    cookies.find(c => c.trim().startsWith('userTypeClient='));
 
   if (!userTypeCookie) return null;
 

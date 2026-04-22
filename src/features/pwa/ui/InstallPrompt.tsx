@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Download, X } from 'lucide-react';
 
 // 작성/수정 페이지에서는 설치 프롬프트를 숨김 (ISSUE-58)
@@ -14,6 +15,7 @@ interface BeforeInstallPromptEvent extends Event {
 
 export function InstallPrompt() {
   const pathname = usePathname();
+  const t = useTranslations('pwa.install');
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -53,20 +55,20 @@ export function InstallPrompt() {
           <Download size={16} className="text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-body-2 font-semibold text-slate-800">앱 설치하기</p>
-          <p className="text-caption-1 text-slate-500">홈 화면에 추가하면 더 빠르게 이용할 수 있어요</p>
+          <p className="text-body-2 font-semibold text-slate-800">{t('title')}</p>
+          <p className="text-caption-1 text-slate-500">{t('description')}</p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={handleInstall}
             className="px-3 py-1.5 bg-blue-600 text-white text-caption-1 font-medium rounded-md hover:bg-blue-700 transition-colors"
           >
-            설치
+            {t('installButton')}
           </button>
           <button
             onClick={handleDismiss}
             className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
-            aria-label="닫기"
+            aria-label={t('dismiss')}
           >
             <X size={16} />
           </button>

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import { GoogleIcon } from '@/shared/ui/AccessibleIcon';
 import { Divider } from '@/shared/ui/Divider';
@@ -137,9 +138,12 @@ export default function LoginContent({ callbackUrl, error, signup }: LoginConten
         >
           {/* 모바일 로고 */}
           <motion.div variants={itemVariants} className="mb-8 lg:hidden">
-            <p className="font-['Plus_Jakarta_Sans'] text-title-3 font-extrabold text-blue-600">
-              Work In Korea
-            </p>
+            <Image
+              src="/images/workinkorea_app_logo.png"
+              alt="WorkInKorea"
+              width={40}
+              height={40}
+            />
           </motion.div>
 
           {/* 타이틀 */}

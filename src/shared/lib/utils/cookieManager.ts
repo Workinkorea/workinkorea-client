@@ -85,7 +85,9 @@ export const cookieManager = {
    * @returns 'user' | 'company' | 'admin' | null
    */
   getUserType: (): UserType | null => {
-    const value = getCookie('userType');
+    // 1차: 클라이언트가 직접 설정한 non-HttpOnly userType
+    // 2차: 미들웨어가 HttpOnly userType에서 복사한 bridge 쿠키 (ISSUE-107)
+    const value = getCookie('userType') || getCookie('userTypeClient');
     if (!value) return null;
 
     // Validate userType
@@ -139,6 +141,7 @@ export const cookieManager = {
    */
   clearAuth: (): void => {
     cookieManager.removeUserType();
+    deleteCookie('userTypeClient'); // bridge 쿠키도 정리
   },
 
   /**

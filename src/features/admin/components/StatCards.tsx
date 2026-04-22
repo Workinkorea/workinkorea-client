@@ -24,13 +24,13 @@ export default function StatCards({ stats }: StatCardsProps) {
       title: '전체 기업 회원',
       value: stats.totalCompanies,
       link: '/admin/companies',
-      color: 'bg-green-500',
+      color: 'bg-emerald-500',
     },
     {
       title: '전체 공고',
       value: stats.totalPosts,
       link: '/admin/posts',
-      color: 'bg-purple-500',
+      color: 'bg-blue-600',
     },
   ];
 
