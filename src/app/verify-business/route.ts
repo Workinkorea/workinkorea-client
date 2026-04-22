@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
     const apiKey = process.env.NTS_API_KEY;
 
     if (!apiKey) {
-      console.error('NTS_API_KEY is not configured');
       return NextResponse.json(
         { error: 'API 키가 설정되지 않았습니다.' },
         { status: 500 }
@@ -55,9 +54,7 @@ export async function POST(request: NextRequest) {
 
     const data = await response.json();
     return NextResponse.json(data);
-  } catch (error) {
-    console.error('Business verification error:', error);
-
+  } catch {
     return NextResponse.json(
       { error: '사업자등록번호 인증 중 오류가 발생했습니다.' },
       { status: 500 }
