@@ -26,9 +26,12 @@ export function collectConsoleErrors(page: Page): ConsoleError[] {
 export function filterAppErrors(errors: ConsoleError[]): ConsoleError[] {
   const IGNORED_PATTERNS = [
     /Failed to load resource.*favicon/i,
-    /ERR_BLOCKED_BY_CLIENT/i,            // 광고 차단기
+    /ERR_BLOCKED_BY_CLIENT/i,                                  // 광고 차단기
     /Download the React DevTools/i,
     /ReactDOM.hydrate is no longer supported/i,
+    /\/api\/auth\/refresh.*(401|Unauthorized)/i,               // 익명 세션 refresh 401 (정상)
+    /\/api\/me.*(401|Unauthorized)/i,                          // 익명 세션 /me 401 (정상)
+    /Failed to load resource.*status of 401/i,                 // 일반 401 HTTP 에러 (익명 예상)
   ];
   return errors.filter(e => !IGNORED_PATTERNS.some(p => p.test(e.text)));
 }
