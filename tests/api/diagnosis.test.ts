@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect, beforeEach } from 'vitest';
 import { apiClient } from '../utils/api-client';
 import { createDiagnosisAnswerData } from '../utils/test-data';
