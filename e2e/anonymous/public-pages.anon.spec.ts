@@ -3,12 +3,8 @@ import { PUBLIC_ROUTES } from '../fixtures/test-data';
 import { filterAppErrors } from '../helpers/console';
 
 test.describe('Public pages smoke', () => {
-  // /jobs: SSR 실패 시 error.tsx 가 console.error 를 발생시켜 본 테스트를 실패시켰던 이슈.
-  // 현재 소스 fix 완료 (src/features/jobs/api/postsApi.ts — SSR 실패 시 empty fallback).
-  // 프로덕션 deploy 후 아래 fixme 를 제거하고 일반 test 로 전환하면 됨.
   for (const route of PUBLIC_ROUTES) {
-    const runner = route === '/jobs' ? test.fixme : test;
-    runner(`${route} 은 200 응답 + <h1> 렌더 + app-level console error 없음`, async ({ page, consoleErrors }) => {
+    test(`${route} 은 200 응답 + <h1> 렌더 + app-level console error 없음`, async ({ page, consoleErrors }) => {
       const resp = await page.goto(route);
       expect(resp, `no response for ${route}`).not.toBeNull();
       expect(resp!.status(), `status for ${route}`).toBeLessThan(400);
@@ -18,6 +14,15 @@ test.describe('Public pages smoke', () => {
       expect(appErrors, `console errors on ${route}`).toEqual([]);
     });
   }
+
+  test('/jobs 는 공고 카드를 1개 이상 렌더한다 (필터 default mismatch 리그레션 가드)', async ({ page }) => {
+    await page.goto('/jobs');
+    // 공고 카드 링크 `/jobs/{id}` 가 최소 1개 이상 존재
+    const cardLinks = page.locator('a[href^="/jobs/"]').filter({ hasNot: page.locator('a[href="/jobs"]') });
+    await expect(cardLinks.first()).toBeVisible({ timeout: 15_000 });
+    const count = await cardLinks.count();
+    expect(count, '공고 카드 개수').toBeGreaterThan(0);
+  });
 
   test('footer 주요 링크 (/jobs, /terms, /privacy, /support, /faq) 가 200 응답', async ({ page, request }) => {
     await page.goto('/');
