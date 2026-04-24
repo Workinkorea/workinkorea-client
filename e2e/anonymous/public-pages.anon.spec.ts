@@ -3,7 +3,9 @@ import { PUBLIC_ROUTES } from '../fixtures/test-data';
 import { filterAppErrors } from '../helpers/console';
 
 test.describe('Public pages smoke', () => {
-  // /jobs: production Server Components render error — tracked, currently fixme
+  // /jobs: SSR 실패 시 error.tsx 가 console.error 를 발생시켜 본 테스트를 실패시켰던 이슈.
+  // 현재 소스 fix 완료 (src/features/jobs/api/postsApi.ts — SSR 실패 시 empty fallback).
+  // 프로덕션 deploy 후 아래 fixme 를 제거하고 일반 test 로 전환하면 됨.
   for (const route of PUBLIC_ROUTES) {
     const runner = route === '/jobs' ? test.fixme : test;
     runner(`${route} 은 200 응답 + <h1> 렌더 + app-level console error 없음`, async ({ page, consoleErrors }) => {
