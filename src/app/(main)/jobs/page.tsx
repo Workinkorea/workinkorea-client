@@ -20,7 +20,7 @@ export default async function JobsPage({
       initialData={initialData}
       currentPage={currentPage}
       initialQ={params.q || ''}
-      initialType={params.type || '전체'}
+      initialType={params.type || 'all'}
       initialSort={params.sort || 'latest'}
     />
   );
