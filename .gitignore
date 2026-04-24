@@ -55,3 +55,9 @@ public/workbox-*.js
 public/workbox-*.js.map
 
 .docs/
+
+# Playwright
+/e2e/.auth/
+/playwright-report/
+/test-results/
+/playwright/.cache/

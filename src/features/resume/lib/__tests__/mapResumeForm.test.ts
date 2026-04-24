@@ -4,7 +4,11 @@ import {
   mapFormToRequest,
   emptyFormDefaults,
 } from '../mapResumeForm';
-import type { ResumeDetail } from '@/shared/types/api';
+import type {
+  ResumeDetail,
+  ProfileResponse,
+  ContactResponse,
+} from '@/shared/types/api';
 
 // ── 테스트 데이터 ────────────────────────────────────────────────────
 
@@ -250,5 +254,54 @@ describe('emptyFormDefaults', () => {
     expect(defaults.career_history).toHaveLength(1);
     expect(defaults.introduction).toHaveLength(1);
     expect(defaults.licenses).toHaveLength(1);
+  });
+});
+
+// ── 실제 API 응답 형태 리그레션 가드 ─────────────────────────────────
+
+describe('mapResumeResponseToForm — realistic API response (P1 리그레션)', () => {
+  it('QA 리포트에 기록된 응답 형태(title 채워짐) 가 폼 데이터로 변환된다', () => {
+    const response = {
+      id: 10,
+      user_id: 29,
+      title: 'QA 테스트 이력서 (수정됨)',
+      profile_url: '',
+      language_skills: [{ language_type: 'ko', level: 'native' }],
+      schools: [
+        {
+          school_name: '서울대학교',
+          major_name: '컴퓨터공학',
+          start_date: '2010-03-01',
+          end_date: '2014-02-28',
+          is_graduated: true,
+        },
+      ],
+      career_history: [],
+      introduction: [{ title: '자기소개', content: '반갑습니다' }],
+      licenses: [],
+    } as unknown as ResumeDetail;
+
+    const profile: ProfileResponse = {
+      name: 'sukwontest',
+      birth_date: '1995-01-01',
+      country_id: 122,
+    } as ProfileResponse;
+    const contact: ContactResponse = {
+      email: 'sukwon@test.com',
+      phone_number: '010-0000-0000',
+    } as ContactResponse;
+
+    const form = mapResumeResponseToForm(response, { profile, contact });
+
+    expect(form.title).toBe('QA 테스트 이력서 (수정됨)');
+    expect(form.language_skills).toHaveLength(1);
+    expect(form.schools[0].school_name).toBe('서울대학교');
+    expect(form.introduction[0]?.content).toBe('반갑습니다');
+  });
+
+  it('title 이 빈 문자열로 오면 빈 문자열로 반환한다 (undefined 로 변환하지 않음)', () => {
+    const response = { id: 1, title: '' } as unknown as ResumeDetail;
+    const form = mapResumeResponseToForm(response, {});
+    expect(form.title).toBe('');
   });
 });

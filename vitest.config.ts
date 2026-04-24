@@ -9,6 +9,14 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     globals: true,
     css: true,
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.{idea,git,cache,output,temp}/**',
+      '**/cypress/**',
+      'e2e/**', // Playwright specs — different runner
+      '.worktrees/**', // sibling branch duplicates
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

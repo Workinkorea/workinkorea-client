@@ -110,12 +110,12 @@ export async function getCompanyPosts(
       total_pages: isLastPage ? page : page + 1,
     };
   } catch (err) {
-    // 404는 "공개 목록 엔드포인트 미구현" 상태로 간주 → 빈 목록 반환
-    // (EmptyState UI 표시). 5xx 및 기타 오류는 상위로 전파하여 error.tsx 에서 처리.
-    if (err instanceof FetchError && err.status === 404) {
-      return { company_posts: [], total: 0, page: 1, limit, total_pages: 0 };
-    }
-    throw err;
+    // SSR 실패는 모두 "빈 결과" 로 치환한다. 클라이언트의 useCompanyPosts 훅이
+    // 빈 initialData 를 감지하면 rewrite 경로(/api/*)로 다시 호출하므로, SSR
+    // 경로(SERVER_API_URL 직통)가 실패해도 UX 가 자연스럽게 복구된다.
+    // error.tsx 대신 empty state 가 먼저 보이고, 클라이언트 재시도 결과가 덮어씀.
+    console.error('[getCompanyPosts] SSR fetch failed, falling back to empty:', err);
+    return { company_posts: [], total: 0, page: 1, limit, total_pages: 0 };
   }
 }
 

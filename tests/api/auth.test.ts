@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { apiClient, API_BASE_URL } from '../utils/api-client';
 import {
