@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Dev Server E2E Tests
  *

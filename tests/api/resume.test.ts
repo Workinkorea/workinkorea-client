@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { apiClient } from '../utils/api-client';
 import { clearAuth } from '../utils/auth-helper';
