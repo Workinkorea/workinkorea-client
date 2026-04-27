@@ -211,6 +211,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
                 initialData={initialData}
                 onSubmit={handleSubmit}
                 onDelete={handleDelete}
+                onCancel={handleCancel}
                 isSubmitting={updatePostMutation.isPending}
                 onDirtyChange={setIsDirty}
               />

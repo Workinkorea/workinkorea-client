@@ -85,7 +85,7 @@ export function WorkConditionsSection({
                 type="number"
                 id="working_hours"
                 name="working_hours"
-                value={formData.working_hours}
+                value={formData.working_hours === 0 ? '' : formData.working_hours}
                 onChange={onChange}
                 disabled={isSubmitting}
                 min="1"

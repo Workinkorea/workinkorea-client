@@ -79,11 +79,16 @@ const CompanyProfileEditClient = () => {
   }, [profile]);
 
   const hasChanges = useMemo(() => {
+    // 프로필 로딩 전(originalData === null)에는 dirty 로 간주하지 않는다.
+    // - 신규 가입자: useQuery 가 404 로 끝나면서 originalData 가 계속 null 이지만,
+    //   사용자가 실제 입력하기 전엔 unsaved warning 이 뜨면 안 됨
+    // - 기존 사용자: originalData 가 채워진 뒤부터 정상 비교
+    if (profileLoading) return false;
     if (!originalData) {
       return Object.values(formData).some((v) => v !== '' && v !== 0);
     }
     return JSON.stringify(formData) !== JSON.stringify(originalData);
-  }, [formData, originalData]);
+  }, [formData, originalData, profileLoading]);
 
   // 완성도 계산
   const { filledCount, progress } = useMemo(() => {

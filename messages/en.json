@@ -284,6 +284,10 @@
     "manager": {
       "title": "Manager Information",
       "subtitle": "Enter contact information for applicant inquiries",
+      "readOnlyHint": "The contact info from your company profile will be shown to applicants",
+      "editInProfile": "Edit in Company Profile",
+      "loadFailed": "Failed to load manager information",
+      "emptyProfile": "No contact info found in your company profile. Please add it from the company profile edit page.",
       "fillFromCompany": "Use My Company Info",
       "fillFromCompanyShort": "Auto-fill",
       "nameLabel": "Manager Name",
@@ -333,7 +337,15 @@
       "promoSubtitle": "Try our Talent Pool (60 contacts / 30 days)\nto find outstanding candidates!",
       "promoBtn": "Use Talent Pool",
       "accessDenied": "Access Denied",
-      "manageJobs": "Manage Jobs"
+      "manageJobs": "Manage Jobs",
+      "totalApplicants": "Total Applicants",
+      "unreadApplications": "Unread",
+      "ongoingPostsTitle": "Active Job Posts",
+      "expiredPostsTitle": "Expired Posts",
+      "expiredLabel": "Closed",
+      "viewAll": "View all {count}",
+      "companyInfoTitle": "Company Info",
+      "unreadInline": "{count} unread"
     },
     "profile": {
       "edit": {

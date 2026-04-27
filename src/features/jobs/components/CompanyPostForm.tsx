@@ -26,17 +26,15 @@ import { motion } from 'framer-motion';
 import { Save, Trash2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/shared/lib/utils/utils';
-import { fetchClient } from '@/shared/api/fetchClient';
 import {
   CreateCompanyPostRequest,
   UpdateCompanyPostRequest,
-  CompanyProfileResponse,
 } from '@/shared/types/api';
 
 import { BasicInfoSection } from './form/BasicInfoSection';
 import { WorkConditionsSection } from './form/WorkConditionsSection';
 import { RecruitmentPeriodSection } from './form/RecruitmentPeriodSection';
-import { ManagerInfoSection, type ManagerInfo } from './form/ManagerInfoSection';
+import { ManagerInfoSection } from './form/ManagerInfoSection';
 
 // ── 타입 ──────────────────────────────────────────────────────────────────────
 
@@ -45,6 +43,8 @@ interface CompanyPostFormProps {
   initialData?: Partial<CreateCompanyPostRequest | UpdateCompanyPostRequest>;
   onSubmit: (data: CreateCompanyPostRequest | UpdateCompanyPostRequest) => void;
   onDelete?: () => void;
+  /** 취소 버튼 핸들러 (없으면 버튼 표시 안 함) */
+  onCancel?: () => void;
   isSubmitting?: boolean;
   /** 폼 dirty 상태 변경 시 콜백 (부모에서 unsaved warning 등에 활용) */
   onDirtyChange?: (dirty: boolean) => void;
@@ -67,6 +67,7 @@ export function CompanyPostForm({
   initialData,
   onSubmit,
   onDelete,
+  onCancel,
   isSubmitting = false,
   onDirtyChange,
 }: CompanyPostFormProps) {
@@ -99,13 +100,6 @@ export function CompanyPostForm({
   const [isNegotiableSalary, setIsNegotiableSalary] = useState(false);
   const [baseAddress,        setBaseAddress]        = useState('');
   const [detailAddress,      setDetailAddress]      = useState('');
-
-  // 담당자 정보 — UI 전용 (현재 API payload 미포함, 추후 확장 가능)
-  const [managerInfo, setManagerInfo] = useState<ManagerInfo>({
-    manager_name:  '',
-    manager_phone: '',
-    manager_email: '',
-  });
 
   // edit 모드: 기존 주소/급여 상태 복원
   useEffect(() => {
@@ -153,25 +147,6 @@ export function CompanyPostForm({
     }
   };
 
-  const handleManagerInfoChange = (key: keyof ManagerInfo, value: string) => {
-    setManagerInfo(prev => ({ ...prev, [key]: value }));
-  };
-
-  /** "내 기업 정보와 동일" — 기업 프로필 API로 담당자 정보 자동 입력 */
-  const handleFillFromCompany = async () => {
-    try {
-      const profile = await fetchClient.get<CompanyProfileResponse>('/api/company-profile');
-      setManagerInfo({
-        manager_name:  '',
-        manager_phone: profile.phone_number ?? '',
-        manager_email: profile.email ?? '',
-      });
-      toast.success('기업 담당자 정보가 자동 입력되었습니다');
-    } catch {
-      toast.error('기업 정보를 불러오지 못했습니다');
-    }
-  };
-
   // ── 유효성 검사 ────────────────────────────────────────────────────────────
 
   const validateForm = (): boolean => {
@@ -181,10 +156,14 @@ export function CompanyPostForm({
       newErrors.title         = '공고 제목을 입력해주세요.';
     if (!formData.content.trim())
       newErrors.content       = '상세 설명을 입력해주세요.';
+    else if (formData.content.trim().length < 30)
+      newErrors.content       = '상세 설명을 최소 30자 이상 입력해주세요.';
     if (!baseAddress)
       newErrors.work_location = '근무 위치를 입력해주세요.';
     if (!isNegotiableSalary && formData.salary <= 0)
       newErrors.salary        = '연봉을 입력하거나 급여 협의 가능을 선택해주세요.';
+    if (formData.working_hours <= 0)
+      newErrors.working_hours = '주당 근무 시간을 입력해주세요.';
     if (formData.end_date && formData.start_date && formData.end_date < formData.start_date)
       newErrors.end_date      = '게시 종료일은 시작일 이후여야 합니다.';
 
@@ -242,6 +221,23 @@ export function CompanyPostForm({
       <Trash2 size={15} />
       공고 삭제
     </motion.button>
+  );
+
+  const cancelButton = onCancel && (
+    <button
+      type="button"
+      onClick={onCancel}
+      disabled={isSubmitting}
+      className={cn(
+        'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-body-3',
+        'border border-slate-200 text-slate-700 bg-white',
+        'hover:bg-slate-50 hover:border-slate-300 transition-colors',
+        'disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer',
+        'focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2',
+      )}
+    >
+      취소
+    </button>
   );
 
   const submitButton = (extraClassName?: string) => (
@@ -328,19 +324,15 @@ export function CompanyPostForm({
           onChange={handleChange}
         />
 
-        {/* STEP 4: 담당자 정보 */}
-        <ManagerInfoSection
-          managerInfo={managerInfo}
-          isSubmitting={isSubmitting}
-          onManagerInfoChange={handleManagerInfoChange}
-          onFillFromCompany={handleFillFromCompany}
-        />
+        {/* STEP 4: 담당자 정보 (read-only — 기업 프로필에서 관리) */}
+        <ManagerInfoSection />
 
         {/* ── 데스크탑 액션 버튼 (md 이상에서만 표시) ──────────────────────
             Primary 버튼(blue-600)과 Destructive 버튼(red-300 border)을
             색상으로 명확히 구분해 실수로 인한 삭제를 방지 */}
         <div className="hidden md:flex gap-3 justify-end pt-2 pb-4">
           {deleteButton}
+          {cancelButton}
           {submitButton()}
         </div>
       </form>
@@ -374,6 +366,24 @@ export function CompanyPostForm({
           >
             <Trash2 size={15} />
             삭제
+          </button>
+        )}
+
+        {/* 취소 버튼 */}
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isSubmitting}
+            className={cn(
+              'shrink-0 px-4 py-2.5 rounded-lg font-semibold text-body-3',
+              'border border-slate-200 text-slate-700 bg-white',
+              'hover:bg-slate-50 transition-colors',
+              'disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer',
+              'focus:outline-none',
+            )}
+          >
+            취소
           </button>
         )}
 

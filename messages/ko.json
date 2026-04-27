@@ -284,6 +284,10 @@
     "manager": {
       "title": "담당자 정보",
       "subtitle": "지원자가 문의할 담당자 정보를 입력하세요",
+      "readOnlyHint": "기업 프로필에 등록된 담당자 연락처가 지원자에게 노출됩니다",
+      "editInProfile": "기업 프로필에서 수정",
+      "loadFailed": "담당자 정보를 불러오지 못했습니다",
+      "emptyProfile": "기업 프로필에 담당자 연락처가 등록되어 있지 않습니다. 기업 프로필 편집에서 등록해주세요.",
       "fillFromCompany": "내 기업 정보와 동일",
       "fillFromCompanyShort": "자동입력",
       "nameLabel": "담당자 이름",
@@ -333,7 +337,15 @@
       "promoSubtitle": "인재풀 60건 (30일) 상품으로\n우수한 인재를 찾아보세요!",
       "promoBtn": "인재풀 이용하기",
       "accessDenied": "접근 권한이 없습니다",
-      "manageJobs": "채용 공고 관리"
+      "manageJobs": "채용 공고 관리",
+      "totalApplicants": "전체 지원자",
+      "unreadApplications": "미검토 지원",
+      "ongoingPostsTitle": "진행중인 채용 공고",
+      "expiredPostsTitle": "마감된 공고",
+      "expiredLabel": "마감",
+      "viewAll": "전체 {count}개 보기",
+      "companyInfoTitle": "기업 정보",
+      "unreadInline": "미검토 {count}명"
     },
     "profile": {
       "edit": {

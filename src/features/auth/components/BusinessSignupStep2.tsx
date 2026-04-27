@@ -323,14 +323,14 @@ export default function BusinessSignupStep2({
                         {formState.isVerifying ? t('verifying') : formState.isBusinessNumberVerified ? t('verified') : t('verify')}
                       </Button>
                     </div>
-                    <p className='text-right text-caption-2 underline hover:text-slate-700 cursor-pointer'
-                      onClick={() => window.open(
-                        "https://github.com/Workinkorea/workinkorea-client",
-                        "_blank"
-                      )}
+                    <a
+                      href="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2272&cntntsId=7666"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className='block text-right text-caption-2 underline text-slate-500 hover:text-slate-700'
                     >
                       {t('forgotBizNumber')}
-                    </p>
+                    </a>
                   </div>
                 )}
               />

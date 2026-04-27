@@ -143,6 +143,7 @@ export function BasicInfoSection({
             onChange={onChange}
             disabled={isSubmitting}
             rows={8}
+            maxLength={5000}
             className={cn(
               FIELD_BASE,
               errors.content ? FIELD_ERROR : FIELD_DEFAULT,
@@ -152,6 +153,17 @@ export function BasicInfoSection({
               '채용 공고 상세 내용을 입력하세요\n\n예) 주요 업무, 자격 요건, 우대 사항, 복지 및 혜택 등'
             }
           />
+          <div className="mt-1.5 flex items-center justify-between">
+            <p className="text-caption-3 text-slate-400">최소 30자 이상 입력해주세요</p>
+            <p
+              className={cn(
+                'text-caption-3 font-medium',
+                formData.content.length < 30 ? 'text-slate-400' : 'text-emerald-500',
+              )}
+            >
+              {formData.content.length.toLocaleString()} / 5,000
+            </p>
+          </div>
         </FormField>
       </div>
     </div>

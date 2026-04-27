@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import { CompanyProfileRequest } from '@/shared/types/api';
 import { Input } from '@/shared/ui/Input';
+import DaumPostcodeSearch from '@/shared/ui/DaumPostcodeSearch';
 import { cn } from '@/shared/lib/utils/utils';
 
 interface CompanyInfoSectionProps {
@@ -217,17 +218,16 @@ export const CompanyInfoSection = ({
         )}
       </FieldRow>
 
-      {/* 주소 */}
+      {/* 주소 — Daum 우편번호 검색 */}
       <FieldRow label={t('fields.address')} htmlFor="address" required>
-        <Input
-          id="address"
-          name="address"
+        <DaumPostcodeSearch
           value={formData.address}
-          onChange={onChange}
-          onBlur={onBlur}
+          onChange={(addr) => {
+            onChange({
+              target: { name: 'address', value: addr },
+            } as React.ChangeEvent<HTMLInputElement>);
+          }}
           placeholder={t('fields.addressPlaceholder')}
-          error={!!errors.address}
-          success={!errors.address && touchedFields.address && !!formData.address}
         />
         <FieldHint
           error={errors.address}

@@ -243,14 +243,14 @@ const CompanyProfileClient = () => {
                 icon: <Users size={18} className="text-emerald-500" />,
                 bg: 'bg-emerald-50',
                 value: 0,
-                label: '전체 지원자',
+                label: t('totalApplicants'),
                 action: undefined,
               },
               {
                 icon: <Bell size={18} className="text-amber-500" />,
                 bg: 'bg-amber-50',
                 value: 0,
-                label: '미검토 지원',
+                label: t('unreadApplications'),
                 action: undefined,
               },
               {
@@ -296,7 +296,7 @@ const CompanyProfileClient = () => {
                     onClick={() => router.push('/company/jobs')}
                     className="flex items-center gap-1.5 text-body-3 font-bold text-slate-900 hover:text-blue-600 transition-colors group cursor-pointer"
                   >
-                    진행중인 채용 공고
+                    {t('ongoingPostsTitle')}
                     <span className="text-blue-600 font-extrabold ml-0.5">{activePosts.length}</span>
                     <ChevronRight size={15} className="text-slate-300 group-hover:text-blue-400 transition-colors" />
                   </button>
@@ -352,7 +352,7 @@ const CompanyProfileClient = () => {
                           <div className="flex items-center gap-3 shrink-0">
                             <div className="hidden sm:block text-right">
                               <p className="text-caption-3 font-semibold text-slate-500">
-                                미검토 <span className="text-blue-600 font-bold">0</span>명
+                                {t('unreadInline', { count: 0 })}
                               </p>
                             </div>
                             <span className={cn(
@@ -396,7 +396,7 @@ const CompanyProfileClient = () => {
                       onClick={() => router.push('/company/jobs')}
                       className="w-full text-caption-2 font-semibold text-slate-400 hover:text-blue-600 transition-colors text-center cursor-pointer py-0.5"
                     >
-                      전체 {activePosts.length}개 보기 →
+                      {t('viewAll', { count: activePosts.length })} →
                     </button>
                   </div>
                 )}
@@ -453,7 +453,7 @@ const CompanyProfileClient = () => {
                 <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
                   <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
                     <div className="flex items-center gap-1.5 text-body-3 font-bold text-slate-900">
-                      마감된 공고
+                      {t('expiredPostsTitle')}
                       <span className="text-slate-400 font-semibold ml-0.5">{expiredPosts.length}</span>
                     </div>
                   </div>
@@ -469,7 +469,7 @@ const CompanyProfileClient = () => {
                           <FileText size={13} className="text-slate-400" />
                         </div>
                         <p className="text-caption-1 text-slate-600 truncate flex-1">{post.title}</p>
-                        <span className="text-caption-3 text-slate-400 shrink-0">마감</span>
+                        <span className="text-caption-3 text-slate-400 shrink-0">{t('expiredLabel')}</span>
                       </button>
                     ))}
                   </div>
@@ -533,7 +533,7 @@ const CompanyProfileClient = () => {
               {/* 기업 정보 카드 */}
               <div className="bg-white border border-slate-200 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <p className="text-caption-1 font-bold text-slate-900">기업 정보</p>
+                  <p className="text-caption-1 font-bold text-slate-900">{t('companyInfoTitle')}</p>
                   <button
                     onClick={() => router.push('/company/profile/edit')}
                     className="text-caption-3 text-blue-600 hover:underline cursor-pointer"
