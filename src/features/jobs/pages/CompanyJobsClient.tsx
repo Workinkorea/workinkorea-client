@@ -88,10 +88,11 @@ function CompanyJobsClient() {
             <button
               onClick={() => router.push('/company/posts/create')}
               className={cn(
-                'inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-body-3 font-semibold',
-                'hover:bg-blue-700 transition-colors duration-150 cursor-pointer',
+                'inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-body-3 font-semibold',
+                'bg-white text-blue-600 border border-blue-600',
+                'hover:bg-blue-50 transition-colors duration-150 cursor-pointer',
                 'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-                'shadow-[0_4px_14px_rgba(66,90,213,0.25)] shrink-0'
+                'shrink-0'
               )}
             >
               <Plus size={18} />
@@ -152,15 +153,16 @@ function CompanyJobsClient() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
-                      onClick={() => router.push(`/company/posts/edit/${post.id}`)}
+                      onClick={() => router.push(`/jobs/${post.id}`)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          router.push(`/company/posts/edit/${post.id}`);
+                          router.push(`/jobs/${post.id}`);
                         }
                       }}
                       role="button"
                       tabIndex={0}
+                      aria-label={`${post.title} 공고 상세 보기`}
                       className={cn(
                         'bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm',
                         'hover:border-blue-200 hover:shadow-md transition-all duration-200 cursor-pointer',
@@ -213,6 +215,7 @@ function CompanyJobsClient() {
                             e.stopPropagation();
                             router.push(`/company/posts/edit/${post.id}`);
                           }}
+                          aria-label={`${post.title} 공고 수정`}
                           className={cn(
                             'p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-150',
                             'rounded-lg shrink-0 focus:outline-none cursor-pointer'

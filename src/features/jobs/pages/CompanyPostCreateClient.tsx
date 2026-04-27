@@ -205,6 +205,7 @@ function CompanyPostCreateClient() {
               <CompanyPostForm
                 mode="create"
                 onSubmit={handleSubmit}
+                onCancel={handleCancel}
                 isSubmitting={createPostMutation.isPending}
                 onDirtyChange={setIsDirty}
               />

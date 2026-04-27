@@ -85,7 +85,7 @@ export function WorkConditionsSection({
                 type="number"
                 id="working_hours"
                 name="working_hours"
-                value={formData.working_hours}
+                value={formData.working_hours === 0 ? '' : formData.working_hours}
                 onChange={onChange}
                 disabled={isSubmitting}
                 min="1"
@@ -111,7 +111,7 @@ export function WorkConditionsSection({
                   type="number"
                   id="salary"
                   name="salary"
-                  value={formData.salary}
+                  value={formData.salary === 0 ? '' : formData.salary}
                   onChange={onChange}
                   disabled={isNegotiableSalary || isSubmitting}
                   min="0"
