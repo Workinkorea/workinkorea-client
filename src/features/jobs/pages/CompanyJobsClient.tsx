@@ -152,11 +152,11 @@ function CompanyJobsClient() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
-                      onClick={() => router.push(`/company/posts/edit/${post.id}`)}
+                      onClick={() => router.push(`/jobs/${post.id}`)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          router.push(`/company/posts/edit/${post.id}`);
+                          router.push(`/jobs/${post.id}`);
                         }
                       }}
                       role="button"

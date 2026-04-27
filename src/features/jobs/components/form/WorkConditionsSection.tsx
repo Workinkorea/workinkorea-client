@@ -111,7 +111,7 @@ export function WorkConditionsSection({
                   type="number"
                   id="salary"
                   name="salary"
-                  value={formData.salary}
+                  value={formData.salary === 0 ? '' : formData.salary}
                   onChange={onChange}
                   disabled={isNegotiableSalary || isSubmitting}
                   min="0"

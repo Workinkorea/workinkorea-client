@@ -212,9 +212,9 @@ const CompanyProfileClient = () => {
                 onClick={handleCreateJob}
                 className={cn(
                   'inline-flex items-center gap-1.5 px-4 py-2',
-                  'bg-blue-600 text-white text-caption-1 font-semibold rounded-lg',
-                  'hover:bg-blue-700 transition-colors cursor-pointer',
-                  'shadow-[0_4px_14px_rgba(66,90,213,0.25)]',
+                  'bg-white text-blue-600 text-caption-1 font-semibold rounded-lg',
+                  'border border-blue-600',
+                  'hover:bg-blue-50 transition-colors cursor-pointer',
                   'focus:outline-none',
                 )}
                 whileHover={{ scale: 1.02 }}
@@ -335,7 +335,7 @@ const CompanyProfileClient = () => {
                       return (
                         <motion.button
                           key={post.id}
-                          onClick={() => router.push(`/company/posts/edit/${post.id}`)}
+                          onClick={() => router.push(`/jobs/${post.id}`)}
                           className="w-full flex items-center gap-2 sm:gap-4 px-3 sm:px-5 py-3.5 hover:bg-slate-50 transition-colors group cursor-pointer text-left"
                           whileHover={{ x: 2 }}
                           transition={{ type: 'spring', stiffness: 500 }}
@@ -462,7 +462,7 @@ const CompanyProfileClient = () => {
                       <button
                         key={post.id}
                         type="button"
-                        onClick={() => router.push(`/company/posts/edit/${post.id}`)}
+                        onClick={() => router.push(`/jobs/${post.id}`)}
                         className="w-full flex items-center gap-4 px-5 py-3 opacity-60 hover:opacity-100 hover:bg-slate-50 transition text-left cursor-pointer"
                       >
                         <div className="w-7 h-7 bg-slate-100 rounded-lg flex items-center justify-center shrink-0">

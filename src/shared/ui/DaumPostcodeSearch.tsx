@@ -46,13 +46,8 @@ function DaumPostcodeSearch({
     setAddress(value);
   }, [value]);
 
-  const handleSearchClick = () => {
-    if (!window.daum || !window.daum.Postcode) {
-      alert('주소 검색 서비스를 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
-      return;
-    }
-
-    new window.daum.Postcode({
+  const openPostcode = () => {
+    new window.daum!.Postcode({
       oncomplete: function (data: DaumPostcodeData) {
         // 도로명 주소 우선, 없으면 지번 주소 사용
         const fullAddress = data.roadAddress || data.jibunAddress;
@@ -67,6 +62,33 @@ function DaumPostcodeSearch({
       width: '100%',
       height: '100%',
     }).open();
+  };
+
+  const handleSearchClick = () => {
+    if (window.daum?.Postcode) {
+      openPostcode();
+      return;
+    }
+
+    // 스크립트가 아직 로드되지 않았다면 동적으로 로드 후 재시도
+    const SCRIPT_SRC = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+    const existing = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT_SRC}"]`);
+
+    if (existing) {
+      existing.addEventListener('load', openPostcode, { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = SCRIPT_SRC;
+    script.async = true;
+    script.onload = () => {
+      if (window.daum?.Postcode) openPostcode();
+    };
+    script.onerror = () => {
+      alert('주소 검색 서비스를 불러오지 못했습니다. 네트워크 연결을 확인해주세요.');
+    };
+    document.head.appendChild(script);
   };
 
   return (

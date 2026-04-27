@@ -9,6 +9,7 @@ import { FIELD_BASE, FIELD_DEFAULT } from './fieldStyles';
 
 interface RecruitmentPeriodSectionProps {
   formData: Pick<CreateCompanyPostRequest, 'start_date' | 'end_date'>;
+  errors?: Record<string, string>;
   isSubmitting: boolean;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -25,9 +26,17 @@ interface RecruitmentPeriodSectionProps {
  */
 export function RecruitmentPeriodSection({
   formData,
+  errors,
   isSubmitting,
   onChange,
 }: RecruitmentPeriodSectionProps) {
+  const today = (() => {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm   = String(d.getMonth() + 1).padStart(2, '0');
+    const dd   = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  })();
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-5 md:p-6">
       <SectionHeader
@@ -47,11 +56,12 @@ export function RecruitmentPeriodSection({
             value={formData.start_date}
             onChange={onChange}
             disabled={isSubmitting}
+            min={today}
             className={cn(FIELD_BASE, FIELD_DEFAULT, 'cursor-pointer')}
           />
         </FormField>
 
-        <FormField label="게시 종료일" htmlFor="end_date">
+        <FormField label="게시 종료일" htmlFor="end_date" error={errors?.end_date}>
           <input
             type="date"
             id="end_date"
@@ -59,6 +69,7 @@ export function RecruitmentPeriodSection({
             value={formData.end_date}
             onChange={onChange}
             disabled={isSubmitting}
+            min={formData.start_date || today}
             className={cn(FIELD_BASE, FIELD_DEFAULT, 'cursor-pointer')}
           />
         </FormField>

@@ -50,6 +50,16 @@ interface CompanyPostFormProps {
   onDirtyChange?: (dirty: boolean) => void;
 }
 
+// ── 유틸 ──────────────────────────────────────────────────────────────────────
+
+/** 로컬 타임존 기준 YYYY-MM-DD 문자열 반환 (UTC 변환으로 인한 하루 어긋남 방지) */
+function toLocalISODate(date: Date): string {
+  const yyyy = date.getFullYear();
+  const mm   = String(date.getMonth() + 1).padStart(2, '0');
+  const dd   = String(date.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 // ── 메인 컴포넌트 ─────────────────────────────────────────────────────────────
 
 export function CompanyPostForm({
@@ -63,20 +73,26 @@ export function CompanyPostForm({
 
   // ── 폼 상태 ────────────────────────────────────────────────────────────────
 
-  const [formData, setFormData] = useState<CreateCompanyPostRequest>({
-    title:           '',
-    content:         '',
-    work_experience: '경력무관',
-    position_id:     1,
-    education:       '학력무관',
-    language:        '한국어 능통',
-    employment_type: '정규직',
-    work_location:   '',
-    working_hours:   40,
-    salary:          0,
-    start_date: new Date().toISOString().split('T')[0],
-    end_date:   new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    ...initialData,
+  const [formData, setFormData] = useState<CreateCompanyPostRequest>(() => {
+    const today = new Date();
+    const thirtyDaysLater = new Date();
+    thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30);
+
+    return {
+      title:           '',
+      content:         '',
+      work_experience: '경력무관',
+      position_id:     1,
+      education:       '학력무관',
+      language:        '한국어 능통',
+      employment_type: '정규직',
+      work_location:   '',
+      working_hours:   40,
+      salary:          0,
+      start_date:      toLocalISODate(today),
+      end_date:        toLocalISODate(thirtyDaysLater),
+      ...initialData,
+    };
   });
 
   const [errors,             setErrors]            = useState<Record<string, string>>({});
@@ -169,12 +185,15 @@ export function CompanyPostForm({
       newErrors.work_location = '근무 위치를 입력해주세요.';
     if (!isNegotiableSalary && formData.salary <= 0)
       newErrors.salary        = '연봉을 입력하거나 급여 협의 가능을 선택해주세요.';
+    if (formData.end_date && formData.start_date && formData.end_date < formData.start_date)
+      newErrors.end_date      = '게시 종료일은 시작일 이후여야 합니다.';
 
     setErrors(newErrors);
 
-    // 첫 번째 에러 필드로 자동 포커스 + 스크롤
+    // 첫 번째 에러 필드로 자동 포커스 + 스크롤 + toast 안내
     const firstKey = Object.keys(newErrors)[0];
     if (firstKey) {
+      toast.error(newErrors[firstKey]);
       const el = document.querySelector<HTMLElement>(`[name="${firstKey}"]`);
       if (el) {
         el.focus({ preventScroll: true });
@@ -304,6 +323,7 @@ export function CompanyPostForm({
         {/* STEP 3: 모집 기간 */}
         <RecruitmentPeriodSection
           formData={formData}
+          errors={errors}
           isSubmitting={isSubmitting}
           onChange={handleChange}
         />
