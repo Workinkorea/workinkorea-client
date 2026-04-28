@@ -10,9 +10,11 @@ import {
   Building2,
   CheckCircle2,
   ArrowRight,
+  LayoutDashboard,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/utils/utils';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 const fadeUp = {
   hidden:  { opacity: 0, y: 16 },
@@ -25,6 +27,8 @@ const fadeUp = {
 
 export function CompanyLandingPage() {
   const t = useTranslations('company.landing');
+  const { isAuthenticated, userType } = useAuth();
+  const isCompanyUser = isAuthenticated && userType === 'company';
 
   const services = [
     {
@@ -171,36 +175,57 @@ export function CompanyLandingPage() {
           {/* ── 우측 사이드바 ──────────────────────────────────────────── */}
           <div className="space-y-4">
 
-            {/* 로그인/회원가입 카드 */}
+            {/* 로그인/회원가입 카드 — 인증된 기업 사용자는 대시보드 바로가기로 대체 */}
             <motion.div
               initial={{ opacity: 0, x: 12 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.15 }}
               className="bg-white border border-slate-200 rounded-xl p-5"
             >
-              <p className="text-body-3 font-extrabold text-slate-900 mb-0.5">{t('sidebarWelcome')}</p>
-              <p className="text-caption-2 text-slate-400 mb-4">{t('sidebarLoginHint')}</p>
-              <div className="flex gap-2">
-                <Link
-                  href="/company-login"
-                  style={{ color: '#ffffff' }}
-                  className={cn(
-                    'flex-1 py-2.5 bg-blue-600 text-white text-caption-1 font-bold rounded-lg text-center',
-                    'hover:bg-blue-700 transition-colors cursor-pointer',
-                  )}
-                >
-                  {t('login')}
-                </Link>
-                <Link
-                  href="/company-signup"
-                  className={cn(
-                    'flex-1 py-2.5 border border-slate-200 text-slate-600 text-caption-1 font-semibold rounded-lg text-center',
-                    'hover:bg-slate-50 transition-colors cursor-pointer',
-                  )}
-                >
-                  {t('signup')}
-                </Link>
-              </div>
+              {isCompanyUser ? (
+                <>
+                  <p className="text-body-3 font-extrabold text-slate-900 mb-0.5">대시보드</p>
+                  <p className="text-caption-2 text-slate-400 mb-4">공고와 지원자 현황을 확인하세요</p>
+                  <Link
+                    href="/company/dashboard"
+                    style={{ color: '#ffffff' }}
+                    className={cn(
+                      'flex items-center justify-center gap-1.5 w-full py-2.5',
+                      'bg-blue-600 text-caption-1 font-bold rounded-lg text-white',
+                      'hover:bg-blue-700 transition-colors cursor-pointer',
+                    )}
+                  >
+                    <LayoutDashboard size={14} />
+                    대시보드로 가기
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <p className="text-body-3 font-extrabold text-slate-900 mb-0.5">{t('sidebarWelcome')}</p>
+                  <p className="text-caption-2 text-slate-400 mb-4">{t('sidebarLoginHint')}</p>
+                  <div className="flex gap-2">
+                    <Link
+                      href="/company-login"
+                      style={{ color: '#ffffff' }}
+                      className={cn(
+                        'flex-1 py-2.5 bg-blue-600 text-caption-1 font-bold rounded-lg text-center text-white',
+                        'hover:bg-blue-700 transition-colors cursor-pointer',
+                      )}
+                    >
+                      {t('login')}
+                    </Link>
+                    <Link
+                      href="/company-signup"
+                      className={cn(
+                        'flex-1 py-2.5 border border-slate-200 text-slate-600 text-caption-1 font-semibold rounded-lg text-center',
+                        'hover:bg-slate-50 transition-colors cursor-pointer',
+                      )}
+                    >
+                      {t('signup')}
+                    </Link>
+                  </div>
+                </>
+              )}
             </motion.div>
 
             {/* 빠른 메뉴 */}

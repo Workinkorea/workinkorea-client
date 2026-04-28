@@ -25,7 +25,7 @@ export default function HeroSection() {
   const t = useTranslations('landing.hero');
   const { isAuthenticated, userType, isLoading: authLoading } = useAuth();
   const loggedIn = !authLoading && isAuthenticated;
-  const dashboardHref = userType === 'company' ? '/company' : userType === 'admin' ? '/admin' : '/user/profile';
+  const dashboardHref = userType === 'company' ? '/company/dashboard' : userType === 'admin' ? '/admin' : '/user/profile';
 
   return (
     <section className="bg-white min-h-[calc(100vh-65px)] sm:min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-16 sm:py-20">

@@ -89,7 +89,7 @@ export const authApi = {
    * 기업 로그인
    *
    * 서버 응답 형식:
-   * - 200: { "url": "/company" } (성공)
+   * - 200: { "url": "/company/dashboard" } (성공)
    * - 401: { "url": "/company-login" } (인증 실패)
    * - 500: { "url": "/company-login" } (서버 오류)
    *
@@ -149,7 +149,7 @@ export const authApi = {
       return url;
     }
 
-    return '/company';
+    return '/company/dashboard';
   },
 
   /**

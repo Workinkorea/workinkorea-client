@@ -108,7 +108,7 @@ const CompanyProfileEditClient = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyProfile'] });
       toast.success(profile ? t('updateSuccess') : t('createSuccess'));
-      setTimeout(() => router.push('/company'), 1000);
+      setTimeout(() => router.push('/company/dashboard'), 1000);
     },
     onError: (error: unknown) => {
       logError(error, 'CompanyProfileEditClient.updateProfile');

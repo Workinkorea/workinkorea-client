@@ -233,7 +233,7 @@ export function MobileNav({ items, type = 'homepage', isAuthenticated, onLogout,
                   {isAuthenticated ? (
                     <>
                       <Link
-                        href={type === 'homepage' ? '/user/profile' : '/company'}
+                        href={type === 'homepage' ? '/user/profile' : '/company/dashboard'}
                         onClick={close}
                         className="flex items-center justify-between px-3 py-3.5 rounded-lg hover:bg-slate-50 transition-colors group"
                       >
