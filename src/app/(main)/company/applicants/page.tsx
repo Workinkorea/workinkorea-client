@@ -36,7 +36,7 @@ export default function ApplicantsPage() {
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/company"
+              href="/company/dashboard"
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-body-3 font-semibold hover:bg-blue-700 transition-colors"
             >
               대시보드로 돌아가기

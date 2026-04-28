@@ -32,7 +32,7 @@ export function Header({ type, viewType, onViewTypeChange, isAuthenticated, onLo
         ];
 
   const myHomeHref = isAuthenticated
-    ? type === 'homepage' ? '/user/profile' : '/company'
+    ? type === 'homepage' ? '/user/profile' : '/company/dashboard'
     : '/login-select';
 
   return (

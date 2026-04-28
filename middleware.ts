@@ -113,8 +113,8 @@ function routeGuard(request: NextRequest): NextResponse {
   }
 
   // Company routes
-  // /company (exact) is public — shows landing or dashboard depending on auth
-  // /company/* sub-routes require company auth
+  // /company (exact) is the public landing page
+  // /company/* sub-routes (including /company/dashboard) require company auth
   if (pathname.startsWith('/company/')) {
     if (!userType) {
       const loginUrl = new URL('/company-login', request.url);
@@ -157,7 +157,7 @@ function getDashboardUrl(userType: UserType): string {
     case 'admin':
       return '/admin';
     case 'company':
-      return '/company';
+      return '/company/dashboard';
     case 'user':
       return '/user/profile';
     default:

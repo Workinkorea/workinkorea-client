@@ -59,7 +59,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
       queryClient.invalidateQueries({ queryKey: ['companyPosts'] });
       queryClient.invalidateQueries({ queryKey: ['companyPost', postId] });
       toast.success(t('updateSuccess'));
-      router.push('/company');
+      router.push('/company/dashboard');
     },
     onError: (error) => {
       logError(error, 'CompanyPostEditClient.updatePost');
@@ -74,7 +74,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companyPosts'] });
       toast.success(t('deleteSuccess'));
-      router.push('/company');
+      router.push('/company/dashboard');
     },
     onError: (error) => {
       logError(error, 'CompanyPostEditClient.deletePost');
@@ -141,7 +141,7 @@ function CompanyPostEditClient({ postId }: CompanyPostEditClientProps) {
           <div className="text-center">
             <p className="text-slate-500 text-body-2">{t('notFound')}</p>
             <button
-              onClick={() => router.push('/company')}
+              onClick={() => router.push('/company/dashboard')}
               className="mt-4 text-blue-600 hover:text-blue-700 text-body-3 font-medium cursor-pointer"
             >
               {t('backToDashboard')}

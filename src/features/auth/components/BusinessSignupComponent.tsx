@@ -246,7 +246,7 @@ export default function BusinessSignupComponent({ callbackUrl }: { callbackUrl?:
       await authApi.companyLogin({ username: data.email, password: data.password });
       login('company');
       toast.success(t('toastSuccess'));
-      router.push(callbackUrl || '/company');
+      router.push(callbackUrl || '/company/dashboard');
     } catch (error: unknown) {
       logError(error, 'BusinessSignupComponent.onSubmit');
       const rawMessage = extractErrorMessage(error, '');

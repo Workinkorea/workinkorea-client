@@ -58,7 +58,7 @@ const CompanyProfileClient = () => {
   useEffect(() => {
     if (searchParams.get('redirected') === '1') {
       toast.error('해당 페이지에 접근 권한이 없습니다.');
-      router.replace('/company', { scroll: false });
+      router.replace('/company/dashboard', { scroll: false });
     }
   }, [searchParams, router]);
 
@@ -303,9 +303,10 @@ const CompanyProfileClient = () => {
                   <button
                     type="button"
                     onClick={handleCreateJob}
+                    style={{ color: '#ffffff' }}
                     className={cn(
                       'inline-flex items-center gap-1.5 px-3 py-1.5',
-                      'bg-blue-600 text-white text-caption-2 font-semibold rounded-lg',
+                      'bg-blue-600 text-caption-2 font-semibold rounded-lg text-white',
                       'hover:bg-blue-700 transition-colors cursor-pointer',
                     )}
                   >
