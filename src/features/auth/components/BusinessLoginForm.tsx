@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { FormField } from '@/shared/ui/FormField';
 import { Input } from '@/shared/ui/Input';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { validatePassword } from '@/shared/lib/utils/validation';
 import { authApi } from '@/features/auth/api/authApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -67,6 +67,7 @@ const fadeUp = {
 
 export default function BusinessLoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
   const t = useTranslations('auth.companyLogin');
   const [showPassword, setShowPassword] = useState(false);
@@ -149,8 +150,18 @@ export default function BusinessLoginForm() {
         } else {
           localStorage.removeItem(SAVED_EMAIL_KEY);
         }
-        const safeUrl = isValidCallbackUrl(responseUrl) ? responseUrl : '/';
-        window.location.href = safeUrl;
+        // Redirect priority:
+        // 1) ?callbackUrl=... (deep link from middleware on protected route)
+        // 2) backend responseUrl (specific post-login destination, ignore generic '/')
+        // 3) /company dashboard (default for company users)
+        const callbackUrl = searchParams.get('callbackUrl');
+        const finalUrl =
+          callbackUrl && isValidCallbackUrl(callbackUrl)
+            ? callbackUrl
+            : isValidCallbackUrl(responseUrl) && responseUrl !== '/'
+              ? responseUrl
+              : '/company/dashboard';
+        window.location.href = finalUrl;
       } else {
         throw new Error('Invalid response from server');
       }
