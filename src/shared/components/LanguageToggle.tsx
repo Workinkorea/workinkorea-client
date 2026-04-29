@@ -33,7 +33,7 @@ export function LanguageToggle({ className, variant = 'light' }: LanguageToggleP
     : 'text-slate-500 hover:text-slate-700';
 
   return (
-    <div className={cn('flex items-center rounded-full border p-0.5 gap-0.5 overflow-hidden', containerCls, className)}>
+    <div className={cn('flex items-center rounded-full border p-px gap-px overflow-hidden', containerCls, className)}>
       {(['ko', 'en'] as const).map((lang) => (
         <button
           key={lang}
@@ -41,7 +41,7 @@ export function LanguageToggle({ className, variant = 'light' }: LanguageToggleP
           disabled={isPending}
           aria-label={lang === 'ko' ? '한국어로 변경' : 'Switch to English'}
           className={cn(
-            'px-2 py-px rounded-full text-caption-3 font-semibold transition-colors cursor-pointer select-none uppercase',
+            'px-1.5 py-px rounded-full text-caption-3 leading-none font-semibold transition-colors cursor-pointer select-none uppercase',
             locale === lang ? activeCls : inactiveCls,
           )}
         >
