@@ -39,7 +39,7 @@ export function UserTypeToggle({ value, onChange, disabled, className }: UserTyp
             onClick={() => !disabled && onChange(optValue)}
             disabled={disabled}
             className={cn(
-              'relative flex items-center gap-0.5 px-1.5 py-px rounded-full text-caption-3 leading-none font-semibold transition-colors duration-200 cursor-pointer select-none z-10',
+              'relative flex items-center gap-0.5 px-1.5 py-px rounded-full text-[10px] leading-none font-semibold transition-colors duration-200 cursor-pointer select-none z-10',
               isActive ? 'text-white' : 'text-slate-500 hover:text-slate-700'
             )}
             aria-label={`${label} 모드로 전환`}
