@@ -25,7 +25,7 @@ export function UserTypeToggle({ value, onChange, disabled, className }: UserTyp
   return (
     <div
       className={cn(
-        'relative flex items-center border border-slate-200 rounded-full bg-white p-px gap-px',
+        'relative flex items-center border border-slate-200 rounded-full bg-white p-0.5 gap-0.5',
         disabled && 'opacity-50 cursor-not-allowed',
         className
       )}
@@ -39,7 +39,7 @@ export function UserTypeToggle({ value, onChange, disabled, className }: UserTyp
             onClick={() => !disabled && onChange(optValue)}
             disabled={disabled}
             className={cn(
-              'relative flex items-center gap-0.5 px-1.5 py-px rounded-full text-[10px] leading-none font-semibold transition-colors duration-200 cursor-pointer select-none z-10',
+              'relative flex items-center gap-1 px-2.5 py-1 rounded-full text-caption-2 leading-none font-semibold transition-colors duration-200 cursor-pointer select-none z-10',
               isActive ? 'text-white' : 'text-slate-500 hover:text-slate-700'
             )}
             aria-label={`${label} 모드로 전환`}
@@ -51,7 +51,7 @@ export function UserTypeToggle({ value, onChange, disabled, className }: UserTyp
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               />
             )}
-            <Icon size={8} className="relative z-10 shrink-0" />
+            <Icon size={11} className="relative z-10 shrink-0" />
             <span className="relative z-10">{label}</span>
           </button>
         );
