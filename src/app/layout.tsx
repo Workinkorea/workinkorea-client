@@ -6,7 +6,6 @@ import { WebsiteSchema, OrganizationSchema } from "@/shared/components/seo/Struc
 import "./globals.css";
 import ReactQueryProvider from "@/shared/lib/providers/QueryProvider";
 import { Toaster } from 'sonner';
-import Script from 'next/script';
 import { BackToTop } from '@/shared/ui/BackToTop';
 import { InstallPrompt } from '@/features/pwa/ui/InstallPrompt';
 import { NextIntlClientProvider } from 'next-intl';
@@ -27,10 +26,6 @@ export default async function RootLayout({
       <head>
         <WebsiteSchema />
         <OrganizationSchema />
-        <Script
-          src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
-          strategy="beforeInteractive"
-        />
       </head>
       <body suppressHydrationWarning={true}>
         <NextIntlClientProvider locale={locale} messages={messages}>
