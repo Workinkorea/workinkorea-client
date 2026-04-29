@@ -46,13 +46,13 @@ function DaumPostcodeSearch({
     setAddress(value);
   }, [value]);
 
-  const openPostcode = () => {
-    new window.daum!.Postcode({
-      oncomplete: function (data: DaumPostcodeData) {
-        // 도로명 주소 우선, 없으면 지번 주소 사용
-        const fullAddress = data.roadAddress || data.jibunAddress;
+  const SCRIPT_SRC = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
 
-        // 건물명이 있는 경우 추가
+  const openPostcode = () => {
+    if (!window.daum?.Postcode) return;
+    new window.daum.Postcode({
+      oncomplete: function (data: DaumPostcodeData) {
+        const fullAddress = data.roadAddress || data.jibunAddress;
         const extraAddress = data.buildingName ? ` (${data.buildingName})` : '';
         const finalAddress = fullAddress + extraAddress;
 
@@ -64,31 +64,37 @@ function DaumPostcodeSearch({
     }).open();
   };
 
-  const handleSearchClick = () => {
+  const waitForDaum = (script: HTMLScriptElement) =>
+    new Promise<void>((resolve, reject) => {
+      if (window.daum?.Postcode) return resolve();
+      const onLoad = () => {
+        if (window.daum?.Postcode) resolve();
+        else reject(new Error('Daum Postcode SDK loaded but namespace missing'));
+      };
+      script.addEventListener('load', onLoad, { once: true });
+      script.addEventListener('error', () => reject(new Error('Daum Postcode SDK load failed')), { once: true });
+    });
+
+  const handleSearchClick = async () => {
     if (window.daum?.Postcode) {
       openPostcode();
       return;
     }
 
-    // 스크립트가 아직 로드되지 않았다면 동적으로 로드 후 재시도
-    const SCRIPT_SRC = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
-    const existing = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT_SRC}"]`);
-
-    if (existing) {
-      existing.addEventListener('load', openPostcode, { once: true });
-      return;
+    let script = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT_SRC}"]`);
+    if (!script) {
+      script = document.createElement('script');
+      script.src = SCRIPT_SRC;
+      script.async = true;
+      document.head.appendChild(script);
     }
 
-    const script = document.createElement('script');
-    script.src = SCRIPT_SRC;
-    script.async = true;
-    script.onload = () => {
-      if (window.daum?.Postcode) openPostcode();
-    };
-    script.onerror = () => {
+    try {
+      await waitForDaum(script);
+      openPostcode();
+    } catch {
       alert('주소 검색 서비스를 불러오지 못했습니다. 네트워크 연결을 확인해주세요.');
-    };
-    document.head.appendChild(script);
+    }
   };
 
   return (

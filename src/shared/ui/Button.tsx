@@ -25,10 +25,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           variant === 'outline'     && 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50',
           variant === 'ghost'       && 'bg-transparent text-slate-600 hover:bg-slate-100',
           variant === 'destructive' && 'bg-red-500 text-white hover:bg-red-600 active:bg-red-700',
-          size === 'sm' && 'px-3.5 py-1.5 text-caption-1',
-          size === 'md' && 'px-5 py-2.5 text-body-3',
-          size === 'lg' && 'px-7 py-3.5 text-body-2',
-          size === 'xl' && 'px-9 py-4 text-body-1',
+          size === 'sm' && 'px-3 py-1 text-caption-2',
+          size === 'md' && 'px-4 py-2 text-caption-1',
+          size === 'lg' && 'px-6 py-2.5 text-body-3',
+          size === 'xl' && 'px-8 py-3 text-body-2',
           className,
         )}
         style={mergedStyle}
