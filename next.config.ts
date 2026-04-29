@@ -60,9 +60,9 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               // Next.js 개발 모드 및 빌드 최적화를 위해 필요
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://t1.daumcdn.net https://static.cloudflareinsights.com",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://t1.daumcdn.net https://*.daumcdn.net https://static.cloudflareinsights.com",
               // Tailwind CSS 및 인라인 스타일 허용
-              "style-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline' https://*.daumcdn.net",
               // 이미지는 자체 도메인 + data URI + HTTPS
               "img-src 'self' data: https:",
               // 폰트는 자체 도메인만
@@ -70,9 +70,9 @@ const nextConfig: NextConfig = {
               // Service Worker 허용 (PWA)
               "worker-src 'self'",
 
-              `connect-src 'self' https://wik-dev.moon-core.com https://*.workinkorea.net https://t1.daumcdn.net https://static.cloudflareinsights.com`,
-              // iframe 허용 안 함 (frame-ancestors와 함께 사용)
-              "frame-src 'none'",
+              `connect-src 'self' https://wik-dev.moon-core.com https://*.workinkorea.net https://*.daum.net https://*.daumcdn.net https://static.cloudflareinsights.com`,
+              // Daum/Kakao 우편번호 팝업(postcode.map.daum.net iframe) 허용
+              "frame-src https://*.daum.net https://*.daumcdn.net",
               // 객체 임베드 차단
               "object-src 'none'",
               // 기본 URI 제한
