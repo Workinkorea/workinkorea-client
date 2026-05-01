@@ -72,22 +72,22 @@ const nextConfig: NextConfig = {
 
               `connect-src 'self' https://wik-dev.moon-core.com https://*.workinkorea.net https://*.daum.net https://*.daumcdn.net https://static.cloudflareinsights.com`,
               // Daum/Kakao 우편번호 팝업(postcode.map.daum.net iframe) 허용
-              "frame-src https://*.daum.net https://*.daumcdn.net",
+              "frame-src https://*.daum.net https://*.daumcdn.net https://postcode.map.daum.net",
               // 객체 임베드 차단
               "object-src 'none'",
               // 기본 URI 제한
               "base-uri 'self'",
               // 폼 제출 대상 제한
               "form-action 'self'",
-              // iframe 내 포함 차단
-              "frame-ancestors 'none'",
+              // 외부 사이트의 iframe에 현재 페이지 포함 차단 (clickjacking 방어)
+              "frame-ancestors 'self'",
               // HTTPS로 업그레이드 (프로덕션)
               ...(process.env.NODE_ENV === 'production' ? ["upgrade-insecure-requests"] : []),
             ].join('; '),
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY', // Clickjacking 공격 방어
+            value: 'SAMEORIGIN', // Clickjacking 방어 + 동일 출처 iframe 허용
           },
           {
             key: 'X-Content-Type-Options',

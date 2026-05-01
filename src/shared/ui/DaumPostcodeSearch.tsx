@@ -75,7 +75,7 @@ function DaumPostcodeSearch({
       script.addEventListener('error', () => reject(new Error('Daum Postcode SDK load failed')), { once: true });
     });
 
-  const handleSearchClick = async () => {
+  const handleSearchClick = () => {
     if (window.daum?.Postcode) {
       openPostcode();
       return;
@@ -89,12 +89,9 @@ function DaumPostcodeSearch({
       document.head.appendChild(script);
     }
 
-    try {
-      await waitForDaum(script);
-      openPostcode();
-    } catch {
-      alert('주소 검색 서비스를 불러오지 못했습니다. 네트워크 연결을 확인해주세요.');
-    }
+    waitForDaum(script)
+      .then(() => openPostcode())
+      .catch(() => alert('주소 검색 서비스를 불러오지 못했습니다. 네트워크 연결을 확인해주세요.'));
   };
 
   return (
