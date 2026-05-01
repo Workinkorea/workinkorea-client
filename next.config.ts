@@ -60,9 +60,9 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               // Next.js 개발 모드 및 빌드 최적화를 위해 필요
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://t1.daumcdn.net https://*.daumcdn.net https://static.cloudflareinsights.com",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://t1.daumcdn.net https://*.daumcdn.net https://*.kakao.com https://static.cloudflareinsights.com",
               // Tailwind CSS 및 인라인 스타일 허용
-              "style-src 'self' 'unsafe-inline' https://*.daumcdn.net",
+              "style-src 'self' 'unsafe-inline' https://*.daumcdn.net https://*.kakao.com",
               // 이미지는 자체 도메인 + data URI + HTTPS
               "img-src 'self' data: https:",
               // 폰트는 자체 도메인만
@@ -70,9 +70,9 @@ const nextConfig: NextConfig = {
               // Service Worker 허용 (PWA)
               "worker-src 'self'",
 
-              `connect-src 'self' https://wik-dev.moon-core.com https://*.workinkorea.net https://*.daum.net https://*.daumcdn.net https://static.cloudflareinsights.com`,
-              // Daum/Kakao 우편번호 팝업(postcode.map.daum.net iframe) 허용
-              "frame-src https://*.daum.net https://*.daumcdn.net https://postcode.map.daum.net",
+              `connect-src 'self' https://wik-dev.moon-core.com https://*.workinkorea.net https://*.daum.net https://*.daumcdn.net https://*.kakao.com https://static.cloudflareinsights.com`,
+              // Daum/Kakao 우편번호 팝업 허용
+              "frame-src https://*.daum.net https://*.daumcdn.net https://postcode.map.daum.net https://*.kakao.com",
               // 객체 임베드 차단
               "object-src 'none'",
               // 기본 URI 제한
